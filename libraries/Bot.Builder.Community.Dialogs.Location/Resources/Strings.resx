@@ -1,0 +1,258 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AddressSeparator" xml:space="preserve">
+    <value>, </value>
+  </data>
+  <data name="AddToFavoritesAsk" xml:space="preserve">
+    <value>Add this address to your favorite locations? Reply 'yes' or 'no'.</value>
+  </data>
+  <data name="AddToFavoritesRetry" xml:space="preserve">
+    <value>Sorry, please reply “yes” or “no” to add the address to your favorite locations.</value>
+  </data>
+  <data name="AskForEmptyAddressTemplate" xml:space="preserve">
+    <value>Please provide the {0}.</value>
+  </data>
+  <data name="AskForPrefix" xml:space="preserve">
+    <value>OK {0}.</value>
+  </data>
+  <data name="AskForTemplate" xml:space="preserve">
+    <value> Please also provide the {0}.</value>
+  </data>
+  <data name="CancelCommand" xml:space="preserve">
+    <value>cancel</value>
+  </data>
+  <data name="CancelPrompt" xml:space="preserve">
+    <value>OK, cancelled.</value>
+  </data>
+  <data name="ConfirmationAsk" xml:space="preserve">
+    <value>OK, Can you confirm that {0} is the correct address? Enter 'yes' or 'no'.</value>
+  </data>
+  <data name="ConfirmationInvalidResponse" xml:space="preserve">
+    <value>I didn't understand. Enter 'yes' or 'no'.</value>
+  </data>
+  <data name="Country" xml:space="preserve">
+    <value>country</value>
+  </data>
+  <data name="DeleteCommand" xml:space="preserve">
+    <value>delete</value>
+  </data>
+  <data name="DeleteFavoriteAbortion" xml:space="preserve">
+    <value>Ok, {0} will remain a favorite location.</value>
+  </data>
+  <data name="DeleteFavoriteConfirmationAsk" xml:space="preserve">
+    <value>Are you sure you want to delete {0} from your favorite locations?</value>
+  </data>
+  <data name="DialogStartBranchAsk" xml:space="preserve">
+    <value>How would you like to choose a location?</value>
+  </data>
+  <data name="DuplicateFavoriteNameResponse" xml:space="preserve">
+    <value>{0} is already listed in your favorites. Please type or say a different name for this address.</value>
+  </data>
+  <data name="EditCommand" xml:space="preserve">
+    <value>edit</value>
+  </data>
+  <data name="EditFavoritePrompt" xml:space="preserve">
+    <value>Ok, let’s edit {0}. Type or say a new address.</value>
+  </data>
+  <data name="EnterNewFavoriteLocationName" xml:space="preserve">
+    <value>Please type or say a friendly name for this address, for example 'Home' or 'Work'.</value>
+  </data>
+  <data name="FavoriteAddedConfirmation" xml:space="preserve">
+    <value>OK, I added {0} to your favorite locations.</value>
+  </data>
+  <data name="FavoriteDeletedConfirmation" xml:space="preserve">
+    <value>Ok, I deleted {0} from your favorite locations.</value>
+  </data>
+  <data name="FavoriteEdittedConfirmation" xml:space="preserve">
+    <value>Ok, I updated {0} with the new address {1}.</value>
+  </data>
+  <data name="FavoriteLocations" xml:space="preserve">
+    <value>Favorite Locations</value>
+  </data>
+  <data name="HelpCommand" xml:space="preserve">
+    <value>help</value>
+  </data>
+  <data name="HelpMessage" xml:space="preserve">
+    <value>Say or type a valid address when asked, and I will try to find it. You can provide the full address information (street no. / name, city, region, postal/zip code, country) or a part of it. If you want to change the address, say or type 'reset'. Finally, say or type 'cancel' to exit without providing an address.</value>
+  </data>
+  <data name="InvalidFavoriteLocationSelection" xml:space="preserve">
+    <value>Sorry, "{0}” does not match a favorite location. Type or say a number/name to use a favorite location or type “other” to create a new location. Type or say “edit” or “delete” number/name to change a favorite. Say “cancel” to exit.</value>
+  </data>
+  <data name="InvalidFavoriteNameResponse" xml:space="preserve">
+    <value>Please enter a valid name for this address.</value>
+  </data>
+  <data name="InvalidLocationResponse" xml:space="preserve">
+    <value>Type or say a number to choose the address, or enter 'cancel' to exit.</value>
+  </data>
+  <data name="InvalidLocationResponseFacebook" xml:space="preserve">
+    <value>Tap on Send Location to proceed; type or say cancel to exit.</value>
+  </data>
+  <data name="InvalidStartBranchResponse" xml:space="preserve">
+    <value>Tap one of the options to proceed; type or say cancel to exit.</value>
+  </data>
+  <data name="Locality" xml:space="preserve">
+    <value>city or locality</value>
+  </data>
+  <data name="LocationNotFound" xml:space="preserve">
+    <value>I could not find this address. Please try again.</value>
+  </data>
+  <data name="MultipleResultsFound" xml:space="preserve">
+    <value>I found these results. Type or say a number to choose the address, or enter 'other' to select another address.</value>
+  </data>
+  <data name="NoFavoriteLocationsFound" xml:space="preserve">
+    <value>You do not seem to have any favorite locations at the moment. Enter an address and you will be able to save it to your favorite locations.</value>
+  </data>
+  <data name="OtherComand" xml:space="preserve">
+    <value>other</value>
+  </data>
+  <data name="OtherLocation" xml:space="preserve">
+    <value>Other Location</value>
+  </data>
+  <data name="PostalCode" xml:space="preserve">
+    <value>zip or postal code</value>
+  </data>
+  <data name="Region" xml:space="preserve">
+    <value>state or region</value>
+  </data>
+  <data name="ResetCommand" xml:space="preserve">
+    <value>reset</value>
+  </data>
+  <data name="ResetPrompt" xml:space="preserve">
+    <value>OK, let's start over.</value>
+  </data>
+  <data name="SelectFavoriteLocationPrompt" xml:space="preserve">
+    <value>Type or say a number/name to use one of your favorite locations. Type or say “other” to specify a different location. To edit or delete a favorite, type or say, “edit” or “delete” number/name.</value>
+  </data>
+  <data name="SelectLocation" xml:space="preserve">
+    <value>Select a location</value>
+  </data>
+  <data name="SingleResultFound" xml:space="preserve">
+    <value>I found this result. Is this the correct address?</value>
+  </data>
+  <data name="StreetAddress" xml:space="preserve">
+    <value>street address</value>
+  </data>
+  <data name="TitleSuffix" xml:space="preserve">
+    <value> Type or say an address.</value>
+  </data>
+  <data name="TitleSuffixFacebook" xml:space="preserve">
+    <value> Tap 'Send Location' to choose an address.</value>
+  </data>
+</root>

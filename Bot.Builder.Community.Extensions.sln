@@ -1,0 +1,76 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2008
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{57D9879A-FC9F-468C-B86F-BE45A1472F88}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{840D4038-9AB8-4750-9FFE-365386CE47E2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Middleware.Tests", "tests\GaryPretty.Bot.Builder.Extensions.Middleware.Tests\Bot.Builder.Community.Middleware.Tests.csproj", "{4B88CD87-DA23-48AE-AD06-AFEFCEFEC37C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Middleware", "Middleware", "{B56E49F6-DF51-4114-90E7-F62ECF34B802}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Recognizers", "Recognizers", "{2975F285-9749-49EA-A6E6-E5D78DDE20B6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Middleware.BestMatch", "libraries\GaryPretty.Bot.Builder.Middleware.BestMatch\Bot.Builder.Community.Middleware.BestMatch.csproj", "{2B5B42FA-41B2-4AA6-B801-2B1FCB118FC0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Middleware.HandleActivityType", "libraries\GaryPretty.Bot.Builder.Middleware.HandleActivityType\Bot.Builder.Community.Middleware.HandleActivityType.csproj", "{9249949B-DF14-44C3-88CB-C91FDE20AE0C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Recognizers.FuzzyRecognizer", "libraries\GaryPretty.Bot.Builder.Recognizers.FuzzyRecognizer\Bot.Builder.Community.Recognizers.FuzzyRecognizer.csproj", "{3C23E3D6-BF6F-49BB-B119-6BA163E31B36}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Recognizers.Tests", "tests\GaryPretty.Bot.Builder.Extensions.Recognizers.Tests\Bot.Builder.Community.Recognizers.Tests.csproj", "{F59A4E91-137D-4089-A2B2-B2495084C931}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dialogs", "Dialogs", "{08759E28-8592-4EBA-9A07-19A5BED3FB0C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Dialogs.Location", "libraries\GaryPretty.Bot.Builder.Dialogs.Location\Bot.Builder.Community.Dialogs.Location.csproj", "{FE4CD480-B152-47AD-9304-524442D131ED}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4B88CD87-DA23-48AE-AD06-AFEFCEFEC37C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B88CD87-DA23-48AE-AD06-AFEFCEFEC37C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B88CD87-DA23-48AE-AD06-AFEFCEFEC37C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B88CD87-DA23-48AE-AD06-AFEFCEFEC37C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B5B42FA-41B2-4AA6-B801-2B1FCB118FC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B5B42FA-41B2-4AA6-B801-2B1FCB118FC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B5B42FA-41B2-4AA6-B801-2B1FCB118FC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B5B42FA-41B2-4AA6-B801-2B1FCB118FC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9249949B-DF14-44C3-88CB-C91FDE20AE0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9249949B-DF14-44C3-88CB-C91FDE20AE0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9249949B-DF14-44C3-88CB-C91FDE20AE0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9249949B-DF14-44C3-88CB-C91FDE20AE0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C23E3D6-BF6F-49BB-B119-6BA163E31B36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C23E3D6-BF6F-49BB-B119-6BA163E31B36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C23E3D6-BF6F-49BB-B119-6BA163E31B36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C23E3D6-BF6F-49BB-B119-6BA163E31B36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F59A4E91-137D-4089-A2B2-B2495084C931}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F59A4E91-137D-4089-A2B2-B2495084C931}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F59A4E91-137D-4089-A2B2-B2495084C931}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F59A4E91-137D-4089-A2B2-B2495084C931}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE4CD480-B152-47AD-9304-524442D131ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE4CD480-B152-47AD-9304-524442D131ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE4CD480-B152-47AD-9304-524442D131ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE4CD480-B152-47AD-9304-524442D131ED}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4B88CD87-DA23-48AE-AD06-AFEFCEFEC37C} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
+		{B56E49F6-DF51-4114-90E7-F62ECF34B802} = {57D9879A-FC9F-468C-B86F-BE45A1472F88}
+		{2975F285-9749-49EA-A6E6-E5D78DDE20B6} = {57D9879A-FC9F-468C-B86F-BE45A1472F88}
+		{2B5B42FA-41B2-4AA6-B801-2B1FCB118FC0} = {B56E49F6-DF51-4114-90E7-F62ECF34B802}
+		{9249949B-DF14-44C3-88CB-C91FDE20AE0C} = {B56E49F6-DF51-4114-90E7-F62ECF34B802}
+		{3C23E3D6-BF6F-49BB-B119-6BA163E31B36} = {2975F285-9749-49EA-A6E6-E5D78DDE20B6}
+		{F59A4E91-137D-4089-A2B2-B2495084C931} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
+		{08759E28-8592-4EBA-9A07-19A5BED3FB0C} = {57D9879A-FC9F-468C-B86F-BE45A1472F88}
+		{FE4CD480-B152-47AD-9304-524442D131ED} = {08759E28-8592-4EBA-9A07-19A5BED3FB0C}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9FE3B75E-BA2B-45BC-BBF0-DDA8BA10C4F0}
+	EndGlobalSection
+EndGlobal

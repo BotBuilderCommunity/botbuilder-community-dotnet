@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Authors>Gary Pretty</Authors>
+    <Company>Gary Pretty</Company>
+    <Copyright>Gary Pretty</Copyright>
+    <PackageLicenseUrl>https://github.com/garypretty/botbuilder-dotnet-extensions/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/garypretty/botbuilder-dotnet-extensions/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/garypretty/botbuilder-dotnet-extensions/</RepositoryUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Description>Middleware extensions for Bot Builder v4 SDK that allows you to match a message receieved from a bot user against a list of strings and then carry out an appropriate action. Matching does not have to be exact and you can set the threshold as to how closely the message should match with an item in the list.</Description>
+    <PackageTags>bestmatch, bestmatchdialog, bot framework, botframework, bot builder</PackageTags>
+    <Version>1.0.2</Version>
+    <DebugType>Full</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Bot.Builder.Core" Version="4.0.1-preview" />
+  </ItemGroup>
+
+</Project>
