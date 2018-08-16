@@ -27,8 +27,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\libraries\GaryPretty.Bot.Builder.Middleware.BestMatch\Bot.Builder.Community.Middleware.BestMatch.csproj" />
-    <ProjectReference Include="..\..\libraries\GaryPretty.Bot.Builder.Middleware.HandleActivityType\Bot.Builder.Community.Middleware.HandleActivityType.csproj" />
+    <ProjectReference Include="..\..\libraries\Bot.Builder.Community.Middleware.BestMatch\Bot.Builder.Community.Middleware.BestMatch.csproj" />
+    <ProjectReference Include="..\..\libraries\Bot.Builder.Community.Middleware.HandleActivityType\Bot.Builder.Community.Middleware.HandleActivityType.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\libraries\GaryPretty.Bot.Builder.Recognizers.FuzzyRecognizer\Bot.Builder.Community.Recognizers.FuzzyRecognizer.csproj" />
+    <ProjectReference Include="..\..\libraries\Bot.Builder.Community.Recognizers.FuzzyRecognizer\Bot.Builder.Community.Recognizers.FuzzyRecognizer.csproj" />
   </ItemGroup>
 
   <ItemGroup>
