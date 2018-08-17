@@ -1,0 +1,30 @@
+﻿## Typing Middleware
+
+This is part of the [Bot Builder Community Extensions](https://github.com/garypretty/botbuilder-community) project which contains various pieces of middleware, recognizers and other components for use with the Bot Builder .NET SDK v4.
+
+This middleware will show a 'typing' event whenever a long running operation is occurring in your bot or other middeware components in the pipeline.
+
+This is a good visual cue to the user that your bot is doing something.
+
+Available via [NuGet](https://www.nuget.org/packages/Bot.Builder.Community.Middleware.Typing/).
+
+Install into your project using the following command in the package manager;
+```
+    PM> Install-Package Bot.Builder.Community.Middleware.Typing
+```
+
+
+#### Usage
+
+To ensure that users get appropriate feedback at all times, add this middleware to the start of the pipeline.
+
+In your `Startup.cs` file, configure your bot type to use an instance of `TypingMiddleware`:
+
+```
+services.AddBot<Bot>((options) => {
+    options.CredentialProvider = new ConfigurationCredentialProvider(Configuration);
+                
+    options.Middleware.Add(new TypingMiddleware());
+    // more middleware
+});
+```

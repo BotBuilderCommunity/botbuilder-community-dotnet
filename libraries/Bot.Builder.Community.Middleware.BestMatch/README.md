@@ -1,14 +1,14 @@
 ## Best Match Middleware
 
-This is part of the [Bot Builder v4 Extensions](https://github.com/garypretty/botbuilder-dotnet-extensions/) project which contains various pieces pf middleware, recognizers and other components for use with the Bot Builder .NET SDK v4.
+This is part of the [Bot Builder Community Extensions](https://github.com/garypretty/botbuilder-community) project which contains various pieces of middleware, recognizers and other components for use with the Bot Builder .NET SDK v4.
 
 This piece of middleware will allow you to match a message receieved from a bot user against a list of strings and then carry out an appropriate action. Matching does not have to be exact and you can set the threshold as to how closely the message should match with an item in the list.
 
-Available via [NuGet](https://www.nuget.org/packages/GaryPretty.Bot.Builder.Middleware.BestMatch/).
+Available via [NuGet](https://www.nuget.org/packages/Bot.Builder.Community.Middleware.BestMatch/).
 
 Install into your project using the following command in the package manager;
 ```
-    PM> Install-Package GaryPretty.Bot.Builder.Middleware.BestMatch
+    PM> Install-Package Bot.Builder.Community.Middleware.BestMatch
 ```
 
 BestMatchMiddleware is an abstract class, so you need to implement it yourself to use it, before adding it to your middleware pipeline.
