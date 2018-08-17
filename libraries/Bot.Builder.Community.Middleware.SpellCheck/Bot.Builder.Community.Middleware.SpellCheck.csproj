@@ -2,6 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Company>Bot Builder Community Extensions</Company>
+    <Authors>Bot Builder Community Extensions</Authors>
+    <PackageLicenseUrl>https://github.com/garypretty/botbuilder-community/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/garypretty/botbuilder-community/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/garypretty/botbuilder-community/</RepositoryUrl>
+    <PackageTags>bot framework, bot builder, azure bot service, middleware</PackageTags>
+    <Description>This middleware uses Cognitive Services Check to automatically correct inbound message text.</Description>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.1.1" />

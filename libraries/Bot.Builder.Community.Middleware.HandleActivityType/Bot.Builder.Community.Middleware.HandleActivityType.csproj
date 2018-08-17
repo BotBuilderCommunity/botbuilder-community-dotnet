@@ -3,12 +3,12 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <Authors>Gary Pretty</Authors>
-    <Company>Gary Pretty</Company>
-    <Copyright>Gary Pretty</Copyright>
-    <PackageLicenseUrl>https://github.com/garypretty/botbuilder-dotnet-extensions/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/garypretty/botbuilder-dotnet-extensions/</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/garypretty/botbuilder-dotnet-extensions/</RepositoryUrl>
+    <Authors>Bot Builder Community Extensions</Authors>
+    <Company>Bot Builder Community Extensions</Company>
+    <Copyright></Copyright>
+    <PackageLicenseUrl>https://github.com/garypretty/botbuilder-community/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/garypretty/botbuilder-community/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/garypretty/botbuilder-community/</RepositoryUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Description>Middleware component for Microsoft Bot Builder v4 to allow the handling of incoming activities based on their activity type. e.g. ConversationUpdate</Description>
     <DebugType>Full</DebugType>
