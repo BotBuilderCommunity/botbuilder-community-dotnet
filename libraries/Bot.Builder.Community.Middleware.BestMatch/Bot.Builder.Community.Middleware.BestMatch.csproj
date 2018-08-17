@@ -12,7 +12,7 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Description>Middleware extensions for Bot Builder v4 SDK that allows you to match a message receieved from a bot user against a list of strings and then carry out an appropriate action. Matching does not have to be exact and you can set the threshold as to how closely the message should match with an item in the list.</Description>
     <PackageTags>bestmatch, bestmatchdialog, bot framework, botframework, bot builder</PackageTags>
-    <Version>1.0.2</Version>
+    <Version>1.0.0</Version>
     <DebugType>Full</DebugType>
   </PropertyGroup>
 
