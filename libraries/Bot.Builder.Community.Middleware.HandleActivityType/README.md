@@ -4,12 +4,16 @@ This is part of the [Bot Builder Community Extensions](https://github.com/garypr
 
 This piece of middleware will allow you you to handle incoming activities of specific types, such as 'conversationUpdate' or 'contactRelationUpdate'.
 
-Available via [NuGet](https://www.nuget.org/packages/Bot.Builder.Community.Middleware.HandleActivityType/).
+## Installation
+
+Available via NuGet package [Bot.Builder.Community.Middleware.HandleActivityType](https://www.nuget.org/packages/Bot.Builder.Community.Middleware.HandleActivityType/).
 
 Install into your project using the following command in the package manager;
 ```
     PM> Install-Package Bot.Builder.Community.Middleware.HandleActivityType
 ```
+
+## Usage
 
 To use the middleware, add it to the pipeline:
 
