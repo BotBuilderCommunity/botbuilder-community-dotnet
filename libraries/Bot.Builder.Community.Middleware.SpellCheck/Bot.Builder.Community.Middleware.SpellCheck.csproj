@@ -9,6 +9,7 @@
     <RepositoryUrl>https://github.com/garypretty/botbuilder-community/</RepositoryUrl>
     <PackageTags>bot framework, bot builder, azure bot service, middleware</PackageTags>
     <Description>This middleware uses Cognitive Services Check to automatically correct inbound message text.</Description>
+    <Version>1.0.0</Version>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.1.1" />

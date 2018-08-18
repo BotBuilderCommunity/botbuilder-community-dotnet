@@ -9,6 +9,7 @@
     <PackageProjectUrl>https://github.com/garypretty/botbuilder-community</PackageProjectUrl>
     <RepositoryUrl>https://github.com/garypretty/botbuilder-community/</RepositoryUrl>
     <Description>This middleware uses Cognitive Services Sentiment Analysis to identify the sentiment of each inbound message and make it available for your bot or other middleware component.</Description>
+    <Version>1.0.0</Version>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.1.1" />

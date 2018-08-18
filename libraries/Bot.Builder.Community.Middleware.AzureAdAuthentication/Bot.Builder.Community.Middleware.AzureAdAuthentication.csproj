@@ -9,6 +9,7 @@
     <Authors>Bot Builder Community Extensions</Authors>
     <PackageTags>bot framework, bot builder, azure bot service, middleware</PackageTags>
     <Description>This middleware will allow your bot to authenticate with Azure AD. It was created to support integration with Microsoft Graph but it will work with any application that uses the OAuth 2.0 authorization code flow.</Description>
+    <Version>1.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

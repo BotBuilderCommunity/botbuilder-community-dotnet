@@ -9,6 +9,7 @@
     <PackageTags>bot framework, bot builder, azure bot service, middleware</PackageTags>
     <PackageLicenseUrl>https://github.com/garypretty/botbuilder-community/blob/master/LICENSE</PackageLicenseUrl>
     <Description>This middleware will show a 'typing' event whenever a long running operation is occurring in your bot or other middeware components in the pipeline, providing a visual cue to the user that your bot is doing something.</Description>
+    <Version>1.0.0</Version>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.1.1" />
