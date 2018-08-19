@@ -1,5 +1,11 @@
 ﻿## Azure Active Directory Authentication Middleware
 
+### Build status
+| Branch | Status | Recommended NuGet package version |
+| ------ | ------ | ------ |
+| master | [![Build status](https://ci.appveyor.com/api/projects/status/b9123gl3kih8x9cb?svg=true)](https://ci.appveyor.com/project/garypretty/botbuilder-community) | [![NuGet version](https://badge.fury.io/nu/Bot.Builder.Community.Middleware.AzureAdAuthentication.svg)](https://badge.fury.io/nu/Bot.Builder.Community.Middleware.AzureAdAuthentication) |
+
+### Description
 This is part of the [Bot Builder Community Extensions](https://github.com/garypretty/botbuilder-community) project which contains various pieces of middleware, recognizers and other components for use with the Bot Builder .NET SDK v4.
 
 This middleware will allow your bot to authenticate with Azure AD.  It was created to support integration with Microsoft Graph but it will work with any application that uses the OAuth 2.0 authorization code flow. https://docs.microsoft.com/en-gb/azure/active-directory/develop/v2-oauth2-auth-code-flow
@@ -11,14 +17,16 @@ It supports:
 
 **Note: This middleware requires you provide a class to store OAuth access/refresh tokens somewhere. I have purposefully not prescribed how to store these access tokens.  If you make use of this middleware you need to provide an implementation of `IAuthTokenStorage`. This should use secure storage like Azure Key Vault. Read up on that here. https://docs.microsoft.com/en-us/azure/key-vault/quick-create-net.**
 
-Available via [NuGet](https://www.nuget.org/packages/Bot.Builder.Community.Middleware.AzureAdAuthentication/).
+### Installation 
+
+Available via NuGet package [Bot.Builder.Community.Middleware.AzureAdAuthentication](https://www.nuget.org/packages/Bot.Builder.Community.Middleware.AzureAdAuthentication/)
 
 Install into your project using the following command in the package manager;
 ```
     PM> Install-Package Bot.Builder.Community.Middleware.AzureAdAuthentication
 ```
 
-#### Usage
+### Usage
 
 ##### Step 1 - Define an implementation of `IAuthTokenStorage` to store and retrieve tokens
 This is an example of an in-memory `IAuthTokenStorage`. This is to demonstrate the principle only.

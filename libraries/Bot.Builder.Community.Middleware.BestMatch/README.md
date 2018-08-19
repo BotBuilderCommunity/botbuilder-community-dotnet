@@ -1,15 +1,25 @@
 ## Best Match Middleware
 
+### Build status
+| Branch | Status | Recommended NuGet package version |
+| ------ | ------ | ------ |
+| master | [![Build status](https://ci.appveyor.com/api/projects/status/b9123gl3kih8x9cb?svg=true)](https://ci.appveyor.com/project/garypretty/botbuilder-community) | [![NuGet version](https://badge.fury.io/nu/Bot.Builder.Community.Middleware.BestMatch.svg)](https://badge.fury.io/nu/Bot.Builder.Community.Middleware.BestMatch) |
+
+### Description
 This is part of the [Bot Builder Community Extensions](https://github.com/garypretty/botbuilder-community) project which contains various pieces of middleware, recognizers and other components for use with the Bot Builder .NET SDK v4.
 
 This piece of middleware will allow you to match a message receieved from a bot user against a list of strings and then carry out an appropriate action. Matching does not have to be exact and you can set the threshold as to how closely the message should match with an item in the list.
 
-Available via [NuGet](https://www.nuget.org/packages/Bot.Builder.Community.Middleware.BestMatch/).
+### Installation
+
+Available via NuGet package [Bot.Builder.Community.Middleware.BestMatch](https://www.nuget.org/packages/Bot.Builder.Community.Middleware.BestMatch/)
 
 Install into your project using the following command in the package manager;
 ```
     PM> Install-Package Bot.Builder.Community.Middleware.BestMatch
 ```
+
+### Usage
 
 BestMatchMiddleware is an abstract class, so you need to implement it yourself to use it, before adding it to your middleware pipeline.
 For example, you might use it to respond to common 'manners', such as greetings and salutations. e.g.
