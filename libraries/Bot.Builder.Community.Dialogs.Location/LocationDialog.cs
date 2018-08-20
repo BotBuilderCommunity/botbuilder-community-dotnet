@@ -32,8 +32,7 @@ namespace Bot.Builder.Community.Dialogs.Location
             public const string HeroStartCardDialog = "HeroStartCardDialog";
             public const string LocationRetrieverFacebookDialog = "LocationRetrieverFacebookDialog";
             public static string CompleteMissingRequiredFieldsDialog = "CompleteMissingRequiredFieldsDialog";
-
-            public static string ConfirmDeleteFromFavoritesDialog { get; internal set; }
+            public static string ConfirmDeleteFromFavoritesDialog = "ConfirmDeleteFromFavoritesDialog";
         }
 
         /// <summary>Contains the IDs for the prompts used by the dialogs.</summary>
@@ -206,6 +205,7 @@ namespace Bot.Builder.Community.Dialogs.Location
                         if(location != null)
                         {
                             await TryReverseGeocodeAddress(location.Location, options, geoSpatialService);
+                            dc.ActiveDialog.State[Outputs.SelectedLocation] = location;
 
                             if (requiredFields == LocationRequiredFields.None)
                             {
@@ -214,8 +214,13 @@ namespace Bot.Builder.Community.Dialogs.Location
                                     {Outputs.SelectedLocation, location.Location}
                                 });
                             }
-
-                            await dc.Replace(DialogIds.CompleteMissingRequiredFieldsDialog, dc.ActiveDialog.State);
+                            else
+                            {
+                                await dc.Replace(DialogIds.CompleteMissingRequiredFieldsDialog, new Dictionary<string, object>
+                                {
+                                    {Outputs.SelectedLocation, location.Location}
+                                });
+                            }
                         }
                         else
                         {
@@ -225,12 +230,12 @@ namespace Bot.Builder.Community.Dialogs.Location
                             (StringComparer.OrdinalIgnoreCase.Equals(locationAndCommand.Item2, resourceManager.DeleteCommand)
                             || StringComparer.OrdinalIgnoreCase.Equals(locationAndCommand.Item2, resourceManager.EditCommand)))
                             {
-                                if (StringComparer.OrdinalIgnoreCase.Equals(command, resourceManager.DeleteCommand))
+                                if (StringComparer.OrdinalIgnoreCase.Equals(locationAndCommand.Item2, resourceManager.DeleteCommand))
                                 {
                                     await dc.Replace(DialogIds.ConfirmDeleteFromFavoritesDialog,
                                         new Dictionary<string, object>
                                         {
-                                            {Outputs.SelectedLocation, location.Location}
+                                            {Outputs.SelectedLocation, locationAndCommand.Item1}
                                         });
                                 }
                                 else
