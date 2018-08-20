@@ -1,8 +1,17 @@
 ## Fuzzy Matching Recognizer
 
+### Build status
+| Branch | Status | Recommended NuGet package version |
+| ------ | ------ | ------ |
+| master | [![Build status](https://ci.appveyor.com/api/projects/status/b9123gl3kih8x9cb?svg=true)](https://ci.appveyor.com/project/garypretty/botbuilder-community) | [![NuGet version](https://badge.fury.io/nu/Bot.Builder.Community.Recognizers.FuzzyRecognizer.svg)](https://badge.fury.io/nu/Bot.Builder.Community.Recognizers.FuzzyRecognizer) |
+
+### Description
+
 This is part of the [Bot Builder Community Extensions](https://github.com/garypretty/botbuilder-community) project which contains various pieces of middleware, recognizers and other components for use with the Bot Builder .NET SDK v4.
 
 The Fuzzy Recognizer allows you to compare a specified string against a list of 1 or more other strings.  The result is a list of string that are close enough to match with the comparison string (above a given threshold which you can set).  This can be useful when taking input from the user where spelling mistakes may be common, e.g. names or people, companies or other entities etc.
+
+### Installation 
 
 The Fuzzy Recognizer is available via [NuGet](https://www.nuget.org/packages/Bot.Builder.Community.Recognizers.FuzzyRecognizer/).
 
@@ -10,6 +19,8 @@ Install it into your project using the following command in the package manager;
 ```
     PM> Install-Package Bot.Builder.Community.Recognizers.FuzzyRecognizer
 ```
+
+### Usage
 
 To use the recognizer, you can simply pass in a list of possible choices (the list of strings you wish to check for matches) and the string to be matched against.  In the example below we are checking for any matches in the list against "Gary Prety".
 

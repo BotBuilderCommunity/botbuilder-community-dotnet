@@ -1,4 +1,11 @@
 ﻿## Spell Check Middleware
+ 
+### Build status
+| Branch | Status | Recommended NuGet package version |
+| ------ | ------ | ------ |
+| master | [![Build status](https://ci.appveyor.com/api/projects/status/b9123gl3kih8x9cb?svg=true)](https://ci.appveyor.com/project/garypretty/botbuilder-community) | [![NuGet version](https://badge.fury.io/nu/Bot.Builder.Community.Middleware.SpellCheck.svg)](https://badge.fury.io/nu/Bot.Builder.Community.Middleware.SpellCheck) |
+ 
+### Description
 
 This is part of the [Bot Builder Community Extensions](https://github.com/garypretty/botbuilder-community) project which contains various pieces of middleware, recognizers and other components for use with the Bot Builder .NET SDK v4.
 
@@ -6,14 +13,16 @@ This middleware will spell check inbound text using Cognitive Services Spell Che
 
 The implementation is naive at the moment in that it assumes that the suggestions are correct and replaces inbound text automatically. If you have more sophisticated needs please feel free to contribute!
 
-Available via [NuGet](https://www.nuget.org/packages/Bot.Builder.Community.Middleware.SpellCheck/).
+### Installation
+
+Available via NuGet package [Bot.Builder.Community.Middleware.SpellCheck](https://www.nuget.org/packages/Bot.Builder.Community.Middleware.SpellCheck/)
 
 Install into your project using the following command in the package manager;
 ```
     PM> Install-Package Bot.Builder.Community.Middleware.SpellCheck
 ```
 
-#### Usage
+### Usage
 
 Typically I would place this middleware at the end of the pipeline, but it will work anywhere.  
 
