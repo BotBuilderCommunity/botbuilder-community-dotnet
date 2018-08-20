@@ -32,6 +32,8 @@ namespace Bot.Builder.Community.Dialogs.Location
             public const string HeroStartCardDialog = "HeroStartCardDialog";
             public const string LocationRetrieverFacebookDialog = "LocationRetrieverFacebookDialog";
             public static string CompleteMissingRequiredFieldsDialog = "CompleteMissingRequiredFieldsDialog";
+
+            public static string ConfirmDeleteFromFavoritesDialog { get; internal set; }
         }
 
         /// <summary>Contains the IDs for the prompts used by the dialogs.</summary>
@@ -182,10 +184,69 @@ namespace Bot.Builder.Community.Dialogs.Location
                     }
                     else
                     {
-                        await dc.Context.SendActivity(CreateFavoritesCarousel(dc.Context, 
-                            new LocationCardBuilder(apiKey, resourceManager), 
+                        await dc.Context.SendActivity(CreateFavoritesCarousel(dc.Context,
+                            new LocationCardBuilder(apiKey, resourceManager),
                             favorites));
                         await dc.Context.SendActivity(resourceManager.SelectFavoriteLocationPrompt);
+                    }
+                },
+                async (dc, args, next) =>
+                {
+                    var messageText = dc.Context.Activity.Text;
+                    string command = null;
+
+                    if (StringComparer.OrdinalIgnoreCase.Equals(messageText, resourceManager.OtherComand))
+                    {
+                        await dc.Replace(DialogIds.LocationRetrieverRichDialog);
+                    }
+                    else
+                    {
+                        var location = await TryParseSelection(dc.Context, favoritesManager, messageText);
+
+                        if(location != null)
+                        {
+                            await TryReverseGeocodeAddress(location.Location, options, geoSpatialService);
+
+                            if (requiredFields == LocationRequiredFields.None)
+                            {
+                                await dc.End(new Dictionary<string, object>
+                                {
+                                    {Outputs.SelectedLocation, location.Location}
+                                });
+                            }
+
+                            await dc.Replace(DialogIds.CompleteMissingRequiredFieldsDialog, dc.ActiveDialog.State);
+                        }
+                        else
+                        {
+                            var locationAndCommand = await TryParseCommandSelection(dc.Context, favoritesManager, messageText);
+
+                            if(locationAndCommand.Item1 != null && locationAndCommand.Item2 != null &&
+                            (StringComparer.OrdinalIgnoreCase.Equals(locationAndCommand.Item2, resourceManager.DeleteCommand)
+                            || StringComparer.OrdinalIgnoreCase.Equals(locationAndCommand.Item2, resourceManager.EditCommand)))
+                            {
+                                if (StringComparer.OrdinalIgnoreCase.Equals(command, resourceManager.DeleteCommand))
+                                {
+                                    await dc.Replace(DialogIds.ConfirmDeleteFromFavoritesDialog,
+                                        new Dictionary<string, object>
+                                        {
+                                            {Outputs.SelectedLocation, location.Location}
+                                        });
+                                }
+                                else
+                                {
+                                    await dc.Context.SendActivity("Edit Favorites functionality not currently implemented.");
+                                    await dc.Replace(DialogIds.FavoriteLocationRetrieverDialog);
+                                    //var editDialog = this.locationDialogFactory.CreateDialog(BranchType.EditFavoriteLocation, value.Location, value.Name);
+                                    //context.Call(editDialog, this.ResumeAfterChildDialogAsync);
+                                }
+                            }
+                            else
+                            {
+                                await dc.Context.SendActivity(string.Format(resourceManager.InvalidFavoriteLocationSelection, messageText));
+                                await dc.Replace(DialogIds.FavoriteLocationRetrieverDialog);
+                            }
+                        }
                     }
                 }
             });
@@ -533,9 +594,82 @@ namespace Bot.Builder.Community.Dialogs.Location
                     }
                 }
             });
+
+            Dialogs.Add(DialogIds.ConfirmDeleteFromFavoritesDialog, new WaterfallStep[]
+            {
+                async (dc, args, next) =>
+                {
+                    var location = (FavoriteLocation)args[Outputs.SelectedLocation];
+                    dc.ActiveDialog.State[Outputs.SelectedLocation] = location;
+
+                    var confirmationAsk = string.Format(
+                    resourceManager.DeleteFavoriteConfirmationAsk,
+                    $"{location.Name}: {location.Location.GetFormattedAddress(resourceManager.AddressSeparator)}");
+
+                    await dc.Prompt(Inputs.Confirm, confirmationAsk,
+                        new PromptOptions
+                        {
+                            RetryPromptString = resourceManager.ConfirmationInvalidResponse
+                        });
+                },
+                async (dc, args, next) =>
+                {
+                    var confirmationResult = (ConfirmResult)args;
+                    var selectedLocation = (FavoriteLocation)dc.ActiveDialog.State[Outputs.SelectedLocation];
+
+                    if(confirmationResult.Confirmation)
+                    {
+                        await favoritesManager.Delete(dc.Context, selectedLocation);
+                        await dc.Context.SendActivity(string.Format(resourceManager.FavoriteDeletedConfirmation, selectedLocation.Name));
+                        await dc.Replace(DialogIds.FavoriteLocationRetrieverDialog);
+                    }
+                    else
+                    {
+                        await dc.Context.SendActivity(
+                            string.Format(resourceManager.DeleteFavoriteAbortion,
+                            selectedLocation.Name));
+                        await dc.Replace(DialogIds.FavoriteLocationRetrieverDialog);
+                    }
+                }
+            });
         }
 
-        private static async Task PromptForRequiredField(DialogContext dc, LocationRequiredFields requiredField, string requiredFieldPrompt, LocationResourceManager resourceManager, 
+        private async Task<FavoriteLocation> TryParseSelection(ITurnContext context, IFavoritesManager favoritesManager, string text)
+        {
+            var favoriteRetrievedByName = await favoritesManager.GetFavoriteByName(context, text);
+
+            if (favoriteRetrievedByName != null)
+            {
+                return favoriteRetrievedByName;
+            }
+
+            int index = -1;
+
+            if (int.TryParse(text, out index))
+            {
+                return await favoritesManager.GetFavoriteByIndex(context, index - 1);
+            }
+
+            return null;
+        }
+
+        private async Task<(FavoriteLocation, string)> TryParseCommandSelection(ITurnContext context, IFavoritesManager favoritesManager, string text)
+        {
+            FavoriteLocation value = null;
+            string command = null;
+
+            var tokens = text.Split(' ');
+            if (tokens.Length != 2)
+                return (null, null);
+
+            command = tokens[0];
+
+            value = await TryParseSelection(context, favoritesManager, tokens[1]);
+
+            return (value, command);
+        }
+
+        private static async Task PromptForRequiredField(DialogContext dc, LocationRequiredFields requiredField, string requiredFieldPrompt, LocationResourceManager resourceManager,
             Bing.Location selectedLocation)
         {
             var formattedAddress = selectedLocation.GetFormattedAddress(resourceManager.AddressSeparator);
