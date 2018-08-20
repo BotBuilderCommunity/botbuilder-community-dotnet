@@ -8,7 +8,7 @@
 ### Description
 This is part of the [Bot Builder Community Extensions](https://github.com/garypretty/botbuilder-community) project which contains various pieces of middleware, recognizers and other components for use with the Bot Builder .NET SDK v4.
 
-This dialog is an implementation of the [Bot Builder Location dialog that Microsoft release for v3](https://www.github.com/microsoft/botbuilder-location) of the Bot Builder SDK.
+This dialog is an implementation based on the [Bot Builder Location dialog that Microsoft release for v3](https://www.github.com/microsoft/botbuilder-location) of the Bot Builder SDK.
 
 The dialog, which has 100% feature parity with the v3 dialog, makes it simple for your to prompt your bot's users for a location. It has the following features.
 
