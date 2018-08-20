@@ -1,11 +1,19 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/b9123gl3kih8x9cb?svg=true)](https://ci.appveyor.com/project/garypretty/botbuilder-community)
 
 # Bot Builder Community Extensions
-The repository for the community driven Bot Builder Extensions. A collection of middleware, dialogs, helpers and more for the Bot Builder SDK.
+The repository for the community driven Bot Builder Extensions. A collection of middleware, dialogs, helpers and more for the Bot Builder SDK.  To see a list of current extensions available, use the links below to jump to a section.
+
+* [Middleware](#middleware)
+* [Dialogs](#dialogs)
+* [Recognizers](#recognizers)
 
 ## Installation
 
 Each extension, such as middleware or recognizers, is available individually from NuGet. See each individual component description for installation details and links.
+
+## Contributing and Reporting Issues
+
+We welcome and encourage contributions to this project, in the form of bug fixes, enhancements or new extensions. Please fork the repo and raise a PR if you have something you would like us to review for inclusion.  If you want to discuss an idea first then the best way to do this right now is to raise a GitHub issue or reach out to one of us on Twitter.
 
 ## Middleware
 
@@ -22,6 +30,10 @@ The following pieces of middleware are currently available;
 * [Spell Check Middleware](libraries/Bot.Builder.Community.Middleware.SpellCheck) - This middleware uses Cognitive Services Check to automatically correct inbound message text.
 
 * [Typing Middleware](libraries/Bot.Builder.Community.Middleware.Typing) - This middleware will show a 'typing' event whenever a long running operation is occurring in your bot or other middeware components in the pipeline, providing a visual cue to the user that your bot is doing something.
+
+## Dialogs
+
+* [Bot Builder v4 Location Dialog](libraries/Bot.Builder.Community.Dialogs.Location) - An implemention for v4 of the Bot Build .NET SDK of the [Microsoft.Bot.Builder.Location dialog project built for Bot Builder v3](https://github.com/microsoft/botbuilder-location). An open-source location picker control for Microsoft Bot Framework powered by Azure or Bing Maps REST services. This control will allow a user to search for a location, with the ability to specify required fields and also store locations as favorites for the user.  
 
 ## Recognizers
 
