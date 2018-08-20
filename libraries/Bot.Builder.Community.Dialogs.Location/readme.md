@@ -30,3 +30,48 @@ Install into your project using the following command in the package manager;
 
 ### Usage
 
+To use the dialog, add it to your DialogSet as shown below. 
+
+```cs
+
+Dialogs.Add(LocationDialog.MainDialogId,
+                new LocationDialog("<YOUR-API-KEY-FOR-BING-OR-AZURE-MAPS",
+                    "Please enter a location", useAzureMaps: false, requiredFields: LocationRequiredFields.StreetAddress | LocationRequiredFields.PostalCode));
+
+```
+
+The following settings can be applied when adding your dialog to the DialogSet.
+
+* **ApiKey** - Required - This should be the API key for the mapping provider you are using
+* **Prompt** - Required - The initial prompt shown to the user. e.g. "Please enter your post code"
+* **UseAzureMaps** - Optional - This defaults to true, in which case Azure maps will be used and you should provide an Azure Maps API key. If you set this to false then Bing Maps will be used and you should use a Bing Maps API key.
+* **LocationRequiredFields** - Optional - Here you can pass in a list of required fields which the use will need to populate if they are empty when a location is found using the initial search. In the example above I have specified Street Address and Post Code are required.
+* **LocationResourceManager** - Optional - Here you can provde an implementation of the LocationResourceManager class, which allows you to override the default strings used by the dialog.
+
+In your bot code, when you want to hand off to the Location dialog you can use dc.Begin to do this, as shown in the below example using a Waterfall dialog. When returning, the dialog will return args of type LocationDialogResult, which you can also see below.
+
+```cs
+
+Dialogs.Add("YourBotsDialog", new WaterfallStep[]
+            {
+                async (dc, args, next) =>
+                {
+                        await dc.Begin(LocationDialog.MainDialogId);
+                },
+                async (dc, args, next) =>
+                {
+                    if (args is LocationDialogResult locationDialogResult)
+                    {
+                        await dc.Context.SendActivity($"Location found: {locationDialogResult.SelectedLocation.Address}");
+                        await dc.End();
+                    }
+                    else
+                    {
+                        await dc.Context.SendActivity($"No location found");
+                        await dc.End();
+                    }
+                }
+            });
+
+```
+
