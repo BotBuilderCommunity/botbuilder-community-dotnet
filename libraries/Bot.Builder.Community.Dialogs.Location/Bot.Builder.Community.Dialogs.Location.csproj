@@ -2,6 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Description>An implemention for v4 of the Bot Build .NET SDK of the Microsoft.Bot.Builder.Location dialog project built for Bot Builder v3. An open-source location picker control for Microsoft Bot Framework powered by Azure or Bing Maps REST services. This control will allow a user to search for a location, with the ability to specify required fields and also store locations as favorites for the user.</Description>
+    <Authors>Bot Builder Community Extensions</Authors>
+    <Company>Bot Builder Community Extensions</Company>
+    <PackageLicenseUrl>https://github.com/garypretty/botbuilder-community/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/garypretty/botbuilder-community/</PackageProjectUrl>
+    <Version>1.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
