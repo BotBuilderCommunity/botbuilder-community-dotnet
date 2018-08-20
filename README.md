@@ -1,11 +1,13 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/b9123gl3kih8x9cb?svg=true)](https://ci.appveyor.com/project/garypretty/botbuilder-community)
 
-# Bot Builder Community Extensions
+# Bot Builder Community Project
 The repository for the community driven Bot Builder Extensions. A collection of middleware, dialogs, helpers and more for the Bot Builder SDK.  To see a list of current extensions available, use the links below to jump to a section.
 
-* [Middleware](#middleware)
-* [Dialogs](#dialogs)
-* [Recognizers](#recognizers)
+* [C# Middleware](#middleware)
+* [C# Dialogs](#dialogs)
+* [C# Recognizers](#recognizers)
+
+We are actively [seeking contributions](#contributing-and-reporting-issues) for Node, Python and Java. If you would linke to contribute then please get in touch!
 
 ## Installation
 
