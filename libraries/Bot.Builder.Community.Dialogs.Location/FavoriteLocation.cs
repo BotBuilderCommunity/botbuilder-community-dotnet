@@ -1,6 +1,6 @@
 ﻿namespace Bot.Builder.Community.Dialogs.Location
 {
-    internal class FavoriteLocation
+    public class FavoriteLocation
     {
         public string Name { get; set; }
 

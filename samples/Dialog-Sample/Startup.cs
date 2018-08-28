@@ -62,7 +62,7 @@ namespace Dialog_Sample
 
                 var accessors = new MyEchoBotAccessors
                 {
-                    ConversationDialogState = conversationState.CreateProperty<Microsoft.Bot.Builder.Dialogs.DialogState>(MyEchoBotAccessors.DialogStateName),
+                    ConversationDialogState = conversationState.CreateProperty<Microsoft.Bot.Builder.Dialogs.DialogState>(MyEchoBotAccessors.DialogStateName)
                 };
 
                 return accessors;

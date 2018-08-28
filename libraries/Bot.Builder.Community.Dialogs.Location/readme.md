@@ -57,7 +57,7 @@ In your bot code, when you want to hand off to the Location dialog you can use d
 
 ```cs
 
-Dialogs.Add("YourBotsDialog", new WaterfallStep[]
+AddDialog(new WaterfallDialog("YourBotsDialog", new WaterfallStep[]
             {
                 async (dc, args, next) =>
                 {
@@ -65,9 +65,9 @@ Dialogs.Add("YourBotsDialog", new WaterfallStep[]
                 },
                 async (dc, args, next) =>
                 {
-                    if (args is LocationDialogResult locationDialogResult)
+                    if (args is Place returnedPlace)
                     {
-                        await dc.Context.SendActivity($"Location found: {locationDialogResult.SelectedLocation.Address}");
+                        await dc.Context.SendActivity($"Location found: {returnedPlace.Address}");
                         await dc.End();
                     }
                     else
@@ -76,7 +76,7 @@ Dialogs.Add("YourBotsDialog", new WaterfallStep[]
                         await dc.End();
                     }
                 }
-            });
+            }));
 
 ```
 

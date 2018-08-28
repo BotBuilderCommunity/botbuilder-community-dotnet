@@ -7,7 +7,7 @@ namespace Dialog_Sample
     public class MyEchoBotAccessors
     {
         public static string DialogStateName = $"{nameof(MyEchoBotAccessors)}.DialogState";
-        
+
         public IStatePropertyAccessor<DialogState> ConversationDialogState { get; set; }
 
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Bot.Builder.Community.Dialogs.Location;
@@ -12,7 +13,6 @@ namespace Dialog_Sample
     public class EchoBot : IBot
     {
         private MyEchoBotAccessors _stateAccessors;
-
         private DialogSet dialogs;
 
         public EchoBot(MyEchoBotAccessors accessors)
@@ -27,6 +27,7 @@ namespace Dialog_Sample
             dialogs.Add(new LocationDialog(
                 "Amf0lKMCmGviOMNojvzjcgdGWSZglBivKBj18hJTKGiLYxK6y52ReWaRzxgJ3xJi", 
                 "Please enter a location?",
+                null,
                 requiredFields: LocationRequiredFields.PostalCode | LocationRequiredFields.StreetAddress | LocationRequiredFields.Region,
                 useAzureMaps: false));
 
