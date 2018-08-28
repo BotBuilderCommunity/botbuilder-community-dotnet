@@ -23,7 +23,7 @@ namespace Bot.Builder.Community.Middleware.AzureAdAuthentication
         {
             var cts = new CancellationTokenSource();
 
-            activity.SendTypingActivity(cts.Token);
+            await activity.SendTypingActivity(cts.Token);
 
             await action.Invoke().ContinueWith(task => { cts.Cancel(); });
         }

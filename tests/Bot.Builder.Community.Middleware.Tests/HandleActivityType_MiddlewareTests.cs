@@ -15,22 +15,22 @@ namespace Bot.Builder.Community.Middleware.Tests
         public async Task ActivityFilter_TestMiddleware_HandleActivityAndContinue()
         {
             TestAdapter adapter = new TestAdapter()
-                .Use(new HandleActivityTypeMiddleware(ActivityTypes.Message, async (context, next) =>
+                .Use(new HandleActivityTypeMiddleware(ActivityTypes.Message, async (context, next, cancellationToken) =>
                 {
-                    await context.SendActivity("Handling a message activity");
-                    await next();
+                    await context.SendActivityAsync("Handling a message activity");
+                    await next(cancellationToken);
                 }));
 
 
-            await new TestFlow(adapter, async (context) =>
+            await new TestFlow(adapter, async (context, cancellationToken) =>
                 {
-                    await context.SendActivity("Follow up message from bot");
+                    await context.SendActivityAsync("Follow up message from bot");
                     await Task.CompletedTask;
                 })
                 .Send("foo")
                 .AssertReply("Handling a message activity")
                 .AssertReply("Follow up message from bot")
-                .StartTest();
+                .StartTestAsync();
         }
 
         [TestMethod]
@@ -38,25 +38,25 @@ namespace Bot.Builder.Community.Middleware.Tests
         public async Task ActivityFilter_TestMiddleware_HandleMessageActivityOnly()
         {
             TestAdapter adapter = new TestAdapter()
-                .Use(new HandleActivityTypeMiddleware(ActivityTypes.ConversationUpdate, async (context, next) =>
+                .Use(new HandleActivityTypeMiddleware(ActivityTypes.ConversationUpdate, async (context, next, cancellationToken) =>
                 {
                     Assert.Fail("Incorrect activity filter ran");
                 }))
-                .Use(new HandleActivityTypeMiddleware(ActivityTypes.Message, async (context, next) =>
+                .Use(new HandleActivityTypeMiddleware(ActivityTypes.Message, async (context, next, cancellationToken) =>
                 {
-                    await context.SendActivity("Handling a message activity");
-                    await next();
+                    await context.SendActivityAsync("Handling a message activity");
+                    await next(cancellationToken);
                 })); 
 
 
-            await new TestFlow(adapter, async (context) =>
+            await new TestFlow(adapter, async (context, cancellationToken) =>
             {
-                await context.SendActivity("Follow up message from bot");
+                await context.SendActivityAsync("Follow up message from bot");
                 await Task.CompletedTask;
             })
                 .Send("foo")
                 .AssertReply("Handling a message activity")
-                .StartTest();
+                .StartTestAsync();
         }
 
         [TestMethod]
@@ -64,28 +64,28 @@ namespace Bot.Builder.Community.Middleware.Tests
         public async Task ActivityFilter_TestMiddleware_MultipleHandlers()
         {
             TestAdapter adapter = new TestAdapter()
-                .Use(new HandleActivityTypeMiddleware(ActivityTypes.Message, async (context, next) =>
+                .Use(new HandleActivityTypeMiddleware(ActivityTypes.Message, async (context, next, cancellationToken) =>
                 {
-                    await context.SendActivity("Handler 1");
-                    await next();
+                    await context.SendActivityAsync("Handler 1");
+                    await next(cancellationToken);
                 }))
-                .Use(new HandleActivityTypeMiddleware(ActivityTypes.Message, async (context, next) =>
+                .Use(new HandleActivityTypeMiddleware(ActivityTypes.Message, async (context, next, cancellationToken) =>
                 {
-                    await context.SendActivity("Handler 2");
-                    await next();
+                    await context.SendActivityAsync("Handler 2");
+                    await next(cancellationToken);
                 }));
 
 
-            await new TestFlow(adapter, async (context) =>
+            await new TestFlow(adapter, async (context, cancellationToken) =>
                 {
-                    await context.SendActivity("Follow up message from bot");
+                    await context.SendActivityAsync("Follow up message from bot");
                     await Task.CompletedTask;
                 })
                 .Send("foo")
                 .AssertReply("Handler 1")
                 .AssertReply("Handler 2")
                 .AssertReply("Follow up message from bot")
-                .StartTest();
+                .StartTestAsync();
         }
 
         [TestMethod]
@@ -95,10 +95,10 @@ namespace Bot.Builder.Community.Middleware.Tests
             try
             {
                 TestAdapter adapter = new TestAdapter()
-                    .Use(new HandleActivityTypeMiddleware(null, async (context, next) =>
+                    .Use(new HandleActivityTypeMiddleware(null, async (context, next, cancellationToken) =>
                     {
-                        await context.SendActivity("Handler 1");
-                        await next();
+                        await context.SendActivityAsync("Handler 1");
+                        await next(cancellationToken);
                     }));
             }
             catch (Exception ex)
@@ -114,10 +114,10 @@ namespace Bot.Builder.Community.Middleware.Tests
             try
             {
                 TestAdapter adapter = new TestAdapter()
-                    .Use(new HandleActivityTypeMiddleware("", async (context, next) =>
+                    .Use(new HandleActivityTypeMiddleware("", async (context, next, cancellationToken) =>
                     {
-                        await context.SendActivity("Handler 1");
-                        await next();
+                        await context.SendActivityAsync("Handler 1");
+                        await next(cancellationToken);
                     }));
             }
             catch (Exception ex)

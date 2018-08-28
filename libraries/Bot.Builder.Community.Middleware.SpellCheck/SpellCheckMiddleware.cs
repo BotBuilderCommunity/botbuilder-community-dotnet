@@ -1,5 +1,6 @@
 ﻿using Microsoft.Bot.Builder;
 using Microsoft.Extensions.Configuration;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Bot.Builder.Community.Middleware.SpellCheck
@@ -12,12 +13,12 @@ namespace Bot.Builder.Community.Middleware.SpellCheck
         }
 
         public string ApiKey { get; }
-
-        public async Task OnTurn(ITurnContext context, MiddlewareSet.NextDelegate next)
+        
+        public async Task OnTurnAsync(ITurnContext turnContext, NextDelegate next, CancellationToken cancellationToken = default(CancellationToken))
         {
-            context.Activity.Text = await context.Activity.Text.SpellCheck(ApiKey);
+            turnContext.Activity.Text = await turnContext.Activity.Text.SpellCheck(ApiKey);
 
-            await next();
+            await next(cancellationToken);
         }
     }
 }

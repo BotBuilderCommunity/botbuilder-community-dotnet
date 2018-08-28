@@ -47,7 +47,7 @@ namespace Bot.Builder.Community.Middleware.AzureAdAuthentication
 
             // send a proactive message back to user
             var connectorClient = new ConnectorClient(new Uri(botFrameworkConversationReference.ServiceUrl));
-            var proactiveMessage = botFrameworkConversationReference.GetPostToUserMessage();
+            var proactiveMessage = botFrameworkConversationReference.GetContinuationActivity();
             proactiveMessage.Text = "How can i help?";
             //proactiveMessage.AddSuggestedActions();
             connectorClient.Conversations.SendToConversation(proactiveMessage);

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Bot.Builder.Community.Middleware.SentimentAnalysis
@@ -17,15 +18,14 @@ namespace Bot.Builder.Community.Middleware.SentimentAnalysis
 
         public string ApiKey { get; }
 
-        public async Task OnTurn(ITurnContext context, MiddlewareSet.NextDelegate next)
+        public async Task OnTurnAsync(ITurnContext turnContext, NextDelegate next, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (context.Activity.Type is ActivityTypes.Message)
+            if (turnContext.Activity.Type is ActivityTypes.Message)
             {
-                context.Services.Add<string>(await context.Activity.Text.Sentiment(ApiKey));
+                turnContext.TurnState.Add<string>(await turnContext.Activity.Text.Sentiment(ApiKey));
             }
 
-            await next();
+            await next(cancellationToken);
         }
-
     }
 }

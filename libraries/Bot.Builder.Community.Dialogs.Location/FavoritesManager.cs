@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
-using Microsoft.Bot.Builder.Core.Extensions;
 
 namespace Bot.Builder.Community.Dialogs.Location.Dialogs
 {
@@ -50,64 +49,66 @@ namespace Bot.Builder.Community.Dialogs.Location.Dialogs
 
         public async Task Add(ITurnContext context, FavoriteLocation value)
         {
-            var favorites = await GetFavorites(context);
+            //var favorites = await GetFavorites(context);
 
-            if (favorites.Count >= MaxFavoriteCount)
-            {
-                throw new InvalidOperationException("The max allowed number of favorite locations has already been reached.");
-            }
+            //if (favorites.Count >= MaxFavoriteCount)
+            //{
+            //    throw new InvalidOperationException("The max allowed number of favorite locations has already been reached.");
+            //}
 
-            favorites.Add(value);
-
-            var state = context.GetConversationState<Dictionary<string, object>>();
-            state[FavoritesKey] = favorites;
+            //favorites.Add(value);
+            
+            //var state = context.GetConversationState<Dictionary<string, object>>();
+            //state[FavoritesKey] = favorites;
         }
 
         public async Task Delete(ITurnContext context, FavoriteLocation value)
         {
-            var favorites = await GetFavorites(context);
-            var newFavorites = new List<FavoriteLocation>();
+            //var favorites = await GetFavorites(context);
+            //var newFavorites = new List<FavoriteLocation>();
 
-            foreach (var favoriteItem in favorites)
-            {
-                if (!AreEqual(favoriteItem.Location, value.Location))
-                {
-                    newFavorites.Add(favoriteItem);
-                }
-            }
+            //foreach (var favoriteItem in favorites)
+            //{
+            //    if (!AreEqual(favoriteItem.Location, value.Location))
+            //    {
+            //        newFavorites.Add(favoriteItem);
+            //    }
+            //}
 
-            var state = context.GetConversationState<Dictionary<string, object>>();
-            state[FavoritesKey] = newFavorites;
+            //var state = context.GetConversationState<Dictionary<string, object>>();
+            //state[FavoritesKey] = newFavorites;
         }
 
         public async Task Update(ITurnContext context, FavoriteLocation currentValue, FavoriteLocation newValue)
         {
-            var favorites = await GetFavorites(context);
-            var newFavorites = new List<FavoriteLocation>();
+            //var favorites = await GetFavorites(context);
+            //var newFavorites = new List<FavoriteLocation>();
 
-            foreach (var item in favorites)
-            {
-                if (AreEqual(item.Location, currentValue.Location))
-                {
-                    newFavorites.Add(newValue);
-                }
-                else
-                {
-                    newFavorites.Add(item);
-                }
-            }
+            //foreach (var item in favorites)
+            //{
+            //    if (AreEqual(item.Location, currentValue.Location))
+            //    {
+            //        newFavorites.Add(newValue);
+            //    }
+            //    else
+            //    {
+            //        newFavorites.Add(item);
+            //    }
+            //}
 
-            var state = context.GetConversationState<Dictionary<string, object>>();
-            state[FavoritesKey] = newFavorites;
+            //var state = context.GetConversationState<Dictionary<string, object>>();
+            //state[FavoritesKey] = newFavorites;
         }
 
         public async Task<List<FavoriteLocation>> GetFavorites(ITurnContext context)
         {
-            var state = context.GetConversationState<Dictionary<string, object>>();
-            var currentFavorites = state.ContainsKey(FavoritesKey) 
-                ? (List<FavoriteLocation>)state[FavoritesKey] 
-                : new List<FavoriteLocation>();
-            return currentFavorites;
+            //var state = context.GetConversationState<Dictionary<string, object>>();
+            //var currentFavorites = state.ContainsKey(FavoritesKey) 
+            //    ? (List<FavoriteLocation>)state[FavoritesKey] 
+            //    : new List<FavoriteLocation>();
+            //return currentFavorites;
+
+            return new List<FavoriteLocation>();
         }
 
         private static bool AreEqual(Bing.Location x, Bing.Location y)

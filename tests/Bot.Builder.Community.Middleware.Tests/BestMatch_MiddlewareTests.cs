@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Bot.Builder.Community.Middleware.BestMatch;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Adapters;
@@ -16,13 +18,10 @@ namespace Bot.Builder.Community.Middleware.Tests
             TestAdapter adapter = new TestAdapter()
                 .Use(new TestBestMatchMiddleware());
 
-            await new TestFlow(adapter, async (context) =>
-                {
-                    await Task.CompletedTask;
-                })
+            await new TestFlow(adapter, async (context, cancellationToken) => { await Task.CompletedTask; })
                 .Send("Hi There")
                 .AssertReply("Well hello there. What can I do for you today?")
-                .StartTest();
+                .StartTestAsync();
         }
 
         [TestMethod]
@@ -32,14 +31,14 @@ namespace Bot.Builder.Community.Middleware.Tests
             TestAdapter adapter = new TestAdapter()
                 .Use(new TestBestMatchMiddleware());
 
-            await new TestFlow(adapter, async (context) =>
-                {
-                    await context.SendActivity("Message from the bot");
-                    await Task.CompletedTask;
-                })
+            await new TestFlow(adapter, async (context, cancellationToken) => 
+            {
+                await context.SendActivityAsync("Message from the bot");
+                await Task.CompletedTask;
+            })
                 .Send("HOWS IT GOING")
                 .AssertReply("Message from the bot")
-                .StartTest();
+                .StartTestAsync();
         }
 
         [TestMethod]
@@ -49,14 +48,14 @@ namespace Bot.Builder.Community.Middleware.Tests
             TestAdapter adapter = new TestAdapter()
                 .Use(new TestBestMatchMiddleware());
 
-            await new TestFlow(adapter, async (context) =>
+            await new TestFlow(adapter, async (context, cancellationToken) =>
                 {
-                    await context.SendActivity("Message from the bot");
+                    await context.SendActivityAsync("Message from the bot");
                     await Task.CompletedTask;
                 })
                 .Send("hows it going")
                 .AssertReply("I am great.")
-                .StartTest();
+                .StartTestAsync();
         }
 
         [TestMethod]
@@ -66,14 +65,14 @@ namespace Bot.Builder.Community.Middleware.Tests
             TestAdapter adapter = new TestAdapter()
                 .Use(new TestBestMatchMiddleware());
 
-            await new TestFlow(adapter, async (context) =>
+            await new TestFlow(adapter, async (context, cancellationToken) =>
                 {
-                    await context.SendActivity("Message from the bot");
+                    await context.SendActivityAsync("Message from the bot");
                     await Task.CompletedTask;
                 })
                 .Send("h#o$w$s i%t g#o%in#g")
                 .AssertReply("I am great.")
-                .StartTest();
+                .StartTestAsync();
         }
 
         [TestMethod]
@@ -83,14 +82,14 @@ namespace Bot.Builder.Community.Middleware.Tests
             TestAdapter adapter = new TestAdapter()
                 .Use(new TestBestMatchMiddleware());
 
-            await new TestFlow(adapter, async (context) =>
+            await new TestFlow(adapter, async (context, cancellationToken) =>
                 {
-                    await context.SendActivity("Message from the bot");
+                    await context.SendActivityAsync("Message from the bot");
                     await Task.CompletedTask;
                 })
                 .Send("what is the meaning of life? This should not match with anything")
                 .AssertReply("Message from the bot")
-                .StartTest();
+                .StartTestAsync();
         }
 
         [TestMethod]
@@ -100,15 +99,15 @@ namespace Bot.Builder.Community.Middleware.Tests
             TestAdapter adapter = new TestAdapter()
                 .Use(new TestBestMatchMiddleware());
 
-            await new TestFlow(adapter, async (context) =>
+            await new TestFlow(adapter, async (context, cancellationToken) =>
                 {
-                    await context.SendActivity("Message from the bot");
+                    await context.SendActivityAsync("Message from the bot");
                     await Task.CompletedTask;
                 })
                 .Send("bye")
                 .AssertReply("Bye")
                 .AssertReply("Message from the bot")
-                .StartTest();
+                .StartTestAsync();
         }
 
         [TestMethod]
@@ -118,14 +117,14 @@ namespace Bot.Builder.Community.Middleware.Tests
             TestAdapter adapter = new TestAdapter()
                 .Use(new TestBestMatchMiddleware());
 
-            await new TestFlow(adapter, async (context) =>
+            await new TestFlow(adapter, async (context, cancellationToken) =>
                 {
-                    await context.SendActivity("Message from the bot");
+                    await context.SendActivityAsync("Message from the bot");
                     await Task.CompletedTask;
                 })
                 .Send("much appreciated")
                 .AssertReply("You're welcome.")
-                .StartTest();
+                .StartTestAsync();
         }
     }
 
@@ -136,35 +135,35 @@ namespace Bot.Builder.Community.Middleware.Tests
         [BestMatch(new string[] { "Hi", "Hi There", "Hello there", "Hey", "Hello",
                 "Hey there", "Greetings", "Good morning", "Good afternoon", "Good evening", "Good day" },
             threshold: 0.5, ignoreCase: false, ignoreNonAlphaNumericCharacters: false)]
-        public async Task HandleGreeting(ITurnContext context, string messageText, MiddlewareSet.NextDelegate next)
+        public async Task HandleGreeting(ITurnContext context, string messageText, NextDelegate next, CancellationToken cancellationToken)
         {
-            await context.SendActivity("Well hello there. What can I do for you today?");
+            await context.SendActivityAsync("Well hello there. What can I do for you today?");
         }
 
         [BestMatch(new string[] { "how goes it", "how do", "hows it going", "how are you",
             "how do you feel", "whats up", "sup", "hows things" }, ignoreCase: false)]
-        public async Task HandleStatusRequest(ITurnContext context, string messageText, MiddlewareSet.NextDelegate next)
+        public async Task HandleStatusRequest(ITurnContext context, string messageText, NextDelegate next, CancellationToken cancellationToken)
         {
-            await context.SendActivity("I am great.");
+            await context.SendActivityAsync("I am great.");
         }
 
         [BestMatch(new string[] { "bye", "bye bye", "got to go",
             "see you later", "laters", "adios" })]
-        public async Task HandleGoodbye(ITurnContext context, string messageText, MiddlewareSet.NextDelegate next)
+        public async Task HandleGoodbye(ITurnContext context, string messageText, NextDelegate next, CancellationToken cancellationToken)
         {
-            await context.SendActivity("Bye");
-            await next();
+            await context.SendActivityAsync("Bye");
+            await next(cancellationToken);
         }
 
         [BestMatch("thank you|thanks|much appreciated|thanks very much|thanking you", listDelimiter: '|')]
-        public async Task HandleThanks(ITurnContext context, string messageText, MiddlewareSet.NextDelegate next)
+        public async Task HandleThanks(ITurnContext context, string messageText, NextDelegate next, CancellationToken cancellationToken)
         {
-            await context.SendActivity("You're welcome.");
+            await context.SendActivityAsync("You're welcome.");
         }
 
-        public override async Task NoMatchHandler(ITurnContext context, string messageText, MiddlewareSet.NextDelegate next)
+        public override async Task NoMatchHandler(ITurnContext context, string messageText, NextDelegate next, CancellationToken cancellationToken)
         {
-            await next();
+            await next(cancellationToken);
         }
     }
 }
