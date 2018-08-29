@@ -17,7 +17,6 @@ namespace Bot.Builder.Community.Dialogs.Location
     public class LocationDialog : ComponentDialog
     {
         private const int MaxLocationCount = 5;
-        private IStatePropertyAccessor<List<FavoriteLocation>> _favoriteLocations;
 
         /// <summary>Contains the IDs for the other dialogs in the set.</summary>
         protected static class DialogIds
@@ -65,8 +64,8 @@ namespace Bot.Builder.Community.Dialogs.Location
                     "provided to allow for storing / retrieval of favorites");
             }
 
-            _favoriteLocations = state.CreateProperty<List<FavoriteLocation>>($"{nameof(LocationDialog)}.Favorites");
-            var favoritesManager = new FavoritesManager(_favoriteLocations);
+            var favoriteLocations = state.CreateProperty<List<FavoriteLocation>>($"{nameof(LocationDialog)}.Favorites");
+            var favoritesManager = new FavoritesManager(favoriteLocations);
 
             IGeoSpatialService geoSpatialService;
             if (useAzureMaps)
@@ -96,68 +95,66 @@ namespace Bot.Builder.Community.Dialogs.Location
 
                         if (options.HasFlag(LocationOptions.UseNativeControl) && isFacebookChannel)
                         {
-                            await dc.BeginAsync(DialogIds.LocationRetrieverFacebookDialog);
+                            return await dc.BeginAsync(DialogIds.LocationRetrieverFacebookDialog);
                         }
-                        else
-                        {
-                            await dc.BeginAsync(DialogIds.LocationRetrieverRichDialog);
-                        }
-                    }
-                    else
-                    {
-                        await dc.BeginAsync(DialogIds.HeroStartCardDialog);
+
+                        return await dc.BeginAsync(DialogIds.LocationRetrieverRichDialog);
                     }
 
-                    return EndOfTurn;
+                    return await dc.BeginAsync(DialogIds.HeroStartCardDialog);
                 },
                 async (dc, stepContext) =>
                 {
-                    Bing.Location selectedLocation = (Bing.Location) stepContext.Result;
+                    var selectedLocation = (Bing.Location) stepContext.Result;
                     stepContext.Values[StepContextKeys.SelectedLocation] = selectedLocation;
 
                     if (options.HasFlag(LocationOptions.SkipFinalConfirmation))
                     {
-                        await stepContext.NextAsync();
-                    }
-                    else
-                    {
-                        await dc.PromptAsync(PromptDialogIds.Confirm,
-                            new PromptOptions()
-                            {
-                                Prompt = new Activity {
-                                    Type = ActivityTypes.Message,
-                                    Text = string.Format(resourceManager.ConfirmationAsk,
-                                        selectedLocation.GetFormattedAddress(resourceManager.AddressSeparator)) },
-                                RetryPrompt =  new Activity {
-                                    Type = ActivityTypes.Message,
-                                    Text = resourceManager.ConfirmationInvalidResponse }
-                            });
+                        return await stepContext.NextAsync();
                     }
 
-                    return Dialog.EndOfTurn;
+                    await dc.PromptAsync(PromptDialogIds.Confirm,
+                        new PromptOptions()
+                        {
+                            Prompt = new Activity
+                            {
+                                Type = ActivityTypes.Message,
+                                Text = string.Format(resourceManager.ConfirmationAsk,
+                                    selectedLocation.GetFormattedAddress(resourceManager.AddressSeparator))
+                            },
+                            RetryPrompt = new Activity
+                            {
+                                Type = ActivityTypes.Message,
+                                Text = resourceManager.ConfirmationInvalidResponse
+                            }
+                        });
+
+                    return EndOfTurn;
                 },
                 async (dc, stepContext) =>
                 {
                     if (stepContext.Result is bool result && !result)
                     {
                         await dc.Context.SendActivityAsync(resourceManager.ResetPrompt);
-                        await dc.ReplaceAsync(InitialDialogId);
-                    }
-                    else
-                    {
-                        if (!options.HasFlag(LocationOptions.SkipFavorites))
-                        {
-                            //await dc.BeginAsync(DialogIds.AddToFavoritesDialog, dc.ActiveDialog.State);
-                        }
+                        return await dc.ReplaceAsync(InitialDialogId);
                     }
 
-                    return Dialog.EndOfTurn;
+                    if (!options.HasFlag(LocationOptions.SkipFavorites))
+                    {
+                        return await dc.BeginAsync(DialogIds.AddToFavoritesDialog,
+                            new AddToFavoritesDialogOptions()
+                            {
+                                Location = (Bing.Location) stepContext.Values[StepContextKeys.SelectedLocation]
+                            }
+                        );
+                    }
+
+                    return EndOfTurn;
                 },
                 async (dc, stepContext) =>
                 {
-                    Bing.Location selectedLocation = (Bing.Location) dc.ActiveDialog.State[StepContextKeys.SelectedLocation];
-                    await dc.EndAsync(CreatePlace(selectedLocation));
-                    return Dialog.EndOfTurn;
+                    var selectedLocation = (Bing.Location) stepContext.Values[StepContextKeys.SelectedLocation];
+                    return await dc.EndAsync(CreatePlace(selectedLocation));
                 }
             }));
 
@@ -165,12 +162,19 @@ namespace Bot.Builder.Community.Dialogs.Location
             {
                 async (dc, stepContext) =>
                 {
-                    if (!skipPrompt)
+                    if (skipPrompt)
                     {
-                        await dc.PromptAsync(PromptDialogIds.Text, new PromptOptions() {
-                            Prompt = new Activity{ Type = ActivityTypes.Message, Text = prompt + resourceManager.TitleSuffix } });
+                        return await stepContext.NextAsync();
                     }
-                    return Dialog.EndOfTurn;
+
+                    return await dc.PromptAsync(PromptDialogIds.Text, new PromptOptions()
+                    {
+                        Prompt = new Activity
+                        {
+                            Type = ActivityTypes.Message,
+                            Text = prompt + resourceManager.TitleSuffix
+                        }
+                    });
                 },
                 async (dc, stepContext) =>
                 {
@@ -181,26 +185,21 @@ namespace Bot.Builder.Community.Dialogs.Location
                     if (foundLocations == null || foundLocations.Count == 0)
                     {
                         await dc.Context.SendActivityAsync(resourceManager.LocationNotFound);
-                        await dc.ReplaceAsync(DialogIds.LocationRetrieverRichDialog);
-                    }
-                    else
-                    {
-                        var locations = new List<Bing.Location>();
-                        locations.AddRange(foundLocations.Take(MaxLocationCount));
-
-                        await dc.BeginAsync(DialogIds.SelectAndConfirmLocationDialog,
-                            new SelectLocationDialogOptions { Locations = locations });
+                        return await dc.ReplaceAsync(DialogIds.LocationRetrieverRichDialog);
                     }
 
-                    return Dialog.EndOfTurn;
+                    var locations = new List<Bing.Location>();
+                    locations.AddRange(foundLocations.Take(MaxLocationCount));
+
+                    return await dc.BeginAsync(DialogIds.SelectAndConfirmLocationDialog,
+                        new SelectLocationDialogOptions {Locations = locations});
                 },
                 async (dc, stepContext) =>
                 {
                     var selectedLocation = (Bing.Location) stepContext.Result;
-                    await dc.EndAsync(selectedLocation);
-                    return Dialog.EndOfTurn;
+                    return await dc.EndAsync(selectedLocation);
                 }
-}));
+            }));
 
             AddDialog(new WaterfallDialog(DialogIds.SelectAndConfirmLocationDialog, new WaterfallStep[]
             {
@@ -211,26 +210,34 @@ namespace Bot.Builder.Community.Dialogs.Location
 
                     var locationsCardReply = dc.Context.Activity.CreateReply();
                     var cardBuilder = new LocationCardBuilder(apiKey, resourceManager);
+
                     locationsCardReply.Attachments = cardBuilder.CreateHeroCards(locations)
-                        .Select(C => C.ToAttachment()).ToList();
+                        .Select(c => c.ToAttachment()).ToList();
+
                     locationsCardReply.AttachmentLayout = AttachmentLayoutTypes.Carousel;
+
                     await dc.Context.SendActivityAsync(locationsCardReply);
 
                     if (locations.Count == 1)
                     {
-                        await dc.PromptAsync(PromptDialogIds.Confirm,
+                        return await dc.PromptAsync(PromptDialogIds.Confirm,
                             new PromptOptions()
                             {
-                                Prompt = new Activity { Type = ActivityTypes.Message, Text = resourceManager.SingleResultFound },
-                                RetryPrompt = new Activity { Type = ActivityTypes.Message, Text = resourceManager.ConfirmationInvalidResponse }
+                                Prompt = new Activity
+                                {
+                                    Type = ActivityTypes.Message,
+                                    Text = resourceManager.SingleResultFound
+                                },
+                                RetryPrompt = new Activity
+                                {
+                                    Type = ActivityTypes.Message,
+                                    Text = resourceManager.ConfirmationInvalidResponse
+                                }
                             });
                     }
-                    else
-                    {
-                        await dc.Context.SendActivityAsync(resourceManager.MultipleResultsFound);
-                    }
 
-                    return Dialog.EndOfTurn;
+                    await dc.Context.SendActivityAsync(resourceManager.MultipleResultsFound);
+                    return EndOfTurn;
                 },
                 async (dc, stepContext) =>
                 {
@@ -244,127 +251,119 @@ namespace Bot.Builder.Community.Dialogs.Location
 
                             if (requiredFields == LocationRequiredFields.None)
                             {
-                                await dc.EndAsync(locations.First());
+                                return await dc.EndAsync(locations.First());
                             }
-                            else
-                            {
-                                await dc.ReplaceAsync(DialogIds.CompleteMissingRequiredFieldsDialog,
-                                    new CompleteMissingFieldsDialogOptions { Location = locations.First() });
-                            }
+
+                            return await dc.ReplaceAsync(DialogIds.CompleteMissingRequiredFieldsDialog,
+                                new CompleteMissingFieldsDialogOptions {Location = locations.First()});
                         }
-                        else
-                        {
-                            await dc.ReplaceAsync(DialogIds.LocationRetrieverRichDialog);
-                        }
+
+                        return await dc.ReplaceAsync(DialogIds.LocationRetrieverRichDialog);
                     }
-                    else
+
+                    var message = dc.Context.Activity.Text;
+
+                    if (int.TryParse(message, out var value) && value > 0 && value <= locations.Count)
                     {
-                        var message = dc.Context.Activity.Text;
+                        await TryReverseGeocodeAddress(locations[value - 1], options, geoSpatialService);
 
-                        if (int.TryParse(message, out var value) && value > 0 && value <= locations.Count)
+                        if (requiredFields == LocationRequiredFields.None)
                         {
-                            await TryReverseGeocodeAddress(locations[value - 1], options, geoSpatialService);
+                            return await dc.EndAsync(locations[value - 1]);
+                        }
 
-                            if (requiredFields == LocationRequiredFields.None)
-                            {
-                                await dc.EndAsync(locations[value - 1]);
-                            }
-                            else
-                            {
-                                await dc.ReplaceAsync(DialogIds.CompleteMissingRequiredFieldsDialog,
-                                                                    new CompleteMissingFieldsDialogOptions { Location = locations[value - 1] });
-                            }
-                        }
-                        else if (StringComparer.OrdinalIgnoreCase.Equals(message, resourceManager.OtherComand))
-                        {
-                            await dc.ReplaceAsync(DialogIds.CompleteMissingRequiredFieldsDialog,
-                                                                    new CompleteMissingFieldsDialogOptions { Location = new Bing.Location() });
-                        }
-                        else
-                        {
-                            await dc.Context.SendActivityAsync(resourceManager.InvalidLocationResponse);
-                            await dc.ReplaceAsync(DialogIds.SelectAndConfirmLocationDialog,
-                                new SelectLocationDialogOptions { Locations = (List<Bing.Location>)stepContext.Values[StepContextKeys.Locations] });
-                        }
+                        return await dc.ReplaceAsync(DialogIds.CompleteMissingRequiredFieldsDialog,
+                            new CompleteMissingFieldsDialogOptions {Location = locations[value - 1]});
                     }
 
-                    return Dialog.EndOfTurn;
+                    if (StringComparer.OrdinalIgnoreCase.Equals(message, resourceManager.OtherComand))
+                    {
+                        return await dc.ReplaceAsync(DialogIds.CompleteMissingRequiredFieldsDialog,
+                            new CompleteMissingFieldsDialogOptions {Location = new Bing.Location()});
+                    }
+
+                    await dc.Context.SendActivityAsync(resourceManager.InvalidLocationResponse);
+
+                    return await dc.ReplaceAsync(DialogIds.SelectAndConfirmLocationDialog,
+                        new SelectLocationDialogOptions
+                        {
+                            Locations = (List<Bing.Location>) stepContext.Values[StepContextKeys.Locations]
+                        });
                 }
             }));
 
             AddDialog(new WaterfallDialog(DialogIds.CompleteMissingRequiredFieldsDialog, new WaterfallStep[]
             {
-                    async (dc, stepContext) =>
+                async (dc, stepContext) =>
+                {
+                    var selectedLocation = ((CompleteMissingFieldsDialogOptions) stepContext.Options).Location;
+
+                    stepContext.Values[StepContextKeys.SelectedLocation] = selectedLocation;
+
+                    if (requiredFields.HasFlag(LocationRequiredFields.StreetAddress) &&
+                        string.IsNullOrEmpty(selectedLocation.Address.AddressLine))
                     {
-                        var selectedLocation = ((CompleteMissingFieldsDialogOptions)stepContext.Options).Location;
-
-                        stepContext.Values[StepContextKeys.SelectedLocation] = selectedLocation;
-
-                        if (requiredFields.HasFlag(LocationRequiredFields.StreetAddress) &&
-                            string.IsNullOrEmpty(selectedLocation.Address.AddressLine))
-                        {
-                            await PromptForRequiredField(dc, LocationRequiredFields.StreetAddress,
-                                resourceManager.StreetAddress, resourceManager, selectedLocation);
-                        }
-                        else if (requiredFields.HasFlag(LocationRequiredFields.Locality) &&
-                                 string.IsNullOrEmpty(selectedLocation.Address.Locality))
-                        {
-                            await PromptForRequiredField(dc, LocationRequiredFields.Locality, resourceManager.Locality,
-                                resourceManager, selectedLocation);
-                        }
-                        else if (requiredFields.HasFlag(LocationRequiredFields.Region) &&
-                                 string.IsNullOrEmpty(selectedLocation.Address.AdminDistrict))
-                        {
-                            await PromptForRequiredField(dc, LocationRequiredFields.Region, resourceManager.Region,
-                                resourceManager, selectedLocation);
-                        }
-                        else if (requiredFields.HasFlag(LocationRequiredFields.PostalCode) &&
-                                 string.IsNullOrEmpty(selectedLocation.Address.PostalCode))
-                        {
-                            await PromptForRequiredField(dc, LocationRequiredFields.PostalCode,
-                                resourceManager.PostalCode, resourceManager, selectedLocation);
-                        }
-                        else if (requiredFields.HasFlag(LocationRequiredFields.Country) &&
-                                 string.IsNullOrEmpty(selectedLocation.Address.CountryRegion))
-                        {
-                            await PromptForRequiredField(dc, LocationRequiredFields.Country, resourceManager.Country,
-                                resourceManager, selectedLocation);
-                        }
-                        else
-                        {
-                            await dc.EndAsync(selectedLocation);
-                        }
-
-                        return Dialog.EndOfTurn;
-                    },
-                    async (dc, stepContext) =>
-                    {
-                        var selectedLocation = (Bing.Location) stepContext.Values[StepContextKeys.SelectedLocation];
-
-                        switch ((LocationRequiredFields)dc.ActiveDialog.State["CurrentMissingRequiredField"])
-                        {
-                            case LocationRequiredFields.StreetAddress:
-                                selectedLocation.Address.AddressLine = (string)stepContext.Result;
-                                break;
-                            case LocationRequiredFields.Locality:
-                                selectedLocation.Address.Locality = (string)stepContext.Result;
-                                break;
-                            case LocationRequiredFields.Region:
-                                selectedLocation.Address.AdminDistrict = (string)stepContext.Result;
-                                break;
-                            case LocationRequiredFields.PostalCode:
-                                selectedLocation.Address.PostalCode = (string)stepContext.Result;
-                                break;
-                            case LocationRequiredFields.Country:
-                                selectedLocation.Address.CountryRegion = (string)stepContext.Result;
-                                break;
-                        }
-
-                        await dc.ReplaceAsync(DialogIds.CompleteMissingRequiredFieldsDialog,
-                            new CompleteMissingFieldsDialogOptions { Location = selectedLocation });
-
-                        return Dialog.EndOfTurn;
+                        return await PromptForRequiredField(dc, LocationRequiredFields.StreetAddress,
+                            resourceManager.StreetAddress, resourceManager, selectedLocation);
                     }
+
+                    if (requiredFields.HasFlag(LocationRequiredFields.Locality) &&
+                        string.IsNullOrEmpty(selectedLocation.Address.Locality))
+                    {
+                        return await PromptForRequiredField(dc, LocationRequiredFields.Locality,
+                            resourceManager.Locality,
+                            resourceManager, selectedLocation);
+                    }
+
+                    if (requiredFields.HasFlag(LocationRequiredFields.Region) &&
+                        string.IsNullOrEmpty(selectedLocation.Address.AdminDistrict))
+                    {
+                        return await PromptForRequiredField(dc, LocationRequiredFields.Region, resourceManager.Region,
+                            resourceManager, selectedLocation);
+                    }
+
+                    if (requiredFields.HasFlag(LocationRequiredFields.PostalCode) &&
+                        string.IsNullOrEmpty(selectedLocation.Address.PostalCode))
+                    {
+                        return await PromptForRequiredField(dc, LocationRequiredFields.PostalCode,
+                            resourceManager.PostalCode, resourceManager, selectedLocation);
+                    }
+
+                    if (requiredFields.HasFlag(LocationRequiredFields.Country) &&
+                        string.IsNullOrEmpty(selectedLocation.Address.CountryRegion))
+                    {
+                        return await PromptForRequiredField(dc, LocationRequiredFields.Country, resourceManager.Country,
+                            resourceManager, selectedLocation);
+                    }
+
+                    return await dc.EndAsync(selectedLocation);
+                },
+                async (dc, stepContext) =>
+                {
+                    var selectedLocation = (Bing.Location) stepContext.Values[StepContextKeys.SelectedLocation];
+
+                    switch ((LocationRequiredFields) dc.ActiveDialog.State["CurrentMissingRequiredField"])
+                    {
+                        case LocationRequiredFields.StreetAddress:
+                            selectedLocation.Address.AddressLine = (string) stepContext.Result;
+                            break;
+                        case LocationRequiredFields.Locality:
+                            selectedLocation.Address.Locality = (string) stepContext.Result;
+                            break;
+                        case LocationRequiredFields.Region:
+                            selectedLocation.Address.AdminDistrict = (string) stepContext.Result;
+                            break;
+                        case LocationRequiredFields.PostalCode:
+                            selectedLocation.Address.PostalCode = (string) stepContext.Result;
+                            break;
+                        case LocationRequiredFields.Country:
+                            selectedLocation.Address.CountryRegion = (string) stepContext.Result;
+                            break;
+                    }
+
+                    return await dc.ReplaceAsync(DialogIds.CompleteMissingRequiredFieldsDialog,
+                        new CompleteMissingFieldsDialogOptions {Location = selectedLocation});
+                }
             }));
 
             AddDialog(new WaterfallDialog(DialogIds.HeroStartCardDialog, new WaterfallStep[]
@@ -372,7 +371,7 @@ namespace Bot.Builder.Community.Dialogs.Location
                 async (dc, stepContext) =>
                 {
                     await dc.Context.SendActivityAsync(CreateDialogStartHeroCard(dc.Context, resourceManager));
-                    return Dialog.EndOfTurn;
+                    return EndOfTurn;
                 },
                 async (dc, stepContext) =>
                 {
@@ -380,39 +379,36 @@ namespace Bot.Builder.Community.Dialogs.Location
 
                     if (messageText.ToLower() == resourceManager.FavoriteLocations.ToLower())
                     {
-                        await dc.ReplaceAsync(DialogIds.FavoriteLocationRetrieverDialog);
-                    }
-                    else if (messageText.ToLower() == resourceManager.OtherLocation.ToLower())
-                    {
-                        await dc.ReplaceAsync(DialogIds.LocationRetrieverRichDialog);
-                    }
-                    else
-                    {
-                        await dc.Context.SendActivityAsync(resourceManager.InvalidStartBranchResponse);
-                        await dc.ReplaceAsync(DialogIds.HeroStartCardDialog);
+                        return await dc.ReplaceAsync(DialogIds.FavoriteLocationRetrieverDialog);
                     }
 
-                    return Dialog.EndOfTurn;
+                    if (messageText.ToLower() == resourceManager.OtherLocation.ToLower())
+                    {
+                        return await dc.ReplaceAsync(DialogIds.LocationRetrieverRichDialog);
+                    }
+
+                    await dc.Context.SendActivityAsync(resourceManager.InvalidStartBranchResponse);
+                    return await dc.ReplaceAsync(DialogIds.HeroStartCardDialog);
                 }
-        }));
+            }));
 
             AddDialog(new WaterfallDialog(DialogIds.LocationRetrieverFacebookDialog, new WaterfallStep[]
             {
                 async (dc, stepContext) =>
                 {
-                    if (!skipPrompt)
+                    if (skipPrompt)
                     {
-                        await dc.PromptAsync(PromptDialogIds.Text, new PromptOptions
-                        {
-                            Prompt = new Activity
-                            {
-                                Type = ActivityTypes.Message,
-                                Text = prompt + resourceManager.TitleSuffixFacebook
-                            }
-                        });
+                        return await stepContext.NextAsync();
                     }
 
-                    return Dialog.EndOfTurn;
+                    return await dc.PromptAsync(PromptDialogIds.Text, new PromptOptions
+                    {
+                        Prompt = new Activity
+                        {
+                            Type = ActivityTypes.Message,
+                            Text = prompt + resourceManager.TitleSuffixFacebook
+                        }
+                    });
                 },
                 async (dc, stepContext) =>
                 {
@@ -423,7 +419,7 @@ namespace Bot.Builder.Community.Dialogs.Location
 
                     var coords = (GeoCoordinates) place?.Geo;
 
-                    if (coords != null && coords.Latitude != null && coords.Longitude != null)
+                    if (coords?.Latitude != null && coords.Longitude != null)
                     {
                         var location = new Bing.Location
                         {
@@ -438,21 +434,18 @@ namespace Bot.Builder.Community.Dialogs.Location
                         };
 
                         stepContext.Values[StepContextKeys.SelectedLocation] = location;
-                    }
-                    else
-                    {
-                        // If we didn't receive a valid place, post error message and restart dialog.
-                        await dc.Context.SendActivityAsync(resourceManager.InvalidLocationResponseFacebook);
-                        await dc.ReplaceAsync(DialogIds.LocationRetrieverFacebookDialog);
+
+                        return EndOfTurn;
                     }
 
-                    return Dialog.EndOfTurn;
+                    // If we didn't receive a valid place, post error message and restart dialog.
+                    await dc.Context.SendActivityAsync(resourceManager.InvalidLocationResponseFacebook);
+                    return await dc.ReplaceAsync(DialogIds.LocationRetrieverFacebookDialog);
                 },
                 async (dc, stepContext) =>
                 {
                     var selectedLocation = (Bing.Location) stepContext.Values[StepContextKeys.SelectedLocation];
-                    await dc.EndAsync(selectedLocation);
-                    return Dialog.EndOfTurn;
+                    return await dc.EndAsync(selectedLocation);
                 }
             }));
 
@@ -464,10 +457,10 @@ namespace Bot.Builder.Community.Dialogs.Location
                             stepContext.Values[StepContextKeys.SelectedLocation] = location;
 
                             var confirmationAsk = string.Format(
-                            resourceManager.DeleteFavoriteConfirmationAsk,
-                            $"{location.Name}: {location.Location.GetFormattedAddress(resourceManager.AddressSeparator)}");
+                                resourceManager.DeleteFavoriteConfirmationAsk,
+                                $"{location.Name}: {location.Location.GetFormattedAddress(resourceManager.AddressSeparator)}");
 
-                            await dc.PromptAsync(PromptDialogIds.Confirm,
+                            return await dc.PromptAsync(PromptDialogIds.Confirm,
                                 new PromptOptions
                                 {
                                     Prompt = new Activity {
@@ -479,140 +472,128 @@ namespace Bot.Builder.Community.Dialogs.Location
                                         Text = resourceManager.ConfirmationInvalidResponse
                                     }
                                 });
-
-                            return Dialog.EndOfTurn;
                         },
                         async (dc, stepContext) =>
                         {
-                            var confirmationResult = (bool)stepContext.Result;
-                            var selectedLocation = (FavoriteLocation)stepContext.Values[StepContextKeys.SelectedLocation];
+                            var confirmationResult = (bool) stepContext.Result;
+                            var selectedLocation =
+                                (FavoriteLocation) stepContext.Values[StepContextKeys.SelectedLocation];
 
-                            if(confirmationResult)
+                            if (confirmationResult)
                             {
                                 await favoritesManager.Delete(dc.Context, selectedLocation);
-                                await dc.Context.SendActivityAsync(string.Format(resourceManager.FavoriteDeletedConfirmation, selectedLocation.Name));
-                                await dc.ReplaceAsync(DialogIds.FavoriteLocationRetrieverDialog);
-                            }
-                            else
-                            {
                                 await dc.Context.SendActivityAsync(
-                                    string.Format(resourceManager.DeleteFavoriteAbortion,
-                                    selectedLocation.Name));
-                                await dc.ReplaceAsync(DialogIds.FavoriteLocationRetrieverDialog);
+                                    string.Format(resourceManager.FavoriteDeletedConfirmation, selectedLocation.Name));
+                                return await dc.ReplaceAsync(DialogIds.FavoriteLocationRetrieverDialog);
                             }
 
-                            return Dialog.EndOfTurn;
+                            await dc.Context.SendActivityAsync(
+                                string.Format(resourceManager.DeleteFavoriteAbortion,
+                                    selectedLocation.Name));
+                            return await dc.ReplaceAsync(DialogIds.FavoriteLocationRetrieverDialog);
                         }
                     }));
 
             AddDialog(new WaterfallDialog(DialogIds.AddToFavoritesDialog, new WaterfallStep[]
+            {
+                async (dc, stepContext) =>
+                {
+                    // If this is our first time through then get the selected location
+                    // passed to us from the parent location dialog and store it in stepContext values collection
+                    if (((AddToFavoritesDialogOptions) stepContext.Options)?.Location != null)
                     {
-                        async (dc, stepContext) =>
+                        stepContext.Values[StepContextKeys.SelectedLocation] =
+                            ((AddToFavoritesDialogOptions) stepContext.Options).Location;
+                    }
+
+                    // If we have a value for addToFavoritesConfirmed then we don't need to confirm again
+                    // we need to skip to prompting for the name again instead
+                    if (!stepContext.Values.ContainsKey("addToFavoritesConfirmed"))
+                    {
+                        var selectedLocation =
+                            (Bing.Location) stepContext.Values[StepContextKeys.SelectedLocation];
+                        // no capacity to add to favorites in the first place!
+                        // OR the location is already marked as favorite
+                        if (await favoritesManager.MaxCapacityReached(dc.Context)
+                            || await favoritesManager.IsFavorite(dc.Context, selectedLocation))
                         {
-                            // If this is our first time through then get the selected location
-                            // passed to us from the parent location dialog and store it in stepContext values collection
-                            if (stepContext.Options != null && ((AddToFavoritesDialogOptions)stepContext.Options).Location != null)
-                            {
-                                stepContext.Values[StepContextKeys.SelectedLocation] = ((AddToFavoritesDialogOptions)stepContext.Options).Location;
-                            }
-
-                            // If we have a value for addToFavoritesConfirmed then we don't need to confirm again
-                            // we need to skip to prompting for the name again instead
-                            if (!stepContext.Values.ContainsKey("addToFavoritesConfirmed"))
-                            {
-                                Bing.Location selectedLocation =
-                                    (Bing.Location) stepContext.Values[StepContextKeys.SelectedLocation];
-                                // no capacity to add to favorites in the first place!
-                                // OR the location is already marked as favorite
-                                if (await favoritesManager.MaxCapacityReached(dc.Context)
-                                    || await favoritesManager.IsFavorite(dc.Context, selectedLocation))
-                                {
-                                    await dc.EndAsync(selectedLocation);
-                                }
-                                else
-                                {
-                                    await dc.PromptAsync(PromptDialogIds.Confirm, new PromptOptions()
-                                    {
-                                        Prompt = new Activity
-                                        {
-                                            Type = ActivityTypes.Message,
-                                            Text = resourceManager.AddToFavoritesAsk
-                                        },
-                                        RetryPrompt = new Activity
-                                        {
-                                            Type = ActivityTypes.Message,
-                                            Text = resourceManager.AddToFavoritesRetry
-                                        }
-                                    });
-                                }
-                            }
-
-                            return Dialog.EndOfTurn;
-                        },
-                        async (dc, stepContext) =>
-                        {
-                            bool addToFavoritesConfirmation;
-
-                            if (!stepContext.Values.ContainsKey("addToFavoritesConfirmed"))
-                            {
-                                addToFavoritesConfirmation = (bool)stepContext.Result;
-                            }
-                            else
-                            {
-                                addToFavoritesConfirmation = true;
-                            }
-
-                            if (addToFavoritesConfirmation)
-                            {
-                                await dc.PromptAsync(PromptDialogIds.Text, new PromptOptions()
-                                {
-                                    Prompt = new Activity
-                                    {
-                                        Type = ActivityTypes.Message,
-                                        Text = resourceManager.EnterNewFavoriteLocationName
-                                    }
-                                });
-                            }
-                            else
-                            {
-                                var selectedLocation = (Bing.Location) stepContext.Values[StepContextKeys.SelectedLocation];
-                                await dc.EndAsync(selectedLocation);
-                            }
-
-                            return Dialog.EndOfTurn;
-                        },
-                        async (dc, stepContext) =>
-                        {
-                            var newFavoriteName = (string)stepContext.Result;
-
-                            if (await favoritesManager.IsFavoriteLocationName(dc.Context, newFavoriteName))
-                            {
-                                await dc.Context.SendActivityAsync(string.Format(resourceManager.DuplicateFavoriteNameResponse,
-                                    newFavoriteName));
-
-                                await dc.ReplaceAsync(DialogIds.AddToFavoritesDialog,
-                                    new AddToFavoritesDialogOptions()
-                                    {
-                                        Location = (Bing.Location) stepContext.Values[StepContextKeys.SelectedLocation]
-                                    });
-                            }
-                            else
-                            {
-                                Bing.Location selectedLocation =
-                                    (Bing.Location) dc.ActiveDialog.State[StepContextKeys.SelectedLocation];
-
-                                await favoritesManager.Add(dc.Context,
-                                    new FavoriteLocation {Location = selectedLocation, Name = newFavoriteName});
-
-                                await dc.Context.SendActivityAsync(string.Format(resourceManager.FavoriteAddedConfirmation,
-                                    newFavoriteName));
-
-                                await dc.EndAsync(selectedLocation);
-                            }
-
-                            return Dialog.EndOfTurn;
+                            return await dc.EndAsync(selectedLocation);
                         }
-                    }));
+
+                        return await dc.PromptAsync(PromptDialogIds.Confirm, new PromptOptions()
+                        {
+                            Prompt = new Activity
+                            {
+                                Type = ActivityTypes.Message,
+                                Text = resourceManager.AddToFavoritesAsk
+                            },
+                            RetryPrompt = new Activity
+                            {
+                                Type = ActivityTypes.Message,
+                                Text = resourceManager.AddToFavoritesRetry
+                            }
+                        });
+                    }
+
+                    return await stepContext.NextAsync();
+                },
+                async (dc, stepContext) =>
+                {
+                    bool addToFavoritesConfirmation;
+
+                    if (!stepContext.Values.ContainsKey("addToFavoritesConfirmed"))
+                    {
+                        addToFavoritesConfirmation = (bool) stepContext.Result;
+                    }
+                    else
+                    {
+                        addToFavoritesConfirmation = true;
+                    }
+
+                    if (addToFavoritesConfirmation)
+                    {
+                        return await dc.PromptAsync(PromptDialogIds.Text, new PromptOptions()
+                        {
+                            Prompt = new Activity
+                            {
+                                Type = ActivityTypes.Message,
+                                Text = resourceManager.EnterNewFavoriteLocationName
+                            }
+                        });
+                    }
+
+                    var selectedLocation = (Bing.Location) stepContext.Values[StepContextKeys.SelectedLocation];
+                    return await dc.EndAsync(selectedLocation);
+                },
+                async (dc, stepContext) =>
+                {
+                    var newFavoriteName = (string) stepContext.Result;
+
+                    if (await favoritesManager.IsFavoriteLocationName(dc.Context, newFavoriteName))
+                    {
+                        await dc.Context.SendActivityAsync(string.Format(
+                            resourceManager.DuplicateFavoriteNameResponse,
+                            newFavoriteName));
+
+                        return await dc.ReplaceAsync(DialogIds.AddToFavoritesDialog,
+                            new AddToFavoritesDialogOptions()
+                            {
+                                Location = (Bing.Location) stepContext.Values[StepContextKeys.SelectedLocation]
+                            });
+                    }
+
+                    var selectedLocation =
+                        (Bing.Location) stepContext.Values[StepContextKeys.SelectedLocation];
+
+                    await favoritesManager.Add(dc.Context,
+                        new FavoriteLocation {Location = selectedLocation, Name = newFavoriteName});
+
+                    await dc.Context.SendActivityAsync(string.Format(resourceManager.FavoriteAddedConfirmation,
+                        newFavoriteName));
+
+                    return await dc.EndAsync(selectedLocation);
+                }
+            }));
 
             AddDialog(new WaterfallDialog(DialogIds.FavoriteLocationRetrieverDialog, new WaterfallStep[]
             {
@@ -623,17 +604,14 @@ namespace Bot.Builder.Community.Dialogs.Location
                     if (!favorites.Any())
                     {
                         await dc.Context.SendActivityAsync(resourceManager.NoFavoriteLocationsFound);
-                        await dc.ReplaceAsync(DialogIds.LocationRetrieverRichDialog);
-                    }
-                    else
-                    {
-                        await dc.Context.SendActivityAsync(CreateFavoritesCarousel(dc.Context,
-                            new LocationCardBuilder(apiKey, resourceManager),
-                            favorites));
-                        await dc.Context.SendActivityAsync(resourceManager.SelectFavoriteLocationPrompt);
+                        return await dc.ReplaceAsync(DialogIds.LocationRetrieverRichDialog);
                     }
 
-                    return Dialog.EndOfTurn;
+                    await dc.Context.SendActivityAsync(CreateFavoritesCarousel(dc.Context,
+                        new LocationCardBuilder(apiKey, resourceManager),
+                        favorites));
+                    await dc.Context.SendActivityAsync(resourceManager.SelectFavoriteLocationPrompt);
+                    return EndOfTurn;
                 },
                 async (dc, stepContext) =>
                 {
@@ -641,68 +619,57 @@ namespace Bot.Builder.Community.Dialogs.Location
 
                     if (StringComparer.OrdinalIgnoreCase.Equals(messageText, resourceManager.OtherComand))
                     {
-                        await dc.ReplaceAsync(DialogIds.LocationRetrieverRichDialog);
+                        return await dc.ReplaceAsync(DialogIds.LocationRetrieverRichDialog);
                     }
-                    else
+
+                    var location = await TryParseSelection(dc.Context, favoritesManager, messageText);
+
+                    if (location != null)
                     {
-                        var location = await TryParseSelection(dc.Context, favoritesManager, messageText);
+                        await TryReverseGeocodeAddress(location.Location, options, geoSpatialService);
+                        stepContext.Values[StepContextKeys.SelectedLocation] = location;
 
-                        if (location != null)
+                        if (requiredFields == LocationRequiredFields.None)
                         {
-                            await TryReverseGeocodeAddress(location.Location, options, geoSpatialService);
-                            stepContext.Values[StepContextKeys.SelectedLocation] = location;
-
-                            if (requiredFields == LocationRequiredFields.None)
-                            {
-                                await dc.EndAsync(location.Location);
-                            }
-                            else
-                            {
-                                await dc.ReplaceAsync(DialogIds.CompleteMissingRequiredFieldsDialog,
-                                    new CompleteMissingFieldsDialogOptions() {Location = location.Location});
-                            }
+                            return await dc.EndAsync(location.Location);
                         }
-                        else
-                        {
-                            var locationAndCommand =
-                                await TryParseCommandSelection(dc.Context, favoritesManager, messageText);
 
-                            if (locationAndCommand.Item1 != null && locationAndCommand.Item2 != null &&
-                                (StringComparer.OrdinalIgnoreCase.Equals(locationAndCommand.Item2,
-                                     resourceManager.DeleteCommand)
-                                 || StringComparer.OrdinalIgnoreCase.Equals(locationAndCommand.Item2,
-                                     resourceManager.EditCommand)))
-                            {
-                                if (StringComparer.OrdinalIgnoreCase.Equals(locationAndCommand.Item2,
-                                    resourceManager.DeleteCommand))
-                                {
-                                    await dc.ReplaceAsync(DialogIds.ConfirmDeleteFromFavoritesDialog,
-                                        new ConfirmDeleteFavoriteDialogOptions() {Location = locationAndCommand.Item1});
-                                }
-                                else
-                                {
-                                    await dc.Context.SendActivityAsync(
-                                        "Edit Favorites functionality not currently implemented.");
-                                    await dc.ReplaceAsync(DialogIds.FavoriteLocationRetrieverDialog);
-                                    //var editDialog = this.locationDialogFactory.CreateDialog(BranchType.EditFavoriteLocation, value.Location, value.Name);
-                                    //context.Call(editDialog, this.ResumeAfterChildDialogAsync);
-                                }
-                            }
-                            else
-                            {
-                                await dc.Context.SendActivityAsync(
-                                    string.Format(resourceManager.InvalidFavoriteLocationSelection, messageText));
-                                await dc.ReplaceAsync(DialogIds.FavoriteLocationRetrieverDialog);
-                            }
-                        }
+                        return await dc.ReplaceAsync(DialogIds.CompleteMissingRequiredFieldsDialog,
+                            new CompleteMissingFieldsDialogOptions() {Location = location.Location});
                     }
 
-                    return Dialog.EndOfTurn;
+                    var locationAndCommand =
+                        await TryParseCommandSelection(dc.Context, favoritesManager, messageText);
+
+                    if (locationAndCommand.Item1 != null && locationAndCommand.Item2 != null &&
+                        (StringComparer.OrdinalIgnoreCase.Equals(locationAndCommand.Item2,
+                             resourceManager.DeleteCommand)
+                         || StringComparer.OrdinalIgnoreCase.Equals(locationAndCommand.Item2,
+                             resourceManager.EditCommand)))
+                    {
+                        if (StringComparer.OrdinalIgnoreCase.Equals(locationAndCommand.Item2,
+                            resourceManager.DeleteCommand))
+                        {
+                            return await dc.ReplaceAsync(DialogIds.ConfirmDeleteFromFavoritesDialog,
+                                new ConfirmDeleteFavoriteDialogOptions() {Location = locationAndCommand.Item1});
+                        }
+
+                        await dc.Context.SendActivityAsync(
+                            "Edit Favorites functionality not currently implemented.");
+                        return await dc.ReplaceAsync(DialogIds.FavoriteLocationRetrieverDialog);
+                        //var editDialog = this.locationDialogFactory.CreateDialog(BranchType.EditFavoriteLocation, value.Location, value.Name);
+                        //context.Call(editDialog, this.ResumeAfterChildDialogAsync);
+                    }
+
+                    await dc.Context.SendActivityAsync(
+                        string.Format(resourceManager.InvalidFavoriteLocationSelection, messageText));
+
+                    return await dc.ReplaceAsync(DialogIds.FavoriteLocationRetrieverDialog);
                 }
             }));
         }
 
-        private async Task<FavoriteLocation> TryParseSelection(ITurnContext context, IFavoritesManager favoritesManager, string text)
+        private static async Task<FavoriteLocation> TryParseSelection(ITurnContext context, IFavoritesManager favoritesManager, string text)
         {
             var favoriteRetrievedByName = await favoritesManager.GetFavoriteByName(context, text);
 
@@ -711,9 +678,7 @@ namespace Bot.Builder.Community.Dialogs.Location
                 return favoriteRetrievedByName;
             }
 
-            int index = -1;
-
-            if (int.TryParse(text, out index))
+            if (int.TryParse(text, out var index))
             {
                 return await favoritesManager.GetFavoriteByIndex(context, index - 1);
             }
@@ -721,29 +686,28 @@ namespace Bot.Builder.Community.Dialogs.Location
             return null;
         }
 
-        private async Task<(FavoriteLocation, string)> TryParseCommandSelection(ITurnContext context, IFavoritesManager favoritesManager, string text)
+        private static async Task<(FavoriteLocation, string)> TryParseCommandSelection(ITurnContext context, IFavoritesManager favoritesManager, string text)
         {
-            FavoriteLocation value = null;
-            string command = null;
-
             var tokens = text.Split(' ');
+
             if (tokens.Length != 2)
                 return (null, null);
 
-            command = tokens[0];
+            var command = tokens[0];
 
-            value = await TryParseSelection(context, favoritesManager, tokens[1]);
+            var value = await TryParseSelection(context, favoritesManager, tokens[1]);
 
             return (value, command);
         }
 
-        private static async Task PromptForRequiredField(DialogContext dc, LocationRequiredFields requiredField, string requiredFieldPrompt, LocationResourceManager resourceManager,
+        private static async Task<DialogTurnResult> PromptForRequiredField(DialogContext dc, LocationRequiredFields requiredField, string requiredFieldPrompt, LocationResourceManager resourceManager,
             Bing.Location selectedLocation)
         {
             var formattedAddress = selectedLocation.GetFormattedAddress(resourceManager.AddressSeparator);
 
             dc.ActiveDialog.State["CurrentMissingRequiredField"] = requiredField;
-            await dc.PromptAsync(PromptDialogIds.Text,
+
+            return await dc.PromptAsync(PromptDialogIds.Text,
                 new PromptOptions
                 {
                     Prompt = new Activity
@@ -756,7 +720,7 @@ namespace Bot.Builder.Community.Dialogs.Location
                 });
         }
 
-        private IMessageActivity CreateFavoritesCarousel(ITurnContext context, ILocationCardBuilder cardBuilder, List<FavoriteLocation> locations)
+        private static IMessageActivity CreateFavoritesCarousel(ITurnContext context, ILocationCardBuilder cardBuilder, List<FavoriteLocation> locations)
         {
             // Get cards for the favorite locations
             var attachments = cardBuilder.CreateHeroCards(locations.Select(f => f.Location).ToList(), alwaysShowNumericPrefix: true, locationNames: locations.Select(f => f.Name).ToList());

@@ -42,7 +42,7 @@ namespace Dialog_Sample
 
                     if (!turnContext.Responded && !results.HasActive && !results.HasResult)
                     {
-                        await dialogCtx.BeginAsync("LocationDialog");
+                        var result = await dialogCtx.BeginAsync("LocationDialog");
                     }
                     break;
             }
