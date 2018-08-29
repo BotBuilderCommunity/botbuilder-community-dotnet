@@ -36,7 +36,7 @@ For example, you might use it to respond to common 'manners', such as greetings 
         [BestMatch(new string[] { "Hi", "Hi There", "Hello there", "Hey", "Hello",
                 "Hey there", "Greetings", "Good morning", "Good afternoon", "Good evening", "Good day" },
             threshold: 0.5, ignoreCase: false, ignoreNonAlphaNumericCharacters: false)]
-        public async Task HandleGreeting(ITurnContext context, string messageText, MiddlewareSet.NextDelegate next)
+        public async Task HandleGreeting(ITurnContext context, string messageText, NextDelegate next)
         {
             await context.SendActivity("Well hello there. What can I do for you today?");
 
@@ -48,14 +48,14 @@ For example, you might use it to respond to common 'manners', such as greetings 
 
         [BestMatch(new string[] { "how goes it", "how do", "hows it going", "how are you",
             "how do you feel", "whats up", "sup", "hows things" })]
-        public async Task HandleStatusRequest(ITurnContext context, string messageText, MiddlewareSet.NextDelegate next)
+        public async Task HandleStatusRequest(ITurnContext context, string messageText, NextDelegate next)
         {
             await context.SendActivity("I am great.");
         }
 
         [BestMatch(new string[] { "bye", "bye bye", "got to go",
             "see you later", "laters", "adios" })]
-        public async Task HandleGoodbye(ITurnContext context, string messageText, MiddlewareSet.NextDelegate next)
+        public async Task HandleGoodbye(ITurnContext context, string messageText, NextDelegate next)
         {
             await context.SendActivity("Bye");   
         }
@@ -63,7 +63,7 @@ For example, you might use it to respond to common 'manners', such as greetings 
 		// If this method is not overridden the default behaviour is to await next() to call 
 		// the next component in the pipeline, but you can override as shown below if you wanted 
 		// to send an additional message or do anything else
-        public override async Task NoMatchHandler(ITurnContext context, string messageText, MiddlewareSet.NextDelegate next)
+        public override async Task NoMatchHandler(ITurnContext context, string messageText, NextDelegate next)
         {
 			await context.SendActivities("I am not sure what you wanted...");
             await next();

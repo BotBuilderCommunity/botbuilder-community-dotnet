@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Bot.Builder.Community.Middleware.AzureAdAuthentication
@@ -29,7 +30,7 @@ namespace Bot.Builder.Community.Middleware.AzureAdAuthentication
 
         public const string AUTH_TOKEN_KEY = "authToken";
 
-        public async Task OnTurn(ITurnContext context, MiddlewareSet.NextDelegate next)
+        public async Task OnTurnAsync(ITurnContext context, NextDelegate next, CancellationToken cancellationToken = default(CancellationToken))
         {
             var authToken = TokenStorage.LoadConfiguration(context.Activity.Conversation.Id);
 
@@ -37,7 +38,7 @@ namespace Bot.Builder.Community.Middleware.AzureAdAuthentication
             {
                 if (context.Activity.UserHasJustSentMessage() || context.Activity.UserHasJustJoinedConversation())
                 {
-                    var conversationReference = TurnContext.GetConversationReference(context.Activity);
+                    var conversationReference = context.Activity.GetConversationReference();
 
                     var serializedCookie = WebUtility.UrlEncode(JsonConvert.SerializeObject(conversationReference));
 
@@ -46,7 +47,7 @@ namespace Bot.Builder.Community.Middleware.AzureAdAuthentication
                     var activity = context.Activity.CreateReply();
                     activity.AddSignInCard(signInUrl);
 
-                    await context.SendActivity(activity);
+                    await context.SendActivityAsync(activity);
                 }
             }
             else if (authToken.ExpiresIn < DateTime.Now.AddMinutes(-10))
@@ -66,15 +67,15 @@ namespace Bot.Builder.Community.Middleware.AzureAdAuthentication
                     TokenStorage.SaveConfiguration(authToken);
 
                     // make the authtoken available to downstream pipeline components
-                    context.Services.Add(AUTH_TOKEN_KEY, authToken);
-                    await next();
+                    context.TurnState.Add(AUTH_TOKEN_KEY, authToken);
+                    await next(cancellationToken);
                 }
             }
             else
             {
                 // make the authtoken available to downstream pipeline components
-                context.Services.Add(AUTH_TOKEN_KEY, authToken);
-                await next();
+                context.TurnState.Add(AUTH_TOKEN_KEY, authToken);
+                await next(cancellationToken);
             }
         }
     }

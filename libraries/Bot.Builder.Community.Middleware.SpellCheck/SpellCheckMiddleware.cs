@@ -1,5 +1,6 @@
 ﻿using Microsoft.Bot.Builder;
 using Microsoft.Extensions.Configuration;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Bot.Builder.Community.Middleware.SpellCheck
@@ -21,7 +22,7 @@ namespace Bot.Builder.Community.Middleware.SpellCheck
         {
             context.Activity.Text = await context.Activity.Text.SpellCheck(ApiKey, CountryCode, Market);
 
-            await next();
+            await next(cancellationToken);
         }
     }
 }

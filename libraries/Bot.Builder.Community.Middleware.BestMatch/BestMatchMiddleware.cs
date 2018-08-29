@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
@@ -13,15 +14,15 @@ namespace Bot.Builder.Community.Middleware.BestMatch
     {
         protected Dictionary<BestMatchAttribute, BestMatchHandler> HandlerByBestMatchLists;
 
-        public async Task OnTurn(ITurnContext context, MiddlewareSet.NextDelegate next)
+        public async Task OnTurnAsync(ITurnContext turnContext, NextDelegate next, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (context.Activity.Type == ActivityTypes.Message)
+            if (turnContext.Activity.Type == ActivityTypes.Message)
             {
-                await HandleMessage(context, context.Activity.Text, next);
+                await HandleMessage(turnContext, turnContext.Activity.Text, next, cancellationToken);
             }
         }
 
-        private async Task HandleMessage(ITurnContext context, string messageText, MiddlewareSet.NextDelegate next)
+        private async Task HandleMessage(ITurnContext context, string messageText, NextDelegate next, CancellationToken cancellationToken)
         {
             if (HandlerByBestMatchLists == null)
             {
@@ -48,7 +49,7 @@ namespace Bot.Builder.Community.Middleware.BestMatch
                 }
             }
 
-            await (handler ?? NoMatchHandler).Invoke(context, messageText, next);
+            await (handler ?? NoMatchHandler).Invoke(context, messageText, next, cancellationToken);
         }
 
         protected virtual IDictionary<BestMatchAttribute, BestMatchHandler> GetHandlersByBestMatchLists()
@@ -155,9 +156,9 @@ namespace Bot.Builder.Community.Middleware.BestMatch
             }
         }
 
-        public virtual async Task NoMatchHandler(ITurnContext context, string messageText, MiddlewareSet.NextDelegate next)
+        public virtual async Task NoMatchHandler(ITurnContext context, string messageText, NextDelegate next, CancellationToken cancellationToken)
         {
-            await next();
+            await next(cancellationToken);
         }
 
         internal class StringMatch
@@ -210,5 +211,5 @@ namespace Bot.Builder.Community.Middleware.BestMatch
         }
     }
 
-    public delegate Task BestMatchHandler(ITurnContext context, string messageText, MiddlewareSet.NextDelegate next);
+    public delegate Task BestMatchHandler(ITurnContext context, string messageText, NextDelegate next, CancellationToken cancellationToken);
 }

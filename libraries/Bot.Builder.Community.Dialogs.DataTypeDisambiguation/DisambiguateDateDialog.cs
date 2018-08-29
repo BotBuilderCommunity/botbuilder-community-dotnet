@@ -1,25 +1,28 @@
 ﻿using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Builder.Prompts.Choices;
 using Microsoft.Recognizers.Text;
 using Microsoft.Recognizers.Text.DateTime;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Bot.Builder.Dialogs.Choices;
+using Microsoft.Bot.Schema;
 
 namespace Bot.Builder.Community.Dialogs.DataTypeDisambiguation
 {
-    public class DisambiguateDateDialog : DialogContainer
+    public class DisambiguateDateDialog : ComponentDialog
     {
         private DisambiguateDateDialog() : base(Id)
         {
             var recognizer = new DateTimeRecognizer(Culture.English);
             var model = recognizer.GetDateTimeModel();
 
-            Dialogs.Add(Id, new WaterfallStep[]
+            AddDialog(new WaterfallDialog(Id, new WaterfallStep[]
             {
-                async(dc,args, next) =>{
-                    await dc.Context.SendActivity("What date?");
+                async(dc, stepContext) =>
+                {
+                    await dc.Context.SendActivityAsync("What date?");
+                    return EndOfTurn;
                 },
-                async (dc, args, next) =>
+                async (dc, stepContext) =>
                 {
                     var stateWrapper = new DisambiguateDateDialogStateWrapper(dc.ActiveDialog.State);
 
@@ -27,37 +30,44 @@ namespace Bot.Builder.Community.Dialogs.DataTypeDisambiguation
 
                     stateWrapper.Resolutions = value;
 
-                    if (value.ResolutionType != Resolution.ResolutionTypes.DateTime && value.ResolutionType != Resolution.ResolutionTypes.DateTimeRange)
+                    if (value.ResolutionType != Resolution.ResolutionTypes.DateTime &&
+                        value.ResolutionType != Resolution.ResolutionTypes.DateTimeRange)
                     {
-                        await dc.Context.SendActivity("I don't understand. Please provide a date");
-                        await dc.Replace(Id);
+                        await dc.Context.SendActivityAsync("I don't understand. Please provide a date");
+                        return await dc.ReplaceAsync(Id);
                     }
-                    else if (value.NeedsDisambiguation)
+
+                    if (value.NeedsDisambiguation)
                     {
-                        var amOrPmChoices = new List<Choice>(new []{new Choice() { Value = "AM" }, new Choice() { Value = "PM" } });
-                        await dc.Prompt("choicePrompt", "Is that AM or PM?", new ChoicePromptOptions
+                        var amOrPmChoices = new List<Choice>(new[]
+                            {new Choice() {Value = "AM"}, new Choice() {Value = "PM"}});
+
+                        return await dc.PromptAsync("choicePrompt", new PromptOptions
                         {
+                            Prompt = new Activity
+                            {
+                                Type = ActivityTypes.Message,
+                                Text = "Is that AM or PM?"
+                            },
                             Choices = amOrPmChoices
                         }).ConfigureAwait(false);
                     }
-                    else
-                    {
-                        stateWrapper.Date = value.FirstOrDefault().Date1.Value;
-                        await dc.End(dc.ActiveDialog.State);
-                    }                    
+
+                    stateWrapper.Date = value.FirstOrDefault().Date1.Value;
+                    return await dc.EndAsync(dc.ActiveDialog.State);
                 },
-                async (dc, args, next) =>
+                async (dc, stepContext) =>
                 {
                     var stateWrapper = new DisambiguateDateDialogStateWrapper(dc.ActiveDialog.State);
-                    var amOrPmChoice = ((FoundChoice) args["Value"]).Value;
+                    var amOrPmChoice = ((FoundChoice)stepContext.Result).Value;
                     var availableTimes = stateWrapper.Resolutions.Select(x=>x.Date1.Value);
                     stateWrapper.Date = amOrPmChoice  == "AM" ? availableTimes.Min() : availableTimes.Max();
-                    await dc.End(dc.ActiveDialog.State);
+                    return await dc.EndAsync(dc.ActiveDialog.State);
                 }
-            });
+            }));
 
-            Dialogs.Add("textPrompt", new TextPrompt());
-            Dialogs.Add("choicePrompt", new ChoicePrompt("en"));
+            AddDialog(new TextPrompt("textPrompt"));
+            AddDialog(new ChoicePrompt("choicePrompt", defaultLocale: "en"));
         }
         public static string Id => "disambiguateDateDialog";
 

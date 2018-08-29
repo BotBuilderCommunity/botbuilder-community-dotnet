@@ -1,22 +1,23 @@
 ﻿using Microsoft.Bot.Builder;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Bot.Builder.Community.Middleware.Typing
 {
     public class TypingMiddleware : IMiddleware
     {
-        public async Task OnTurn(ITurnContext context, MiddlewareSet.NextDelegate next)
+        public async Task OnTurnAsync(ITurnContext turnContext, NextDelegate next, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (context.Activity.UserHasJustJoinedConversation() || context.Activity.UserHasJustSentMessage())
+            if (turnContext.Activity.UserHasJustJoinedConversation() || turnContext.Activity.UserHasJustSentMessage())
             {
-                await context.Activity.DoWithTyping(async () =>
+                await turnContext.Activity.DoWithTyping(async () =>
                 {
-                    await next();
+                    await next(cancellationToken);
                 });
             }
             else
             {
-                await next();
+                await next(cancellationToken);
             }
         }
     }
