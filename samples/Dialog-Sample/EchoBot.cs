@@ -13,11 +13,13 @@ namespace Dialog_Sample
     public class EchoBot : IBot
     {
         private MyEchoBotAccessors _stateAccessors;
+        private ConversationState _conversationState;
         private DialogSet dialogs;
 
-        public EchoBot(MyEchoBotAccessors accessors)
+        public EchoBot(MyEchoBotAccessors accessors, ConversationState conversationState)
         {
             _stateAccessors = accessors ?? throw new ArgumentNullException(nameof(accessors));
+            _conversationState = conversationState ?? throw new ArgumentNullException(nameof(conversationState));
         }
 
         public async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default(CancellationToken))
@@ -27,8 +29,8 @@ namespace Dialog_Sample
             dialogs.Add(new LocationDialog(
                 "Amf0lKMCmGviOMNojvzjcgdGWSZglBivKBj18hJTKGiLYxK6y52ReWaRzxgJ3xJi", 
                 "Please enter a location?",
-                null,
-                requiredFields: LocationRequiredFields.PostalCode | LocationRequiredFields.StreetAddress | LocationRequiredFields.Region,
+                _conversationState,
+                requiredFields: LocationRequiredFields.PostalCode,
                 useAzureMaps: false));
 
             var dialogCtx = await dialogs.CreateContextAsync(turnContext);

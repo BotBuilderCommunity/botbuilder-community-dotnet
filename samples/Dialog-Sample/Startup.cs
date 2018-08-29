@@ -67,6 +67,24 @@ namespace Dialog_Sample
 
                 return accessors;
             });
+
+            services.AddSingleton<ConversationState>(sp =>
+            {
+                var options = sp.GetRequiredService<IOptions<BotFrameworkOptions>>().Value;
+
+                if (options == null)
+                {
+                    throw new InvalidOperationException("BotFrameworkOptions must be configured prior to setting up the State Accessors");
+                }
+
+                var conversationState = options.State.OfType<ConversationState>().FirstOrDefault();
+                if (conversationState == null)
+                {
+                    throw new InvalidOperationException("ConversationState must be defined and added before adding conversation-scoped state accessors.");
+                }
+
+                return conversationState;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

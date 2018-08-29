@@ -65,6 +65,7 @@ namespace Bot.Builder.Community.Dialogs.Location
                     "provided to allow for storing / retrieval of favorites");
             }
 
+            _favoriteLocations = state.CreateProperty<List<FavoriteLocation>>($"{nameof(LocationDialog)}.Favorites");
             var favoritesManager = new FavoritesManager(_favoriteLocations);
 
             IGeoSpatialService geoSpatialService;

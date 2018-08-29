@@ -106,7 +106,7 @@ namespace Bot.Builder.Community.Dialogs.Location.Dialogs
 
         public async Task<List<FavoriteLocation>> GetFavorites(ITurnContext context)
         {
-            return await _favoriteLocations.GetAsync(context);
+            return await _favoriteLocations.GetAsync(context, () => { return new List<FavoriteLocation>(); });
         }
 
         private static bool AreEqual(Bing.Location x, Bing.Location y)
