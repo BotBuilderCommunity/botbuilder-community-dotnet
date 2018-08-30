@@ -1,4 +1,4 @@
-﻿## Spell Check Middleware
+﻿## Spell Check Middleware 
  
 ### Build status
 | Branch | Status | Recommended NuGet package version |
@@ -15,7 +15,7 @@ The implementation is naive at the moment in that it assumes that the suggestion
 
 ### Installation
 
-Available via NuGet package [Bot.Builder.Community.Middleware.SpellCheck](https://www.nuget.org/packages/Bot.Builder.Community.Middleware.SpellCheck/)
+Available via NuGet package [Bot.Builder.Community.Middleware.SpellCheck](https://www.nuget.org/packages/Bot.Builder.Community.Middleware.SpellCheck/) 
 
 Install into your project using the following command in the package manager;
 ```
