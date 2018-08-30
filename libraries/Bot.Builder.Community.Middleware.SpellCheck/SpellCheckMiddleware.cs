@@ -18,7 +18,8 @@ namespace Bot.Builder.Community.Middleware.SpellCheck
         public string CountryCode { get; }
         public string Market { get; }
 
-        public async Task OnTurn(ITurnContext context, MiddlewareSet.NextDelegate next)
+        public async Task OnTurnAsync(ITurnContext context, NextDelegate next,
+            CancellationToken cancellationToken = new CancellationToken())
         {
             context.Activity.Text = await context.Activity.Text.SpellCheck(ApiKey, CountryCode, Market);
 
