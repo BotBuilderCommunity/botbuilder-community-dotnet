@@ -58,7 +58,6 @@ namespace Bot.Builder.Community.Dialogs.Prompts
 
                 if (results.Count > 0)
                 {
-                    // Try to parse value based on type
                     var resolvedUnit = results[0].Resolution["unit"].ToString();
                     var resolvedValue = results[0].Resolution["value"].ToString();
 
