@@ -1,4 +1,4 @@
-﻿## Spell Check Middleware
+﻿## Spell Check Middleware 
  
 ### Build status
 | Branch | Status | Recommended NuGet package version |
