@@ -1,4 +1,4 @@
-﻿## Spell Check Middleware
+﻿## Spell Check Middleware 
  
 ### Build status
 | Branch | Status | Recommended NuGet package version |
@@ -36,12 +36,16 @@ services.AddBot<Bot>((options) => {
 });
 ```
 
-Note this requires an instance of `IConfiguration` passing to it.  Use the instance injected into the `Startup.cs` class.  
+This requires an instance of `IConfiguration` passing to it.  Use the instance injected into the `Startup.cs` class.  
 
-The configuration can be read from your `appsettings.json` file which needs the following key
+The configuration can be read from your `appsettings.json` file which needs the following keys
+
+Note: SpellCheckCountryCode and SpellCheckMarket are optional for languages other than en/en-US.  For a full list of supported country and market codes see https://docs.microsoft.com/en-us/azure/cognitive-services/bing-spell-check/bing-spell-check-supported-languages.
 
 ```
 {
-  "SpellCheckKey": "<YOUR SPELL CHECK KEY HERE>"
+  "SpellCheckKey": "<YOUR SPELL CHECK KEY HERE>",
+  "SpellCheckCountryCode": "sv",
+  "SpellCheckMarket": "sv-SE" 
 }
 ```

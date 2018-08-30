@@ -10,13 +10,18 @@ namespace Bot.Builder.Community.Middleware.SpellCheck
         public SpellCheckMiddleware(IConfiguration configuration)
         {
             ApiKey = configuration.GetValue<string>("SpellCheckKey");
+            CountryCode = configuration.GetValue<string>("SpellCheckCountryCode");
+            Market = configuration.GetValue<string>("SpellCheckMarket");
         }
 
         public string ApiKey { get; }
-        
-        public async Task OnTurnAsync(ITurnContext turnContext, NextDelegate next, CancellationToken cancellationToken = default(CancellationToken))
+        public string CountryCode { get; }
+        public string Market { get; }
+
+        public async Task OnTurnAsync(ITurnContext context, NextDelegate next,
+            CancellationToken cancellationToken = new CancellationToken())
         {
-            turnContext.Activity.Text = await turnContext.Activity.Text.SpellCheck(ApiKey);
+            context.Activity.Text = await context.Activity.Text.SpellCheck(ApiKey, CountryCode, Market);
 
             await next(cancellationToken);
         }
