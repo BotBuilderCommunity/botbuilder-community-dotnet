@@ -10,15 +10,18 @@ using static Microsoft.Recognizers.Text.Culture;
 
 namespace Bot.Builder.Community.Dialogs.Prompts
 {
-    public class CurrencyPrompt : Prompt<CurrencyPromptResult>
+    public class NumberWithUnitPrompt : Prompt<NumberWithUnitResult>
     {
-        public CurrencyPrompt(string dialogId, PromptValidator<CurrencyPromptResult> validator = null, string defaultLocale = null)
+        public NumberWithUnitPrompt(string dialogId, NumberWithUnitPromptType type, PromptValidator<NumberWithUnitResult> validator = null, string defaultLocale = null)
             : base(dialogId, validator)
         {
             DefaultLocale = defaultLocale;
+            PromptType = type;
         }
 
         public string DefaultLocale { get; set; }
+
+        public NumberWithUnitPromptType PromptType { get; set; }
 
         protected override async Task OnPromptAsync(ITurnContext turnContext, IDictionary<string, object> state, PromptOptions options, bool isRetry, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -42,21 +45,39 @@ namespace Bot.Builder.Community.Dialogs.Prompts
             }
         }
 
-        protected override Task<PromptRecognizerResult<CurrencyPromptResult>> OnRecognizeAsync(ITurnContext turnContext, IDictionary<string, object> state, PromptOptions options, CancellationToken cancellationToken = default(CancellationToken))
+        protected override Task<PromptRecognizerResult<NumberWithUnitResult>> OnRecognizeAsync(ITurnContext turnContext, IDictionary<string, object> state, PromptOptions options, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (turnContext == null)
             {
                 throw new ArgumentNullException(nameof(turnContext));
             }
 
-            var result = new PromptRecognizerResult<CurrencyPromptResult>();
+            var result = new PromptRecognizerResult<NumberWithUnitResult>();
+
             if (turnContext.Activity.Type == ActivityTypes.Message)
             {
                 var message = turnContext.Activity.AsMessageActivity();
                 var culture = turnContext.Activity.Locale ?? DefaultLocale ?? English;
-                var results = NumberWithUnitRecognizer.RecognizeCurrency(message.Text, culture);
 
-                if (results.Count > 0)
+                List<Microsoft.Recognizers.Text.ModelResult> results = null;
+
+                switch(PromptType)
+                {
+                    case NumberWithUnitPromptType.Currency:
+                        results = NumberWithUnitRecognizer.RecognizeCurrency(message.Text, culture);
+                        break;
+                    case NumberWithUnitPromptType.Dimension:
+                        results = NumberWithUnitRecognizer.RecognizeDimension(message.Text, culture);
+                        break;
+                    case NumberWithUnitPromptType.Age:
+                        results = NumberWithUnitRecognizer.RecognizeAge(message.Text, culture);
+                        break;
+                    case NumberWithUnitPromptType.Temperature:
+                        results = NumberWithUnitRecognizer.RecognizeTemperature(message.Text, culture);
+                        break;
+                }
+
+                if (results?.Count > 0)
                 {
                     var resolvedUnit = results[0].Resolution["unit"].ToString();
                     var resolvedValue = results[0].Resolution["value"].ToString();
@@ -65,13 +86,13 @@ namespace Bot.Builder.Community.Dialogs.Prompts
                     {
                         result.Succeeded = true;
 
-                        var promptResult = new CurrencyPromptResult
+                        var numberWithUnitResult = new NumberWithUnitResult
                         {
                             Unit = resolvedUnit,
                             Value = value
                         };
 
-                        result.Value = (CurrencyPromptResult)(object)promptResult;
+                        result.Value = numberWithUnitResult;
                     }
                 }
             }
@@ -80,9 +101,17 @@ namespace Bot.Builder.Community.Dialogs.Prompts
         }
     }
 
-    public class CurrencyPromptResult
+    public class NumberWithUnitResult
     {
         public string Unit { get; set; }
-        public double? Value { get; set; }
+        public dynamic Value { get; set; }
+    }
+
+    public enum NumberWithUnitPromptType
+    {
+        Currency,
+        Temperature,
+        Age,
+        Dimension
     }
 }
