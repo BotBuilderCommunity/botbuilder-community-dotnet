@@ -12,7 +12,9 @@ This package contains additional prompts, beyond those offered out of the box by
 
 Currently the following Prompts are available;
 
-* [Number with Unit (currency, temperature, dimension, age)](#number-with-unit-prompt)
+| Prompt | Description |
+| ------ | ------ |
+| [Number with Unit](#number-with-unit-prompt) | Prompt a user for Currency, Temperature, Age, Dimension (distance). |
 
 ### Installation
 
@@ -35,6 +37,8 @@ The Number with Unit Prompt allows you to prompt for the following types of numb
 * Temperature
 * Age
 * Dimension (e.g. miles / meters)
+
+Internally the Prompt uses the [Microsoft Text Recognizers](https://github.com/Microsoft/Recognizers-Text/tree/master/.NET) NumberWithPrompt recognizer.
 
 To use the Prompt, create a new instance of the Prompt, specifying the type of Prompt (e.g. currency) using the second parameter.
 Once you have created the instance of your Prompt, you can add it to your list of dialogs (e.g. within a ComponentDialog).
@@ -60,7 +64,9 @@ Then, you can call the bot by specifying your PromptOptions and calling PromptAs
 
 ```
 
-The Prompt will return a NumberWithUnitResult object. Below is an example of how you might use this result.
+The Prompt will return a NumberWithUnitResult object. This object contains a Value (dynamic) and a Unit (string). 
+For example, if a user enters "twenty three dollars" when you are using the Currency prompt type, the resulting NumberWithUnitResult object will have Unit: "Dollar", Value: "23".
+Below is an example of how you might use this result.
 
 ```cs
 
