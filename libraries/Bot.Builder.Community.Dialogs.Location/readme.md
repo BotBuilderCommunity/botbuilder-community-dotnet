@@ -61,11 +61,11 @@ In your bot code, when you want to hand off to the Location dialog you can use d
 
     AddDialog(new WaterfallDialog("YourBotsDialog", new WaterfallStep[]
             {
-                async (dc, stepCOntext) =>
+                async (dc, cancellationToken) =>
                 {
                         return await dc.BeginAsync(LocationDialog.MainDialogId);
                 },
-                async (dc, stepContext) =>
+                async (dc, cancellationToken) =>
                 {
                     if (args is Place returnedPlace)
                     {

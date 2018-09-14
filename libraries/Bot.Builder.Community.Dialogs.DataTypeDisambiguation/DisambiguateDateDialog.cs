@@ -17,12 +17,12 @@ namespace Bot.Builder.Community.Dialogs.DataTypeDisambiguation
 
             AddDialog(new WaterfallDialog(Id, new WaterfallStep[]
             {
-                async(dc, stepContext) =>
+                async(dc, cancellationToken) =>
                 {
                     await dc.Context.SendActivityAsync("What date?");
                     return EndOfTurn;
                 },
-                async (dc, stepContext) =>
+                async (dc, cancellationToken) =>
                 {
                     var stateWrapper = new DisambiguateDateDialogStateWrapper(dc.ActiveDialog.State);
 
@@ -56,10 +56,10 @@ namespace Bot.Builder.Community.Dialogs.DataTypeDisambiguation
                     stateWrapper.Date = value.FirstOrDefault().Date1.Value;
                     return await dc.EndAsync(dc.ActiveDialog.State);
                 },
-                async (dc, stepContext) =>
+                async (dc, cancellationToken) =>
                 {
                     var stateWrapper = new DisambiguateDateDialogStateWrapper(dc.ActiveDialog.State);
-                    var amOrPmChoice = ((FoundChoice)stepContext.Result).Value;
+                    var amOrPmChoice = ((FoundChoice)dc.Result).Value;
                     var availableTimes = stateWrapper.Resolutions.Select(x=>x.Date1.Value);
                     stateWrapper.Date = amOrPmChoice  == "AM" ? availableTimes.Min() : availableTimes.Max();
                     return await dc.EndAsync(dc.ActiveDialog.State);

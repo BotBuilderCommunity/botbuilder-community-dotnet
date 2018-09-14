@@ -5,22 +5,22 @@ using Microsoft.Bot.Builder.Dialogs;
 
 namespace Bot.Builder.Community.Dialogs.Location
 {
-    public class SelectLocationDialogOptions : DialogOptions
+    public class SelectLocationDialogOptions
     {
         public List<Bing.Location> Locations { get; set; }
     }
 
-    public class CompleteMissingFieldsDialogOptions : DialogOptions
+    public class CompleteMissingFieldsDialogOptions
     {
         public Bing.Location Location { get; set; }
     }
 
-    public class ConfirmDeleteFavoriteDialogOptions : DialogOptions
+    public class ConfirmDeleteFavoriteDialogOptions
     {
         public FavoriteLocation Location { get; set; }
     }
 
-    public class AddToFavoritesDialogOptions : DialogOptions
+    public class AddToFavoritesDialogOptions
     {
         public Bing.Location Location { get; set; }
     }
