@@ -7,7 +7,7 @@ This repository is part of the Bot Builder Community Project and contains Bot Bu
 To see a list of current extensions available for the Bot Builder .NET SDK, use the links below to jump to a section.
 
 * [C# Middleware](#middleware)
-* [C# Dialogs](#dialogs)
+* [C# Dialogs & Prompts](#dialogs-and-prompts)
 * [C# Recognizers](#recognizers)
 
 ## Installation
@@ -31,12 +31,13 @@ The following pieces of middleware are currently available;
 | [Spell Check Middleware](libraries/Bot.Builder.Community.Middleware.SpellCheck) | This middleware uses Cognitive Services Check to automatically correct inbound message text | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.61-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Middleware.SpellCheck/) |
 | [Typing Middleware](libraries/Bot.Builder.Community.Middleware.Typing) | This middleware will show a 'typing' event whenever a long running operation is occurring in your bot or other middeware components in the pipeline, providing a visual cue to the user that your bot is doing something. | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.39-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Middleware.Typing/) |
 
-## Dialogs
+## Dialogs and Prompts
 
 The following dialogs are currently available;
 
 | Name | Description | NuGet |
 | ------ | ------ | ------ |
+| [Bot Builder v4 Prompts](libraries/Bot.Builder.Community.Dialogs.Prompts) | A collection of Prompts for use with Bot Builder v4, providing the ability to prompt for and recognize currencies, age, distances and temperature. | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.39-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Dialogs.Prompts/) |
 | [Bot Builder v4 Location Dialog](libraries/Bot.Builder.Community.Dialogs.Location) | An implemention for v4 of the Bot Build .NET SDK of the [Microsoft.Bot.Builder.Location dialog project built for Bot Builder v3](https://github.com/microsoft/botbuilder-location). An open-source location picker control for Microsoft Bot Framework powered by Azure or Bing Maps REST services. This control will allow a user to search for a location, with the ability to specify required fields and also store locations as favorites for the user. | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.39-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Dialogs.Location/) |
 
 ## Recognizers

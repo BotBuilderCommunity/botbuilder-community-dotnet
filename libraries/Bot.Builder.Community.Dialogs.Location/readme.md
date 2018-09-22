@@ -37,6 +37,7 @@ To use the dialog, add it to your DialogSet as shown below.
 Dialogs.Add(LocationDialog.MainDialogId,
                 new LocationDialog("<YOUR-API-KEY-FOR-BING-OR-AZURE-MAPS",
                     "Please enter a location", 
+                    conversationState,
                     useAzureMaps: false, 
                     requiredFields: LocationRequiredFields.StreetAddress | LocationRequiredFields.PostalCode, 
                     options: LocationOptions.SkipFavorites | LocationOptions.SkipFinalConfirmation 
@@ -48,6 +49,7 @@ The following settings can be applied when adding your dialog to the DialogSet.
 
 * **ApiKey** - Required - This should be the API key for the mapping provider you are using
 * **Prompt** - Required - The initial prompt shown to the user. e.g. "Please enter your post code"
+* **BotState** - Required - This is an instance of BotState (e.g. ConversationState or UserState) - this allows the dialog to store / retrieve user favorites. If you set the SkipFavorites flag then this can be passed as null.
 * **UseAzureMaps** - Optional - This defaults to true, in which case Azure maps will be used and you should provide an Azure Maps API key. If you set this to false then Bing Maps will be used and you should use a Bing Maps API key.
 * **LocationRequiredFields** - Optional - Here you can pass in a list of required fields which the use will need to populate if they are empty when a location is found using the initial search. In the example above I have specified Street Address and Post Code are required.
 * **Options** - Optional - Various options to control how the dialog works. Including the abiity to use / not use the favorites functionality, skipping the final confirmation and reverse geocoding of addresses.
@@ -57,26 +59,71 @@ In your bot code, when you want to hand off to the Location dialog you can use d
 
 ```cs
 
-Dialogs.Add("YourBotsDialog", new WaterfallStep[]
+    AddDialog(new WaterfallDialog("YourBotsDialog", new WaterfallStep[]
             {
-                async (dc, args, next) =>
+                async (dc, cancellationToken) =>
                 {
-                        await dc.Begin(LocationDialog.MainDialogId);
+                        return await dc.BeginDialogAsync(LocationDialog.MainDialogId);
                 },
-                async (dc, args, next) =>
+                async (dc, cancellationToken) =>
                 {
-                    if (args is LocationDialogResult locationDialogResult)
+                    if (args is Place returnedPlace)
                     {
-                        await dc.Context.SendActivity($"Location found: {locationDialogResult.SelectedLocation.Address}");
-                        await dc.End();
+                        await dc.Context.SendActivity($"Location found: {returnedPlace.Address}");
                     }
                     else
                     {
                         await dc.Context.SendActivity($"No location found");
-                        await dc.End();
                     }
+
+                    return await dc.EndDialogAsync();
                 }
-            });
+            }));
 
 ```
+
+
+##### Passing in BotState using dependency injection
+
+You are required to pass an instance of BotState to the dialog if you wish to use the favorites functionality.
+You can pass an instance of BotState (e.g. ConversationState) to your bot using dependency injection. 
+e.g. in a .NET Core bot you could do the following in Startup.cs to pass an instance of ConversationState to your bot.
+
+```cs
+
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddBot<EchoBot>(options =>
+            {
+                options.CredentialProvider = new ConfigurationCredentialProvider(Configuration);
+
+                IStorage dataStore = new MemoryStorage();
+                var conversationState = new ConversationState(dataStore);
+                options.State.Add(conversationState);
+
+                var stateSet = new BotStateSet(options.State.ToArray());
+                options.Middleware.Add(stateSet);
+            });
+
+            services.AddSingleton<ConversationState>(sp =>
+            {
+                var options = sp.GetRequiredService<IOptions<BotFrameworkOptions>>().Value;
+
+                if (options == null)
+                {
+                    throw new InvalidOperationException("BotFrameworkOptions must be configured prior to setting up the State Accessors");
+                }
+
+                var conversationState = options.State.OfType<ConversationState>().FirstOrDefault();
+                if (conversationState == null)
+                {
+                    throw new InvalidOperationException("ConversationState must be defined and added before adding conversation-scoped state accessors.");
+                }
+
+                return conversationState;
+            });
+        }
+
+```
+
 

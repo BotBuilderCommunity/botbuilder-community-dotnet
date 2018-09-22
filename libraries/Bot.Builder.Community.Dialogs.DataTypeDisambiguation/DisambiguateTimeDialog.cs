@@ -1,25 +1,28 @@
 ﻿using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Builder.Prompts.Choices;
 using Microsoft.Recognizers.Text;
 using Microsoft.Recognizers.Text.DateTime;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Bot.Builder.Dialogs.Choices;
+using Microsoft.Bot.Schema;
 
 namespace Bot.Builder.Community.Dialogs.DataTypeDisambiguation
 {
-    public class DisambiguateTimeDialog : DialogContainer
+    public class DisambiguateTimeDialog : ComponentDialog
     {
         private DisambiguateTimeDialog() : base(Id)
         {
             var recognizer = new DateTimeRecognizer(Culture.English);
             var model = recognizer.GetDateTimeModel();
 
-            Dialogs.Add(Id, new WaterfallStep[]
+            AddDialog(new WaterfallDialog(Id, new WaterfallStep[]
             {
-                async(dc,args, next) =>{
-                    await dc.Context.SendActivity("What time?");
+                async (dc, cancellationToken) =>
+                {
+                    await dc.Context.SendActivityAsync("What time?");
+                    return EndOfTurn;
                 },
-                async (dc, args, next) =>
+                async (dc, cancellationToken) =>
                 {
                     var stateWrapper = new DisambiguateTimeDialogStateWrapper(dc.ActiveDialog.State);
 
@@ -27,38 +30,45 @@ namespace Bot.Builder.Community.Dialogs.DataTypeDisambiguation
 
                     stateWrapper.Resolutions = value;
 
-                    if (value.ResolutionType != Resolution.ResolutionTypes.Time && value.ResolutionType != Resolution.ResolutionTypes.TimeRange)
+                    if (value.ResolutionType != Resolution.ResolutionTypes.Time &&
+                        value.ResolutionType != Resolution.ResolutionTypes.TimeRange)
                     {
-                        await dc.Context.SendActivity("I don't understand. Please provide a time");
-                        await dc.Replace(Id);
+                        await dc.Context.SendActivityAsync("I don't understand. Please provide a time");
+                        return await dc.ReplaceDialogAsync(Id);
                     }
-                    else if (value.NeedsDisambiguation)
+
+                    if (value.NeedsDisambiguation)
                     {
-                        var amOrPmChoices = new List<Choice>(new []{new Choice() { Value = "AM" }, new Choice() { Value = "PM" } });
-                        await dc.Prompt("choicePrompt", "Is that AM or PM?", new ChoicePromptOptions
+                        var amOrPmChoices = new List<Choice>(new[]
+                            {new Choice() {Value = "AM"}, new Choice() {Value = "PM"}});
+                        return await dc.PromptAsync("choicePrompt", new PromptOptions
                         {
+                            Prompt = new Activity
+                            {
+                                Type = ActivityTypes.Message,
+                                Text = "Is that AM or PM?"
+                            },
                             Choices = amOrPmChoices
                         }).ConfigureAwait(false);
                     }
-                    else
-                    {
-                        stateWrapper.Time = value.FirstOrDefault().Time1.Value;
-                        await dc.End(dc.ActiveDialog.State);
-                    }                    
+
+                    stateWrapper.Time = value.FirstOrDefault().Time1.Value;
+                    return await dc.EndDialogAsync(dc.ActiveDialog.State);
                 },
-                async (dc, args, next) =>
+                async (dc, cancellationToken) =>
                 {
                     var stateWrapper = new DisambiguateTimeDialogStateWrapper(dc.ActiveDialog.State);
-                    var amOrPmChoice = ((FoundChoice) args["Value"]).Value;
-                    var availableTimes = stateWrapper.Resolutions.Select(x=>x.Time1.Value);
-                    stateWrapper.Time = amOrPmChoice  == "AM" ? availableTimes.Min() : availableTimes.Max();
-                    await dc.End(dc.ActiveDialog.State);
+                    var amOrPmChoice = ((FoundChoice) dc.Result).Value;
+                    var availableTimes = stateWrapper.Resolutions.Select(x => x.Time1.Value);
+                    stateWrapper.Time = amOrPmChoice == "AM" ? availableTimes.Min() : availableTimes.Max();
+                    return await dc.EndDialogAsync(dc.ActiveDialog.State);
                 }
-            });
+            }));
 
-            Dialogs.Add("textPrompt", new TextPrompt());
-            Dialogs.Add("choicePrompt", new ChoicePrompt("en"));
+            AddDialog(new TextPrompt("textPrompt"));
+            AddDialog(new ChoicePrompt("choicePrompt", defaultLocale: "en"));
         }
+
         public static string Id => "disambiguateTimeDialog";
 
         public static DisambiguateTimeDialog Instance = new DisambiguateTimeDialog();
