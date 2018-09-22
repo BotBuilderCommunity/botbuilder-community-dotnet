@@ -34,7 +34,7 @@ namespace Bot.Builder.Community.Dialogs.DataTypeDisambiguation
                         value.ResolutionType != Resolution.ResolutionTypes.DateTimeRange)
                     {
                         await dc.Context.SendActivityAsync("I don't understand. Please provide a date");
-                        return await dc.ReplaceAsync(Id);
+                        return await dc.ReplaceDialogAsync(Id);
                     }
 
                     if (value.NeedsDisambiguation)
@@ -54,7 +54,7 @@ namespace Bot.Builder.Community.Dialogs.DataTypeDisambiguation
                     }
 
                     stateWrapper.Date = value.FirstOrDefault().Date1.Value;
-                    return await dc.EndAsync(dc.ActiveDialog.State);
+                    return await dc.EndDialogAsync(dc.ActiveDialog.State);
                 },
                 async (dc, cancellationToken) =>
                 {
@@ -62,7 +62,7 @@ namespace Bot.Builder.Community.Dialogs.DataTypeDisambiguation
                     var amOrPmChoice = ((FoundChoice)dc.Result).Value;
                     var availableTimes = stateWrapper.Resolutions.Select(x=>x.Date1.Value);
                     stateWrapper.Date = amOrPmChoice  == "AM" ? availableTimes.Min() : availableTimes.Max();
-                    return await dc.EndAsync(dc.ActiveDialog.State);
+                    return await dc.EndDialogAsync(dc.ActiveDialog.State);
                 }
             }));
 

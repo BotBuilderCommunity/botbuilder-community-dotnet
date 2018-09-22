@@ -34,7 +34,7 @@ namespace Bot.Builder.Community.Dialogs.DataTypeDisambiguation
                         value.ResolutionType != Resolution.ResolutionTypes.TimeRange)
                     {
                         await dc.Context.SendActivityAsync("I don't understand. Please provide a time");
-                        return await dc.ReplaceAsync(Id);
+                        return await dc.ReplaceDialogAsync(Id);
                     }
 
                     if (value.NeedsDisambiguation)
@@ -53,7 +53,7 @@ namespace Bot.Builder.Community.Dialogs.DataTypeDisambiguation
                     }
 
                     stateWrapper.Time = value.FirstOrDefault().Time1.Value;
-                    return await dc.EndAsync(dc.ActiveDialog.State);
+                    return await dc.EndDialogAsync(dc.ActiveDialog.State);
                 },
                 async (dc, cancellationToken) =>
                 {
@@ -61,7 +61,7 @@ namespace Bot.Builder.Community.Dialogs.DataTypeDisambiguation
                     var amOrPmChoice = ((FoundChoice) dc.Result).Value;
                     var availableTimes = stateWrapper.Resolutions.Select(x => x.Time1.Value);
                     stateWrapper.Time = amOrPmChoice == "AM" ? availableTimes.Min() : availableTimes.Max();
-                    return await dc.EndAsync(dc.ActiveDialog.State);
+                    return await dc.EndDialogAsync(dc.ActiveDialog.State);
                 }
             }));
 

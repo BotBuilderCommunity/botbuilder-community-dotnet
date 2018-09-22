@@ -63,7 +63,7 @@ In your bot code, when you want to hand off to the Location dialog you can use d
             {
                 async (dc, cancellationToken) =>
                 {
-                        return await dc.BeginAsync(LocationDialog.MainDialogId);
+                        return await dc.BeginDialogAsync(LocationDialog.MainDialogId);
                 },
                 async (dc, cancellationToken) =>
                 {
@@ -76,7 +76,7 @@ In your bot code, when you want to hand off to the Location dialog you can use d
                         await dc.Context.SendActivity($"No location found");
                     }
 
-                    return await dc.EndAsync();
+                    return await dc.EndDialogAsync();
                 }
             }));
 

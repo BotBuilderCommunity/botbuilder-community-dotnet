@@ -37,7 +37,7 @@ namespace Bot.Builder.Community.Dialogs.Prompts.Tests
             var dialogState = convoState.CreateProperty<DialogState>("dialogState");
 
             var adapter = new TestAdapter()
-                .Use(convoState);
+                .Use(new AutoSaveStateMiddleware(convoState));
 
             // Create new DialogSet.
             var dialogs = new DialogSet(dialogState);
@@ -50,7 +50,7 @@ namespace Bot.Builder.Community.Dialogs.Prompts.Tests
             {
                 var dc = await dialogs.CreateContextAsync(turnContext, cancellationToken);
 
-                var results = await dc.ContinueAsync(cancellationToken);
+                var results = await dc.ContinueDialogAsync(cancellationToken);
                 if (!turnContext.Responded && results.Status == DialogTurnStatus.Empty && results.Status != DialogTurnStatus.Complete)
                 {
                     var options = new PromptOptions { Prompt = new Activity { Type = ActivityTypes.Message, Text = "Enter a currency." } };
@@ -92,7 +92,7 @@ namespace Bot.Builder.Community.Dialogs.Prompts.Tests
             var dialogState = convoState.CreateProperty<DialogState>("dialogState");
 
             var adapter = new TestAdapter()
-                .Use(convoState);
+                .Use(new AutoSaveStateMiddleware(convoState));
 
             // Create new DialogSet.
             var dialogs = new DialogSet(dialogState);
@@ -105,7 +105,7 @@ namespace Bot.Builder.Community.Dialogs.Prompts.Tests
             {
                 var dc = await dialogs.CreateContextAsync(turnContext, cancellationToken);
 
-                var results = await dc.ContinueAsync(cancellationToken);
+                var results = await dc.ContinueDialogAsync(cancellationToken);
                 if (!turnContext.Responded && results.Status == DialogTurnStatus.Empty && results.Status != DialogTurnStatus.Complete)
                 {
                     var options = new PromptOptions { Prompt = new Activity { Type = ActivityTypes.Message, Text = "Enter a temperature." } };
@@ -151,7 +151,7 @@ namespace Bot.Builder.Community.Dialogs.Prompts.Tests
             var dialogState = convoState.CreateProperty<DialogState>("dialogState");
 
             var adapter = new TestAdapter()
-                .Use(convoState);
+                .Use(new AutoSaveStateMiddleware(convoState));
 
             // Create new DialogSet.
             var dialogs = new DialogSet(dialogState);
@@ -164,7 +164,7 @@ namespace Bot.Builder.Community.Dialogs.Prompts.Tests
             {
                 var dc = await dialogs.CreateContextAsync(turnContext, cancellationToken);
 
-                var results = await dc.ContinueAsync(cancellationToken);
+                var results = await dc.ContinueDialogAsync(cancellationToken);
                 if (!turnContext.Responded && results.Status == DialogTurnStatus.Empty && results.Status != DialogTurnStatus.Complete)
                 {
                     var options = new PromptOptions { Prompt = new Activity { Type = ActivityTypes.Message, Text = "Enter an age." } };
@@ -206,7 +206,7 @@ namespace Bot.Builder.Community.Dialogs.Prompts.Tests
             var dialogState = convoState.CreateProperty<DialogState>("dialogState");
 
             var adapter = new TestAdapter()
-                .Use(convoState);
+                .Use(new AutoSaveStateMiddleware(convoState));
 
             // Create new DialogSet.
             var dialogs = new DialogSet(dialogState);
@@ -219,7 +219,7 @@ namespace Bot.Builder.Community.Dialogs.Prompts.Tests
             {
                 var dc = await dialogs.CreateContextAsync(turnContext, cancellationToken);
 
-                var results = await dc.ContinueAsync(cancellationToken);
+                var results = await dc.ContinueDialogAsync(cancellationToken);
                 if (!turnContext.Responded && results.Status == DialogTurnStatus.Empty && results.Status != DialogTurnStatus.Complete)
                 {
                     var options = new PromptOptions { Prompt = new Activity { Type = ActivityTypes.Message, Text = "Enter an age." } };

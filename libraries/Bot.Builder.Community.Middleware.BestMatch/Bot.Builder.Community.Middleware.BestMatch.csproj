@@ -17,7 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Bot.Builder" Version="4.0.0.39259" />
+    <PackageReference Include="Microsoft.Bot.Builder" Version="4.0.6" />
   </ItemGroup>
 
 </Project>

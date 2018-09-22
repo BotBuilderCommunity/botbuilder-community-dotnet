@@ -95,13 +95,13 @@ namespace Bot.Builder.Community.Dialogs.Location
 
                         if (options.HasFlag(LocationOptions.UseNativeControl) && isFacebookChannel)
                         {
-                            return await dc.BeginAsync(DialogIds.LocationRetrieverFacebookDialog);
+                            return await dc.BeginDialogAsync(DialogIds.LocationRetrieverFacebookDialog);
                         }
 
-                        return await dc.BeginAsync(DialogIds.LocationRetrieverRichDialog);
+                        return await dc.BeginDialogAsync(DialogIds.LocationRetrieverRichDialog);
                     }
 
-                    return await dc.BeginAsync(DialogIds.HeroStartCardDialog);
+                    return await dc.BeginDialogAsync(DialogIds.HeroStartCardDialog);
                 },
                 async (dc, cancellationToken) =>
                 {
@@ -136,12 +136,12 @@ namespace Bot.Builder.Community.Dialogs.Location
                     if (dc.Result is bool result && !result)
                     {
                         await dc.Context.SendActivityAsync(resourceManager.ResetPrompt);
-                        return await dc.ReplaceAsync(InitialDialogId);
+                        return await dc.ReplaceDialogAsync(InitialDialogId);
                     }
 
                     if (!options.HasFlag(LocationOptions.SkipFavorites))
                     {
-                        return await dc.BeginAsync(DialogIds.AddToFavoritesDialog,
+                        return await dc.BeginDialogAsync(DialogIds.AddToFavoritesDialog,
                             new AddToFavoritesDialogOptions()
                             {
                                 Location = (Bing.Location) dc.Values[StepContextKeys.SelectedLocation]
@@ -154,7 +154,7 @@ namespace Bot.Builder.Community.Dialogs.Location
                 async (dc, cancellationToken) =>
                 {
                     var selectedLocation = (Bing.Location) dc.Values[StepContextKeys.SelectedLocation];
-                    return await dc.EndAsync(CreatePlace(selectedLocation));
+                    return await dc.EndDialogAsync(CreatePlace(selectedLocation));
                 }
             }));
 
@@ -185,19 +185,19 @@ namespace Bot.Builder.Community.Dialogs.Location
                     if (foundLocations == null || foundLocations.Count == 0)
                     {
                         await dc.Context.SendActivityAsync(resourceManager.LocationNotFound);
-                        return await dc.ReplaceAsync(DialogIds.LocationRetrieverRichDialog);
+                        return await dc.ReplaceDialogAsync(DialogIds.LocationRetrieverRichDialog);
                     }
 
                     var locations = new List<Bing.Location>();
                     locations.AddRange(foundLocations.Take(MaxLocationCount));
 
-                    return await dc.BeginAsync(DialogIds.SelectAndConfirmLocationDialog,
+                    return await dc.BeginDialogAsync(DialogIds.SelectAndConfirmLocationDialog,
                         new SelectLocationDialogOptions {Locations = locations});
                 },
                 async (dc, cancellationToken) =>
                 {
                     var selectedLocation = (Bing.Location) dc.Result;
-                    return await dc.EndAsync(selectedLocation);
+                    return await dc.EndDialogAsync(selectedLocation);
                 }
             }));
 
@@ -251,14 +251,14 @@ namespace Bot.Builder.Community.Dialogs.Location
 
                             if (requiredFields == LocationRequiredFields.None)
                             {
-                                return await dc.EndAsync(locations.First());
+                                return await dc.EndDialogAsync(locations.First());
                             }
 
-                            return await dc.ReplaceAsync(DialogIds.CompleteMissingRequiredFieldsDialog,
+                            return await dc.ReplaceDialogAsync(DialogIds.CompleteMissingRequiredFieldsDialog,
                                 new CompleteMissingFieldsDialogOptions {Location = locations.First()});
                         }
 
-                        return await dc.ReplaceAsync(DialogIds.LocationRetrieverRichDialog);
+                        return await dc.ReplaceDialogAsync(DialogIds.LocationRetrieverRichDialog);
                     }
 
                     var message = dc.Context.Activity.Text;
@@ -269,22 +269,22 @@ namespace Bot.Builder.Community.Dialogs.Location
 
                         if (requiredFields == LocationRequiredFields.None)
                         {
-                            return await dc.EndAsync(locations[value - 1]);
+                            return await dc.EndDialogAsync(locations[value - 1]);
                         }
 
-                        return await dc.ReplaceAsync(DialogIds.CompleteMissingRequiredFieldsDialog,
+                        return await dc.ReplaceDialogAsync(DialogIds.CompleteMissingRequiredFieldsDialog,
                             new CompleteMissingFieldsDialogOptions {Location = locations[value - 1]});
                     }
 
                     if (StringComparer.OrdinalIgnoreCase.Equals(message, resourceManager.OtherComand))
                     {
-                        return await dc.ReplaceAsync(DialogIds.CompleteMissingRequiredFieldsDialog,
+                        return await dc.ReplaceDialogAsync(DialogIds.CompleteMissingRequiredFieldsDialog,
                             new CompleteMissingFieldsDialogOptions {Location = new Bing.Location()});
                     }
 
                     await dc.Context.SendActivityAsync(resourceManager.InvalidLocationResponse);
 
-                    return await dc.ReplaceAsync(DialogIds.SelectAndConfirmLocationDialog,
+                    return await dc.ReplaceDialogAsync(DialogIds.SelectAndConfirmLocationDialog,
                         new SelectLocationDialogOptions
                         {
                             Locations = (List<Bing.Location>) dc.Values[StepContextKeys.Locations]
@@ -336,7 +336,7 @@ namespace Bot.Builder.Community.Dialogs.Location
                             resourceManager, selectedLocation);
                     }
 
-                    return await dc.EndAsync(selectedLocation);
+                    return await dc.EndDialogAsync(selectedLocation);
                 },
                 async (dc, cancellationToken) =>
                 {
@@ -361,7 +361,7 @@ namespace Bot.Builder.Community.Dialogs.Location
                             break;
                     }
 
-                    return await dc.ReplaceAsync(DialogIds.CompleteMissingRequiredFieldsDialog,
+                    return await dc.ReplaceDialogAsync(DialogIds.CompleteMissingRequiredFieldsDialog,
                         new CompleteMissingFieldsDialogOptions {Location = selectedLocation});
                 }
             }));
@@ -379,16 +379,16 @@ namespace Bot.Builder.Community.Dialogs.Location
 
                     if (messageText.ToLower() == resourceManager.FavoriteLocations.ToLower())
                     {
-                        return await dc.ReplaceAsync(DialogIds.FavoriteLocationRetrieverDialog);
+                        return await dc.ReplaceDialogAsync(DialogIds.FavoriteLocationRetrieverDialog);
                     }
 
                     if (messageText.ToLower() == resourceManager.OtherLocation.ToLower())
                     {
-                        return await dc.ReplaceAsync(DialogIds.LocationRetrieverRichDialog);
+                        return await dc.ReplaceDialogAsync(DialogIds.LocationRetrieverRichDialog);
                     }
 
                     await dc.Context.SendActivityAsync(resourceManager.InvalidStartBranchResponse);
-                    return await dc.ReplaceAsync(DialogIds.HeroStartCardDialog);
+                    return await dc.ReplaceDialogAsync(DialogIds.HeroStartCardDialog);
                 }
             }));
 
@@ -440,12 +440,12 @@ namespace Bot.Builder.Community.Dialogs.Location
 
                     // If we didn't receive a valid place, post error message and restart dialog.
                     await dc.Context.SendActivityAsync(resourceManager.InvalidLocationResponseFacebook);
-                    return await dc.ReplaceAsync(DialogIds.LocationRetrieverFacebookDialog);
+                    return await dc.ReplaceDialogAsync(DialogIds.LocationRetrieverFacebookDialog);
                 },
                 async (dc, cancellationToken) =>
                 {
                     var selectedLocation = (Bing.Location) dc.Values[StepContextKeys.SelectedLocation];
-                    return await dc.EndAsync(selectedLocation);
+                    return await dc.EndDialogAsync(selectedLocation);
                 }
             }));
 
@@ -484,13 +484,13 @@ namespace Bot.Builder.Community.Dialogs.Location
                                 await favoritesManager.Delete(dc.Context, selectedLocation);
                                 await dc.Context.SendActivityAsync(
                                     string.Format(resourceManager.FavoriteDeletedConfirmation, selectedLocation.Name));
-                                return await dc.ReplaceAsync(DialogIds.FavoriteLocationRetrieverDialog);
+                                return await dc.ReplaceDialogAsync(DialogIds.FavoriteLocationRetrieverDialog);
                             }
 
                             await dc.Context.SendActivityAsync(
                                 string.Format(resourceManager.DeleteFavoriteAbortion,
                                     selectedLocation.Name));
-                            return await dc.ReplaceAsync(DialogIds.FavoriteLocationRetrieverDialog);
+                            return await dc.ReplaceDialogAsync(DialogIds.FavoriteLocationRetrieverDialog);
                         }
                     }));
 
@@ -517,7 +517,7 @@ namespace Bot.Builder.Community.Dialogs.Location
                         if (await favoritesManager.MaxCapacityReached(dc.Context)
                             || await favoritesManager.IsFavorite(dc.Context, selectedLocation))
                         {
-                            return await dc.EndAsync(selectedLocation);
+                            return await dc.EndDialogAsync(selectedLocation);
                         }
 
                         return await dc.PromptAsync(PromptDialogIds.Confirm, new PromptOptions()
@@ -563,7 +563,7 @@ namespace Bot.Builder.Community.Dialogs.Location
                     }
 
                     var selectedLocation = (Bing.Location) dc.Values[StepContextKeys.SelectedLocation];
-                    return await dc.EndAsync(selectedLocation);
+                    return await dc.EndDialogAsync(selectedLocation);
                 },
                 async (dc, cancellationToken) =>
                 {
@@ -575,7 +575,7 @@ namespace Bot.Builder.Community.Dialogs.Location
                             resourceManager.DuplicateFavoriteNameResponse,
                             newFavoriteName));
 
-                        return await dc.ReplaceAsync(DialogIds.AddToFavoritesDialog,
+                        return await dc.ReplaceDialogAsync(DialogIds.AddToFavoritesDialog,
                             new AddToFavoritesDialogOptions()
                             {
                                 Location = (Bing.Location) dc.Values[StepContextKeys.SelectedLocation]
@@ -591,7 +591,7 @@ namespace Bot.Builder.Community.Dialogs.Location
                     await dc.Context.SendActivityAsync(string.Format(resourceManager.FavoriteAddedConfirmation,
                         newFavoriteName));
 
-                    return await dc.EndAsync(selectedLocation);
+                    return await dc.EndDialogAsync(selectedLocation);
                 }
             }));
 
@@ -604,7 +604,7 @@ namespace Bot.Builder.Community.Dialogs.Location
                     if (!favorites.Any())
                     {
                         await dc.Context.SendActivityAsync(resourceManager.NoFavoriteLocationsFound);
-                        return await dc.ReplaceAsync(DialogIds.LocationRetrieverRichDialog);
+                        return await dc.ReplaceDialogAsync(DialogIds.LocationRetrieverRichDialog);
                     }
 
                     await dc.Context.SendActivityAsync(CreateFavoritesCarousel(dc.Context,
@@ -619,7 +619,7 @@ namespace Bot.Builder.Community.Dialogs.Location
 
                     if (StringComparer.OrdinalIgnoreCase.Equals(messageText, resourceManager.OtherComand))
                     {
-                        return await dc.ReplaceAsync(DialogIds.LocationRetrieverRichDialog);
+                        return await dc.ReplaceDialogAsync(DialogIds.LocationRetrieverRichDialog);
                     }
 
                     var location = await TryParseSelection(dc.Context, favoritesManager, messageText);
@@ -631,10 +631,10 @@ namespace Bot.Builder.Community.Dialogs.Location
 
                         if (requiredFields == LocationRequiredFields.None)
                         {
-                            return await dc.EndAsync(location.Location);
+                            return await dc.EndDialogAsync(location.Location);
                         }
 
-                        return await dc.ReplaceAsync(DialogIds.CompleteMissingRequiredFieldsDialog,
+                        return await dc.ReplaceDialogAsync(DialogIds.CompleteMissingRequiredFieldsDialog,
                             new CompleteMissingFieldsDialogOptions() {Location = location.Location});
                     }
 
@@ -650,13 +650,13 @@ namespace Bot.Builder.Community.Dialogs.Location
                         if (StringComparer.OrdinalIgnoreCase.Equals(locationAndCommand.Item2,
                             resourceManager.DeleteCommand))
                         {
-                            return await dc.ReplaceAsync(DialogIds.ConfirmDeleteFromFavoritesDialog,
+                            return await dc.ReplaceDialogAsync(DialogIds.ConfirmDeleteFromFavoritesDialog,
                                 new ConfirmDeleteFavoriteDialogOptions() {Location = locationAndCommand.Item1});
                         }
 
                         await dc.Context.SendActivityAsync(
                             "Edit Favorites functionality not currently implemented.");
-                        return await dc.ReplaceAsync(DialogIds.FavoriteLocationRetrieverDialog);
+                        return await dc.ReplaceDialogAsync(DialogIds.FavoriteLocationRetrieverDialog);
                         //var editDialog = this.locationDialogFactory.CreateDialog(BranchType.EditFavoriteLocation, value.Location, value.Name);
                         //context.Call(editDialog, this.ResumeAfterChildDialogAsync);
                     }
@@ -664,7 +664,7 @@ namespace Bot.Builder.Community.Dialogs.Location
                     await dc.Context.SendActivityAsync(
                         string.Format(resourceManager.InvalidFavoriteLocationSelection, messageText));
 
-                    return await dc.ReplaceAsync(DialogIds.FavoriteLocationRetrieverDialog);
+                    return await dc.ReplaceDialogAsync(DialogIds.FavoriteLocationRetrieverDialog);
                 }
             }));
         }

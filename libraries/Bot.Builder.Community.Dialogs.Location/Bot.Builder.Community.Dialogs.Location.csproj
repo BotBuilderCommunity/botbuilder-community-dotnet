@@ -12,8 +12,8 @@
 
   <ItemGroup>
     <PackageReference Include="CoreCompat.System.Drawing" Version="1.0.0-beta006" />
-    <PackageReference Include="Microsoft.Bot.Builder" Version="4.0.0.39259" />
-    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.0.0.39259" />
+    <PackageReference Include="Microsoft.Bot.Builder" Version="4.0.6" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.0.6" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
   </ItemGroup>
 
