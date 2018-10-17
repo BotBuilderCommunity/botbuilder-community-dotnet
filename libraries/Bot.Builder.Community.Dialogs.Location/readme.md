@@ -34,8 +34,7 @@ To use the dialog, add it to your DialogSet as shown below.
 
 ```cs
 
-Dialogs.Add(LocationDialog.MainDialogId,
-                new LocationDialog("<YOUR-API-KEY-FOR-BING-OR-AZURE-MAPS",
+Dialogs.Add(new LocationDialog("<YOUR-API-KEY-FOR-BING-OR-AZURE-MAPS>",
                     "Please enter a location", 
                     conversationState,
                     useAzureMaps: false, 
@@ -63,13 +62,14 @@ In your bot code, when you want to hand off to the Location dialog you can use d
             {
                 async (dc, cancellationToken) =>
                 {
-                        return await dc.BeginDialogAsync(LocationDialog.MainDialogId);
+                        return await dc.BeginDialogAsync(LocationDialog.LocationDialogId);
                 },
                 async (dc, cancellationToken) =>
                 {
-                    if (args is Place returnedPlace)
+                    if (dc.Result is Place returnedPlace)
                     {
-                        await dc.Context.SendActivity($"Location found: {returnedPlace.Address}");
+                        dynamic address = returnedPlace.Address;
+                        await dc.Context.SendActivity($"Location found: {returnedPlace.Address.FormattedAddress}");
                     }
                     else
                     {
