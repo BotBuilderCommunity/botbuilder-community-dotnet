@@ -18,7 +18,7 @@ namespace Bot.Builder.Community.Dialogs.Location
     {
         private const int MaxLocationCount = 5;
         
-        public const string LocationDialogId = "LocationDialog";
+        public const string DefaultLocationDialogId = "LocationDialog";
 
         /// <summary>Contains the IDs for the other dialogs in the set.</summary>
         protected static class DialogIds
@@ -51,7 +51,7 @@ namespace Bot.Builder.Community.Dialogs.Location
             string apiKey,
             string prompt,
             BotState state,
-            string dialogId = LocationDialogId,
+            string dialogId = DefaultLocationDialogId,
             bool skipPrompt = false,
             bool useAzureMaps = true,
             LocationOptions options = LocationOptions.None,
@@ -80,7 +80,7 @@ namespace Bot.Builder.Community.Dialogs.Location
                 geoSpatialService = new BingGeoSpatialService(apiKey);
             }
 
-            InitialDialogId = LocationDialogId;
+            InitialDialogId = DefaultLocationDialogId;
 
             AddDialog(new ChoicePrompt(PromptDialogIds.Choice));
             AddDialog(new TextPrompt(PromptDialogIds.Text));
