@@ -80,7 +80,7 @@ namespace Bot.Builder.Community.Dialogs.Location
                 geoSpatialService = new BingGeoSpatialService(apiKey);
             }
 
-            InitialDialogId = DefaultLocationDialogId;
+            InitialDialogId = dialogId;
 
             AddDialog(new ChoicePrompt(PromptDialogIds.Choice));
             AddDialog(new TextPrompt(PromptDialogIds.Text));
