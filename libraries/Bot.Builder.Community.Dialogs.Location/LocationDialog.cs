@@ -48,10 +48,10 @@ namespace Bot.Builder.Community.Dialogs.Location
         }
 
         public LocationDialog(
-            string dialogId = LocationDialogId,
             string apiKey,
             string prompt,
             BotState state,
+            string dialogId = LocationDialogId,
             bool skipPrompt = false,
             bool useAzureMaps = true,
             LocationOptions options = LocationOptions.None,
