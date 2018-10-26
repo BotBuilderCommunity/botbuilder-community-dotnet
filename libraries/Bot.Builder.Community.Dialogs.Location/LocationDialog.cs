@@ -151,6 +151,10 @@ namespace Bot.Builder.Community.Dialogs.Location
                             }
                         );
                     }
+                    else
+                    {
+                        await dc.NextAsync();
+                    }
 
                     return EndOfTurn;
                 },
