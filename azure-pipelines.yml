@@ -10,7 +10,9 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- script: dotnet build --configuration $(buildConfiguration)
+- script: |
+  dotnet build --configuration $(buildConfiguration)
+  dotnet test dotnetcore-tests --configuration $(buildConfiguration) --logger trx
   displayName: 'dotnet build $(buildConfiguration)'
-- script: dotnet test  --configuration $(buildConfiguration)
-  displayName: 'dotnet test $(buildConfiguration)'
+
+
