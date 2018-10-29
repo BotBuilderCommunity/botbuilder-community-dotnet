@@ -45,14 +45,16 @@ Install into your project using the following command in the package manager;
 
 ### Usage
 
-#### Adding the adapter and skills endpoint to your bot
+Add menu here
+
+### Adding the adapter and skills endpoint to your bot
 
 Currently there are integration libraries available for WebApi and .NET Core available for the adapter.
 When using the integration libraries a new endpoint for your Alexa skill is created at '/api/skillrequests'. 
 e.g. http://www.youbot.com/api/skillrequests.  This is the endpoint that you should configure within the Amazon Alexa
 Skills Developer portal as the endpoint for your skill.
 
-##### WebApi
+#### WebApi
 
 When implementing your bot using WebApi, the integration layer for Alexa works the same as the default for Bot Framework.  The only difference being in your BotConfig file under the App_Start folder you call MapAlexaBotFramework instead;
 
@@ -69,7 +71,7 @@ When implementing your bot using WebApi, the integration layer for Alexa works t
     }
 ``` 
 
-##### .NET Core
+#### .NET Core
 
 An example of using the Alexa adapter with a bot built on Asp.Net Core. Again, The implementation of the 
 integration layer is based upon the same patterns used for the Bot Framework integration layer. 
@@ -94,7 +96,7 @@ In Startup.cs you can configure your bot to use the Alexa adapter using the foll
         }
 ```
 
-#### Default Alexa Request to Activity mapping
+### Default Alexa Request to Activity mapping
 
 When an incoming request is receieved, the activity sent to your bot is comprised of the following values;
 
@@ -118,7 +120,7 @@ For incoming requests of type SessionEndedRequest we also set the following prop
 
 The entire body of the Alexa request is placed into the Activity as Channel Data, of type AlexaRequestBody.
 
-#### Default Activity to Alexa Response mapping
+### Default Activity to Alexa Response mapping
 
 The Alexa adapter will send a response to the Alexa skill request if the outgoing activity is of type MessageActivity or EndOfConversation activity.
 
@@ -132,9 +134,9 @@ If the activity type you send from your bot is of type MessageActivity the follo
 
 * **ShouldEndSession** : Defaults to false. However, setting the InputHint property on the activity to InputHint.IgnoringInput will set this value to true and end the session.
 
-#### TurnContext Extension Methods
+### TurnContext Extension Methods
 
-##### Session Attributes
+#### Session Attributes
 
 Alexa Skills use Session Attributes on the request / response objects to allow for values to be persisted accross turns of a conversation.  When an incoming Alexa request is receieved we place the Session Attributes on the request into the Services collection on the TurnContext.  We then provide an extension method on the context to allow you to add / update / remove items on the Session Attributes list. Calling the extension method AlexaSessionAttributes returns an object of type Dictionary<string, string>. If you wanted to add an item to the Session Attributes collection you could do the following;
 
@@ -142,7 +144,7 @@ Alexa Skills use Session Attributes on the request / response objects to allow f
     context.AlexaSessionAttributes.Add("NewItemKey","New Item Value");
 ```
 
-##### Progressive Responses
+#### Progressive Responses
 
 Alexa Skills allow only a single primary response for each request.  However, if your bot will be running some form of long running activity (such as a lookup to a 3rd party API) you are able to send the user a holding response using the Alexa Progressive Responses API, before sending your final response.
 
@@ -157,7 +159,7 @@ The extension method will get the right values from the incoming request to dete
 ***Note: Alexa Skills allow you to send up to 5 progressive responses on each turn.  You should manage and check the number of Progressive Responses you are sending as the Bot Builder SDK does not check this.*** 
 
 
-##### Get entire Alexa Request Body
+#### Get entire Alexa Request Body
 
 We have provided an extension method to allow you to get the original Alexa request body, which we store on the ChannelData property of the Activity sent to your bot, as a strongly typed object of type AlexaRequestBody.  To get the request just call the extension method as below;
 
@@ -168,7 +170,7 @@ We have provided an extension method to allow you to get the original Alexa requ
 ***Note: If you call this extension method when the incoming Activity is not from an Alexa skill then the extension method will simply return null.*** 
 
 
-##### Add Directives to response
+#### Add Directives to response
 
 Add objects of type IAlexaDirective to a collection used when sending outgoing requests to add directives to the response.  This allows you to do things like 
 controlling the display on Echo Show / Spot devices.  Classes are included for Display and Hint Directives.
@@ -177,7 +179,7 @@ controlling the display on Echo Show / Spot devices.  Classes are included for D
 	dialogContext.Context.AlexaResponseDirectives().Add(displayDirective);
 ```
 
-##### Check if device has Display or Audio Player support
+#### Check if device has Display or Audio Player support
 
 ```cs 
     dialogContext.Context.AlexaDeviceHasDisplay()
@@ -185,30 +187,12 @@ controlling the display on Echo Show / Spot devices.  Classes are included for D
 	dialogContext.Context.AlexaDeviceHasAudioPlayer()
 ```
 
-#### Alexa Middleware
+### Alexa Middleware
 
 TO BE COMPLETED
 
 
-#### Automated Translation of Bot Framework Cards into Alexa Cards
-
-The Alexa Adapter supports sending Bot Framework cards of type HeroCard, ThumbnailCard and SigninCard as part of your replies to the Alexa skill request.
-
-The Alexa adapter will use the first card attachment by default, unless you have disabled this using the AlexaBotOptions property ConvertFirstActivityAttachmentToAlexaCard.
-
-* **HeroCard and ThumbnailCard** : 
-
- * Alexa Card Small Image URL = The first image in the Images collection on the Hero / Thumbnail card
- * Alexa Card Large Image URL = If a second image exists in the Images collection on the Hero / Thumbnail card this will be used. If no second image exists then this is null.
- * Alexa Card Title = Title property of the Hero / Thumbnail card
- * Alexa Card Content = Text property on the Hero / Thumbnail card
-
-***Note: You should ensure that the images you use on your HeroCard / Thumbnail cards are the correct expected size for Alexa Skills responses.***
-
-* **SigninCard** : If a SignInCard is attached to your outgoing activity, this will be mapped as a LinkAccount card in the Alexa response.
-
-
-#### Alexa Show / Spot Display Support
+### Alexa Show / Spot Display Support
 
 Display Directives to support devices with screens, such as the Echo Show and Spot, can be added to your bots response.  A class for each of the currently supported templates 
 exists within the Alexa.Directives namespace.  A context extension method allows you to add directives to the services collection which will then be used by the Alexa Adapter 
@@ -266,3 +250,20 @@ request has a display - this is because if you send a display directive to a dev
             }
 
 ```
+
+### Automated Translation of Bot Framework Cards into Alexa Cards
+
+The Alexa Adapter supports sending Bot Framework cards of type HeroCard, ThumbnailCard and SigninCard as part of your replies to the Alexa skill request.
+
+The Alexa adapter will use the first card attachment by default, unless you have disabled this using the AlexaBotOptions property ConvertFirstActivityAttachmentToAlexaCard.
+
+* **HeroCard and ThumbnailCard** : 
+
+ * Alexa Card Small Image URL = The first image in the Images collection on the Hero / Thumbnail card
+ * Alexa Card Large Image URL = If a second image exists in the Images collection on the Hero / Thumbnail card this will be used. If no second image exists then this is null.
+ * Alexa Card Title = Title property of the Hero / Thumbnail card
+ * Alexa Card Content = Text property on the Hero / Thumbnail card
+
+***Note: You should ensure that the images you use on your HeroCard / Thumbnail cards are the correct expected size for Alexa Skills responses.***
+
+* **SigninCard** : If a SignInCard is attached to your outgoing activity, this will be mapped as a LinkAccount card in the Alexa response.
