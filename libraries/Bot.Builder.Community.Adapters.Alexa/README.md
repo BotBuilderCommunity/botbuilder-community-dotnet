@@ -45,7 +45,20 @@ Install into your project using the following command in the package manager;
 
 ### Usage
 
-Add menu here
+* [Adding the adapter and skills endpoint to your bot](#adding-the-adapter-and-skills-endpoint-to-your-bot)
+    * [WebApi](#webapi)
+	* [.NET Core](#.net-core)
+* [Default Alexa Request to Activity mapping](#Default-Alexa-Request-to-Activity-mapping)
+* [Default Activity to Alexa Response mapping](#Default-Activity-to-Alexa-Response-mapping)
+* [Alexa TurnContext Extension Methods](#TurnContext-Extension-Methods)
+    * [Session Attributes](#Session-Attributes)
+	* [Progressive Responses](#Progressive-Responses)
+	* [Get entire Alexa Request Body](#Get-entire-Alexa-Request-Body)
+	* [Add Directives to response](#Add-Directives-to-response)
+	* [Check if device has Display or Audio Player support](#Check-if-device-has-Display-or-Audio-Player-support)
+* [Alexa Middleware for transforming incoming requests to Message activities](#Alexa-Middleware)
+* [Alexa Show / Spot Display Support](#Alexa-Show-/-Spot-Display-Support)
+* [Automated Translation of Bot Framework Cards into Alexa Cards](#Automated-Translation-of-Bot-Framework-Cards-into-Alexa-Cards)
 
 ### Adding the adapter and skills endpoint to your bot
 
