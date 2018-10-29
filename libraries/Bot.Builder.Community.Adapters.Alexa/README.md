@@ -60,6 +60,7 @@ Install into your project using the following command in the package manager;
 * [Alexa Show / Spot Display Support](#Alexa-Show-/-Spot-Display-Support)
 * [Automated Translation of Bot Framework Cards into Alexa Cards](#Automated-Translation-of-Bot-Framework-Cards-into-Alexa-Cards)
 
+
 ### Adding the adapter and skills endpoint to your bot
 
 Currently there are integration libraries available for WebApi and .NET Core available for the adapter.
@@ -109,6 +110,7 @@ In Startup.cs you can configure your bot to use the Alexa adapter using the foll
         }
 ```
 
+
 ### Default Alexa Request to Activity mapping
 
 When an incoming request is receieved, the activity sent to your bot is comprised of the following values;
@@ -133,6 +135,7 @@ For incoming requests of type SessionEndedRequest we also set the following prop
 
 The entire body of the Alexa request is placed into the Activity as Channel Data, of type AlexaRequestBody.
 
+
 ### Default Activity to Alexa Response mapping
 
 The Alexa adapter will send a response to the Alexa skill request if the outgoing activity is of type MessageActivity or EndOfConversation activity.
@@ -147,7 +150,9 @@ If the activity type you send from your bot is of type MessageActivity the follo
 
 * **ShouldEndSession** : Defaults to false. However, setting the InputHint property on the activity to InputHint.IgnoringInput will set this value to true and end the session.
 
+
 ### TurnContext Extension Methods
+
 
 #### Session Attributes
 
@@ -156,6 +161,7 @@ Alexa Skills use Session Attributes on the request / response objects to allow f
 ```cs 
     context.AlexaSessionAttributes.Add("NewItemKey","New Item Value");
 ```
+
 
 #### Progressive Responses
 
@@ -172,6 +178,7 @@ The extension method will get the right values from the incoming request to dete
 ***Note: Alexa Skills allow you to send up to 5 progressive responses on each turn.  You should manage and check the number of Progressive Responses you are sending as the Bot Builder SDK does not check this.*** 
 
 
+
 #### Get entire Alexa Request Body
 
 We have provided an extension method to allow you to get the original Alexa request body, which we store on the ChannelData property of the Activity sent to your bot, as a strongly typed object of type AlexaRequestBody.  To get the request just call the extension method as below;
@@ -183,6 +190,7 @@ We have provided an extension method to allow you to get the original Alexa requ
 ***Note: If you call this extension method when the incoming Activity is not from an Alexa skill then the extension method will simply return null.*** 
 
 
+
 #### Add Directives to response
 
 Add objects of type IAlexaDirective to a collection used when sending outgoing requests to add directives to the response.  This allows you to do things like 
@@ -192,6 +200,7 @@ controlling the display on Echo Show / Spot devices.  Classes are included for D
 	dialogContext.Context.AlexaResponseDirectives().Add(displayDirective);
 ```
 
+
 #### Check if device has Display or Audio Player support
 
 ```cs 
@@ -200,9 +209,11 @@ controlling the display on Echo Show / Spot devices.  Classes are included for D
 	dialogContext.Context.AlexaDeviceHasAudioPlayer()
 ```
 
+
 ### Alexa Middleware
 
 TO BE COMPLETED
+
 
 
 ### Alexa Show / Spot Display Support
@@ -263,6 +274,7 @@ request has a display - this is because if you send a display directive to a dev
             }
 
 ```
+
 
 ### Automated Translation of Bot Framework Cards into Alexa Cards
 
