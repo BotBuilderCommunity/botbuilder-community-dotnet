@@ -17,21 +17,21 @@ Incoming Alexa Skill requests are transformed, by the adapter, into Bot Builder 
 
 The adapter supports a broad range of capabilities for Alexa Skills, including;
 
-*Support for voice based Alexa bots
-*Support for the available display directives for Echo Show / Spot devices, with support for the new Fire Tablets coming very soon
-*Support for Alexa Cards
-*Support for Audio / Video directives
-*Integration libraries (similar to those for the Bot Framework Adapter), allowing for the bot to also have its own middleware pipeline for Alexa
-*TurnContext extensions allowing the developer to;
-    *Send Alexa Progressive Updates
-    *Explicitly define and attach an Alexa Card to the response (alternatively Bot Builder Hero / Signin cards can be automatically converted if attached to the outgoing activity)
-    *Specify Alexa RePrompt speech / text
-    *Add to / access Alexa Session Attributes (similar to TurnState in Bot Builder SDK)
-    *Check if a device supports audio or audio and display
-    *Retrieve the raw Alexa request
-    *A new method to allow the user to call the relevant API and access user details (with skill permission), such as address
-*Validation of incoming Alexa requests (required for certification)
-*Middleware to automatically translate incoming Alexa requests into different types of activities
+* Support for voice based Alexa bots
+* Support for the available display directives for Echo Show / Spot devices, with support for the new Fire Tablets coming very soon
+* Support for Alexa Cards
+* Support for Audio / Video directives
+* Integration libraries (similar to those for the Bot Framework Adapter), allowing for the bot to also have its own middleware pipeline for Alexa
+* TurnContext extensions allowing the developer to;
+    * Send Alexa Progressive Updates
+    * Explicitly define and attach an Alexa Card to the response (alternatively Bot Builder Hero / Signin cards can be automatically converted if attached to the outgoing activity)
+    * Specify Alexa RePrompt speech / text
+    * Add to / access Alexa Session Attributes (similar to TurnState in Bot Builder SDK)
+    * Check if a device supports audio or audio and display
+    * Retrieve the raw Alexa request
+    * A new method to allow the user to call the relevant API and access user details (with skill permission), such as address
+* Validation of incoming Alexa requests (required for certification)
+* Middleware to automatically translate incoming Alexa requests into different types of activities
 
 
 ### Installation
