@@ -8,6 +8,7 @@ To see a list of current extensions available for the Bot Builder .NET SDK, use 
 
 * [C# Middleware](#middleware)
 * [C# Dialogs & Prompts](#dialogs-and-prompts)
+* [C# Adapters](#adapters)
 * [C# Recognizers](#recognizers)
 
 ## Installation
@@ -38,6 +39,15 @@ The following dialogs are currently available;
 | ------ | ------ | ------ |
 | [Bot Builder v4 Prompts](libraries/Bot.Builder.Community.Dialogs.Prompts) | A collection of Prompts for use with Bot Builder v4, providing the ability to prompt for and recognize currencies, age, distances and temperature. | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.79-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Dialogs.Prompts/) |
 | [Bot Builder v4 Location Dialog](libraries/Bot.Builder.Community.Dialogs.Location) | An implemention for v4 of the Bot Build .NET SDK of the [Microsoft.Bot.Builder.Location dialog project built for Bot Builder v3](https://github.com/microsoft/botbuilder-location). An open-source location picker control for Microsoft Bot Framework powered by Azure or Bing Maps REST services. This control will allow a user to search for a location, with the ability to specify required fields and also store locations as favorites for the user. | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.100-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Dialogs.Location/) |
+
+## Adapters
+
+The following adapters can be used to expose your bot on additional channels not supported by the Azure Bot Service, such as Alexa.
+
+| Name | Description | NuGet |
+| ------ | ------ | ------ |
+| [Alexa Adapter](libraries/Bot.Builder.Community.Adapters.Alexa) | An adapter to allow for Alexa Skills to be built using the Bot Builder SDK. Includes broad support for Alexa skills capabilities, including devices with displays (Show / Spot), Alexa Cards, access to user profile data and the ability to send Progressive Responses. | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.121-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Adapters.Alexa/) |
+
 
 ## Recognizers
 
