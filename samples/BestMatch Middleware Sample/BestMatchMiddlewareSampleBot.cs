@@ -10,18 +10,18 @@ using Microsoft.Extensions.Logging;
 
 namespace BestMatchMiddleware_Sample
 {
-    public class AlexaAdapterSampleBot : IBot
+    public class BestMatchMiddlewareSampleBot : IBot
     {
         private readonly ILogger logger;
 
-        public AlexaAdapterSampleBot(ILoggerFactory loggerFactory)
+        public BestMatchMiddlewareSampleBot(ILoggerFactory loggerFactory)
         {
             if (loggerFactory == null)
             {
                 throw new System.ArgumentNullException(nameof(loggerFactory));
             }
 
-            logger = loggerFactory.CreateLogger<AlexaAdapterSampleBot>();
+            logger = loggerFactory.CreateLogger<BestMatchMiddlewareSampleBot>();
             logger.LogTrace("Turn start.");
         }
 
