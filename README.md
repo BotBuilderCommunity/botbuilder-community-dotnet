@@ -46,7 +46,7 @@ The following adapters can be used to expose your bot on additional channels not
 
 | Name | Description | Samples | NuGet |
 | ------ | ------ | ------ | ------ |
-| [Alexa Adapter](libraries/Bot.Builder.Community.Adapters.Alexa) | An adapter to allow for Alexa Skills to be built using the Bot Builder SDK. Includes broad support for Alexa skills capabilities, including devices with displays (Show / Spot), Alexa Cards, access to user profile data and the ability to send Progressive Responses. | [Sample](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/samples/Alexa%20Adapter%20Sample) | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.121-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Adapters.Alexa/) |
+| [Alexa Adapter](libraries/Bot.Builder.Community.Adapters.Alexa) | An adapter to allow for Alexa Skills to be built using the Bot Builder SDK. Includes broad support for Alexa skills capabilities, including devices with displays (Show / Spot), Alexa Cards, access to user profile data and the ability to send Progressive Responses. | [Sample](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/Alexa%20Adapter%20Sample) | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.121-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Adapters.Alexa/) |
 
 
 ## Recognizers
