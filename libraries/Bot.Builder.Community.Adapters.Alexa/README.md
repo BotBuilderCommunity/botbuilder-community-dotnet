@@ -15,7 +15,7 @@ Teams, but also via an Alexa Skill.
 
 Incoming Alexa Skill requests are transformed, by the adapter, into Bot Builder Activties and then when your bot responds, the adapter transforms the outgoing Activity into an Alexa response.
 
-A basic sample bot is available [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/samples/Alexa%20Adapter%20Sample).
+A basic sample bot is available [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/Alexa%20Adapter%20Sample).
 
 The adapter supports a broad range of capabilities for Alexa Skills, including;
 
@@ -45,7 +45,7 @@ Install into your project using the following command in the package manager;
     PM> Install-Package Bot.Builder.Community.Adapters.Alexa
 ```
 
-Basic sample bot available [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/samples/Alexa%20Adapter%20Sample).
+Basic sample bot available [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/Alexa%20Adapter%20Sample).
 
 ### Usage
 
