@@ -40,36 +40,7 @@ namespace BestMatchMiddleware_Sample
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAlexaBot<AlexaAdapterSampleBot>(options =>
-            {
-                // Set this to true to validate that a request has come from the Alexa
-                // service - this is a requirement for skill certification
-                // disable this if you want to debug using other tools like Postman.
-                options.AlexaOptions.ValidateIncomingAlexaRequests = true;
-
-                // Determine if we should end a session after each turn
-                // If set to true, you can choose to keep the session open
-                // by using the ExpectingInput InputHint in your outgoing activity
-                options.AlexaOptions.ShouldEndSessionByDefault = true;
-
-                ILogger logger = _loggerFactory.CreateLogger<AlexaAdapterSampleBot>();
-
-                // Catches any errors that occur during a conversation turn and logs them.
-                options.AlexaOptions.OnTurnError = async (context, exception) =>
-                {
-                    logger.LogError($"Exception caught : {exception}");
-                    await context.SendActivityAsync("Sorry, it looks like something went wrong.");
-                };
-
-                // This middleware will look for a known slot called 'Phrase'
-                // and transform an incoming IntentRequest with this slot into 
-                // a MessageActivity, using the value of the Phrase slot as the 
-                // Text property for the activity. See the readme for more details
-                // on configuring your Alexa skill for this.
-                options.Middleware.Add(new AlexaIntentRequestToMessageActivityMiddleware());
-            });
-
-            services.AddBot<AlexaAdapterSampleBot>(options =>
+            services.AddBot<BestMatchMiddlewareSampleBot>(options =>
             {
                 var secretKey = Configuration.GetSection("botFileSecret")?.Value;
                 var botFilePath = Configuration.GetSection("botFilePath")?.Value;
@@ -86,8 +57,12 @@ namespace BestMatchMiddleware_Sample
 
                 options.CredentialProvider = new SimpleCredentialProvider(endpointService.AppId, endpointService.AppPassword);
 
-                ILogger logger = _loggerFactory.CreateLogger<AlexaAdapterSampleBot>();
+                // add our new CommonResponsesMiddleware class which inherits from
+                // BestMatchMiddleware.  All incoming requests to the bot will
+                // go through the middleware which will respond if a match is found
+                options.Middleware.Add(new CommonResponsesMiddleware());
 
+                ILogger logger = _loggerFactory.CreateLogger<BestMatchMiddlewareSampleBot>();
                 options.OnTurnError = async (context, exception) =>
                 {
                     logger.LogError($"Exception caught : {exception}");
@@ -102,8 +77,7 @@ namespace BestMatchMiddleware_Sample
 
             app.UseDefaultFiles()
                 .UseStaticFiles()
-                .UseBotFramework()
-                .UseAlexa();
+                .UseBotFramework();
         }
     }
 }
