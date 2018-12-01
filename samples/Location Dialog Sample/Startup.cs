@@ -3,16 +3,17 @@
 
 using System;
 using System.Linq;
-using Bot.Builder.Community.Adapters.Alexa.Integration.AspNet.Core;
-using Bot.Builder.Community.Adapters.Alexa.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Integration;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Configuration;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace LocationDialog_Sample
 {
@@ -40,7 +41,14 @@ namespace LocationDialog_Sample
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddBot<BestMatchMiddlewareSampleBot>(options =>
+            IStorage dataStore = new MemoryStorage();
+            var conversationState = new ConversationState(dataStore);
+
+            services.AddSingleton(dataStore);
+            services.AddSingleton(conversationState);
+            services.AddSingleton(new BotStateSet(conversationState));
+
+            services.AddBot<LocationDialogSampleBot>(options =>
             {
                 var secretKey = Configuration.GetSection("botFileSecret")?.Value;
                 var botFilePath = Configuration.GetSection("botFilePath")?.Value;
@@ -57,12 +65,9 @@ namespace LocationDialog_Sample
 
                 options.CredentialProvider = new SimpleCredentialProvider(endpointService.AppId, endpointService.AppPassword);
 
-                // add our new CommonResponsesMiddleware class which inherits from
-                // BestMatchMiddleware.  All incoming requests to the bot will
-                // go through the middleware which will respond if a match is found
-                options.Middleware.Add(new CommonResponsesMiddleware());
+                options.Middleware.Add(new AutoSaveStateMiddleware(conversationState));
 
-                ILogger logger = _loggerFactory.CreateLogger<BestMatchMiddlewareSampleBot>();
+                ILogger logger = _loggerFactory.CreateLogger<LocationDialogSampleBot>();
                 options.OnTurnError = async (context, exception) =>
                 {
                     logger.LogError($"Exception caught : {exception}");

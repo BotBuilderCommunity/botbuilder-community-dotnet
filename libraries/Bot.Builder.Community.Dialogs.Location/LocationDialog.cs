@@ -116,7 +116,7 @@ namespace Bot.Builder.Community.Dialogs.Location
                         return await dc.NextAsync();
                     }
 
-                    await dc.PromptAsync(PromptDialogIds.Confirm,
+                    return await dc.PromptAsync(PromptDialogIds.Confirm,
                         new PromptOptions()
                         {
                             Prompt = new Activity
@@ -131,8 +131,6 @@ namespace Bot.Builder.Community.Dialogs.Location
                                 Text = resourceManager.ConfirmationInvalidResponse
                             }
                         });
-
-                    return EndOfTurn;
                 },
                 async (dc, cancellationToken) =>
                 {
@@ -153,10 +151,8 @@ namespace Bot.Builder.Community.Dialogs.Location
                     }
                     else
                     {
-                        await dc.NextAsync();
+                        return await dc.NextAsync();
                     }
-
-                    return EndOfTurn;
                 },
                 async (dc, cancellationToken) =>
                 {
