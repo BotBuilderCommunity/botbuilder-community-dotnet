@@ -25,8 +25,8 @@ namespace Bot.Builder.Community.Adapters.Alexa.Middleware
         {
             if (context.Activity.ChannelId == "alexa" && context.Activity.Type == AlexaRequestTypes.IntentRequest)
             {
-                var alexaRequestBody = (AlexaRequestBody) context.Activity.ChannelData;
-                var alexaIntentRequest = (AlexaIntentRequest) alexaRequestBody.Request;
+                var alexaRequestBody = (AlexaRequestBody)context.Activity.ChannelData;
+                var alexaIntentRequest = (AlexaIntentRequest)alexaRequestBody.Request;
 
                 context.Activity.Type = ActivityTypes.Message;
 
@@ -36,24 +36,29 @@ namespace Bot.Builder.Community.Adapters.Alexa.Middleware
                     context.Activity.Text = messageActivityText;
                 }
                 else switch (_transformPattern)
-                {
-                    case RequestTransformPatterns.MessageActivityTextFromSinglePhraseSlotValue:
-                        if (alexaIntentRequest.Intent.Slots.ContainsKey("phrase"))
-                        {
-                            context.Activity.Text = alexaIntentRequest.Intent.Slots["phrase"].Value;
-                        }
-                        break;
-                    case RequestTransformPatterns.MessageActivityTextFromIntentAndAllSlotValues:
-                        var messageActivityText = $"Intent='{alexaIntentRequest.Intent.Name}'";
+                    {
+                        case RequestTransformPatterns.MessageActivityTextFromSinglePhraseSlotValue:
+                            if (alexaIntentRequest.Intent.Slots != null
+                            && alexaIntentRequest.Intent.Slots.ContainsKey("phrase"))
+                            {
+                                context.Activity.Text = alexaIntentRequest.Intent.Slots["phrase"].Value;
+                            }
+                            else
+                            {
+                                context.Activity.Text = alexaIntentRequest.Intent.Name;
+                            }
+                            break;
+                        case RequestTransformPatterns.MessageActivityTextFromIntentAndAllSlotValues:
+                            var messageActivityText = $"Intent='{alexaIntentRequest.Intent.Name}'";
 
-                        foreach (var intentSlot in alexaIntentRequest.Intent.Slots)
-                        {
-                            messageActivityText += $" {intentSlot.Key}='{intentSlot.Value.Value}'";
-                        }
+                            foreach (var intentSlot in alexaIntentRequest.Intent.Slots)
+                            {
+                                messageActivityText += $" {intentSlot.Key}='{intentSlot.Value.Value}'";
+                            }
 
-                        context.Activity.Text = messageActivityText;
-                        break;
-                }
+                            context.Activity.Text = messageActivityText;
+                            break;
+                    }
             }
 
             await next(cancellationToken).ConfigureAwait(false);

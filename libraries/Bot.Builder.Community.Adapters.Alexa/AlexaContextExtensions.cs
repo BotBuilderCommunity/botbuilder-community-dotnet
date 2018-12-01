@@ -90,5 +90,38 @@ namespace Bot.Builder.Community.Adapters.Alexa
                 alexaRequest?.Context?.System?.Device?.SupportedInterfaces?.Interfaces?.Keys.Contains("AudioPlayer");
             return hasDisplay.HasValue && hasDisplay.Value;
         }
+
+        public static async Task<AlexaAddress> AlexaGetUserAddress(this ITurnContext context)
+        {
+            var originalAlexaRequest = (AlexaRequestBody)context.Activity.ChannelData;
+
+            var deviceId = originalAlexaRequest.Context.System.Device.DeviceId;
+
+            var client = new HttpClient();
+
+            var directiveEndpoint = $"{originalAlexaRequest.Context.System.ApiEndpoint}/v1/devices/{deviceId}/settings/address";
+
+            client.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", originalAlexaRequest.Context.System.ApiAccessToken);
+
+            var response = await client.GetAsync(directiveEndpoint);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var address = JsonConvert.DeserializeObject<AlexaAddress>(responseContent);
+                return address;
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+            {
+                throw new UnauthorizedAccessException($"Alexa API returned status " +
+                    $"code {response.StatusCode} with message {response.ReasonPhrase}.  " +
+                    $"This potentially means that the user has not granted your skill " +
+                    $"permission to access their address.");
+            }
+
+            throw new Exception($"Alexa API returned status code " +
+                $"{response.StatusCode} with message {response.ReasonPhrase}");
+        }
     }
 }

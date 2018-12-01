@@ -124,6 +124,11 @@ namespace Bot.Builder.Community.Adapters.Alexa.Integration.AspNet.WebApi
                 _alexaOptions,
                 null);
 
+            if (alexaResponseBody == null)
+            {
+                return null;
+            }
+
             var alexaResponseBodyJson = JsonConvert.SerializeObject(alexaResponseBody, Formatting.None,
                 new JsonSerializerSettings
                 {

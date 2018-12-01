@@ -20,47 +20,58 @@ namespace Bot.Builder.Community.Adapters.Alexa
 
         public async Task<AlexaResponseBody> ProcessActivity(AlexaRequestBody alexaRequest, AlexaOptions alexaOptions, BotCallbackHandler callback)
         {
-            Options = alexaOptions;
-
-            var activity = RequestToActivity(alexaRequest);
-            BotAssert.ActivityNotNull(activity);
-
-            var context = new TurnContext(this, activity);
-
-            if (alexaRequest.Session.Attributes != null && alexaRequest.Session.Attributes.Any())
-            {
-                context.TurnState.Add("AlexaSessionAttributes", alexaRequest.Session.Attributes);
-            }
-            else
-            {
-                context.TurnState.Add("AlexaSessionAttributes", new Dictionary<string, string>());
-            }
-
-            context.TurnState.Add("AlexaResponseDirectives", new List<IAlexaDirective>());
-
-            Responses = new Dictionary<string, List<Activity>>();
-
-            await base.RunPipelineAsync(context, callback, default(CancellationToken)).ConfigureAwait(false);
-
-            var key = $"{activity.Conversation.Id}:{activity.Id}";
+            TurnContext context = null;
 
             try
             {
-                var activities = Responses.ContainsKey(key) ? Responses[key] : new List<Activity>();
-                var response = CreateResponseFromLastActivity(activities, context);
-                response.SessionAttributes = context.AlexaSessionAttributes();
-                return response;
-            }
-            finally
-            {
-                if (Responses.ContainsKey(key))
+                Options = alexaOptions;
+
+                var activity = RequestToActivity(alexaRequest);
+                BotAssert.ActivityNotNull(activity);
+
+                context = new TurnContext(this, activity);
+
+                if (alexaRequest.Session.Attributes != null && alexaRequest.Session.Attributes.Any())
                 {
-                    Responses.Remove(key);
+                    context.TurnState.Add("AlexaSessionAttributes", alexaRequest.Session.Attributes);
                 }
+                else
+                {
+                    context.TurnState.Add("AlexaSessionAttributes", new Dictionary<string, string>());
+                }
+
+                context.TurnState.Add("AlexaResponseDirectives", new List<IAlexaDirective>());
+
+                Responses = new Dictionary<string, List<Activity>>();
+
+                await base.RunPipelineAsync(context, callback, default(CancellationToken)).ConfigureAwait(false);
+
+                var key = $"{activity.Conversation.Id}:{activity.Id}";
+
+                try
+                {
+                    AlexaResponseBody response = null;
+                    var activities = Responses.ContainsKey(key) ? Responses[key] : new List<Activity>();
+                    response = CreateResponseFromLastActivity(activities, context);
+                    response.SessionAttributes = context.AlexaSessionAttributes();
+                    return response;
+                }
+                finally
+                {
+                    if (Responses.ContainsKey(key))
+                    {
+                        Responses.Remove(key);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await alexaOptions.OnTurnError(context, ex);
+                throw;
             }
         }
 
-        public override Task<ResourceResponse[]> SendActivitiesAsync(ITurnContext turnContext, Activity[] activities, CancellationToken cancellationToken)
+        public override Task<ResourceResponse[]> SendActivitiesAsync(ITurnContext turnContext, Activity[] activities, CancellationToken CancellationToken)
         {
             var resourceResponses = new List<ResourceResponse>();
 
@@ -139,9 +150,22 @@ namespace Bot.Builder.Community.Adapters.Alexa
                 Version = "1.0",
                 Response = new AlexaResponse()
                 {
-                    ShouldEndSession = Options.ShouldEndSessionByDefault
+                    ShouldEndSession = context.GetAlexaRequestBody().Request.Type ==
+                                       AlexaRequestTypes.SessionEndedRequest
+                                       || Options.ShouldEndSessionByDefault
                 }
             };
+
+            if (context.GetAlexaRequestBody().Request.Type == AlexaRequestTypes.SessionEndedRequest
+                || activities == null || !activities.Any())
+            {
+                response.Response.OutputSpeech = new AlexaOutputSpeech()
+                {
+                    Type = AlexaOutputSpeechType.PlainText,
+                    Text = string.Empty
+                };
+                return response;
+            }
 
             var activity = activities.First();
 
@@ -199,9 +223,11 @@ namespace Bot.Builder.Community.Adapters.Alexa
                 case InputHints.IgnoringInput:
                     response.Response.ShouldEndSession = true;
                     break;
-                case InputHints.AcceptingInput:
                 case InputHints.ExpectingInput:
                     response.Response.ShouldEndSession = false;
+                    break;
+                case InputHints.AcceptingInput:
+                default:
                     break;
             }
 

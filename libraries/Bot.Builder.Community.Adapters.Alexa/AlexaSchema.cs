@@ -171,6 +171,8 @@ namespace Bot.Builder.Community.Adapters.Alexa
         public string Text { get; set; }
 
         public AlexaCardImage Image { get; set; }
+
+        public string[] Permissions { get; set; }
     }
 
     public class AlexaCardImage
@@ -184,7 +186,8 @@ namespace Bot.Builder.Community.Adapters.Alexa
     {
         Simple,
         Standard,
-        LinkAccount
+        LinkAccount,
+        AskForPermissionsConsent
     }
 
     public interface IAlexaRequest
