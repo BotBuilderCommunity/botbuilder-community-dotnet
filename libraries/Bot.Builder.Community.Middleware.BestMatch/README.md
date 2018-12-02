@@ -19,6 +19,10 @@ Install into your project using the following command in the package manager;
     PM> Install-Package Bot.Builder.Community.Middleware.BestMatch
 ```
 
+### Sample
+
+A basic sample for using this component can be found [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/BestMatch%20Middleware%20Sample).
+
 ### Usage
 
 BestMatchMiddleware is an abstract class, so you need to implement it yourself to use it, before adding it to your middleware pipeline.
