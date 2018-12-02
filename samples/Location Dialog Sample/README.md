@@ -2,7 +2,7 @@
 
 This sample demonstrates using the Location Dialog.
 
-Before running this sample you need to replace "<BING MAPS OR AZURE MAPS API KEY>" in LocationDialogSampleBot.cs
+Before running this sample you need to replace "BING MAPS OR AZURE MAPS API KEY" in LocationDialogSampleBot.cs
 with your Bing / Azure maps API key.  
 
 The dialog in this case is configured to use Azure Maps, but this
@@ -19,7 +19,7 @@ Below is how the sample adds the dialog to the DialogSet and this is where all o
 
 ```cs
 
-Dialogs.Add(new LocationDialog("<BING MAPS OR AZURE MAPS API KEY>",
+Dialogs.Add(new LocationDialog("BING MAPS OR AZURE MAPS API KEY",
         "Please enter a location",
         conversationState,
         useAzureMaps: true,
