@@ -69,11 +69,11 @@ In your bot code, when you want to hand off to the Location dialog you can use d
                     if (dc.Result is Place returnedPlace)
                     {
                         dynamic address = returnedPlace.Address;
-                        await dc.Context.SendActivity($"Location found: {returnedPlace.Address.FormattedAddress}");
+                        await dc.Context.SendActivityAsync($"Location found: {returnedPlace.Address.FormattedAddress}");
                     }
                     else
                     {
-                        await dc.Context.SendActivity($"No location found");
+                        await dc.Context.SendActivityAsync($"No location found");
                     }
 
                     return await dc.EndDialogAsync();
