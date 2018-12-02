@@ -35,10 +35,10 @@ The following pieces of middleware are currently available;
 
 The following dialogs are currently available;
 
-| Name | Description | NuGet |
-| ------ | ------ | ------ |
-| [Bot Builder v4 Prompts](libraries/Bot.Builder.Community.Dialogs.Prompts) | A collection of Prompts for use with Bot Builder v4, providing the ability to prompt for and recognize currencies, age, distances and temperature. | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.79-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Dialogs.Prompts/) |
-| [Bot Builder v4 Location Dialog](libraries/Bot.Builder.Community.Dialogs.Location) | An implemention for v4 of the Bot Build .NET SDK of the [Microsoft.Bot.Builder.Location dialog project built for Bot Builder v3](https://github.com/microsoft/botbuilder-location). An open-source location picker control for Microsoft Bot Framework powered by Azure or Bing Maps REST services. This control will allow a user to search for a location, with the ability to specify required fields and also store locations as favorites for the user. | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.100-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Dialogs.Location/) |
+| Name | Description | Sample? | NuGet |
+| ------ | ------ | ------ | ------ |
+| [Bot Builder v4 Prompts](libraries/Bot.Builder.Community.Dialogs.Prompts) | A collection of Prompts for use with Bot Builder v4, providing the ability to prompt for and recognize currencies, age, distances and temperature. | | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.79-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Dialogs.Prompts/) |
+| [Bot Builder v4 Location Dialog](libraries/Bot.Builder.Community.Dialogs.Location) | An implemention for v4 of the Bot Build .NET SDK of the [Microsoft.Bot.Builder.Location dialog project built for Bot Builder v3](https://github.com/microsoft/botbuilder-location). An open-source location picker control for Microsoft Bot Framework powered by Azure or Bing Maps REST services. This control will allow a user to search for a location, with the ability to specify required fields and also store locations as favorites for the user. | [Sample](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/Location%20Dialog%20Sample) | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.100-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Dialogs.Location/) |
 
 ## Adapters
 
