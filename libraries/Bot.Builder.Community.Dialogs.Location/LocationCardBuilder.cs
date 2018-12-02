@@ -50,38 +50,43 @@ namespace Bot.Builder.Community.Dialogs.Location
 
             foreach (var location in locations)
             {
-                string nameString = locationNames == null ? string.Empty : $"{locationNames[i - 1]}: ";
-                string locationString = $"{nameString}{location.GetFormattedAddress(resourceManager.AddressSeparator)}";
-                string address = alwaysShowNumericPrefix || locations.Count > 1 ? $"{i}. {locationString}" : locationString;
-
-                var heroCard = new HeroCard
+                try
                 {
-                    Subtitle = address
-                };
+                    string nameString = locationNames == null ? string.Empty : $"{locationNames[i - 1]}: ";
+                    string locationString = $"{nameString}{location.GetFormattedAddress(resourceManager.AddressSeparator)}";
+                    string address = alwaysShowNumericPrefix || locations.Count > 1 ? $"{i}. {locationString}" : locationString;
 
-                if (location.Point != null)
-                {
-                    IGeoSpatialService geoService;
-
-                    if (useAzureMaps)
+                    var heroCard = new HeroCard
                     {
-                        geoService = new AzureMapsSpatialService(apiKey);
-                    }
-                    else
+                        Subtitle = address
+                    };
+
+                    if (location.Point != null)
                     {
-                        geoService = new BingGeoSpatialService(apiKey);
+                        IGeoSpatialService geoService;
+
+                        if (useAzureMaps)
+                        {
+                            geoService = new AzureMapsSpatialService(apiKey);
+                        }
+                        else
+                        {
+                            geoService = new BingGeoSpatialService(apiKey);
+                        }
+
+                        var image =
+                            new CardImage(
+                                url: geoService.GetLocationMapImageUrl(location, i));
+
+                        heroCard.Images = new[] { image };
                     }
 
-                    var image =
-                        new CardImage(
-                            url: geoService.GetLocationMapImageUrl(location, i));
+                    cards.Add(heroCard);
 
-                    heroCard.Images = new[] { image };
+                    i++;
                 }
-
-                cards.Add(heroCard);
-
-                i++;
+                catch(Exception)
+                { }
             }
 
             return cards;

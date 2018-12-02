@@ -5,7 +5,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace BestMatchMiddleware_Sample
+namespace LocationDialog_Sample
 {
     public class Program
     {

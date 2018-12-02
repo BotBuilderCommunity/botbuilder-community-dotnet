@@ -8,7 +8,7 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 
-namespace BestMatchMiddleware_Sample
+namespace LocationDialog_Sample
 {
     public class AlexaAdapterSampleBot : IBot
     {
