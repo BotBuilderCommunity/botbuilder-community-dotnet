@@ -45,6 +45,8 @@ Install into your project using the following command in the package manager;
     PM> Install-Package Bot.Builder.Community.Adapters.Alexa
 ```
 
+### Sample
+
 Basic sample bot available [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/Alexa%20Adapter%20Sample).
 
 ### Usage
