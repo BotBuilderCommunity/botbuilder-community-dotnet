@@ -28,6 +28,10 @@ Install into your project using the following command in the package manager;
     PM> Install-Package Bot.Builder.Community.Dialogs.Location
 ```
 
+### Sample
+
+A basic sample for using this component can be found [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/Location%20Dialog%20Sample).
+
 ### Usage
 
 To use the dialog, add it to your DialogSet as shown below. 
