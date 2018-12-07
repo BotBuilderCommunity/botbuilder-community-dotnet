@@ -1,16 +1,4 @@
-﻿// 
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license.
-// 
-// Microsoft Bot Framework: http://botframework.com
-// 
-// Bot Builder SDK GitHub:
-// https://github.com/Microsoft/BotBuilder
-// 
-// Copyright (c) Microsoft Corporation
-// All rights reserved.
-// 
-// MIT License:
+﻿// MIT License:
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
 // "Software"), to deal in the Software without restriction, including
