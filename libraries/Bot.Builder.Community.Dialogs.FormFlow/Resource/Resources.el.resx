@@ -1,0 +1,264 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CommandBack" xml:space="preserve">
+    <value>Προηγούμενη</value>
+  </data>
+  <data name="CommandBackHelp" xml:space="preserve">
+    <value>Προηγούμενη: Πίσω στην προηγούμενη ερώτηση.</value>
+  </data>
+  <data name="CommandBackTerms" xml:space="preserve">
+    <value>backup;go back;back;πισω;προηγουμενη;προηγουμενο</value>
+  </data>
+  <data name="CommandHelp" xml:space="preserve">
+    <value>Βοήθεια</value>
+  </data>
+  <data name="CommandHelpHelp" xml:space="preserve">
+    <value>Βοήθεια: Εμφανίζει τον τύπο των απαντήσεων που μπορείτε να δώσετε.</value>
+  </data>
+  <data name="CommandHelpTerms" xml:space="preserve">
+    <value>help;choices;\?;βοηθεια</value>
+  </data>
+  <data name="CommandQuit" xml:space="preserve">
+    <value>Ακύρωση</value>
+  </data>
+  <data name="CommandQuitHelp" xml:space="preserve">
+    <value>Ακύρωση: Ακυρώση συμπλήρωσης της φόρμας</value>
+  </data>
+  <data name="CommandQuitTerms" xml:space="preserve">
+    <value>quit;stop;finish;goodby?;good bye?;bye;ciao;adios;bye-bye;so long;cheers;ακυρο;ακυρωση</value>
+  </data>
+  <data name="CommandReset" xml:space="preserve">
+    <value>Ξανάρχισε</value>
+  </data>
+  <data name="CommandResetHelp" xml:space="preserve">
+    <value>Ξανάρχισε: Ξεκινά από την αρχή τη συμπλήρωση της φόρμας.  (Με προσυμπληρωμένες τις προηγούμενες επιλογές.)</value>
+  </data>
+  <data name="CommandResetTerms" xml:space="preserve">
+    <value>start over;reset;clear;παμε ξανα;ξαναρχισε;παμε;ξανα</value>
+  </data>
+  <data name="CommandStatus" xml:space="preserve">
+    <value>Κατάσταση</value>
+  </data>
+  <data name="CommandStatusHelp" xml:space="preserve">
+    <value>Κατάσταση: Εμφανίζει την μέχρι τώρα πρόοδο στην συμπλήρωση της φόρμας.</value>
+  </data>
+  <data name="CommandStatusTerms" xml:space="preserve">
+    <value>status;progress;so far;results;κατασταση</value>
+  </data>
+  <data name="Confirmation" xml:space="preserve">
+    <value>Επιβεβαίωση</value>
+  </data>
+  <data name="DefaultChoiceLastSeparator" xml:space="preserve">
+    <value>, ή </value>
+  </data>
+  <data name="DefaultLastSeparator" xml:space="preserve">
+    <value>, και </value>
+  </data>
+  <data name="LanguageArticles" xml:space="preserve">
+    <value>ο;η;το</value>
+  </data>
+  <data name="LanguageStopWords" xml:space="preserve">
+    <value>αλλα;αν;αντι;απο;αυτα;αυτεσ;αυτη;αυτο;αυτοι;αυτοσ;αυτουσ;αυτων;αἱ;αἳ;αἵ;αὐτόσ;αὐτὸς;αὖ;γάρ;γα;γε;για;γοῦν;γὰρ;δ';δέ;δή;δαί;δαίσ;δαὶ;δαὶς;δε;δεν;δι';διά;διὰ;δὲ;δὴ;δ’;εαν;ειμαι;ειμαστε;ειναι;εισαι;ειστε;εκεινα;εκεινεσ;εκεινη;εκεινο;εκεινοι;εκεινοσ;εκεινουσ;εκεινων;ενω;επ;επι;εἰ;εἰμί;εἰμὶ;εἰς;εἰσ;εἴ;εἴμι;εἴτε;η;θα;ισωσ;κ;καί;καίτοι;καθ;και;κατ;κατά;κατα;κατὰ;καὶ;κι;κἀν;κἂν;μέν;μή;μήτε;μα;με;μεθ;μετ;μετά;μετα;μετὰ;μη;μην;μἐν;μὲν;μὴ;μὴν;να;ο;οι;ομωσ;οπωσ;οσο;οτι;οἱ;οἳ;οἷς;οὐ;οὐδ;οὐδέ;οὐδείσ;οὐδεὶς;οὐδὲ;οὐδὲν;οὐκ;οὐχ;οὐχὶ;οὓς;οὔτε;οὕτω;οὕτως;οὕτωσ;οὖν;οὗ;οὗτος;οὗτοσ;παρ;παρά;παρα;παρὰ;περί;περὶ;ποια;ποιεσ;ποιο;ποιοι;ποιοσ;ποιουσ;ποιων;ποτε;που;ποῦ;προ;προσ;πρόσ;πρὸ;πρὸς;πως;πωσ;σε;στη;στην;στο;στον;σόσ;σύ;σύν;σὸς;σὺ;σὺν;τά;τήν;τί;τίς;τίσ;τα;ταῖς;τε;την;τησ;τι;τινα;τις;τισ;το;τοί;τοι;τοιοῦτος;τοιοῦτοσ;τον;τοτε;του;τούσ;τοὺς;τοῖς;τοῦ;των;τό;τόν;τότε;τὰ;τὰς;τὴν;τὸ;τὸν;τῆς;τῆσ;τῇ;τῶν;τῷ;ωσ;ἀλλ';ἀλλά;ἀλλὰ;ἀλλ’;ἀπ;ἀπό;ἀπὸ;ἀφ;ἂν;ἃ;ἄλλος;ἄλλοσ;ἄν;ἄρα;ἅμα;ἐάν;ἐγώ;ἐγὼ;ἐκ;ἐμόσ;ἐμὸς;ἐν;ἐξ;ἐπί;ἐπεὶ;ἐπὶ;ἐστι;ἐφ;ἐὰν;ἑαυτοῦ;ἔτι;ἡ;ἢ;ἣ;ἤ;ἥ;ἧς;ἵνα;ὁ;ὃ;ὃν;ὃς;ὅ;ὅδε;ὅθεν;ὅπερ;ὅς;ὅσ;ὅστις;ὅστισ;ὅτε;ὅτι;ὑμόσ;ὑπ;ὑπέρ;ὑπό;ὑπὲρ;ὑπὸ;ὡς;ὡσ;ὥς;ὥστε;ὦ;ᾧ</value>
+  </data>
+  <data name="MatchCurrentChoice" xml:space="preserve">
+    <value>Προεπιλογή ('π');προεπιλογή;π;προεπιλογη</value>
+  </data>
+  <data name="MatchNo" xml:space="preserve">
+    <value>Όχι;ο;νο;2;no;No;οχι</value>
+  </data>
+  <data name="MatchNoPreference" xml:space="preserve">
+    <value>Καμία επιλογή;όχι;καμία;οχι;τίποτα;καμια;τιποτα;δε με νοιάζει;δε με νοιαζει;αδιαφορο;αδιάφορο</value>
+  </data>
+  <data name="MatchYes" xml:space="preserve">
+    <value>Ναι;ν;ναι;Ναί;ναί;σίγουρα;σίγουρα;Σίγουρα;ok;οκ;yes;sure;yep;1</value>
+  </data>
+  <data name="Navigation" xml:space="preserve">
+    <value>Όνομα πεδίου</value>
+  </data>
+  <data name="PromptRetry" xml:space="preserve">
+    <value>Δεν το κατάλαβα.... Απαντήστε κάτι.</value>
+  </data>
+  <data name="TemplateBool" xml:space="preserve">
+    <value>Θα θέλατε {&amp;}? {||}</value>
+  </data>
+  <data name="TemplateBoolHelp" xml:space="preserve">
+    <value>Παρακαλώ εισάγετε 'ναί' ή 'όχι'{?, {0}}.</value>
+    <comment>0-current choice, 1-no preference</comment>
+  </data>
+  <data name="TemplateClarify" xml:space="preserve">
+    <value>Με το "{0}" {&amp;} εννοείτε {||}</value>
+    <comment>0-term being clarified</comment>
+  </data>
+  <data name="TemplateConfirmation" xml:space="preserve">
+    <value>Είναι αυτη η επιλογή σας;
+{*}</value>
+  </data>
+  <data name="TemplateCurrentChoice" xml:space="preserve">
+    <value>(τρέχουσα επιλογή: {})</value>
+  </data>
+  <data name="TemplateDateTime" xml:space="preserve">
+    <value>Παρακαλώ εισάγετε ημερομηνία και ώρα για {&amp;} {||}</value>
+  </data>
+  <data name="TemplateDateTimeHelp" xml:space="preserve">
+    <value>Παρακαλώ εισάγετε ημερομηνία, ή ώρα {?, {0}}{?, {1}}.</value>
+    <comment>0-current choice, 1-no preference</comment>
+  </data>
+  <data name="TemplateDouble" xml:space="preserve">
+    <value>Εισάγετε ένα αριθμό {?μεταξύ {0:F1} και {1:F1}} για {&amp;} {||}</value>
+    <comment>0-min, 1-max</comment>
+  </data>
+  <data name="TemplateDoubleHelp" xml:space="preserve">
+    <value>Παρακαλώ εισάγετε ένα αριθμό {? μεταξύ {2:F1} και {3:F1}}{?, {0}}{?, {1}}.</value>
+    <comment>0-current choice, 1-no preference, 2-min, 3-max</comment>
+  </data>
+  <data name="TemplateEnumManyNumberHelp" xml:space="preserve">
+    <value>Μπορείτε να εισάγετε ένα ή περισσότερους αριθμούς {0}-{1} ή λεξεις από τις περιγραφές. ({2})
+</value>
+    <comment>0-min, 1-max and 2-enumerated descriptions</comment>
+  </data>
+  <data name="TemplateEnumManyWordHelp" xml:space="preserve">
+    <value>Μπορείτε να εισάγετε μια, ή περισσότερες επιλογές από τις περιγραφές. ({2})</value>
+    <comment>2-enumerated descriptions</comment>
+  </data>
+  <data name="TemplateEnumOneNumberHelp" xml:space="preserve">
+    <value>Μπορείτε να εισάγετε ένα αριθμό {0}-{1} ή κάτι από τις περιγραφές. ({2})</value>
+    <comment>0-min, 1-max and 2-enumerated descriptions</comment>
+  </data>
+  <data name="TemplateEnumOneWordHelp" xml:space="preserve">
+    <value>Μπορείτε να εισάγετε οποιαδήποτε λέξη από τις περιγραφές. ({2})</value>
+    <comment>2-enumerated descriptions</comment>
+  </data>
+  <data name="TemplateEnumSelectMany" xml:space="preserve">
+    <value>Παρακαλώ κάντε μία ή περισσότερες επιλογές {&amp;} {||}</value>
+  </data>
+  <data name="TemplateEnumSelectOne" xml:space="preserve">
+    <value>Παρακαλώ επιλέξτε {&amp;} {||}</value>
+  </data>
+  <data name="TemplateFeedback" xml:space="preserve">
+    <value>Σαν {&amp;} εγώ κατάλαβα {}. {?"{0}" δεν είναι επιλογή.}</value>
+    <comment>0-not understood term</comment>
+  </data>
+  <data name="TemplateHelp" xml:space="preserve">
+    <value>Συμπληρώνετε το πεδίο "{&amp;}".  Πιθανές απαντήσεις:
+{0}
+{1}</value>
+    <comment>0-recognizer help, 1-command help</comment>
+  </data>
+  <data name="TemplateHelpClarify" xml:space="preserve">
+    <value>Προσδιορίζετε την τιμή {&amp;}.  Πιθανές απαντήσεις:
+{0}
+{1}</value>
+    <comment>0-recognizer help, 1-command help</comment>
+  </data>
+  <data name="TemplateHelpConfirm" xml:space="preserve">
+    <value>Παρακαλώ απαντήστε την ερώτηση. Πιθανές απαντήσεις:
+{0}
+{1}</value>
+    <comment>0-recognizer help, 1-command help</comment>
+  </data>
+  <data name="TemplateHelpNavigation" xml:space="preserve">
+    <value>Επιλέξτε ποιό πεδίο να αλλάξει. Πιθανές απαντήσεις:
+{0}
+{1}</value>
+    <comment>0-recognizer help, 1-command help</comment>
+  </data>
+  <data name="TemplateInteger" xml:space="preserve">
+    <value>Παρακαλώ εισάγετε ένα αριθμό{? μεταξύ {0} και {1}} γιά {&amp;} {||}</value>
+    <comment>0-min, 1-max</comment>
+  </data>
+  <data name="TemplateIntegerHelp" xml:space="preserve">
+    <value>Μπορείτε να εισάγετε ένα αριθμό{? μεταξύ {2} και {3}}{?, {0}}{?, {1}}.</value>
+    <comment>0-current choice, 1-no preference, 2-min, 3-max</comment>
+  </data>
+  <data name="TemplateNavigation" xml:space="preserve">
+    <value>Τι θέλετε να αλλάξετε? {||}</value>
+  </data>
+  <data name="TemplateNavigationCommandHelp" xml:space="preserve">
+    <value>Μπορείτε να πάτε σε κάποιο άλλο πεδίο, εισάγοντας το όνομά του. ({0}).</value>
+    <comment>0-list of field names</comment>
+  </data>
+  <data name="TemplateNavigationHelp" xml:space="preserve">
+    <value>Επιλέξτε {?ένα αριθμό από {0}-{1}, ή} το όνομα ενός πεδίου.</value>
+    <comment>0-min, 1-max</comment>
+  </data>
+  <data name="TemplateNoPreference" xml:space="preserve">
+    <value>Καμία επιλογή</value>
+  </data>
+  <data name="TemplateNotUnderstood" xml:space="preserve">
+    <value>"{0}" δεν είναι επιλογή για το πεδίο "{&amp;}".</value>
+    <comment>0-is not understood term</comment>
+  </data>
+  <data name="TemplateString" xml:space="preserve">
+    <value>Παρακαλώ εισάγετε {&amp;} {||}</value>
+  </data>
+  <data name="TemplateStringHelp" xml:space="preserve">
+    <value>Μπορείτε να εισάγετε οτιδήποτε (για φράσεις χρησιμοποιήσετε εισαγωγικά){?, {0}}{?, {1}}.</value>
+    <comment>0-current choice, 1-no preference</comment>
+  </data>
+  <data name="TemplateUnspecified" xml:space="preserve">
+    <value>Δεν έχει καθοριστεί</value>
+  </data>
+  <data name="TooManyAttempts" xml:space="preserve">
+    <value>πάρα πολλές προσπάθειες</value>
+  </data>
+  <data name="UnhandledExceptionToUser" xml:space="preserve">
+    <value>Συγγνώμη, το πρόγραμμά μου αντιμετωπίζει κάποιο θέμα.</value>
+  </data>
+  <data name="UserProfileDeleted" xml:space="preserve">
+    <value>Το προφιλ του χρήστη διαγράφηκε!</value>
+  </data>
+  <data name="NumberOrdinals" xml:space="preserve">
+    <value>1=1st,first,first one|2=2nd,second,second one|3=3rd,third,third one|4=4th,fourth,fourth one|5=5th,fifth,fifth one|6=6th,sixth,sixth one|7=7th,seventh,seventh one|8=8th,eigth,eigth one|9=9th,ninth,ninth one|10=10th,tenth,tenth one</value>
+  </data>
+  <data name="NumberReverseOrdinals" xml:space="preserve">
+    <value>-1=last,last one|-2=next to last,second to last,second from last|-3=third to last,third from last|-4=fourth to last,fourth from last|-5=fifth to last,fith from last</value>
+  </data>
+  <data name="BooleanChoices" xml:space="preserve">
+    <value>true=y,yes,yep,sure,ok,\u1f44d,\u1f44c|false=n,no,nope,\u1f44e,\\u270b,\\u1f590,ναι,ν,ναί</value>
+  </data>
+  <data name="NumberTerms" xml:space="preserve">
+    <value>0=μηδέν|1=ένα|2=δύο|3=τρία|4=τέσσερα|5=πέντη|6=έξι|7=επτά|8=οχτώ|9=εννέα|10=δέκα|11=έντεκα|12=δώδεκα|13=δεκατρία|14=δεκατέσσερα|15=δεκαπέντε|16=δεκαέξι|17=δεκαεπτά|18=δεκαοχτώ|19=δεκαεννέα|20=είκοσι</value>
+  </data>
+  <data name="TemplateAttachmentCollection" xml:space="preserve">
+    <value>Παρακαλώ υποβάλετε μια λίστα από συνημμένα για {&amp;}</value>
+  </data>
+  <data name="TemplateAttachmentCollectionHelp" xml:space="preserve">
+    <value>Μπορείτε να υποβάλετε ένα ή περισσότερα συνημμένα.{0}</value>
+    <comment>0-dynamic help from attachment class</comment>
+  </data>
+  <data name="TemplateAttachmentCollectionDescription" xml:space="preserve">
+    <value>{0} συνημμένο/α</value>
+    <comment>0-attachments count</comment>
+  </data>
+  <data name="TemplateAttachment" xml:space="preserve">
+    <value>Παρακαλώ υποβάλετε ένα συνημμένο για {&amp;}</value>
+  </data>
+  <data name="TemplateAttachmentHelp" xml:space="preserve">
+    <value>Μπορείτε να υποβάλετε ένα συνημμένο.{0}</value>
+    <comment>0-dynamic help from attachment class</comment>
+  </data>
+  <data name="TemplateAttachmentDescription" xml:space="preserve">
+    <value>Συνημμένο με όνομα'{0}' τύπου '{1}'.</value>
+    <comment>0-attachment name, 1-attachment content-type</comment>
+  </data>
+  <data name="AttachmentContentTypeValidatorError" xml:space="preserve">
+    <value>Το συνημμένο '{0}' δεν είναι έγκυρο! Ο τύπος του θα πρέπει να περιέχει '{1}'.</value>
+    <comment>0-attachmnet name, 1-expected content-type</comment>
+  </data>
+  <data name="AttachmentContentTypeValidatorHelp" xml:space="preserve">
+    <value>Το συνημμένο θα πρέπει να είναι του τύπου '{0}'.</value>
+    <comment>0-attachment content type</comment>
+  </data>
+</root>
