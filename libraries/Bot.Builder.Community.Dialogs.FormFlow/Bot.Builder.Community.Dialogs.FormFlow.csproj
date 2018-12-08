@@ -16,7 +16,6 @@
 	<PropertyGroup>
 		<Company>Bot Builder Community</Company>
 		<Authors>Bot Builder Community</Authors>
-		<Product>Bot Builder Community Form Flow</Product>
 		<Copyright></Copyright>
 		<PackageProjectUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/</PackageProjectUrl>
 		<PackageIconUrl>http://docs.botframework.com/images/bot_icon.png</PackageIconUrl>
