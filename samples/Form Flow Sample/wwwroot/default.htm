@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://cdn.botframework.com/botframework-webchat/latest/botchat.css" rel="stylesheet" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Form Flow in Bot Builder v4</title>
+</head>
+<body>
+    <div>
+        <div id="bot" />
+    </div>
+
+    <script src="https://cdn.botframework.com/botframework-webchat/latest/botchat.js"></script>
+
+    <script>
+        function uniqueId() {
+            function s4() {
+                return Math.floor((1 + Math.random()) * 0x10000)
+                    .toString(16)
+                    .substring(1);
+            }
+            return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+        }
+
+        var user = {
+            id: uniqueId(),
+            name: 'You'
+        };
+
+        var botConnection = new BotChat.DirectLine({
+            token: '[DirectLineSecret]',
+            user: user
+        });
+
+        BotChat.App({
+            botConnection: botConnection,
+            user: user,
+            bot: { id: 'FormFlowV4SDK', name: 'FormFlowV4SDK' },
+            resize: 'detect'
+        }, document.getElementById("bot"));
+
+        botConnection
+        .postActivity({
+            from: user,
+            name: 'requestMenuDialog',
+            type: 'event',
+            value: ''
+        })
+        .subscribe(function (id) {
+            console.log('"trigger requestMenuDialog" sent');
+        });
+    </script>
+
+</body>
+</html>
