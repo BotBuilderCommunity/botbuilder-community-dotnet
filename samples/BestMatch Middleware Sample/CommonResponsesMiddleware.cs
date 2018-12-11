@@ -3,7 +3,7 @@ using Microsoft.Bot.Builder;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LocationDialog_Sample
+namespace Google_Adapter_Sample
 {
     public class CommonResponsesMiddleware : BestMatchMiddleware
     {

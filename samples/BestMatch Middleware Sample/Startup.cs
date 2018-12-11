@@ -14,7 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace LocationDialog_Sample
+namespace Google_Adapter_Sample
 {
     /// <summary>
     /// The Startup class configures services and the request pipeline.

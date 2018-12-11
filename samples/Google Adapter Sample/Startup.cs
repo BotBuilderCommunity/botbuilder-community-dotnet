@@ -3,8 +3,7 @@
 
 using System;
 using System.Linq;
-using Bot.Builder.Community.Adapters.Alexa.Integration.AspNet.Core;
-using Bot.Builder.Community.Adapters.Alexa.Middleware;
+using Bot.Builder.Community.Adapters.Google.Integration.AspNet.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
@@ -40,36 +39,24 @@ namespace Google_Adapter_Sample
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAlexaBot<AlexaAdapterSampleBot>(options =>
-            {
-                // Set this to true to validate that a request has come from the Alexa
-                // service - this is a requirement for skill certification
-                // disable this if you want to debug using other tools like Postman.
-                options.AlexaOptions.ValidateIncomingAlexaRequests = true;
-
+            services.AddgoogleBot<GoogleAdapterSampleBot>(options =>
+            {                
                 // Determine if we should end a session after each turn
                 // If set to true, you can choose to keep the session open
                 // by using the ExpectingInput InputHint in your outgoing activity
-                options.AlexaOptions.ShouldEndSessionByDefault = true;
+                options.googleOptions.ShouldEndSessionByDefault = false;
 
-                ILogger logger = _loggerFactory.CreateLogger<AlexaAdapterSampleBot>();
+                ILogger logger = _loggerFactory.CreateLogger<GoogleAdapterSampleBot>();
 
                 // Catches any errors that occur during a conversation turn and logs them.
-                options.AlexaOptions.OnTurnError = async (context, exception) =>
+                options.googleOptions.OnTurnError = async (context, exception) =>
                 {
                     logger.LogError($"Exception caught : {exception}");
                     await context.SendActivityAsync("Sorry, it looks like something went wrong.");
                 };
-
-                // This middleware will look for a known slot called 'Phrase'
-                // and transform an incoming IntentRequest with this slot into 
-                // a MessageActivity, using the value of the Phrase slot as the 
-                // Text property for the activity. See the readme for more details
-                // on configuring your Alexa skill for this.
-                options.Middleware.Add(new AlexaIntentRequestToMessageActivityMiddleware());
             });
 
-            services.AddBot<AlexaAdapterSampleBot>(options =>
+            services.AddBot<GoogleAdapterSampleBot>(options =>
             {
                 var secretKey = Configuration.GetSection("botFileSecret")?.Value;
                 var botFilePath = Configuration.GetSection("botFilePath")?.Value;
@@ -86,7 +73,7 @@ namespace Google_Adapter_Sample
 
                 options.CredentialProvider = new SimpleCredentialProvider(endpointService.AppId, endpointService.AppPassword);
 
-                ILogger logger = _loggerFactory.CreateLogger<AlexaAdapterSampleBot>();
+                ILogger logger = _loggerFactory.CreateLogger<GoogleAdapterSampleBot>();
 
                 options.OnTurnError = async (context, exception) =>
                 {
@@ -103,7 +90,7 @@ namespace Google_Adapter_Sample
             app.UseDefaultFiles()
                 .UseStaticFiles()
                 .UseBotFramework()
-                .UseAlexa();
+                .Usegoogle();
         }
     }
 }

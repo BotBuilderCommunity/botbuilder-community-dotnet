@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27004.2008
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28315.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{57D9879A-FC9F-468C-B86F-BE45A1472F88}"
 EndProject
@@ -48,6 +48,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Alexa", "libraries\Bot.Builder.Community.Adapters.Alexa\Bot.Builder.Community.Adapters.Alexa.csproj", "{BA97DD9A-9633-47DD-8BBA-BF8A66F30596}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Dialogs.FormFlow", "libraries\Bot.Builder.Community.Dialogs.FormFlow\Bot.Builder.Community.Dialogs.FormFlow.csproj", "{92D84894-45F4-4A73-8FE1-9A8BEF9E3884}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Google", "libraries\Bot.Builder.Community.Adapters.Google\Bot.Builder.Community.Adapters.Google.csproj", "{2CCB1E5E-A4B5-46FA-B38D-5C5CA04A2CD3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -167,6 +169,14 @@ Global
 		{92D84894-45F4-4A73-8FE1-9A8BEF9E3884}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
 		{92D84894-45F4-4A73-8FE1-9A8BEF9E3884}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92D84894-45F4-4A73-8FE1-9A8BEF9E3884}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CCB1E5E-A4B5-46FA-B38D-5C5CA04A2CD3}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CCB1E5E-A4B5-46FA-B38D-5C5CA04A2CD3}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{2CCB1E5E-A4B5-46FA-B38D-5C5CA04A2CD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CCB1E5E-A4B5-46FA-B38D-5C5CA04A2CD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CCB1E5E-A4B5-46FA-B38D-5C5CA04A2CD3}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CCB1E5E-A4B5-46FA-B38D-5C5CA04A2CD3}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{2CCB1E5E-A4B5-46FA-B38D-5C5CA04A2CD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CCB1E5E-A4B5-46FA-B38D-5C5CA04A2CD3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -190,6 +200,7 @@ Global
 		{BF310E8A-8DA1-441F-90E9-DE0E66553048} = {57D9879A-FC9F-468C-B86F-BE45A1472F88}
 		{BA97DD9A-9633-47DD-8BBA-BF8A66F30596} = {BF310E8A-8DA1-441F-90E9-DE0E66553048}
 		{92D84894-45F4-4A73-8FE1-9A8BEF9E3884} = {08759E28-8592-4EBA-9A07-19A5BED3FB0C}
+		{2CCB1E5E-A4B5-46FA-B38D-5C5CA04A2CD3} = {BF310E8A-8DA1-441F-90E9-DE0E66553048}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FE3B75E-BA2B-45BC-BBF0-DDA8BA10C4F0}
