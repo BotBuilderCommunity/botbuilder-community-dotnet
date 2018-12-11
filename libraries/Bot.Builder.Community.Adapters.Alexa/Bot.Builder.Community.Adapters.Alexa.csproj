@@ -11,13 +11,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-		<PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.7" />
+    <Compile Remove="Integration\AspNet.WebApi\**" />
+    <EmbeddedResource Remove="Integration\AspNet.WebApi\**" />
+    <None Remove="Integration\AspNet.WebApi\**" />
+  </ItemGroup>
+
+  <ItemGroup>
 		<PackageReference Include="Microsoft.Bot.Builder" Version="4.2.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration" Version="2.1.0-preview2-final" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
-		<PackageReference Include="Microsoft.Bot.Builder.Core" Condition=" '$(PackageVersion)' == '' " Version="4.0.0-local" />
-		<PackageReference Include="Microsoft.Bot.Connector" Condition=" '$(PackageVersion)' == '' " Version="4.0.0-local" />
+		<PackageReference Include="Microsoft.Bot.Builder.Core" Version="4.2.0" />
+		<PackageReference Include="Microsoft.Bot.Connector" Version="4.2.0" />
 		<PackageReference Include="Microsoft.Extensions.Options" Version="2.2.0" />
 		<PackageReference Include="Microsoft.Net.Http.Headers" Version="2.2.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
