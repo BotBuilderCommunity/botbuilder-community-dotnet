@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28315.86
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.106
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alexa Adapter Sample", "samples\Alexa Adapter Sample\Alexa Adapter Sample.csproj", "{8183FE0F-6F69-48B4-B2C3-7FEB48DCECD6}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google Adapter Sample", "samples\Google Adapter Sample\Google Adapter Sample.csproj", "{3312C17E-01FA-4390-9B8F-6E7733E0B1E7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Google", "libraries\Bot.Builder.Community.Adapters.Google\Bot.Builder.Community.Adapters.Google.csproj", "{406D7275-0999-46CD-977F-DD182E55CBA9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Form Flow Sample", "samples\Form Flow Sample\Form Flow Sample.csproj", "{B982923B-163B-49FD-960B-0DF5BB6E6562}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{406D7275-0999-46CD-977F-DD182E55CBA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{406D7275-0999-46CD-977F-DD182E55CBA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{406D7275-0999-46CD-977F-DD182E55CBA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B982923B-163B-49FD-960B-0DF5BB6E6562}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B982923B-163B-49FD-960B-0DF5BB6E6562}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B982923B-163B-49FD-960B-0DF5BB6E6562}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B982923B-163B-49FD-960B-0DF5BB6E6562}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,23 @@
+{
+  "name": "FormFlowV4SDK",
+  "description": "",
+  "secretKey": "",
+  "services": [
+    {
+      "appId": "",
+      "id": "FormFlowV4SDK",
+      "type": "endpoint",
+      "appPassword": "",
+      "endpoint": "http://localhost:51135/api/messages",
+      "name": "development"
+    },
+    {
+      "appId": "[MicrosoftAppId]",
+      "id": "FormFlowV4SDK",
+      "type": "endpoint",
+      "appPassword": "[MicrosoftAppPassword]",
+      "endpoint": "https://[deployed.azurewebsites.net]/api/messages",
+      "name": "production"
+    }
+  ]
+}

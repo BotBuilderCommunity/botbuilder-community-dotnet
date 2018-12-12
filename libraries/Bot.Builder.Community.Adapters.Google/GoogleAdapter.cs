@@ -133,19 +133,31 @@ namespace Bot.Builder.Community.Adapters.Google
 
             if (!string.IsNullOrEmpty(activity.Text))
             {
-                var responseItems = new List<Item>
+                var simpleResponse = new SimpleResponse
                 {
-                    new SimpleResponse
+                    Content = new SimpleResponseContent
                     {
-                        Content = new SimpleResponseContent {
-                            DisplayText = activity.Text,
-                            Ssml = activity.Speak,
-                            TextToSpeech = activity.Text
-                        }
+                        DisplayText = activity.Text,
+                        Ssml = activity.Speak,
+                        TextToSpeech = activity.Text
                     }
                 };
 
+                var responseItems = new List<Item> { simpleResponse };
+
                 response.Payload.Google.RichResponse.Items = responseItems.ToArray();
+
+                if (activity.SuggestedActions != null && activity.SuggestedActions.Actions.Any())
+                {
+                    var suggestionChips = new List<Suggestion>();
+
+                    foreach (var suggestion in activity.SuggestedActions.Actions)
+                    {
+                        suggestionChips.Add(new Suggestion { Title = suggestion.Title });
+                    }
+
+                    response.Payload.Google.RichResponse.Suggestions = suggestionChips.ToArray();
+                }
 
                 switch (activity.InputHint)
                 {

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Bot.Builder.Community.Adapters.Google;
@@ -30,7 +31,15 @@ namespace Google_Adapter_Sample
             switch (turnContext.Activity.Type)
             {
                 case ActivityTypes.Message:
-                    await turnContext.SendActivityAsync($"You said '{turnContext.Activity.Text}'\n");
+                    var activity = turnContext.Activity.CreateReply();
+                    activity.Text = $"You said '{turnContext.Activity.Text}'\n";
+                    activity.SuggestedActions = new SuggestedActions();
+                    activity.SuggestedActions.Actions = new List<CardAction>
+                    {
+                        new CardAction() { Title = "Yes", Type = ActionTypes.PostBack, Value = $"yes-positive-feedback" },
+                        new CardAction() { Title = "No", Type = ActionTypes.PostBack, Value = $"no-negative-feedback" }
+                    };
+                    await turnContext.SendActivityAsync(activity);
                     break;
             }
         }
