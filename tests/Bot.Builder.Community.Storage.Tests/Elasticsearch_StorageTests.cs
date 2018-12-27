@@ -83,6 +83,7 @@ namespace Bot.Builder.Community.Storage.Tests
 
         [TestMethod]
         [TestCategory("Storage")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.Ignore("Ignore this test as it requires an Elasticsearch environment to run.")]
         public void Constructor_Should_Throw_Exception_On_InvalidOptions()
         {
             // No Options. Should throw. 
@@ -109,6 +110,7 @@ namespace Bot.Builder.Community.Storage.Tests
 
         [TestMethod]
         [TestCategory("Storage")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.Ignore("Ignore this test as it requires an Elasticsearch environment to run.")]
         public async Task ElasticsearchStorage_CreateObjectTest()
         {
             await base.CreateObjectTest(storage);
@@ -116,6 +118,7 @@ namespace Bot.Builder.Community.Storage.Tests
 
         [TestMethod]
         [TestCategory("Storage")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.Ignore("Ignore this test as it requires an Elasticsearch environment to run.")]
         public async Task ElasticsearchStorage_ReadUnknownTest()
         {
             await base.ReadUnknownTest(storage);
@@ -123,6 +126,7 @@ namespace Bot.Builder.Community.Storage.Tests
 
         [TestMethod]
         [TestCategory("Storage")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.Ignore("Ignore this test as it requires an Elasticsearch environment to run.")]
         public async Task ElasticsearchStorage_UpdateObjectTest()
         {
             await base.UpdateObjectTest(storage);
@@ -131,6 +135,7 @@ namespace Bot.Builder.Community.Storage.Tests
 
         [TestMethod]
         [TestCategory("Storage")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.Ignore("Ignore this test as it requires an Elasticsearch environment to run.")]
         public async Task ElasticsearchStorage_DeleteObjectTest()
         {
             await base.DeleteObjectTest(storage);
@@ -138,6 +143,7 @@ namespace Bot.Builder.Community.Storage.Tests
 
         [TestMethod]
         [TestCategory("Storage")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.Ignore("Ignore this test as it requires an Elasticsearch environment to run.")]
         public async Task ElasticsearchStorage_HandleCrazyKeys()
         {
             await base.HandleCrazyKeys(storage);
