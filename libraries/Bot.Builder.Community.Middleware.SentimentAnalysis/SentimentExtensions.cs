@@ -16,12 +16,17 @@ namespace Bot.Builder.Community.Middleware.SentimentAnalysis
                 return "0.0";
             }
 
-            // Create a client
-            var client = new TextAnalyticsAPI(new ApiKeyServiceClientCredentials(apiKey));
+            // Create a client.
+            ITextAnalyticsClient client = new TextAnalyticsClient(new ApiKeyServiceClientCredentials(apiKey))
+            {
+                Endpoint = "https://westus.api.cognitive.microsoft.com"
+            }; //Replace 'westus' with the correct region for your Text Analytics subscription
+
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
 
             // Extract the language
             var result = await client.DetectLanguageAsync(new BatchInput(new List<Input>() { new Input("1", text) }));
-            var language = result.Documents?[0].DetectedLanguages?[0].Name;
+            var language = result.Documents?[0].DetectedLanguages?[0].Iso6391Name;
 
             // Get the sentiment
             var sentimentResult = await client.SentimentAsync(

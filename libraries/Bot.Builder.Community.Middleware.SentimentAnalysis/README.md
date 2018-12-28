@@ -1,4 +1,4 @@
-﻿## Sentiment Analysis Middleware
+﻿﻿## Sentiment Analysis Middleware
  
 ### Build status
 | Branch | Status | Recommended NuGet package version |
@@ -29,17 +29,59 @@ Typically I would place this middleware at the end of the pipeline, but it will 
 services.AddBot<Bot>((options) => {
     options.CredentialProvider = new ConfigurationCredentialProvider(Configuration);
 	
-	// more middleware
-	options.Middleware.Add(new SentimentAnalysisMiddleware(Configuration));
+	// Sentiment Middlware
+        string apiKey = GetAPIKey(botConfig, "TextAnalytics");
+        options.Middleware.Add(new Bot.Builder.Community.Middleware.SentimentAnalysis.SentimentMiddleware(apiKey));
 });
+```
+This helper method might be helpful for you.
+
+```
+ private static string GetAPIKey(BotConfiguration config, string serviceName)
+        {
+            string Key = string.Empty;
+
+            foreach (var service in config.Services)
+            {
+                switch (service.Type)
+                {
+                    case ServiceTypes.Generic:
+                        {
+                            if (!(service is ConnectedService sentiment))
+                            {
+                                throw new InvalidOperationException("The generic service is not configured correctly in your '.bot' file.");
+                            }
+
+                            if (service.Name == serviceName)
+                            {
+                                var genericService = service as GenericService;
+                                Key = genericService.Configuration["key"];
+                            }
+
+                            break;
+                        }
+                }
+            }
+
+            return Key;
+        }
 ```
 
 Note this requires an instance of `IConfiguration` passing to it.  Use the instance injected into the `Startup.cs` class.  
 
-The configuration can be read from your `appsettings.json` file which needs the following key
+The configuration can be read from your `<Your Bot Name>.bot` file (under services section) which needs the following key
 
 ```
 {
-  "SentimentKey": "<YOUR SENTIMENT ANALYIS KEY HERE>"
+      "type": "generic",
+      "name": "TextAnalytics",
+      "configuration": {
+        "key": "<YOUR SENTIMENT ANALYIS KEY HERE>"
+      },
+      "id": "2"
 }
 ```
+
+### Code Sample
+
+Working sample will be available in samples directory, expect it before 1st Jan, 2019. 

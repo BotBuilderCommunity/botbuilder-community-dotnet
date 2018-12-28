@@ -5,12 +5,13 @@ using System.Threading.Tasks;
 
 namespace Bot.Builder.Community.Middleware.SentimentAnalysis
 {
-    class ApiKeyServiceClientCredentials : ServiceClientCredentials
+    internal class ApiKeyServiceClientCredentials : ServiceClientCredentials
     {
-        string SubscriptionKey { get; set; }
+        private string SubscriptionKey;
+
         public ApiKeyServiceClientCredentials(string subscriptionKey)
         {
-            SubscriptionKey = subscriptionKey;
+            this.SubscriptionKey = subscriptionKey;
         }
 
         public override Task ProcessHttpRequestAsync(HttpRequestMessage request, CancellationToken cancellationToken)
