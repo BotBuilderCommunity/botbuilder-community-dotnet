@@ -1,4 +1,4 @@
-﻿# Bot.Builder.Elasticsearch.Storage
+﻿# Bot.Builder.Community.Storage.Elasticsearch
 Elasticsearch based storage extension for bots created using Microsoft Bot Framework.
 
 ## Usage
