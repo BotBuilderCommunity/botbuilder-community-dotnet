@@ -39,7 +39,7 @@ namespace Google_Adapter_Sample
                         new CardAction() { Title = "Yes", Type = ActionTypes.PostBack, Value = $"yes-positive-feedback" },
                         new CardAction() { Title = "No", Type = ActionTypes.PostBack, Value = $"no-negative-feedback" }
                     };
-                    await turnContext.SendActivityAsync(activity);
+                    await turnContext.SendActivityAsync(activity);                    
                     break;
             }
         }

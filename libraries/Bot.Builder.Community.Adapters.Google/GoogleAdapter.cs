@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Bot.Builder.Community.Adapters.Google.Integration;
+using Bot.Builder.Community.Adapters.Google.Model;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 
@@ -112,12 +113,19 @@ namespace Bot.Builder.Community.Adapters.Google
                 Locale = actionPayload.User.Locale
             };
 
+            if(actionPayload.Inputs.FirstOrDefault()?.Arguments.FirstOrDefault()?.Name == "OPTION")
+            {
+                activity.Text = actionPayload.Inputs.First().Arguments.First().TextValue;
+            }
+
+            activity.ChannelData = actionPayload;
+
             return activity;
         }
 
         private GoogleResponseBody CreateResponseFromLastActivity(IEnumerable<Activity> activities, ITurnContext context)
         {
-            var activity = activities.First();
+            var activity = activities.Last();
 
             var response = new GoogleResponseBody()
             {
@@ -157,6 +165,12 @@ namespace Bot.Builder.Community.Adapters.Google
                     }
 
                     response.Payload.Google.RichResponse.Suggestions = suggestionChips.ToArray();
+                }
+
+                if(context.TurnState.ContainsKey("systemIntent"))
+                {
+                    var optionSystemIntent = context.TurnState.Get<ISystemIntent>("systemIntent");
+                    response.Payload.Google.SystemIntent = optionSystemIntent;
                 }
 
                 switch (activity.InputHint)

@@ -20,6 +20,12 @@ namespace Bot.Builder.Community.Adapters.Google
     {
         public bool ExpectUserResponse { get; set; }
         public RichResponse RichResponse { get; set; }
+        public ISystemIntent SystemIntent { get; set; }
+    }
+
+    public class ISystemIntent
+    {
+        public string Intent { get; set; }
     }
 
     public class RichResponse
