@@ -2,14 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Company>Bot Builder Community Extensions</Company>
-    <PackageLicenseUrl>https://github.com/garypretty/botbuilder-community/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/garypretty/botbuilder-community/</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/garypretty/botbuilder-community/</RepositoryUrl>
-    <Authors>Bot Builder Community Extensions</Authors>
-    <PackageTags>bot framework, bot builder, azure bot service, middleware</PackageTags>
     <Description>This middleware will allow your bot to authenticate with Azure AD. It was created to support integration with Microsoft Graph but it will work with any application that uses the OAuth 2.0 authorization code flow.</Description>
+    <Authors>Bot Builder Community</Authors>
+    <Company>Bot Builder Community</Company>
+    <PackageLicenseUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/</PackageProjectUrl>
     <Version>1.0.0</Version>
+    <PackageTags>bot framework, bot builder, azure bot service, authentication, middleware</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
