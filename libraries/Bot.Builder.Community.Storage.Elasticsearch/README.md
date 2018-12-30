@@ -7,6 +7,8 @@
 
 ### Description
 
+This is part of the [Bot Builder Community Extensions](https://github.com/garypretty/botbuilder-community) project which contains various pieces of middleware, recognizers and other components for use with the Bot Builder .NET SDK v4.
+
 Elasticsearch based storage extension for bots created using Microsoft Bot Framework.
 
 ### Installation
