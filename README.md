@@ -10,6 +10,7 @@ To see a list of current extensions available for the Bot Builder .NET SDK, use 
 * [C# Dialogs & Prompts](#dialogs-and-prompts)
 * [C# Adapters](#adapters)
 * [C# Recognizers](#recognizers)
+* [C# Storage](#storage)
 
 ## Installation
 
@@ -57,4 +58,14 @@ The following recognizers are currently available;
 | Name | Description | NuGet |
 | ------ | ------ | ------ |
 | [Fuzzy Matching Recognizer](libraries/Bot.Builder.Community.Recognizers.FuzzyRecognizer) | A recognizer that allows you to use fuzzy matching to compare strings.  Useful in situations such as when a user make a spelling mistake etc. When the recognizer is used a list of matches, along with confidence scores, are returned. | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.76-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Recognizers.FuzzyRecognizer/) |
+
+
+## Storage
+
+The following recognizers are currently available;
+
+| Name | Description | NuGet |
+| ------ | ------ | ------ |
+| [Elasticsearch storage](libraries/Bot.Builder.Community.Storage.Elasticsearch) | Elasticsearch based storage for bots created using Microsoft Bot Builder SDK. | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.184-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Storage.Elasticsearch/) |
+
 

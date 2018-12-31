@@ -11,9 +11,9 @@ namespace Bot.Builder.Community.Middleware.SentimentAnalysis
 {
     public class SentimentMiddleware : IMiddleware
     {
-        public SentimentMiddleware(IConfiguration configuration)
+        public SentimentMiddleware(string apiKey)
         {
-            ApiKey = configuration.GetValue<string>("SentimentKey");
+            ApiKey = apiKey;
         }
 
         public string ApiKey { get; }
@@ -22,7 +22,7 @@ namespace Bot.Builder.Community.Middleware.SentimentAnalysis
         {
             if (turnContext.Activity.Type is ActivityTypes.Message)
             {
-                turnContext.TurnState.Add<string>(await turnContext.Activity.Text.Sentiment(ApiKey));
+                turnContext.TurnState.Add<string>("SentimentScore", await turnContext.Activity.Text.Sentiment(ApiKey));
             }
 
             await next(cancellationToken);
