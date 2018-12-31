@@ -1,0 +1,6 @@
+{
+  "Endpoint": "http://localhost:9200",
+  "UserName": "elastic",
+  "Password": "zh5EitCyglIOmMiNKAod",
+  "IndexName": "test-transcript-log-data"
+}
