@@ -49,6 +49,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Dialogs.FormFlow", "libraries\Bot.Builder.Community.Dialogs.FormFlow\Bot.Builder.Community.Dialogs.FormFlow.csproj", "{92D84894-45F4-4A73-8FE1-9A8BEF9E3884}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Storage", "Storage", "{DC62D60A-2EA2-4DB1-B1BA-C8F38D3940B3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Storage.Elasticsearch", "libraries\Bot.Builder.Community.Storage.Elasticsearch\Bot.Builder.Community.Storage.Elasticsearch.csproj", "{70B2D601-B6C9-4E4C-9E79-FE6DD1724A89}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Storage.Tests", "tests\Bot.Builder.Community.Storage.Tests\Bot.Builder.Community.Storage.Tests.csproj", "{8AAFA9EC-C78C-4859-91EC-61DD52914B42}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug - NuGet Packages|Any CPU = Debug - NuGet Packages|Any CPU
@@ -167,6 +173,22 @@ Global
 		{92D84894-45F4-4A73-8FE1-9A8BEF9E3884}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
 		{92D84894-45F4-4A73-8FE1-9A8BEF9E3884}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92D84894-45F4-4A73-8FE1-9A8BEF9E3884}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70B2D601-B6C9-4E4C-9E79-FE6DD1724A89}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{70B2D601-B6C9-4E4C-9E79-FE6DD1724A89}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{70B2D601-B6C9-4E4C-9E79-FE6DD1724A89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70B2D601-B6C9-4E4C-9E79-FE6DD1724A89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70B2D601-B6C9-4E4C-9E79-FE6DD1724A89}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{70B2D601-B6C9-4E4C-9E79-FE6DD1724A89}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{70B2D601-B6C9-4E4C-9E79-FE6DD1724A89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70B2D601-B6C9-4E4C-9E79-FE6DD1724A89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8AAFA9EC-C78C-4859-91EC-61DD52914B42}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{8AAFA9EC-C78C-4859-91EC-61DD52914B42}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{8AAFA9EC-C78C-4859-91EC-61DD52914B42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8AAFA9EC-C78C-4859-91EC-61DD52914B42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8AAFA9EC-C78C-4859-91EC-61DD52914B42}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{8AAFA9EC-C78C-4859-91EC-61DD52914B42}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{8AAFA9EC-C78C-4859-91EC-61DD52914B42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8AAFA9EC-C78C-4859-91EC-61DD52914B42}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -190,6 +212,9 @@ Global
 		{BF310E8A-8DA1-441F-90E9-DE0E66553048} = {57D9879A-FC9F-468C-B86F-BE45A1472F88}
 		{BA97DD9A-9633-47DD-8BBA-BF8A66F30596} = {BF310E8A-8DA1-441F-90E9-DE0E66553048}
 		{92D84894-45F4-4A73-8FE1-9A8BEF9E3884} = {08759E28-8592-4EBA-9A07-19A5BED3FB0C}
+		{DC62D60A-2EA2-4DB1-B1BA-C8F38D3940B3} = {57D9879A-FC9F-468C-B86F-BE45A1472F88}
+		{70B2D601-B6C9-4E4C-9E79-FE6DD1724A89} = {DC62D60A-2EA2-4DB1-B1BA-C8F38D3940B3}
+		{8AAFA9EC-C78C-4859-91EC-61DD52914B42} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FE3B75E-BA2B-45BC-BBF0-DDA8BA10C4F0}
