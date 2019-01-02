@@ -11,6 +11,7 @@ To see a list of current extensions available for the Bot Builder .NET SDK, use 
 * [C# Adapters](#adapters)
 * [C# Recognizers](#recognizers)
 * [C# Storage](#storage)
+* [C# Transcript Store](#transcript-store)
 
 ## Installation
 
@@ -62,10 +63,18 @@ The following recognizers are currently available;
 
 ## Storage
 
-The following recognizers are currently available;
+The following storage components are currently available;
 
 | Name | Description | NuGet |
 | ------ | ------ | ------ |
 | [Elasticsearch storage](libraries/Bot.Builder.Community.Storage.Elasticsearch) | Elasticsearch based storage for bots created using Microsoft Bot Builder SDK. | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.184-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Storage.Elasticsearch/) |
+
+## Transcript Store
+
+The following transcript store components are currently available;
+
+| Name | Description | NuGet |
+| ------ | ------ | ------ |
+| [Elasticsearch Transcript Store](libraries/Bot.Builder.Community.TranscriptStore.Elasticsearch) | Elasticsearch based transcript store for bots created using Microsoft Bot Builder SDK. |  |
 
 
