@@ -1,5 +1,23 @@
-﻿# Bot.Builder.Community.TranscriptStore.Elasticsearch
+﻿## Elasticsearch transcript store for Bot Builder v4 .NET SDK
+
+### Build status
+| Branch | Status | Recommended NuGet package version |
+| ------ | ------ | ------ |
+| master | [![Build status](https://ci.appveyor.com/api/projects/status/b9123gl3kih8x9cb?svg=true)](https://ci.appveyor.com/project/garypretty/botbuilder-community) |  |
+
+### Description
+
+This is part of the [Bot Builder Community Extensions](https://github.com/garypretty/botbuilder-community) project which contains various pieces of middleware, recognizers and other components for use with the Bot Builder .NET SDK v4.
+
 Elasticsearch based transcript store extension for bots created using Microsoft Bot Framework.
+
+### Installation
+
+Available via NuGet package [Bot.Builder.Community.TranscriptStore.Elasticsearch](https://www.nuget.org/packages/Bot.Builder.Community.TranscriptStore.Elasticsearch/)
+
+Install into your project using the following command in the package manager;
+```
+    PM> Install-Package Bot.Builder.Community.TranscriptStore.Elasticsearch
 
 ## Usage
 The extension uses NEST as the native client for connecting and working with Elasticsearch. Therefore the configuration options have been created following NEST standards and guidelines.
