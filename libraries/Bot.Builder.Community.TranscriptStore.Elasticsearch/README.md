@@ -18,6 +18,7 @@ Available via NuGet package [Bot.Builder.Community.TranscriptStore.Elasticsearch
 Install into your project using the following command in the package manager;
 ```
     PM> Install-Package Bot.Builder.Community.TranscriptStore.Elasticsearch
+```
 
 ## Usage
 The extension uses NEST as the native client for connecting and working with Elasticsearch. Therefore the configuration options have been created following NEST standards and guidelines.
