@@ -27,6 +27,8 @@ If using the below tree as an example;
 2. If the user picks 'Order Food' they would then be asked to choose between 'Pizza' and 'Bread'. 
 3. Finally, if the user picked 'Pizza' they would then be asked to pick from the avaialble pizza choices and when they pick one of those final options the dialog would return that choice to you.
 
+![alt text](sample.png)
+
 For each choice in the choice flow tree, you can define;
 
 * **Id** (Required) - This is a number, which identifies the choice flow item (this should be unique for all items)
@@ -141,7 +143,7 @@ Below is an example of the JSON required to define a ChoiceFlow. This includes e
       },
       {
         "name": "Get In Touch",
-        "id": 2,
+        "id": 3,
         "choices": [],
         "simpleresponse": "You can contact us via email or telephone."
       }
