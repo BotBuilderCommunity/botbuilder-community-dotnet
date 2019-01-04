@@ -27,7 +27,7 @@ If using the below tree as an example;
 2. If the user picks 'Order Food' they would then be asked to choose between 'Pizza' and 'Bread'. 
 3. Finally, if the user picked 'Pizza' they would then be asked to pick from the avaialble pizza choices and when they pick one of those final options the dialog would return that choice to you.
 
-![alt text](sample.png =250px)
+![alt text](sample.png =250x)
 
 For each choice in the choice flow tree, you can define;
 
