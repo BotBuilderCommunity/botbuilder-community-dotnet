@@ -8,8 +8,8 @@
 ### Description
 This is part of the [Bot Builder Community Extensions](https://github.com/garypretty/botbuilder-community) project which contains various pieces of middleware, recognizers and other components for use with the Bot Builder .NET SDK v4.
 
-This dialog allows you to provide the user with a series of guides choice prompts in turn (defined in a JSON file or as a collection of ChoiceFlowItem objects), similar to when calling a telephone line with a series of automated options. You receive their last choice as a result from the dialog and optionally provide the user with a simple text response.
-This could be used in conjunction with, or as an alternative to, using a natural lanaguge model.
+This dialog allows you to provide the user with a series of guided choice prompts in turn (defined in a JSON file or as a collection of ChoiceFlowItem objects), similar to when calling a telephone line with a series of automated options. You receive their last choice as a result from the dialog and optionally provide the user with a simple text response.
+This could be used in conjunction with, or as an alternative to, using a natural language model.
 
 If using the below tree as an example;
 
@@ -153,7 +153,7 @@ Below is an example of the JSON required to define a ChoiceFlow. This includes e
 
 ```
 
-#### Calling the 
+#### Calling the ChoiceFlow Dialog
 
 In your bot code, when you want to hand off to a ChoiceFlow dialog you can use dc.Begin to do this, as shown in the below example using a Waterfall dialog. When returning, the dialog will return args of type ChoiceFlowItem, which will be the last choice selected by the user.
 
