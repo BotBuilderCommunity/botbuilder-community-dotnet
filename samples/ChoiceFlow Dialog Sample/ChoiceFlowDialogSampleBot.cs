@@ -1,28 +1,27 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
+﻿
+
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Bot.Builder.Community.Dialogs.ChoiceFlow;
-using Bot.Builder.Community.Dialogs.Location;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 
-namespace ChoiceFlowDialogSample
+namespace ChoiceFlowDialog_Sample
 {
-    public class ChoiceFlowDialogSampleBot : IBot
+    public class ChoiceFlowDialog_SampleBot : IBot
     {
         private ConversationState _conversationState;
         private DialogSet Dialogs { get; set; }
 
-        public ChoiceFlowDialogSampleBot(ILoggerFactory loggerFactory, ConversationState conversationState)
+        public ChoiceFlowDialog_SampleBot(ILoggerFactory loggerFactory, ConversationState conversationState)
         {
             _conversationState = conversationState ?? throw new ArgumentNullException(nameof(conversationState));
 
-            Dialogs = new DialogSet(_conversationState.CreateProperty<DialogState>(nameof(ChoiceFlowDialogSampleBot)));
+            Dialogs = new DialogSet(_conversationState.CreateProperty<DialogState>(nameof(ChoiceFlowDialog_SampleBot)));
 
             Dialogs.Add(new ChoiceFlowDialog("choiceFlow.json"));
 

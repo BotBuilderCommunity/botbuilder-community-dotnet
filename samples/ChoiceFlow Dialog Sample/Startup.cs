@@ -1,5 +1,5 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
+﻿
+
 
 using System;
 using System.Linq;
@@ -15,7 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace ChoiceFlowDialogSample
+namespace ChoiceFlowDialog_Sample
 {
     /// <summary>
     /// The Startup class configures services and the request pipeline.
@@ -48,7 +48,7 @@ namespace ChoiceFlowDialogSample
             services.AddSingleton(conversationState);
             services.AddSingleton(new BotStateSet(conversationState));
 
-            services.AddBot<ChoiceFlowDialogSampleBot>(options =>
+            services.AddBot<ChoiceFlowDialog_SampleBot>(options =>
             {
                 var secretKey = Configuration.GetSection("botFileSecret")?.Value;
                 var botFilePath = Configuration.GetSection("botFilePath")?.Value;
@@ -67,7 +67,7 @@ namespace ChoiceFlowDialogSample
 
                 options.Middleware.Add(new AutoSaveStateMiddleware(conversationState));
 
-                ILogger logger = _loggerFactory.CreateLogger<ChoiceFlowDialogSampleBot>();
+                ILogger logger = _loggerFactory.CreateLogger<ChoiceFlowDialog_SampleBot>();
                 options.OnTurnError = async (context, exception) =>
                 {
                     logger.LogError($"Exception caught : {exception}");

@@ -14,7 +14,6 @@
 
 
   <ItemGroup>
-    <PackageReference Include="Bot.Builder.Community.Adapters.Alexa" Version="1.0.173" />
     <PackageReference Include="Bot.Builder.Community.Middleware.BestMatch" Version="1.0.173" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.9" />

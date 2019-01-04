@@ -15,9 +15,7 @@
 
 
   <ItemGroup>
-    <PackageReference Include="Bot.Builder.Community.Adapters.Alexa" Version="1.0.173" />
-    <PackageReference Include="Bot.Builder.Community.Dialogs.Location" Version="1.0.173" />
-    <PackageReference Include="Bot.Builder.Community.Middleware.BestMatch" Version="1.0.173" />
+    <PackageReference Include="Bot.Builder.Community.Dialogs.ChoiceFlow" Version="1.0.205" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.9" />
     <PackageReference Include="AsyncUsageAnalyzers" Version="1.0.0-alpha003" PrivateAssets="all" />
@@ -28,11 +26,6 @@
     <PackageReference Include="Microsoft.Bot.Schema" Version="4.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="2.1.1" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta008" PrivateAssets="all" />
-  </ItemGroup>
-
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\libraries\Bot.Builder.Community.Dialogs.ChoiceFlow\Bot.Builder.Community.Dialogs.ChoiceFlow.csproj" />
   </ItemGroup>
 
 
