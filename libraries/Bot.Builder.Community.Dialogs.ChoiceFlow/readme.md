@@ -70,16 +70,6 @@ You can define the initial choices, and each subsequent set of sub choices (disp
 * A JSON representation of the choice tree (see below for an example of ChoiceFlow JSON)
 * Build up a collection of ChoiceFlowItem objects
 
-The following settings can be applied when adding your dialog to the DialogSet.
-
-* **ApiKey** - Required - This should be the API key for the mapping provider you are using
-* **Prompt** - Required - The initial prompt shown to the user. e.g. "Please enter your post code"
-* **BotState** - Required - This is an instance of BotState (e.g. ConversationState or UserState) - this allows the dialog to store / retrieve user favorites. If you set the SkipFavorites flag then this can be passed as null.
-* **UseAzureMaps** - Optional - This defaults to true, in which case Azure maps will be used and you should provide an Azure Maps API key. If you set this to false then Bing Maps will be used and you should use a Bing Maps API key.
-* **LocationRequiredFields** - Optional - Here you can pass in a list of required fields which the use will need to populate if they are empty when a location is found using the initial search. In the example above I have specified Street Address and Post Code are required.
-* **Options** - Optional - Various options to control how the dialog works. Including the abiity to use / not use the favorites functionality, skipping the final confirmation and reverse geocoding of addresses.
-* **LocationResourceManager** - Optional - Here you can provde an implementation of the LocationResourceManager class, which allows you to override the default strings used by the dialog.
-
 #### ChoiceFlow JSON
 
 Below is an example of the JSON required to define a ChoiceFlow. This includes examples of the various required and optional properties.
