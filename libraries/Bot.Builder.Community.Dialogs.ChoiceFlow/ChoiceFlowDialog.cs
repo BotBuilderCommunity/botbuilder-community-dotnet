@@ -47,28 +47,56 @@ namespace Bot.Builder.Community.Dialogs.ChoiceFlow
             }
             else
             {
+                List<ChoiceFlowItem> choiceFlowItems = null;
+
                 if (!string.IsNullOrEmpty(_pathToChoiceFlowJson))
                 {
-                    string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), _pathToChoiceFlowJson);
-                    string json = File.ReadAllText(path);
-
                     try
                     {
+                        string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), _pathToChoiceFlowJson);
+                        string json = File.ReadAllText(path);
                         var categories = JsonConvert.DeserializeObject<List<ChoiceFlowItem>>(json);
-                        return await sc.ReplaceDialogAsync(this.Id, new ChoiceFlowDialogOptions() { ChoiceFlowItems = categories });
+                        choiceFlowItems = categories;
                     }
                     catch (Exception ex)
                     {
-                        throw ex;
+                        throw new Exception ("Error deserializing ChoiceFlow JSON", ex);
                     }
                 }
                 else if (_initialChoiceFlowItems != null && _initialChoiceFlowItems.Any())
                 {
-                    return await sc.ReplaceDialogAsync(this.Id, new ChoiceFlowDialogOptions() { ChoiceFlowItems = _initialChoiceFlowItems });
+                    choiceFlowItems = _initialChoiceFlowItems;
+                }
+
+                if (choiceFlowItems != null && choiceFlowItems.Any())
+                {
+                    var allChoiceFlowItems = choiceFlowItems.SelectRecursive(c => c.SubChoiceFlowItems).ToList();
+
+                    var duplicateIds = allChoiceFlowItems.GroupBy(c => c.Id).Select(g => new
+                    {
+                        Id = g.Key,
+                        Count = g.Count()
+                    }).Where(g => g.Count > 1);
+
+                    if(duplicateIds != null && duplicateIds.Any())
+                    {
+                        var errorMsg = $"Duplicate IDs detected in ChoiceFlow Items: ";
+
+                        foreach(var id in duplicateIds)
+                        {
+                            errorMsg += $"{id.Id}, ";
+                        }
+
+                        throw new Exception(errorMsg);
+                    }
+
+                    return await sc.ReplaceDialogAsync(this.Id, new ChoiceFlowDialogOptions() { ChoiceFlowItems = choiceFlowItems });
+                }
+                else
+                {
+                    throw new Exception("No Choice Flow Items found. Please provide valid ChoiceFlow JSON or a list of ChoiceFlowItem");
                 }
             }
-
-            throw new Exception("No Choice Flow Items found. Please provide valid ChoiceFlow JSON or a list of ChoiceFlowItem");
         }
 
         public async Task<DialogTurnResult> PromptUser(WaterfallStepContext sc, CancellationToken cancellationToken)
@@ -76,8 +104,8 @@ namespace Bot.Builder.Community.Dialogs.ChoiceFlow
             var options = sc.Options as ChoiceFlowDialogOptions;
 
             var selectedChoiceFlowItemId = options.SelectedChoiceFlowItem;
-            var allCategories = options.ChoiceFlowItems.SelectRecursive(c => c.SubChoiceFlowItems).ToList();
-            var selectedChoiceFlowItem = allCategories.FirstOrDefault(c => c.Id == options.SelectedChoiceFlowItem);
+            var allChoiceFlowItems = options.ChoiceFlowItems.SelectRecursive(c => c.SubChoiceFlowItems).ToList();
+            var selectedChoiceFlowItem = allChoiceFlowItems.FirstOrDefault(c => c.Id == options.SelectedChoiceFlowItem);
             var categoriesToPrompt = selectedChoiceFlowItem.SubChoiceFlowItems.ToList();
             
             if (categoriesToPrompt != null && categoriesToPrompt.Any())
