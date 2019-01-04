@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Description>This dialog allows you to provide the user with a series of guides choice prompts in turn (defined in a JSON file or as a collection of ChoiceFlowItem objects), similar to when calling a telephone line with a series of automated options. You receive their last choice as a result from the dialog and optionally provide the user with a simple text response.</Description>
+    <Authors>Bot Builder Community</Authors>
+    <Company>Bot Builder Community</Company>
+    <PackageLicenseUrl>https://github.com/botbuildercommunity/botbuilder-community-dotnet/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/botbuildercommunity/botbuilder-community-dotnet</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/botbuildercommunity/botbuilder-community-dotnet</RepositoryUrl>
+    <PackageTags>bot framework;bot builder;azure bot service;dialogs;choiceflow</PackageTags>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.2.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+  </ItemGroup>
+
+</Project>
