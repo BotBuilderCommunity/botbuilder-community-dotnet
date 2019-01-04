@@ -8,7 +8,7 @@
 ### Description
 This is part of the [Bot Builder Community Extensions](https://github.com/garypretty/botbuilder-community) project which contains various pieces of middleware, recognizers and other components for use with the Bot Builder .NET SDK v4.
 
-This dialog allows you to provide the user with a series of guided choice prompts in turn (defined in a JSON file or as a collection of ChoiceFlowItem objects), similar to when calling a telephone line with a series of automated options. You receive their last choice as a result from the dialog and optionally provide the user with a simple text response.
+ChoiceFlow allows you to provide the user with a series of guided choice prompts in turn (defined in a JSON file or as a collection of ChoiceFlowItem objects), similar to when calling a telephone line with a series of automated options. You receive their last choice as a result from the dialog and optionally provide the user with a simple text response.
 This could be used in conjunction with, or as an alternative to, using a natural language model.
 
 If using the below tree as an example;
@@ -59,7 +59,7 @@ It also shows a IBotTelemetryClient being passed into in order for the dialogs t
 
 ```cs
 
-Dialogs.Add(new LocationDialog("choiceTree.json"));
+Dialogs.Add(new ChoiceFlowDialog("choiceTree.json"));
 
 ```
 
