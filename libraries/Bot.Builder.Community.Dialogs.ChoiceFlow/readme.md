@@ -59,7 +59,8 @@ It also shows a IBotTelemetryClient being passed into in order for the dialogs t
 
 ```cs
 
-Dialogs.Add(new ChoiceFlowDialog("choiceTree.json"));
+var pathToChoiceFlowJson = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "choiceFlow.json");
+Dialogs.Add(new ChoiceFlowDialog(pathToChoiceFlowJson));
 
 ```
 

@@ -2,6 +2,8 @@
 
 
 using System;
+using System.IO;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Bot.Builder.Community.Dialogs.ChoiceFlow;
@@ -23,7 +25,9 @@ namespace ChoiceFlowDialog_Sample
 
             Dialogs = new DialogSet(_conversationState.CreateProperty<DialogState>(nameof(ChoiceFlowDialog_SampleBot)));
 
-            Dialogs.Add(new ChoiceFlowDialog("choiceFlow.json"));
+            var pathToChoiceFlowJson = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "choiceFlow.json");
+
+            Dialogs.Add(new ChoiceFlowDialog(pathToChoiceFlowJson));
 
             Dialogs.Add(new WaterfallDialog("MainDialog", new WaterfallStep[]
             {
