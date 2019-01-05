@@ -21,9 +21,9 @@ namespace Bot.Builder.Community.Dialogs.ChoiceFlow
         private string _pathToChoiceFlowJson;
         private List<ChoiceFlowItem> _initialChoiceFlowItems;
 
-        public ChoiceFlowDialog(string relativePathToChoiceFlowJson = null, List<ChoiceFlowItem> choiceFlowItems = null, IBotTelemetryClient telemetryClient = null, string dialogId = DefaultDialogId) : base(dialogId)
+        public ChoiceFlowDialog(string pathToChoiceFlowJson = null, List<ChoiceFlowItem> choiceFlowItems = null, IBotTelemetryClient telemetryClient = null, string dialogId = DefaultDialogId) : base(dialogId)
         {
-            _pathToChoiceFlowJson = relativePathToChoiceFlowJson;
+            _pathToChoiceFlowJson = pathToChoiceFlowJson;
             _initialChoiceFlowItems = choiceFlowItems;
 
             TelemetryClient = telemetryClient;
@@ -53,8 +53,7 @@ namespace Bot.Builder.Community.Dialogs.ChoiceFlow
                 {
                     try
                     {
-                        string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), _pathToChoiceFlowJson);
-                        string json = File.ReadAllText(path);
+                        string json = File.ReadAllText(_pathToChoiceFlowJson);
                         var categories = JsonConvert.DeserializeObject<List<ChoiceFlowItem>>(json);
                         choiceFlowItems = categories;
                     }
