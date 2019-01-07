@@ -2,50 +2,44 @@
 
 
 using System;
+using System.IO;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Bot.Builder.Community.Dialogs.Location;
+using Bot.Builder.Community.Dialogs.ChoiceFlow;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 
-namespace LocationDialog_Sample
+namespace ChoiceFlowDialog_Sample
 {
-    public class LocationDialogSampleBot : IBot
+    public class ChoiceFlowDialog_SampleBot : IBot
     {
         private ConversationState _conversationState;
         private DialogSet Dialogs { get; set; }
 
-        public LocationDialogSampleBot(ILoggerFactory loggerFactory, ConversationState conversationState)
+        public ChoiceFlowDialog_SampleBot(ILoggerFactory loggerFactory, ConversationState conversationState)
         {
             _conversationState = conversationState ?? throw new ArgumentNullException(nameof(conversationState));
 
-            Dialogs = new DialogSet(_conversationState.CreateProperty<DialogState>(nameof(LocationDialogSampleBot)));
+            Dialogs = new DialogSet(_conversationState.CreateProperty<DialogState>(nameof(ChoiceFlowDialog_SampleBot)));
 
-            Dialogs.Add(new LocationDialog("<BING MAPS OR AZURE MAPS API KEY>",
-                    "Please enter a location",
-                    conversationState,
-                    useAzureMaps: true,
-                    requiredFields: LocationRequiredFields.StreetAddress | LocationRequiredFields.PostalCode,
-                    options: LocationOptions.None
-                    ));
+            var pathToChoiceFlowJson = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "choiceFlow.json");
+
+            Dialogs.Add(new ChoiceFlowDialog(pathToChoiceFlowJson));
 
             Dialogs.Add(new WaterfallDialog("MainDialog", new WaterfallStep[]
             {
                 async (dc, cancellationToken) =>
                 {
-                        return await dc.BeginDialogAsync(LocationDialog.DefaultLocationDialogId);
+                        return await dc.BeginDialogAsync(ChoiceFlowDialog.DefaultDialogId);
                 },
                 async (dc, cancellationToken) =>
                 {
-                    if (dc.Result is Place returnedPlace)
+                    if (dc.Result is ChoiceFlowItem returnedItem)
                     {
-                        await dc.Context.SendActivityAsync($"Location found: {returnedPlace.GetPostalAddress().FormattedAddress}");
-                    }
-                    else
-                    {
-                        await dc.Context.SendActivityAsync($"No location found");
+                        await dc.Context.SendActivityAsync($"The choice flow has finished. The user picked {returnedItem.Name}");
                     }
 
                     return await dc.EndDialogAsync();

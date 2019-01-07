@@ -61,6 +61,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bot.Builder.Community.Trans
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bot.Builder.Community.TranscriptStore.Tests", "tests\Bot.Builder.Community.TranscriptStore.Tests\Bot.Builder.Community.TranscriptStore.Tests.csproj", "{5B000940-89DB-4761-B4F4-F81C3065F51E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bot.Builder.Community.Dialogs.ChoiceFlow", "libraries\Bot.Builder.Community.Dialogs.ChoiceFlow\Bot.Builder.Community.Dialogs.ChoiceFlow.csproj", "{11CFD052-F4E5-44F0-AD19-98FF648C7613}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug - NuGet Packages|Any CPU = Debug - NuGet Packages|Any CPU
