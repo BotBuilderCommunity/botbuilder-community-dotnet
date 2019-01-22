@@ -55,7 +55,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Stora
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Storage.Tests", "tests\Bot.Builder.Community.Storage.Tests\Bot.Builder.Community.Storage.Tests.csproj", "{8AAFA9EC-C78C-4859-91EC-61DD52914B42}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bot.Builder.Community.Dialogs.ChoiceFlow", "libraries\Bot.Builder.Community.Dialogs.ChoiceFlow\Bot.Builder.Community.Dialogs.ChoiceFlow.csproj", "{11CFD052-F4E5-44F0-AD19-98FF648C7613}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Dialogs.ChoiceFlow", "libraries\Bot.Builder.Community.Dialogs.ChoiceFlow\Bot.Builder.Community.Dialogs.ChoiceFlow.csproj", "{11CFD052-F4E5-44F0-AD19-98FF648C7613}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TranscriptStore", "TranscriptStore", "{928FF7BE-16BB-4249-A1D4-C10330303DC1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bot.Builder.Community.TranscriptStore.Elasticsearch", "libraries\Bot.Builder.Community.TranscriptStore.Elasticsearch\Bot.Builder.Community.TranscriptStore.Elasticsearch.csproj", "{00F3DF1B-B9A7-4A94-9759-67EC676B2219}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -199,6 +203,14 @@ Global
 		{11CFD052-F4E5-44F0-AD19-98FF648C7613}.Documentation|Any CPU.Build.0 = Debug|Any CPU
 		{11CFD052-F4E5-44F0-AD19-98FF648C7613}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11CFD052-F4E5-44F0-AD19-98FF648C7613}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00F3DF1B-B9A7-4A94-9759-67EC676B2219}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{00F3DF1B-B9A7-4A94-9759-67EC676B2219}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{00F3DF1B-B9A7-4A94-9759-67EC676B2219}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00F3DF1B-B9A7-4A94-9759-67EC676B2219}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00F3DF1B-B9A7-4A94-9759-67EC676B2219}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{00F3DF1B-B9A7-4A94-9759-67EC676B2219}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{00F3DF1B-B9A7-4A94-9759-67EC676B2219}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00F3DF1B-B9A7-4A94-9759-67EC676B2219}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -226,6 +238,8 @@ Global
 		{70B2D601-B6C9-4E4C-9E79-FE6DD1724A89} = {DC62D60A-2EA2-4DB1-B1BA-C8F38D3940B3}
 		{8AAFA9EC-C78C-4859-91EC-61DD52914B42} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
 		{11CFD052-F4E5-44F0-AD19-98FF648C7613} = {08759E28-8592-4EBA-9A07-19A5BED3FB0C}
+		{928FF7BE-16BB-4249-A1D4-C10330303DC1} = {57D9879A-FC9F-468C-B86F-BE45A1472F88}
+		{00F3DF1B-B9A7-4A94-9759-67EC676B2219} = {928FF7BE-16BB-4249-A1D4-C10330303DC1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FE3B75E-BA2B-45BC-BBF0-DDA8BA10C4F0}
