@@ -116,10 +116,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
                 ServiceUrl = $"{system.ApiEndpoint}?token ={system.ApiAccessToken}",
                 Recipient = new ChannelAccount(system.Application.ApplicationId, "skill"),
                 From = new ChannelAccount(system.User.UserId, "user"),
-
-                Conversation = new ConversationAccount(false, "conversation",
-                    $"{system.Application.ApplicationId}:{system.User.UserId}"),
-
+                Conversation = new ConversationAccount(false, "conversation", skillRequest.Session.SessionId),
                 Type = skillRequest.Request.Type,
                 Id = skillRequest.Request.RequestId,
                 Timestamp = DateTime.ParseExact(skillRequest.Request.Timestamp, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture),
