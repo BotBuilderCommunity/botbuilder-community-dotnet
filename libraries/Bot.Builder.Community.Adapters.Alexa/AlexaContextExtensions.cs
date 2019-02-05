@@ -124,15 +124,10 @@ namespace Bot.Builder.Community.Adapters.Alexa
                 $"{response.StatusCode} with message {response.ReasonPhrase}");
         }
 
-        public const string AlexaCustomerName = "name";
-        public const string AlexaCustomerGivenName = "givenName";
-        public const string AlexaCustomerEmail = "email";
-        public const string AlexaCustomerMobileNumber = "mobileNumber";
-
-        public static async Task<string> AlexaGetUserProfile(this ITurnContext context, string item)
+        public static async Task<string> AlexaGetCustomerProfile(this ITurnContext context, string item)
         {
-            if ((item != AlexaCustomerName) & (item != AlexaCustomerGivenName) & (item != AlexaCustomerEmail) & (item != AlexaCustomerMobileNumber))
-                throw new ArgumentException($"Invalid AlexaGetUserProfile item: {item}");
+            if ((item != AlexaCustomerItem.Name) & (item != AlexaCustomerItem.GivenName) & (item != AlexaCustomerItem.Email) & (item != AlexaCustomerItem.MobileNumber))
+                throw new ArgumentException($"Invalid AlexaGetCustomerProfile item: {item}");
 
             var originalAlexaRequest = (AlexaRequestBody)context.Activity.ChannelData;
 
