@@ -123,5 +123,44 @@ namespace Bot.Builder.Community.Adapters.Alexa
             throw new Exception($"Alexa API returned status code " +
                 $"{response.StatusCode} with message {response.ReasonPhrase}");
         }
+
+        public const string AlexaCustomerName = "name";
+        public const string AlexaCustomerGivenName = "givenName";
+        public const string AlexaCustomerEmail = "email";
+        public const string AlexaCustomerMobileNumber = "mobileNumber";
+
+        public static async Task<string> AlexaGetUserProfile(this ITurnContext context, string item)
+        {
+            if ((item != AlexaCustomerName) & (item != AlexaCustomerGivenName) & (item != AlexaCustomerEmail) & (item != AlexaCustomerMobileNumber))
+                throw new ArgumentException($"Invalid AlexaGetUserProfile item: {item}");
+
+            var originalAlexaRequest = (AlexaRequestBody)context.Activity.ChannelData;
+
+            var client = new HttpClient();
+
+            var directiveEndpoint = $"{originalAlexaRequest.Context.System.ApiEndpoint}/v2/accounts/~current/settings/Profile.{item}";
+
+            client.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", originalAlexaRequest.Context.System.ApiAccessToken);
+
+            var response = await client.GetAsync(directiveEndpoint);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var data = JsonConvert.DeserializeObject<string>(responseContent);
+                return data;
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+            {
+                throw new UnauthorizedAccessException($"Alexa API returned status " +
+                    $"code {response.StatusCode} with message {response.ReasonPhrase}.  " +
+                    $"This potentially means that the user has not granted your skill " +
+                    $"permission to access their profile item {item}.");
+            }
+
+            throw new Exception($"Alexa API returned status code " +
+                $"{response.StatusCode} with message {response.ReasonPhrase}");
+        }
     }
 }
