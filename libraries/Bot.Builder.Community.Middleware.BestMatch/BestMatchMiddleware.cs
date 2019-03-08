@@ -20,6 +20,10 @@ namespace Bot.Builder.Community.Middleware.BestMatch
             {
                 await HandleMessage(turnContext, turnContext.Activity.Text, next, cancellationToken);
             }
+            else
+            {
+                await next(cancellationToken).ConfigureAwait(false);
+            }
         }
 
         private async Task HandleMessage(ITurnContext context, string messageText, NextDelegate next, CancellationToken cancellationToken)
@@ -158,7 +162,7 @@ namespace Bot.Builder.Community.Middleware.BestMatch
 
         public virtual async Task NoMatchHandler(ITurnContext context, string messageText, NextDelegate next, CancellationToken cancellationToken)
         {
-            await next(cancellationToken);
+            await next(cancellationToken).ConfigureAwait(false);
         }
 
         internal class StringMatch
