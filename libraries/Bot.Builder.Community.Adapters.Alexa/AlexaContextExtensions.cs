@@ -123,5 +123,39 @@ namespace Bot.Builder.Community.Adapters.Alexa
             throw new Exception($"Alexa API returned status code " +
                 $"{response.StatusCode} with message {response.ReasonPhrase}");
         }
+
+        public static async Task<string> AlexaGetCustomerProfile(this ITurnContext context, string item)
+        {
+            if ((item != AlexaCustomerItem.Name) & (item != AlexaCustomerItem.GivenName) & (item != AlexaCustomerItem.Email) & (item != AlexaCustomerItem.MobileNumber))
+                throw new ArgumentException($"Invalid AlexaGetCustomerProfile item: {item}");
+
+            var originalAlexaRequest = (AlexaRequestBody)context.Activity.ChannelData;
+
+            var client = new HttpClient();
+
+            var directiveEndpoint = $"{originalAlexaRequest.Context.System.ApiEndpoint}/v2/accounts/~current/settings/Profile.{item}";
+
+            client.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", originalAlexaRequest.Context.System.ApiAccessToken);
+
+            var response = await client.GetAsync(directiveEndpoint);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var data = JsonConvert.DeserializeObject<string>(responseContent);
+                return data;
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+            {
+                throw new UnauthorizedAccessException($"Alexa API returned status " +
+                    $"code {response.StatusCode} with message {response.ReasonPhrase}.  " +
+                    $"This potentially means that the user has not granted your skill " +
+                    $"permission to access their profile item {item}.");
+            }
+
+            throw new Exception($"Alexa API returned status code " +
+                $"{response.StatusCode} with message {response.ReasonPhrase}");
+        }
     }
 }
