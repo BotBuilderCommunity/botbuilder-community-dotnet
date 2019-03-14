@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Bot.Builder.Community.Adapters.Google.Integration;
-using Bot.Builder.Community.Adapters.Google.Model;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 
@@ -123,29 +121,6 @@ namespace Bot.Builder.Community.Adapters.Google
             return activity;
         }
 
-        private static string StripInvocation(string query, string invocationName)
-        {
-            if (query.ToLower().StartsWith("talk to") || query.ToLower().StartsWith("speak to")
-                                                      || query.ToLower().StartsWith("i want to speak to") ||
-                                                      query.ToLower().StartsWith("ask"))
-            {
-                query = query.ToLower().Replace($"talk to", string.Empty);
-                query = query.ToLower().Replace($"speak to", string.Empty);
-                query = query.ToLower().Replace($"I want to speak to", string.Empty);
-                query = query.ToLower().Replace($"ask", string.Empty);
-            }
-
-            query = query.TrimStart().TrimEnd();
-
-            if (!string.IsNullOrEmpty(invocationName)
-                && query.ToLower().StartsWith(invocationName.ToLower()))
-            {
-                query = query.ToLower().Replace(invocationName.ToLower(), string.Empty);
-            }
-
-            return query.TrimStart().TrimEnd();
-        }
-
         private GoogleResponseBody CreateResponseFromLastActivity(IEnumerable<Activity> activities, ITurnContext context)
         {
             var activity = activities.Last();
@@ -239,6 +214,29 @@ namespace Bot.Builder.Community.Adapters.Google
                 //TODO: Implement automatic conversion from hero card to Google basic card
                 //CreateAlexaCardFromAttachment(activity, response);
             }
+        }
+
+        private static string StripInvocation(string query, string invocationName)
+        {
+            if (query.ToLower().StartsWith("talk to") || query.ToLower().StartsWith("speak to")
+                                                      || query.ToLower().StartsWith("i want to speak to") ||
+                                                      query.ToLower().StartsWith("ask"))
+            {
+                query = query.ToLower().Replace($"talk to", string.Empty);
+                query = query.ToLower().Replace($"speak to", string.Empty);
+                query = query.ToLower().Replace($"I want to speak to", string.Empty);
+                query = query.ToLower().Replace($"ask", string.Empty);
+            }
+
+            query = query.TrimStart().TrimEnd();
+
+            if (!string.IsNullOrEmpty(invocationName)
+                && query.ToLower().StartsWith(invocationName.ToLower()))
+            {
+                query = query.ToLower().Replace(invocationName.ToLower(), string.Empty);
+            }
+
+            return query.TrimStart().TrimEnd();
         }
 
         public override Task<ResourceResponse> UpdateActivityAsync(ITurnContext turnContext, Activity activity, CancellationToken cancellationToken)
