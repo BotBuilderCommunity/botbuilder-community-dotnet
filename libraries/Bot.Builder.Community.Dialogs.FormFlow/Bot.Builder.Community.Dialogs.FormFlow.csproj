@@ -14,19 +14,15 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<Company>Bot Builder Community</Company>
-		<Authors>Bot Builder Community</Authors>
-		<Copyright></Copyright>
-		<PackageProjectUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/</PackageProjectUrl>
-		<PackageIconUrl>http://docs.botframework.com/images/bot_icon.png</PackageIconUrl>
-		<PackageLicenseUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/master/LICENSE</PackageLicenseUrl>
-		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-		<RepositoryUrl>https://github.com/Microsoft/botbuilder-dotnet</RepositoryUrl>
-		<LicenseUrl>https://github.com/Microsoft/BotBuilder-dotnet/blob/master/LICENSE</LicenseUrl>
-		<RepositoryType />
-		<PackageTags>bots;ai;botframework;botbuilder;formflow</PackageTags>
-		<NeutralLanguage />
-		<Version>1.0.0</Version>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Description>FormFlow implemention for v4 of the Bot Builder .NET SDK</Description>
+    <Authors>Bot Builder Community</Authors>
+    <Company>Bot Builder Community</Company>
+    <PackageLicenseUrl>https://github.com/botbuildercommunity/botbuilder-community-dotnet/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/botbuildercommunity/botbuilder-community-dotnet</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/botbuildercommunity/botbuilder-community-dotnet</RepositoryUrl>
+    <PackageTags>bot framework;bot builder;azure bot service;formflow;form flow;dialogs</PackageTags>
+    <Version>1.0.0</Version>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Documentation|AnyCPU'">
@@ -42,13 +38,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
-    <PackageReference Include="Microsoft.Bot.Builder" Version="4.2.0" />
-    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.2.0" />
-    <PackageReference Include="Microsoft.Recognizers.Text" Version="1.1.4" />
-		<PackageReference Include="Microsoft.Recognizers.Text.Choice" Version="1.1.4" />
-		<PackageReference Include="Microsoft.Recognizers.Text.DataTypes.TimexExpression" Version="1.1.4" />
-		<PackageReference Include="Microsoft.Recognizers.Text.DateTime" Version="1.1.4" />
-		<PackageReference Include="SourceLink.Create.CommandLine" Version="2.8.1" />
+    <PackageReference Include="Microsoft.Bot.Builder" Version="4.3.1" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.3.1" />
+    <PackageReference Include="Microsoft.Recognizers.Text" Version="1.1.5" />
+		<PackageReference Include="Microsoft.Recognizers.Text.Choice" Version="1.1.5" />
+		<PackageReference Include="Microsoft.Recognizers.Text.DataTypes.TimexExpression" Version="1.1.5" />
+		<PackageReference Include="Microsoft.Recognizers.Text.DateTime" Version="1.1.5" />
+		<PackageReference Include="SourceLink.Create.CommandLine" Version="2.8.3">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup>

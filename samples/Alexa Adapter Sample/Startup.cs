@@ -1,5 +1,5 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
+﻿
+
 
 using System;
 using System.Linq;
@@ -14,7 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Google_Adapter_Sample
+namespace AlexaAdapter_Sample
 {
     /// <summary>
     /// The Startup class configures services and the request pipeline.

@@ -288,8 +288,9 @@ namespace Bot.Builder.Community.Dialogs.FormFlow
 
             // Continue execution of inner dialog.
             _state = (T)outerDc.ActiveDialog.State[nameof(_state)];
-            _entities = (IEnumerable<EntityRecommendation>)outerDc.ActiveDialog.State[nameof(_entities)];
-            _options = (FormOptions)outerDc.ActiveDialog.State[nameof(_options)];
+            _entities = (IEnumerable<EntityRecommendation>)outerDc.ActiveDialog.State[nameof(_entities)];            
+            _options = (FormOptions)Enum.ToObject(typeof(FormOptions), outerDc.ActiveDialog.State[nameof(_options)]);
+
             _formState = (FormState)outerDc.ActiveDialog.State[nameof(_formState)];
 
             var form = _buildForm();

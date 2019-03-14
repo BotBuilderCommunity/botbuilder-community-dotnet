@@ -1,0 +1,72 @@
+[
+  {
+    "name": "Top",
+    "prompt": "What would you like to do?",
+    "id": 0,
+    "choices": [
+      {
+        "name": "Order Food",
+        "prompt": "Which type of food do you want to order?",
+        "reprompt": "Which type of food do you want to order?",
+        "id": 1,
+        "choices": [
+          {
+            "name": "Pizza",
+            "prompt": "Which pizza would you like?",
+            "id": 10,
+            "choices": [
+              {
+                "name": "Meat Feast",
+                "synonyms": [ "meat", "meat pizza", "the meaty one" ],
+                "id": 100,
+                "choices": [],
+                "simpleresponse": "Meat Feast! Great choice!"
+              },
+              {
+                "name": "Cheese and Tomato",
+                "id": 101,
+                "choices": [],
+                "simpleresponse": "Safe choice!"
+              },
+              {
+                "name": "Ham and Pineapple",
+                "id": 102,
+                "choices": [],
+                "simpleresponse": "Who likes pineapple?"
+              }
+            ]
+          },
+          {
+            "name": "Bread",
+            "id": 20,
+            "choices": [
+              {
+                "name": "White",
+                "id": 200,
+                "choices": []
+              },
+              {
+                "name": "Wholemeal",
+                "id": 201,
+                "choices": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Get Opening Hours",
+        "synonyms": [ "hours", "opening times", "times" ],
+        "id": 2,
+        "choices": [],
+        "simpleresponse": "Let me grab those hours for you..."
+      },
+      {
+        "name": "Get In Touch",
+        "id": 3,
+        "choices": [],
+        "simpleresponse": "You can contact us via email or telephone."
+      }
+    ]
+  }
+]

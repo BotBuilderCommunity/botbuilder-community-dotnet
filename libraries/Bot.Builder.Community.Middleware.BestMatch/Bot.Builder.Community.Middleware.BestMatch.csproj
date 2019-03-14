@@ -2,22 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <Authors>Bot Builder Community Extensions</Authors>
-    <Company>Bot Builder Community Extensions</Company>
-    <Copyright>Bot Builder Community Extensions</Copyright>
-    <PackageLicenseUrl>https://github.com/garypretty/botbuilder-community/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/garypretty/botbuilder-community/</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/garypretty/botbuilder-dotnet-extensions/</RepositoryUrl>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Description>Middleware extensions for Bot Builder v4 SDK that allows you to match a message receieved from a bot user against a list of strings and then carry out an appropriate action. Matching does not have to be exact and you can set the threshold as to how closely the message should match with an item in the list.</Description>
-    <PackageTags>bot framework, bot builder, azure bot service, middleware</PackageTags>
+    <Authors>Bot Builder Community</Authors>
+    <Company>Bot Builder Community</Company>
+    <PackageLicenseUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/</PackageProjectUrl>
     <Version>1.0.0</Version>
-    <DebugType>Full</DebugType>
+    <PackageTags>bot framework, bot builder, azure bot service, middleware</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Bot.Builder" Version="4.2.0" />
+    <PackageReference Include="Microsoft.Bot.Builder" Version="4.3.1" />
   </ItemGroup>
 
 </Project>

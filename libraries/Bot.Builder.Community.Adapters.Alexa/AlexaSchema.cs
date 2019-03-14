@@ -379,4 +379,13 @@ namespace Bot.Builder.Community.Adapters.Alexa
             return profession;
         }
     }
+
+    // Item names for AlexaGetUserProfile
+    public class AlexaCustomerItem
+    {
+        public const string Name = "name";
+        public const string GivenName = "givenName";
+        public const string Email = "email";
+        public const string MobileNumber = "mobileNumber";
+    }
 }
