@@ -8,12 +8,12 @@
 
   <ItemGroup>
     <PackageReference Include="AdaptiveCards" Version="1.0.3" />
-    <PackageReference Include="Bot.Builder.Community.Dialogs.FormFlow" Version="1.0.173" />
+    <PackageReference Include="Bot.Builder.Community.Dialogs.FormFlow" Version="4.3.10" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.9" />
-    <PackageReference Include="Microsoft.Bot.Builder" Version="4.2.0" />
-    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.2.0" />
-    <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.2.0" />
-    <PackageReference Include="Microsoft.Bot.Configuration" Version="4.2.0" />
+    <PackageReference Include="Microsoft.Bot.Builder" Version="4.3.2" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.3.2" />
+    <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.3.2" />
+    <PackageReference Include="Microsoft.Bot.Configuration" Version="4.3.2" />
   </ItemGroup>
 
   <ItemGroup>

@@ -39,12 +39,16 @@ namespace Google_Adapter_Sample
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddgoogleBot<GoogleAdapterSampleBot>(options =>
+            services.AddGoogleBot<GoogleAdapterSampleBot>(options =>
             {                
                 // Determine if we should end a session after each turn
                 // If set to true, you can choose to keep the session open
                 // by using the ExpectingInput InputHint in your outgoing activity
                 options.googleOptions.ShouldEndSessionByDefault = false;
+
+                // Specify your Actions invocation name here so that it can be stripped
+                // out of incoming requests.
+                options.googleOptions.ActionInvocationName = "Bot Builder Sample";
 
                 ILogger logger = _loggerFactory.CreateLogger<GoogleAdapterSampleBot>();
 

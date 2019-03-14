@@ -26,7 +26,7 @@ namespace Bot.Builder.Community.Adapters.Google
             {
                 Options = googleOptions;
 
-                var activity = RequestToActivity(actionPayload);
+                var activity = RequestToActivity(actionPayload, googleOptions);
                 BotAssert.ActivityNotNull(activity);
 
                 context = new TurnContext(this, activity);
@@ -94,7 +94,7 @@ namespace Bot.Builder.Community.Adapters.Google
             return Task.FromResult(resourceResponses.ToArray());
         }
 
-        private static Activity RequestToActivity(Payload actionPayload)
+        private static Activity RequestToActivity(Payload actionPayload, GoogleOptions googleOptions)
         {
             var activity = new Activity
             {
@@ -107,13 +107,13 @@ namespace Bot.Builder.Community.Adapters.Google
                     $"{actionPayload.Conversation.ConversationId}"),
 
                 Type = ActivityTypes.Message,
-                Text = actionPayload.Inputs[0]?.RawInputs[0]?.Query,
+                Text = StripInvocation(actionPayload.Inputs[0]?.RawInputs[0]?.Query, googleOptions.ActionInvocationName),
                 Id = new Guid().ToString(),
                 Timestamp = DateTime.UtcNow,
                 Locale = actionPayload.User.Locale
             };
 
-            if(actionPayload.Inputs.FirstOrDefault()?.Arguments.FirstOrDefault()?.Name == "OPTION")
+            if(actionPayload.Inputs.FirstOrDefault()?.Arguments?.FirstOrDefault()?.Name == "OPTION")
             {
                 activity.Text = actionPayload.Inputs.First().Arguments.First().TextValue;
             }
@@ -121,6 +121,29 @@ namespace Bot.Builder.Community.Adapters.Google
             activity.ChannelData = actionPayload;
 
             return activity;
+        }
+
+        private static string StripInvocation(string query, string invocationName)
+        {
+            if (query.ToLower().StartsWith("talk to") || query.ToLower().StartsWith("speak to")
+                                                      || query.ToLower().StartsWith("i want to speak to") ||
+                                                      query.ToLower().StartsWith("ask"))
+            {
+                query = query.ToLower().Replace($"talk to", string.Empty);
+                query = query.ToLower().Replace($"speak to", string.Empty);
+                query = query.ToLower().Replace($"I want to speak to", string.Empty);
+                query = query.ToLower().Replace($"ask", string.Empty);
+            }
+
+            query = query.TrimStart().TrimEnd();
+
+            if (!string.IsNullOrEmpty(invocationName)
+                && query.ToLower().StartsWith(invocationName.ToLower()))
+            {
+                query = query.ToLower().Replace(invocationName.ToLower(), string.Empty);
+            }
+
+            return query.TrimStart().TrimEnd();
         }
 
         private GoogleResponseBody CreateResponseFromLastActivity(IEnumerable<Activity> activities, ITurnContext context)
@@ -153,19 +176,14 @@ namespace Bot.Builder.Community.Adapters.Google
 
                 var responseItems = new List<Item> { simpleResponse };
 
+                // Add Google card to response if set
+                AddCardToResponse(context, responseItems, activity);
+
                 response.Payload.Google.RichResponse.Items = responseItems.ToArray();
 
-                if (activity.SuggestedActions != null && activity.SuggestedActions.Actions.Any())
-                {
-                    var suggestionChips = new List<Suggestion>();
-
-                    foreach (var suggestion in activity.SuggestedActions.Actions)
-                    {
-                        suggestionChips.Add(new Suggestion { Title = suggestion.Title });
-                    }
-
-                    response.Payload.Google.RichResponse.Suggestions = suggestionChips.ToArray();
-                }
+                // If suggested actions have been added to outgoing activity
+                // add these to the response as Google Suggestion Chips
+                AddSuggestionChipsFromSuggestedActions(activity, response);
 
                 if(context.TurnState.ContainsKey("systemIntent"))
                 {
@@ -173,6 +191,7 @@ namespace Bot.Builder.Community.Adapters.Google
                     response.Payload.Google.SystemIntent = optionSystemIntent;
                 }
 
+                // check if we should be listening for more input from the user
                 switch (activity.InputHint)
                 {
                     case InputHints.IgnoringInput:
@@ -192,6 +211,34 @@ namespace Bot.Builder.Community.Adapters.Google
             }
 
             return response;
+        }
+
+        private static void AddSuggestionChipsFromSuggestedActions(Activity activity, GoogleResponseBody response)
+        {
+            if (activity.SuggestedActions != null && activity.SuggestedActions.Actions.Any())
+            {
+                var suggestionChips = new List<Suggestion>();
+
+                foreach (var suggestion in activity.SuggestedActions.Actions)
+                {
+                    suggestionChips.Add(new Suggestion {Title = suggestion.Title});
+                }
+
+                response.Payload.Google.RichResponse.Suggestions = suggestionChips.ToArray();
+            }
+        }
+
+        private void AddCardToResponse(ITurnContext context, List<Item> responseItems, Activity activity)
+        {
+            if (context.TurnState.ContainsKey("GoogleCard") && context.TurnState["GoogleCard"] is GoogleBasicCard)
+            {
+                responseItems.Add(context.TurnState.Get<GoogleBasicCard>("GoogleCard"));
+            }
+            else if (Options.TryConvertFirstActivityAttachmentTogoogleCard)
+            {
+                //TODO: Implement automatic conversion from hero card to Google basic card
+                //CreateAlexaCardFromAttachment(activity, response);
+            }
         }
 
         public override Task<ResourceResponse> UpdateActivityAsync(ITurnContext turnContext, Activity activity, CancellationToken cancellationToken)

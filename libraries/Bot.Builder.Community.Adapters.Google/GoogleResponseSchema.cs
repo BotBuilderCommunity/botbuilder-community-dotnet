@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 
 namespace Bot.Builder.Community.Adapters.Google
@@ -64,14 +65,20 @@ namespace Bot.Builder.Community.Adapters.Google
         public string DisplayText { get; set; }
     }
 
-    public class BasicCard : Item
+    public class GoogleBasicCard : Item
+    {
+        [JsonProperty(PropertyName = "basicCard")]
+        public GoogleBasicCardContent Content { get; set; }
+    }
+
+    public class GoogleBasicCardContent
     {
         public string Title { get; set; }
         public string Subtitle { get; set; }
         public string FormattedText { get; set; }
         public Image Image { get; set; }
         public Button[] Buttons { get; set; }
-        public ImageDisplayOptions ImageDisplayOptions { get; set; }
+        public ImageDisplayOptions? Display { get; set; }
     }
 
     public class MediaResponse : Item
@@ -88,6 +95,7 @@ namespace Bot.Builder.Community.Adapters.Google
         public string Width { get; set; }
     }
 
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum ImageDisplayOptions
     {
         DEFAULT,

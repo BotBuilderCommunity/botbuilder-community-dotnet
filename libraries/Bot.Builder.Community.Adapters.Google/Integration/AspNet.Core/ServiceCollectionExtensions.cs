@@ -22,7 +22,7 @@ namespace Bot.Builder.Community.Adapters.Google.Integration.AspNet.Core
         /// <param name="setupAction">The delegate to run after an instance of the bot is added to the collection.</param>
         /// <returns>The updated services collection.</returns>
         /// <remarks>This method adds a default instance of <typeparamref name="TBot"/> as a transient service.</remarks>
-        public static IServiceCollection AddgoogleBot<TBot>(this IServiceCollection services, Action<GoogleBotOptions> setupAction = null) where TBot : class, IBot
+        public static IServiceCollection AddGoogleBot<TBot>(this IServiceCollection services, Action<GoogleBotOptions> setupAction = null) where TBot : class, IBot
         {
             services.AddTransient<IBot, TBot>();
 

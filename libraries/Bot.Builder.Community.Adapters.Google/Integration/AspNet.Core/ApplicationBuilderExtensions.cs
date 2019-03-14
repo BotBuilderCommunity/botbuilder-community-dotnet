@@ -22,7 +22,7 @@ namespace Bot.Builder.Community.Adapters.Google.Integration.AspNet.Core
         /// <param name="applicationBuilder">The application builder for the ASP.NET application.</param>
         /// <returns>The updated application builder.</returns>
         /// <remarks>This method adds any middleware from the <see cref="GoogleBotOptions"/> provided in the
-        /// <see cref="ServiceCollectionExtensions.AddgoogleBot{TBot}(IServiceCollection, Action{GoogleBotOptions})"/>
+        /// <see cref="ServiceCollectionExtensions.AddGoogleBotGoogleBot{TBot}"/>
         /// method to the adapter.</remarks>
         public static IApplicationBuilder Usegoogle(this IApplicationBuilder applicationBuilder) =>
             applicationBuilder.Usegoogle(paths => {});

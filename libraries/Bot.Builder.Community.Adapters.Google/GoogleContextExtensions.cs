@@ -49,5 +49,10 @@ namespace Bot.Builder.Community.Adapters.Google
 
             context.TurnState.Add("systemIntent", optionSystemIntent);
         }
+
+        public static void GoogleSetCard(this ITurnContext context, GoogleBasicCard card)
+        {
+            context.TurnState.Add("GoogleCard", card);
+        }
     }
 }

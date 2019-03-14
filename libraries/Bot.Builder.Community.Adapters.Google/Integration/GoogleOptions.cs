@@ -22,5 +22,7 @@ namespace Bot.Builder.Community.Adapters.Google.Integration
         public bool TryConvertFirstActivityAttachmentTogoogleCard { get; set; }
 
         public Func<ITurnContext, Exception, Task> OnTurnError { get; set; }
+
+        public string ActionInvocationName { get; set; }
     }
 }
