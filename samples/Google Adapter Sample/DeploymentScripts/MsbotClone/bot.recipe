@@ -16,12 +16,12 @@
     {
       "type": "abs",
       "id": "3",
-      "name": "Alexa_Adapter_Sample-abs"
+      "name": "Google_Adapter_Sample-abs"
     },
     {
       "type": "appInsights",
       "id": "4",
-      "name": "Alexa_Adapter_Sample-insights"
+      "name": "Google_Adapter_Sample-insights"
     }
   ]
 }

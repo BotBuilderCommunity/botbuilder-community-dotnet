@@ -1,5 +1,5 @@
 ﻿{
-  "name": "Alexa_Adapter_Sample",
+  "name": "Google_Adapter_Sample",
   "services": [
     {
       "type": "endpoint",

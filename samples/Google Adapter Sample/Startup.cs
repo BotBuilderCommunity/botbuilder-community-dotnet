@@ -48,7 +48,7 @@ namespace Google_Adapter_Sample
 
                 // Specify your Actions invocation name here so that it can be stripped
                 // out of incoming requests.
-                options.googleOptions.ActionInvocationName = "Bot Builder Sample";
+                options.googleOptions.ActionInvocationName = "My Google Action Name";
 
                 ILogger logger = _loggerFactory.CreateLogger<GoogleAdapterSampleBot>();
 
