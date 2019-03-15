@@ -27,10 +27,4 @@
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta008" PrivateAssets="all" />
   </ItemGroup>
 
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\libraries\Bot.Builder.Community.Adapters.Google\Bot.Builder.Community.Adapters.Google.csproj" />
-  </ItemGroup>
-
-
 </Project>
