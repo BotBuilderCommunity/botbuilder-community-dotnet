@@ -81,10 +81,16 @@ namespace Bot.Builder.Community.Adapters.Google
         public ImageDisplayOptions? Display { get; set; }
     }
 
-    public class MediaResponse : Item
+    public class MediaResponseContent
     {
         public MediaType MediaType { get; set; }
         public MediaObject[] MediaObjects { get; set; }
+    }
+
+    public class MediaResponse : Item
+    {
+        [JsonProperty(PropertyName = "mediaResponse")]
+        public MediaResponseContent Content { get; set; }
     }
 
     public class Image
@@ -144,6 +150,7 @@ namespace Bot.Builder.Community.Adapters.Google
 
     }
 
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum MediaType
     {
         MEDIA_TYPE_UNSPECIFIED,

@@ -51,7 +51,11 @@ Basic sample bot available [here](https://github.com/BotBuilderCommunity/botbuil
 * [Default Google Request to Activity mapping](#Default-Google-Request-to-Activity-mapping)
 * [Default Activity to Google Response mapping](#Default-Activity-to-Google-Response-mapping)
 * [Google TurnContext Extension Methods](#TurnContext-Extension-Methods)
+	* [Adding Suggestion Chips to a response](#Adding-Suggestion-Chips-to-a-response)
 	* [Adding an Google Card to a response](#Adding-an-Google-Card-to-a-response)
+	* [Adding audio as part of a response](#Send-an-audio-repsonse-to-the-user)
+	* [Getting a list of supported capabilities for a user's device (e.g. Screen / Audio)](#Get-a-list-of-capabilities-supported-by-the-user's-device)
+	* [Get the original Google Request sent by an action](#Get-entire-Google-Request-Body)
 
 ### Configuring your Google action
 
@@ -162,35 +166,78 @@ If the activity type you send from your bot is of type MessageActivity the follo
 
 ### TurnContext Extension Methods
 
-#### Adding an Google Card to a response
+#### Adding Suggestion Chips to a response
 
-You can attach a card to your response to be shown in the Google app or on a Fire tablet.
+The Google adapter will automatically convert any Suggestion Actions on your outgoing activity to Google Suggestion Chips.
+You can also explicitly add exception chips to the response as shown below.
 
 ```cs
 
-turnContext.GoogleSetCard(new GoogleBasicCard()
+turnContext.GoogleAddSuggestionChipsToResponse(new List<Suggestion>()
 	{
-	    Content = new GoogleBasicCardContent()
-	    {
-	        Title = "This is the card title",
-	        Subtitle = "This is the card subtitle",
-	        FormattedText = "This is some text to go into the card." +
-	                    "**This text should be bold** and " +
-	                    "*this text should be italic*.",
-	        Display = ImageDisplayOptions.DEFAULT,
-	        Image = new Image()
-	        {
-	            AccessibilityText = "This is the accessibility text",
-	            Url = "https://dev.botframework.com/Client/Images/ChatBot-BotFramework.png"
-	        },
-	    },
+	    new Suggestion() { Title = "Suggestion Chip 1" },
+	    new Suggestion() { Title = "Suggestion Chip 2" },
 	});
 
 ```
 
+#### Adding an Google Card to a response
+
+You can attach a card to your response to be shown in the Google app or a Google device with a display.
+
 The following types of card are supported;
 
 * Basic Card (populate the title / content properties)
+
+```cs
+
+turnContext.GoogleSetCard(
+	"This is the card title",
+	"This is the card subtitle",
+	new Image() {
+		AccessibilityText = "This is the accessibility text",
+		Url = "https://dev.botframework.com/Client/Images/ChatBot-BotFramework.png",
+	},
+	ImageDisplayOptions.DEFAULT,
+	"This is **some text** to *go into the card*.");
+
+```
+
+### Send an audio repsonse to the user
+
+Google Actions support playing back audio files as part of a response. You can add audio to 
+you response using the below extension method.
+
+```cs 
+
+turnContext.GoogleSetAudioResponse(
+	"http://www.hochmuth.com/mp3/Haydn_Cello_Concerto_D-1.mp3",
+	"Audio Name",
+	"This is a description of the audio",
+	new Image()
+	{
+	    AccessibilityText = "This is the accessibility text",
+	    Url = "https://dev.botframework.com/Client/Images/ChatBot-BotFramework.png",
+	},
+	new Image()
+	{
+	    AccessibilityText = "This is the accessibility text",
+	    Url = "https://dev.botframework.com/Client/Images/ChatBot-BotFramework.png",
+	});
+
+```
+
+### Get a list of capabilities supported by the user's device
+
+You can find out which capabilities are supported by the user device.  Using the below
+extension method you will receive a list of surface capabilities. e.g. actions.capability.SCREEN_OUTPUT or actions.capability.AUDIO_OUTPUT.
+This can be useful if you want to tailor your response depending on which device the user is using.
+
+```cs
+
+turnContext.GoogleGetSurfaceCapabilities();
+
+```
 
 #### Get entire Google Request Body
 

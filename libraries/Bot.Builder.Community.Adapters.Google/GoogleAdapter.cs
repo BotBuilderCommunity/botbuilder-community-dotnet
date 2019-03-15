@@ -154,11 +154,14 @@ namespace Bot.Builder.Community.Adapters.Google
                 // Add Google card to response if set
                 AddCardToResponse(context, responseItems, activity);
 
+                // Add Media response to response if set
+                AddMediaResponseToResponse(context, responseItems, activity);
+
                 response.Payload.Google.RichResponse.Items = responseItems.ToArray();
 
                 // If suggested actions have been added to outgoing activity
                 // add these to the response as Google Suggestion Chips
-                AddSuggestionChipsFromSuggestedActions(activity, response);
+                AddSuggestionChipsToResponse(context, response);
 
                 if(context.TurnState.ContainsKey("systemIntent"))
                 {
@@ -188,17 +191,33 @@ namespace Bot.Builder.Community.Adapters.Google
             return response;
         }
 
-        private static void AddSuggestionChipsFromSuggestedActions(Activity activity, GoogleResponseBody response)
+        private void AddMediaResponseToResponse(ITurnContext context, List<Item> responseItems, Activity activity)
         {
-            if (activity.SuggestedActions != null && activity.SuggestedActions.Actions.Any())
+            if (context.TurnState.ContainsKey("GoogleMediaResponse") && context.TurnState["GoogleMediaResponse"] is MediaResponse)
             {
-                var suggestionChips = new List<Suggestion>();
+                responseItems.Add(context.TurnState.Get<MediaResponse>("GoogleMediaResponse"));
+            }
+        }
 
-                foreach (var suggestion in activity.SuggestedActions.Actions)
+        private static void AddSuggestionChipsToResponse(ITurnContext context, GoogleResponseBody response)
+        {
+            var suggestionChips = new List<Suggestion>();
+
+            if (context.TurnState.ContainsKey("GoogleSuggestionChips") && context.TurnState["GoogleSuggestionChips"] is List<Suggestion>)
+            {
+                suggestionChips.AddRange(context.TurnState.Get<List<Suggestion>>("GoogleSuggestionChips"));
+            }
+
+            if (context.Activity.SuggestedActions != null && context.Activity.SuggestedActions.Actions.Any())
+            {
+                foreach (var suggestion in context.Activity.SuggestedActions.Actions)
                 {
                     suggestionChips.Add(new Suggestion {Title = suggestion.Title});
                 }
+            }
 
+            if (suggestionChips.Any())
+            {
                 response.Payload.Google.RichResponse.Suggestions = suggestionChips.ToArray();
             }
         }
