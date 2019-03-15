@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -25,7 +26,7 @@ namespace Bot.Builder.Community.Adapters.Google
                 }
             };
 
-            foreach(var item in items)
+            foreach (var item in items)
             {
                 optionSystemIntent.Data.ListSelect.Items = new List<OptionIntentSelectListItem>();
 
@@ -55,6 +56,72 @@ namespace Bot.Builder.Community.Adapters.Google
             context.TurnState.Add("GoogleCard", card);
         }
 
+        public static void GoogleSetCard(this ITurnContext context, string title,
+            string subtitle, Image image, ImageDisplayOptions imageDisplayOptions, 
+            string formattedText)
+        {
+            if (image == null && formattedText == null)
+            {
+                throw new Exception("A Basic Card should have either an Image or Formatted Text set");
+            }
+
+            var card = new GoogleBasicCard()
+            {
+                Content = new GoogleBasicCardContent()
+                {
+                    Title = "This is the card title",
+                    Subtitle = "This is the card subtitle",
+                    FormattedText = "This is some text to go into the card." +
+                                    "**This text should be bold** and " +
+                                    "*this text should be italic*.",
+                    Display = ImageDisplayOptions.DEFAULT,
+                    Image = new Image()
+                    {
+                        AccessibilityText = "This is the accessibility text",
+                        Url = "https://dev.botframework.com/Client/Images/ChatBot-BotFramework.png"
+                    },
+                },
+            };
+
+            context.TurnState.Add("GoogleCard", card);
+        }
+
+        public static void GoogleAddSuggestionChipsToResponse(this ITurnContext context, List<Suggestion> suggestionChips)
+        {
+            context.TurnState.Add("GoogleSuggestionChips", suggestionChips);
+        }
+
+        public static void GoogleSetMediaResponse(this ITurnContext context, MediaResponse mediaResponse)
+        {
+            context.TurnState.Add("GoogleMediaResponse", mediaResponse);
+        }
+
+        public static void GoogleSetAudioResponse(this ITurnContext context,
+            string audioUrl, string name, string description = null,
+            Image icon = null, Image largeImage = null)
+        {
+            var mediaResponse = new MediaResponse()
+            {
+                Content = new MediaResponseContent()
+                {
+                    MediaType = MediaType.AUDIO,
+                    MediaObjects = new MediaObject[]
+                    {
+                        new MediaObject()
+                        {
+                            ContentUrl = audioUrl,
+                            Description = description,
+                            Name = name,
+                            Icon = icon,
+                            LargeImage = largeImage,
+                        },
+                    },
+                },
+            };
+
+            context.GoogleSetMediaResponse(mediaResponse);
+        }
+
         public static Payload GetGoogleRequestPayload(this ITurnContext context)
         {
             try
@@ -65,6 +132,13 @@ namespace Bot.Builder.Community.Adapters.Google
             {
                 return null;
             }
+        }
+
+        public static List<string> GoogleGetSurfaceCapabilities(this ITurnContext context)
+        {
+            var payload = (Payload)context.Activity.ChannelData;
+            var capabilities = payload.Surface.Capabilities.Select(c => c.Name);
+            return capabilities.ToList();
         }
     }
 }

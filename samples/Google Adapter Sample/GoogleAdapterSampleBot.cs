@@ -37,23 +37,31 @@ namespace Google_Adapter_Sample
                         new CardAction() { Title = "No", Type = ActionTypes.PostBack, Value = $"no-negative-feedback" }
                     };
 
-                    turnContext.GoogleSetCard(new GoogleBasicCard()
-                    {
-                        Content = new GoogleBasicCardContent()
+                    turnContext.GoogleSetCard(
+                        "This is the card title",
+                        "This is the card subtitle",
+                        new Image()
                         {
-                            Title = "This is the card title",
-                            Subtitle = "This is the card subtitle",
-                            FormattedText = "This is some text to go into the card." +
-                                        "**This text should be bold** and " +
-                                        "*this text should be italic*.",
-                            Display = ImageDisplayOptions.DEFAULT,
-                            Image = new Image()
-                            {
-                                AccessibilityText = "This is the accessibility text",
-                                Url = "https://dev.botframework.com/Client/Images/ChatBot-BotFramework.png"
-                            },
+                            AccessibilityText = "This is the accessibility text",
+                            Url = "https://dev.botframework.com/Client/Images/ChatBot-BotFramework.png",
                         },
-                    });
+                        ImageDisplayOptions.DEFAULT,
+                        "This is **some text** to *go into the card*.");
+
+                    turnContext.GoogleSetAudioResponse(
+                        "http://www.hochmuth.com/mp3/Haydn_Cello_Concerto_D-1.mp3",
+                        "Audio Name",
+                        "This is a description of the audio",
+                        new Image()
+                        {
+                            AccessibilityText = "This is the accessibility text",
+                            Url = "https://dev.botframework.com/Client/Images/ChatBot-BotFramework.png",
+                        },
+                        new Image()
+                        {
+                            AccessibilityText = "This is the accessibility text",
+                            Url = "https://dev.botframework.com/Client/Images/ChatBot-BotFramework.png",
+                        });
 
                     await turnContext.SendActivityAsync(activity);
                     break;
