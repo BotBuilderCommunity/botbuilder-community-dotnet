@@ -54,5 +54,17 @@ namespace Bot.Builder.Community.Adapters.Google
         {
             context.TurnState.Add("GoogleCard", card);
         }
+
+        public static Payload GetGoogleRequestPayload(this ITurnContext context)
+        {
+            try
+            {
+                return (Payload)context.Activity.ChannelData;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
     }
 }
