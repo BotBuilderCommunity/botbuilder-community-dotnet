@@ -161,7 +161,7 @@ namespace Bot.Builder.Community.Adapters.Google
 
                 // If suggested actions have been added to outgoing activity
                 // add these to the response as Google Suggestion Chips
-                AddSuggestionChipsFromSuggestedActions(context, response);
+                AddSuggestionChipsToResponse(context, response);
 
                 if(context.TurnState.ContainsKey("systemIntent"))
                 {
@@ -199,7 +199,7 @@ namespace Bot.Builder.Community.Adapters.Google
             }
         }
 
-        private static void AddSuggestionChipsFromSuggestedActions(ITurnContext context, GoogleResponseBody response)
+        private static void AddSuggestionChipsToResponse(ITurnContext context, GoogleResponseBody response)
         {
             var suggestionChips = new List<Suggestion>();
 
