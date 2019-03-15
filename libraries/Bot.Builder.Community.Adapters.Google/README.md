@@ -203,7 +203,7 @@ turnContext.GoogleSetCard(
 
 ```
 
-### Send an audio repsonse to the user
+#### Send an audio repsonse to the user
 
 Google Actions support playing back audio files as part of a response. You can add audio to 
 you response using the below extension method.
@@ -227,7 +227,7 @@ turnContext.GoogleSetAudioResponse(
 
 ```
 
-### Get a list of capabilities supported by the user's device
+#### Get a list of capabilities supported by the user's device
 
 You can find out which capabilities are supported by the user device.  Using the below
 extension method you will receive a list of surface capabilities. e.g. actions.capability.SCREEN_OUTPUT or actions.capability.AUDIO_OUTPUT.
