@@ -10,7 +10,7 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 
-namespace LocationDialog_Sample
+namespace Google_Adapter_Sample
 {
     public class LocationDialogSampleBot : IBot
     {

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace LocationDialog_Sample
+namespace Google_Adapter_Sample
 {
     public class Program
     {
