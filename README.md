@@ -8,7 +8,7 @@ To see a list of current extensions available for the Bot Builder .NET SDK, use 
 
 * [C# Middleware](#middleware)
 * [C# Dialogs & Prompts](#dialogs-and-prompts)
-* [C# Adapters](#adapters)
+* [C# Adapters](#adapters) - e.g. Alexa and Google
 * [C# Recognizers](#recognizers)
 * [C# Storage](#storage)
 
@@ -50,6 +50,7 @@ The following adapters can be used to expose your bot on additional channels not
 | Name | Description | Sample? | NuGet |
 | ------ | ------ | ------ | ------ |
 | [Alexa Adapter](libraries/Bot.Builder.Community.Adapters.Alexa) | An adapter to allow for Alexa Skills to be built using the Bot Builder SDK. Includes broad support for Alexa skills capabilities, including devices with displays (Show / Spot), Alexa Cards, access to user profile data and the ability to send Progressive Responses. | [Sample](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/Alexa%20Adapter%20Sample) | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.121-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Adapters.Alexa/) |
+| [Google Adapter](libraries/Bot.Builder.Community.Adapters.Google) | An adapter to allow for Google Actions to be built using the Bot Builder SDK. Includes broad support for Alexa skills capabilities, including Cards and suggestion chips | [Sample](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/Google%20Adapter%20Sample) | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.121-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Adapters.Google/) |
 
 
 ## Recognizers
