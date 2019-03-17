@@ -47,7 +47,6 @@ steps:
   inputs:
     testRunner: VSTest
     testResultsFiles: '**/*.trx'
-  condition: succeeded()
 
 - task: PublishBuildArtifacts@1
   condition: succeeded()
