@@ -16,7 +16,7 @@ steps:
 - script: |
     dotnet build Bot.Builder.Community.sln --configuration $(buildConfiguration)
     dotnet test Bot.Builder.Community.sln --configuration $(buildConfiguration) --logger trx
-    dotnet publish --configuration $(buildConfiguration) --output $BUILD_ARTIFACTSTAGINGDIRECTORY
+    dotnet publish Bot.Builder.Community.sln --configuration $(buildConfiguration) --output $BUILD_ARTIFACTSTAGINGDIRECTORY
   failOnStderr: true
 
 - task: PublishTestResults@2
