@@ -4,6 +4,9 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <CodeAnalysisRuleSet></CodeAnalysisRuleSet>
     <RootNamespace>ChoiceFlowDialogSample</RootNamespace>
+    <Version>4.3.0</Version>
+    <FileVersion>4.3.0</FileVersion>
+    <AssemblyVersion>4.3.0</AssemblyVersion>
   </PropertyGroup>
 
 
