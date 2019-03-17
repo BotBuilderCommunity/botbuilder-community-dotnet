@@ -40,7 +40,6 @@ steps:
     packDirectory: '$(Build.ArtifactStagingDirectory)/packages'
     configuration: '$(buildConfiguration)'
     nobuild: true
-    patchVersion: '$(Build.BuildNumber)'
   condition: succeeded()
 
 - task: PublishTestResults@2
