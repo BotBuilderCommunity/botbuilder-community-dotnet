@@ -7,7 +7,9 @@
     <Company>Bot Builder Community</Company>
     <PackageLicenseUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/</PackageProjectUrl>
-    <Version>1.0.0</Version>
+    <Version>4.3.0</Version>
+    <FileVersion>4.3.0</FileVersion>
+    <AssemblyVersion>4.3.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
