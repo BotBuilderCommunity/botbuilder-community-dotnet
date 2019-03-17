@@ -13,11 +13,28 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- script: |
-    dotnet build Bot.Builder.Community.sln --configuration $(buildConfiguration)
-    dotnet test Bot.Builder.Community.sln --configuration $(buildConfiguration) --logger trx
-    dotnet publish Bot.Builder.Community.sln --configuration $(buildConfiguration) --output $BUILD_ARTIFACTSTAGINGDIRECTORY
-  failOnStderr: true
+
+- task: DotNetCoreCLI@2
+  displayName: dotnet build
+  inputs:
+    command: build
+    projects: 'Bot.Builder.Community.sln'
+    configuration: '$(buildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: dotnet test
+  inputs:
+    command: test
+    projects: 'Bot.Builder.Community.sln'
+    configuration: '$(buildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: dotnet pack
+  inputs:
+    projects: 'Bot.Builder.Community.sln'
+    command: pack
+    packDirectory: '$(Build.ArtifactStagingDirectory)/packages'
+    configuration: '$(buildConfiguration)'
 
 - task: PublishTestResults@2
   condition: succeededOrFailed()
