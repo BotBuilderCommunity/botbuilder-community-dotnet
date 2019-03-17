@@ -6,9 +6,11 @@
     <Company>Bot Builder Community</Company>
     <PackageLicenseUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/</PackageProjectUrl>
-    <Version>1.0.0</Version>
+    <Version>4.3.0</Version>
     <PackageTags>bot framework, bot builder, azure bot service, middleware</PackageTags>
     <Description>This middleware uses Cognitive Services Check to automatically correct inbound message text.</Description>
+    <FileVersion>4.3.0</FileVersion>
+    <AssemblyVersion>4.3.0</AssemblyVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.0" />

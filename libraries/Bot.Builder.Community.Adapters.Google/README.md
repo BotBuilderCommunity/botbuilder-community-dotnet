@@ -87,7 +87,7 @@ The should have a fulfilment type of 'Conversational' and a fulfilment tool 'Dia
 
 Currently there are integration libraries available for WebApi and .NET Core available for the adapter.
 When using the integration libraries a new endpoint for your Google skill is created at '/api/actionrequests'. 
-e.g. http://www.yourbot.com/api/actionrequests.  This is the endpoint that you should configure within the Google
+e.g. https://www.yourbot.com/api/actionrequests.  This is the endpoint that you should configure within the Google
 Actions Developer Console as the fulfilment webhook endpoint for your action.
 
 #### WebApi
