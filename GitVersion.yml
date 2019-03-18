@@ -1,0 +1,6 @@
+# GitVersion.yml
+next-version: 4.3.24
+mode: Mainline
+branches: {}
+ignore:
+  sha: []
