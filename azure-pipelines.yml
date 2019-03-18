@@ -63,7 +63,7 @@ steps:
   inputs:
     command: 'push'
     packagesToPush: '$(build.artifactStagingDirectory)/packages/*.nupkg'
-    publishVstsFeed: '$(ARTIFACT_FEED_ID)'
+    publishVstsFeed: 'BotBuilderCommunity-Alpha'
   condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/develop'), eq('true', variables['FORCE_PUSH_NUGET'])))
 
 - task: NuGetCommand@2
@@ -71,7 +71,7 @@ steps:
   inputs:
     command: 'push'
     packagesToPush: '$(build.artifactStagingDirectory)/packages/*.nupkg'
-    publishVstsFeed: '$(ARTIFACT_FEED_ID)'
+    publishVstsFeed: 'BotBuilderCommunity-Alpha'
   condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq('true', variables['FORCE_PUSH_NUGET'])))
 
 - task: KriefMikael.githubtools.GitHubTag.GitHubTag@1
