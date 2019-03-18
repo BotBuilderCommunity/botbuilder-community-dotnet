@@ -64,7 +64,7 @@ steps:
     command: 'push'
     packagesToPush: '$(build.artifactStagingDirectory)/packages/*.nupkg'
     publishVstsFeed: 'BotBuilderCommunity-Alpha'
-  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/develop'), eq('true', variables['FORCE_PUSH_NUGET'])))
+  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'develop'), eq('true', variables['FORCE_PUSH_NUGET'])))
 
 - task: NuGetCommand@2
   displayName: 'Publish Master Packages to NuGet Feed'
