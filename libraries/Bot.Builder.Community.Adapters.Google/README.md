@@ -64,23 +64,22 @@ The Google Adapter is designed to integrate with a Google Action that has been c
 
 Please use the following configuration for your Google Action;
 
-1. Create a single intent for your action - choosing the 'Custom' intent type.  This will create your 'actions.intent.MAIN' intent in DialogFlow. 
-The should have a fulfilment type of 'Conversational' and a fulfilment tool 'DialogFlow'.  Your main intent within your action should look like the below;
+1. From https://console.actions.google.com/, add a single intent for your action by clicking - choosing the 'Custom' intent type.  This will create your 'actions.intent.MAIN' intent in DialogFlow. This should have a fulfilment type of 'Conversational' and a fulfilment tool 'DialogFlow'.  Your main intent within your action should look like the below;
 
-![Google Action Main Intent](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/feature/google-adapter/samples/Google%20Adapter%20Sample/mainintent.png)
+![Google Action Main Intent](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/master/samples/Google%20Adapter%20Sample/mainintent.png)
 
-2. When you create your main intent you will enter DialogFlow to configure it.  Set the following;
+2. When you click on your main intent you will enter into DialogFlow to configure it.  Set the following;
 	* You will begin with two intents within DialogFlow - 'Welcome' and 'Default Fallback Intent'.
 	* Delete the Welcome intent
 	* Create a new intent called 'Default' and specify text phrases by entering some of the queries that are likely to be made to your bot
 
-![DialogFlow Intent](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/feature/google-adapter/samples/Google%20Adapter%20Sample/intent-dialogflow.png)
+![DialogFlow Intent](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/master/samples/Google%20Adapter%20Sample/intent-dialogflow.png)
 
 3. To configure your fulfilment (within DialogFlow) enable the 'webhook' setting and specify your bots Google Action endpoint. e.g. https://yourbot.azurewebsites.net/api/actionrequests 
 
-![Google Action Main Intent](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/feature/google-adapter/samples/Google%20Adapter%20Sample/fulfilment.png)
+![Google Action Main Intent](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/master/samples/Google%20Adapter%20Sample/fulfilment.png)
 
-4. You should now be able to test your action with the simulator or on a device.
+4. You should now be able to test your action with the simulator (https://console.actions.google.com/) or on a device.
 
 
 ### Adding the adapter and skills endpoint to your bot
@@ -146,21 +145,20 @@ When an incoming request is receieved, the activity sent to your bot is comprise
 * **Timestamp** : Timestamp (UTC)
 * **Locale** : User locale from the Google request
 
-The entire body of the Google request is placed into the Activity as Channel Data, of type Payload.
+The entire body of the Google request is placed into the Activity as Channel Data, of type **Payload**.
 
 
 ### Default Activity to Google Response mapping
 
 The Google adapter will send a response to the Google action request if the outgoing activity is of type MessageActivity or EndOfConversation activity.
 
-If the actvity you send from your bot is of type EndOfConversation then a response is sent indicating that the session should be ended.
+If the activity you send from your bot is of type EndOfConversation then a response is sent indicating that the session should be ended.
 
 If the activity type you send from your bot is of type MessageActivity the following values are mapped to a Google response object;
 
 * **SimpleResponse DisplayText** : Populated using the value of activity.Text if it is not null.
 * **OutputSpeech SSML** : Populated using the value of activity.Speak if it is not null.
 * **OutputSpeech TextToSpeech** : Populated using the value of activity.Text if it is not null.
-
 * **ExpectUserResponse** : Defaults to true. However, setting the InputHint property on the activity to InputHint.IgnoringInput will set this value to true and end the session.
 
 
