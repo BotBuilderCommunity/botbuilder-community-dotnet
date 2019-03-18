@@ -32,7 +32,7 @@ steps:
     projects: 'Bot.Builder.Community.sln'
     versioningScheme: byEnvVar
     versionEnvVar: GitVersion.NuGetVersion
-    configuration: '$(buildConfiguration)'
+    arguments: "--configuration $(buildConfiguration)"
 
 - task: DotNetCoreCLI@2
   displayName: dotnet test
