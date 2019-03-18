@@ -55,11 +55,28 @@ steps:
     nobuild: true
   condition: succeeded()
 
-- task: PublishTestResults@2
-  condition: succeededOrFailed()
-  inputs:
-    testRunner: VSTest
-    testResultsFiles: '**/*.trx'
-
 - task: PublishBuildArtifacts@1
   condition: succeeded()
+
+- task: NuGetCommand@2
+  displayName: 'Publish Develop Packages to Artifacts Feed'
+  inputs:
+    command: 'push'
+    packagesToPush: '$(build.artifactStagingDirectory)/packages/*.nupkg'
+    publishVstsFeed: '$(ARTIFACT_FEED_ID)'
+  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/develop'), eq('true', variables['FORCE_PUSH_NUGET']))
+
+- task: NuGetCommand@2
+  displayName: 'Publish Master Packages to NuGet Feed'
+  inputs:
+    command: 'push'
+    packagesToPush: '$(build.artifactStagingDirectory)/packages/*.nupkg'
+    publishVstsFeed: '$(ARTIFACT_FEED_ID)'
+  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq('true', variables['FORCE_PUSH_NUGET']))
+
+- task: KriefMikael.githubtools.GitHubTag.GitHubTag@1
+  displayName: 'Tag Master Branch'
+  inputs:
+    githubEndpoint: BotBuilderCommunity
+    tag: 'v$(GitVersion.NuGetVersion)'
+  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq('true', variables['FORCE_PUSH_NUGET']))
