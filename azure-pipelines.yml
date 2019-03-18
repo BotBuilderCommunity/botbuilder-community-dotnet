@@ -14,8 +14,10 @@ variables:
 
 steps:
 
-- task: gittools.gitversion-netcore-preview.gitversion-netcore-task.GitVersionNetCore@5
+- task: gittools.gitversion.gitversion-task.GitVersion@4
   displayName: GitVersion
+  inputs:
+    preferBundledVersion: false
 
 - task: DotNetCoreCLI@2
   displayName: dotnet build
