@@ -50,6 +50,8 @@ steps:
     command: pack
     packDirectory: '$(Build.ArtifactStagingDirectory)/packages'
     configuration: '$(buildConfiguration)'
+    versioningScheme: byEnvVar
+    versionEnvVar: GitVersion.NuGetVersion
     nobuild: true
   condition: succeeded()
 
