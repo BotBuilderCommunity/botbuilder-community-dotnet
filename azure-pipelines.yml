@@ -5,7 +5,7 @@ trigger:
 - master
 
 pool:
-  vmImage: 'VS2017-Win2016'
+  vmImage: 'windows-2019'
 
 variables:
   solution: '**/*.sln'
@@ -14,14 +14,25 @@ variables:
 
 steps:
 
+- task: gittools.gitversion.gitversion-task.GitVersion@4
+  displayName: GitVersion
+  inputs:
+    preferBundledVersion: false
+
+- task: DotNetCoreCLI@2
+  displayName: Restore
+  inputs:
+    command: restore
+    projects: 'Bot.Builder.Community.sln'
+
 - task: DotNetCoreCLI@2
   displayName: dotnet build
   inputs:
     command: build
     projects: 'Bot.Builder.Community.sln'
-    configuration: '$(buildConfiguration)'
-    version: '$(GitVersion.NuGetVersion)'
-  condition: succeeded()
+    versioningScheme: byEnvVar
+    versionEnvVar: GitVersion.NuGetVersion
+    arguments: "--configuration $(buildConfiguration)"
 
 - task: DotNetCoreCLI@2
   displayName: dotnet test
@@ -39,6 +50,8 @@ steps:
     command: pack
     packDirectory: '$(Build.ArtifactStagingDirectory)/packages'
     configuration: '$(buildConfiguration)'
+    versioningScheme: byEnvVar
+    versionEnvVar: GitVersion.NuGetVersion
     nobuild: true
   condition: succeeded()
 
