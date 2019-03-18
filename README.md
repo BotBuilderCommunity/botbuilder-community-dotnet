@@ -20,7 +20,7 @@ Each extension, such as middleware or recognizers, is available individually fro
 
 We welcome and encourage contributions to this project, in the form of bug fixes, enhancements or new extensions. Please fork the repo and raise a PR if you have something you would like us to review for inclusion.  If you want to discuss an idea first then the best way to do this right now is to raise a GitHub issue or reach out to one of us on Twitter.
 
-## Middleware
+## Middleware 
 
 The following pieces of middleware are currently available;
 
