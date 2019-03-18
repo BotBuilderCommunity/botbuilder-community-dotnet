@@ -8,25 +8,48 @@ pool:
   vmImage: 'VS2017-Win2016'
 
 variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
 steps:
 
-- script: dotnet build Bot.Builder.Community.sln -c Release /p:Version='$(GitVersion.NuGetVersion)'
-  displayName: 'Dotnet Build'
+- task: gittools.gitversion-netcore-preview.gitversion-netcore-task.GitVersionNetCore@5
+  displayName: GitVersion
 
-- script: dotnet test Bot.Builder.Community.sln -c Release --no-build
-  displayName: 'Dotnet Test'
+- task: DotNetCoreCLI@2
+  displayName: dotnet build
+  inputs:
+    command: build
+    projects: 'Bot.Builder.Community.sln'
+    configuration: '$(buildConfiguration)'
+    version: '$(GitVersion.NuGetVersion)'
+  condition: succeeded()
 
-- script: dotnet pack Bot.Builder.Community.sln -c Release --no-build -o '$(build.artifactStagingDirectory)'
-  displayName: 'Dotnet Pack'
+- task: DotNetCoreCLI@2
+  displayName: dotnet test
+  inputs:
+    command: test
+    projects: 'Bot.Builder.Community.sln'
+    configuration: '$(buildConfiguration)'
+    nobuild: true
+  condition: succeeded()
+
+- task: DotNetCoreCLI@2
+  displayName: dotnet pack
+  inputs:
+    projects: 'Bot.Builder.Community.sln'
+    command: pack
+    packDirectory: '$(Build.ArtifactStagingDirectory)/packages'
+    configuration: '$(buildConfiguration)'
+    nobuild: true
+  condition: succeeded()
 
 - task: PublishTestResults@2
-  displayName: 'Publish Test Results'
   condition: succeededOrFailed()
   inputs:
     testRunner: VSTest
     testResultsFiles: '**/*.trx'
 
 - task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifcats'
+  condition: succeeded()
