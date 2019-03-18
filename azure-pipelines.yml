@@ -3,6 +3,7 @@
 
 trigger:
 - master
+- develop
 
 pool:
   vmImage: 'windows-2019'
@@ -75,8 +76,8 @@ steps:
   condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq('true', variables['FORCE_PUSH_NUGET'])))
 
 - task: KriefMikael.githubtools.GitHubTag.GitHubTag@1
-  displayName: 'Tag Master Branch'
+  displayName: 'Tag Branch'
   inputs:
     githubEndpoint: BotBuilderCommunity
     tag: 'v$(GitVersion.NuGetVersion)'
-  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq('true', variables['FORCE_PUSH_NUGET'])))
+  condition: succeeded()
