@@ -30,8 +30,8 @@ steps:
   inputs:
     command: build
     projects: 'Bot.Builder.Community.sln'
-    version: '$(GitVersion.NuGetVersion)'
-    norestore: true
+    versioningScheme: byEnvVar
+    versionEnvVar: GitVersion.NuGetVersion
     configuration: '$(buildConfiguration)'
 
 - task: DotNetCoreCLI@2
