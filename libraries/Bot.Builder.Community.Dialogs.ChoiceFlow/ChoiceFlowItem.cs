@@ -5,7 +5,7 @@ namespace Bot.Builder.Community.Dialogs.ChoiceFlow
 {
     public class ChoiceFlowItem
     {
-        public string Name { get; set; }
+        public string Name { get; set; } 
         [JsonProperty("prompt")]
         public string SubChoiceFlowItemsPrompt { get; set; }
         [JsonProperty("reprompt")]

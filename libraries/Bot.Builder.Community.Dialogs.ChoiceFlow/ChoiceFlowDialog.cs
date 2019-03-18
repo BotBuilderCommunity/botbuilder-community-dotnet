@@ -16,7 +16,7 @@ namespace Bot.Builder.Community.Dialogs.ChoiceFlow
 {
     public class ChoiceFlowDialog : ComponentDialog
     {
-        public const string DefaultDialogId = "ChoiceFlowDialog";
+        public const string DefaultDialogId = "ChoiceFlowDialog"; 
 
         private string _pathToChoiceFlowJson; 
         private List<ChoiceFlowItem> _initialChoiceFlowItems;
