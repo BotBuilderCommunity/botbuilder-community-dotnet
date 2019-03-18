@@ -18,7 +18,7 @@ namespace Bot.Builder.Community.Dialogs.ChoiceFlow
     {
         public const string DefaultDialogId = "ChoiceFlowDialog";
 
-        private string _pathToChoiceFlowJson;
+        private string _pathToChoiceFlowJson; 
         private List<ChoiceFlowItem> _initialChoiceFlowItems;
 
         public ChoiceFlowDialog(string pathToChoiceFlowJson = null, List<ChoiceFlowItem> choiceFlowItems = null, IBotTelemetryClient telemetryClient = null, string dialogId = DefaultDialogId) : base(dialogId)
