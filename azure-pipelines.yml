@@ -20,6 +20,8 @@ steps:
     command: build
     projects: 'Bot.Builder.Community.sln'
     configuration: '$(buildConfiguration)'
+    version: '$(GitVersion.NuGetVersion)'
+  condition: succeeded()
 
 - task: DotNetCoreCLI@2
   displayName: dotnet test
@@ -27,6 +29,8 @@ steps:
     command: test
     projects: 'Bot.Builder.Community.sln'
     configuration: '$(buildConfiguration)'
+    nobuild: true
+  condition: succeeded()
 
 - task: DotNetCoreCLI@2
   displayName: dotnet pack
@@ -36,7 +40,7 @@ steps:
     packDirectory: '$(Build.ArtifactStagingDirectory)/packages'
     configuration: '$(buildConfiguration)'
     nobuild: true
-    patchVersion: '$(Build.BuildNumber)'
+  condition: succeeded()
 
 - task: PublishTestResults@2
   condition: succeededOrFailed()
@@ -45,3 +49,4 @@ steps:
     testResultsFiles: '**/*.trx'
 
 - task: PublishBuildArtifacts@1
+  condition: succeeded()
