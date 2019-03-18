@@ -20,13 +20,19 @@ steps:
     preferBundledVersion: false
 
 - task: DotNetCoreCLI@2
+  displayName: Restore
+  inputs:
+    command: restore
+    projects: 'Bot.Builder.Community.sln'
+
+- task: DotNetCoreCLI@2
   displayName: dotnet build
   inputs:
     command: build
     projects: 'Bot.Builder.Community.sln'
-    configuration: '$(buildConfiguration)'
     version: '$(GitVersion.NuGetVersion)'
-  condition: succeeded()
+    norestore: true
+    configuration: '$(buildConfiguration)'
 
 - task: DotNetCoreCLI@2
   displayName: dotnet test
