@@ -34,7 +34,7 @@ branches:
     prevent-increment-of-merged-branch-version: false
     tag-number-pattern: '[/-](?<number>\d+)[-/]'
     track-merge-target: false
-  develop$:
+  develop:
     mode: ContinuousDeployment
     tag: unstable
     increment: Minor
