@@ -1,9 +1,6 @@
 # GitVersion.yml
-gitversion /showconfig
 assembly-versioning-scheme: MajorMinorPatch
 mode: Mainline
-tag-prefix: '[vV]'
-continuous-delivery-fallback-tag: ci
 major-version-bump-message: '\+semver:\s?(breaking|major)'
 minor-version-bump-message: '\+semver:\s?(feature|minor)'
 patch-version-bump-message: '\+semver:\s?(fix|patch)'
@@ -13,43 +10,31 @@ commits-since-version-source-padding: 4
 commit-message-incrementing: Enabled
 branches:
   master:
-    mode: ContinuousDeployment
+    mode: Mainline
     tag:
     increment: Patch
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
   releases?[/-]:
-    mode: ContinuousDeployment
+    mode: Mainline
     tag: beta
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
   features?[/-]:
-    mode: ContinuousDeployment
+    mode: Mainline
     tag: useBranchName
     increment: Inherit
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
   (pull|pull\-requests|pr)[/-]:
-    mode: ContinuousDeployment
+    mode: Mainline
     tag: PullRequest
     increment: Inherit
     prevent-increment-of-merged-branch-version: false
     tag-number-pattern: '[/-](?<number>\d+)[-/]'
     track-merge-target: false
-  hotfix(es)?[/-]:
-    mode: ContinuousDeployment
-    tag: beta
-    increment: Patch
-    prevent-increment-of-merged-branch-version: false
-    track-merge-target: false
-  support[/-]:
-    mode: ContinuousDeployment
-    tag:
-    increment: Patch
-    prevent-increment-of-merged-branch-version: true
-    track-merge-target: false
-  dev(elop)?(ment)?$:
+  develop$:
     mode: ContinuousDeployment
     tag: unstable
     increment: Minor
