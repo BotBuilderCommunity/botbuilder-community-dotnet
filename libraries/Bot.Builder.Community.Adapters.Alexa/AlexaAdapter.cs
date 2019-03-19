@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Bot.Builder.Community.Adapters.Alexa.Directives;
 using Bot.Builder.Community.Adapters.Alexa.Integration;
 using Microsoft.Bot.Builder;
-using Microsoft.Bot.Schema;
+using Microsoft.Bot.Schema; 
 
 namespace Bot.Builder.Community.Adapters.Alexa
 {
