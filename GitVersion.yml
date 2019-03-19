@@ -10,25 +10,25 @@ commits-since-version-source-padding: 4
 commit-message-incrementing: Enabled
 branches:
   master:
-    mode: Mainline
+    mode: ContinuousDeployment
     tag:
     increment: Patch
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
   release:
-    mode: Mainline
+    mode: ContinuousDeployment
     tag: beta
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
   feature:
-    mode: Mainline
+    mode: ContinuousDeployment
     tag: useBranchName
     increment: Inherit
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
   pull-request:
-    mode: Mainline
+    mode: ContinuousDeployment
     tag: PullRequest
     increment: Inherit
     prevent-increment-of-merged-branch-version: false
