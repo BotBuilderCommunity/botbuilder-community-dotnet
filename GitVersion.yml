@@ -1,6 +1,42 @@
 # GitVersion.yml
-mode: ContinuousDelivery
-next-version: 4.3
-branches: {}
-ignore:
-  sha: []
+assembly-versioning-scheme: MajorMinorPatch
+mode: Mainline
+major-version-bump-message: '\+semver:\s?(breaking|major)'
+minor-version-bump-message: '\+semver:\s?(feature|minor)'
+patch-version-bump-message: '\+semver:\s?(fix|patch)'
+legacy-semver-padding: 4
+build-metadata-padding: 4
+commits-since-version-source-padding: 4
+commit-message-incrementing: Enabled
+branches:
+  master:
+    mode: ContinuousDeployment
+    tag:
+    increment: Patch
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: false
+  release:
+    mode: ContinuousDeployment
+    tag: beta
+    increment: Patch
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+  feature:
+    mode: ContinuousDeployment
+    tag: useBranchName
+    increment: Inherit
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: false
+  pull-request:
+    mode: ContinuousDeployment
+    tag: PullRequest
+    increment: Inherit
+    prevent-increment-of-merged-branch-version: false
+    tag-number-pattern: '[/-](?<number>\d+)[-/]'
+    track-merge-target: false
+  develop:
+    mode: ContinuousDeployment
+    tag: unstable
+    increment: Minor
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: true

@@ -80,4 +80,4 @@ steps:
   inputs:
     githubEndpoint: BotBuilderCommunity
     tag: 'v$(GitVersion.NuGetVersion)'
-  condition: succeeded()
+  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq('true', variables['FORCE_PUSH_NUGET'])))
