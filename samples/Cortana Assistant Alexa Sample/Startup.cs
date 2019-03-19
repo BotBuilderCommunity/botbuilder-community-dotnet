@@ -15,6 +15,7 @@ using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Bot.Builder.Community.Adapters.Alexa.Middleware;
 
 namespace Cortana_Assistant_Alexa_Sample
 {
@@ -59,6 +60,9 @@ namespace Cortana_Assistant_Alexa_Sample
             {
                 options.AlexaOptions.ValidateIncomingAlexaRequests = true;
                 options.AlexaOptions.ShouldEndSessionByDefault = false;
+
+                // To convert Alexa request into MessageActivity
+                options.Middleware.Add(new AlexaIntentRequestToMessageActivityMiddleware());
             });
 
             services.AddGoogleBot<Cortana_Assistant_Alexa_SampleBot>(options =>

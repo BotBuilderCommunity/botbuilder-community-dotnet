@@ -73,29 +73,9 @@ namespace Cortana_Assistant_Alexa_Sample
             // see https://aka.ms/about-bot-activity-message to learn more about the message and other activity types
             if (turnContext.Activity.Type == ActivityTypes.Message)
             {
-                // If the request is from Google or any out of the box channels
                 Activity activity = turnContext.Activity.CreateReply();
                 string carat = new string(turnContext.Activity.Text?.Where(Char.IsDigit).ToArray());
-
                 await SendActivity(turnContext, carat);
-            }
-            else if(turnContext.Activity.Type == "IntentRequest") // If the request is from Alexa.
-            {
-               
-                AlexaIntent alexaIntent = (AlexaIntent)turnContext.Activity.Value;
-                switch(alexaIntent.Name)
-                {
-                    case "GetRates":
-                        // Extracting the entities (slots) and their values
-                        string slot = alexaIntent.Slots["CaratType"]?.Value;
-                        string carat = new string(slot?.Where(Char.IsDigit).ToArray());
-                        await SendActivity(turnContext, carat);
-                        break;
-                    default:
-                        // If it's none (default callback)
-                        await SendActivity(turnContext, "None");
-                        break;
-                }                             
             }
         }
 
@@ -104,24 +84,19 @@ namespace Cortana_Assistant_Alexa_Sample
         {
             Activity activity = turnContext.Activity.CreateReply();
 
-            if (message == "None")
-                activity.Text = Messages.GetNoneMessages();
+            // Fetching the gold rates
+            GoldRate result = GoldRatesParser.GetRates().Result;
+
+            // Messages based upon the entity's value
+            if (string.IsNullOrEmpty(message))
+                activity.Text = string.Format(Messages.GetRateMessages(), result.Carat24, result.Carat22);
+            else if (message == "22")
+                activity.Text = string.Format(Messages.GetRateCaratMessages(), message, result.Carat22);
             else
-            {
-                // Fetching the gold rates
-                GoldRate result = GoldRatesParser.GetRates().Result;
+                activity.Text = string.Format(Messages.GetRateCaratMessages(), message, result.Carat24);
 
-                // Messages based upon the slot's value
-                if (string.IsNullOrEmpty(message))
-                    activity.Text = string.Format(Messages.GetRateMessages(), result.Carat24, result.Carat22);
-                else if (message == "22")
-                    activity.Text = string.Format(Messages.GetRateCaratMessages(), message, result.Carat22);
-                else
-                    activity.Text = string.Format(Messages.GetRateCaratMessages(), message, result.Carat24);
-            }
-
-            // Just to cater for google. 
-            if(turnContext.Activity.ChannelId == "google")
+            // Platform specific cards (Google)
+            if (turnContext.Activity.ChannelId == "google")
             {
 
                 var card = new GoogleBasicCard()
@@ -141,6 +116,19 @@ namespace Cortana_Assistant_Alexa_Sample
 
                 turnContext.GoogleSetCard(card);
             }
+
+            // Platform specific cards (Alexa)
+            if (turnContext.Activity.ChannelId == "alexa")
+            {
+                turnContext.AlexaSetCard(new AlexaCard()
+                {
+                    Type = AlexaCardType.Simple,
+                    Title = "Today's gold rate",
+                    Content = activity.Text
+                });
+            }
+
+            // Adaptive Cards can also be written here to support other OOTB channels
 
             await turnContext.SendActivityAsync(activity);
         }
