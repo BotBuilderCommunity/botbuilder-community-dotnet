@@ -141,7 +141,7 @@ For incoming requests of type SessionEndedRequest we also set the following prop
 * **Code** : Reason value from the Alexa request
 * **Value** : Error value from the Alexa request
 
-The entire body of the Alexa request is placed into the Activity as Channel Data, of type AlexaRequestBody.
+The entire body of the Alexa request is placed into the Activity as Channel Data, of type skillRequest.
 
 
 ### Default Activity to Alexa Response mapping
@@ -213,10 +213,10 @@ The extension method will get the right values from the incoming request to dete
 
 #### Get entire Alexa Request Body
 
-We have provided an extension method to allow you to get the original Alexa request body, which we store on the ChannelData property of the Activity sent to your bot, as a strongly typed object of type AlexaRequestBody.  To get the request just call the extension method as below;
+We have provided an extension method to allow you to get the original Alexa request body, which we store on the ChannelData property of the Activity sent to your bot, as a strongly typed object of type skillRequest.  To get the request just call the extension method as below;
 
 ```cs
-    AlexaRequestBody request = context.GetAlexaRequestBody();
+    skillRequest request = context.GetskillRequest();
 ```
 
 ***Note: If you call this extension method when the incoming Activity is not from an Alexa skill then the extension method will simply return null.*** 

@@ -50,7 +50,8 @@ namespace Bot.Builder.Community.Adapters.Alexa.Integration.AspNet.Core
 
             var options = applicationBuilder.ApplicationServices.GetRequiredService<IOptions<AlexaBotOptions>>().Value;
 
-            var alexaAdapter = new AlexaAdapter();
+            var alexaAdapter = new AlexaAdapter(options.AlexaOptions.ShouldEndSessionByDefault,
+                options.AlexaOptions.TryConvertFirstActivityAttachmentToAlexaCard);
 
             foreach (var middleware in options.Middleware)
             {
