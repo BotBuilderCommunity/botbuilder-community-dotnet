@@ -16,12 +16,11 @@ using Newtonsoft.Json.Serialization;
 
 namespace Bot.Builder.Community.Adapters.Alexa.Integration.AspNet.Core
 {
-    public class AlexaHttpAdapter : AlexaAdapter
+    public class AlexaHttpAdapter : AlexaAdapter, IAlexaHttpAdapter
     {
         public bool ValidateRequests { get; set; }
 
-        public AlexaHttpAdapter(bool validateRequests, bool shouldEndSessionByDefault, bool translateCardAttachments)
-            : base(shouldEndSessionByDefault, translateCardAttachments)
+        public AlexaHttpAdapter(bool validateRequests)
         {
             ValidateRequests = validateRequests;
         }

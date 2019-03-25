@@ -15,13 +15,22 @@ namespace Bot.Builder.Community.Adapters.Alexa
     public class AlexaAdapter : BotAdapter
     {
         private Dictionary<string, List<Activity>> Responses { get; set; }
-        private bool ShouldEndSessionByDefault { get; set; }
-        private bool ConvertBotBuilderCardsToAlexaCards { get; set; }
+        public bool ShouldEndSessionByDefault { get; set; }
+        public bool ConvertBotBuilderCardsToAlexaCards { get; set; }
 
-        public AlexaAdapter(bool endSessionByDefault, bool translateCardAttachments)
+        public AlexaAdapter()
         {
-            ShouldEndSessionByDefault = endSessionByDefault;
-            ConvertBotBuilderCardsToAlexaCards = translateCardAttachments;
+            ShouldEndSessionByDefault = true;
+            ConvertBotBuilderCardsToAlexaCards = false;
+        }
+
+        /// <summary>
+        /// Adds middleware to the adapter's pipeline.
+        /// </summary>
+        public new AlexaAdapter Use(IMiddleware middleware)
+        {
+            MiddlewareSet.Use(middleware);
+            return this;
         }
 
         public async Task<AlexaResponseBody> ProcessActivity(AlexaRequestBody alexaRequest, BotCallbackHandler callback)

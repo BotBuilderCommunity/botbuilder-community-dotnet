@@ -52,7 +52,7 @@ Basic sample bot available [here](https://github.com/BotBuilderCommunity/botbuil
 ### Usage
 
 * [Adding the adapter and skills endpoint to your bot](#adding-the-adapter-and-skills-endpoint-to-your-bot)
-    * [WebApi](#webapi)
+    * [.NET Core MVC](#.net-core-mvc)
 	* [.NET Core](#.net-core)
 * [Default Alexa Request to Activity mapping](#Default-Alexa-Request-to-Activity-mapping)
 * [Default Activity to Alexa Response mapping](#Default-Activity-to-Alexa-Response-mapping)
@@ -71,51 +71,97 @@ Basic sample bot available [here](https://github.com/BotBuilderCommunity/botbuil
 
 ### Adding the adapter and skills endpoint to your bot
 
-Currently there are integration libraries available for WebApi and .NET Core available for the adapter.
-When using the integration libraries a new endpoint for your Alexa skill is created at '/api/skillrequests'. 
+Currently integration is available for .NET Core applications, with or without MVC.
+When using the non-MVC approach, a new endpoint for your Alexa skill is created at '/api/skillrequests'. 
 e.g. http://www.yourbot.com/api/skillrequests.  This is the endpoint that you should configure within the Amazon Alexa
 Skills Developer portal as the endpoint for your skill.
 
-#### WebApi
+When using MVC, you configure your chosen endpoint when creating your controller which will handle your skill requests. An example of this can be seen [in the .NET Core MVC secton below](#.net-core-mvc).
 
-When implementing your bot using WebApi, the integration layer for Alexa works the same as the default for Bot Framework.  The only difference being in your BotConfig file under the App_Start folder you call MapAlexaBotFramework instead;
+#### .NET Core MVC
+
+You can use the Alexa adapter with your bot within a .NET Core MVC project by registering the AlexaHttpAdapter.
+When registering the AlexaHttpAdapter, you can add middleware and also set settings, such as if a session should 
+end by default or what happens when an error occurs during a bot's turn.
 
 ```cs
-    public class BotConfig
-    {
-        public static void Register(HttpConfiguration config)
-        {
-            config.MapAlexaBotFramework(botConfig => { 
-				botConfig.AlexaBotOptions.AlexaOptions.ShouldEndSessionByDefault = true;
-                botConfig.AlexaBotOptions.AlexaOptions.ValidateIncomingAlexaRequests = false;
-			});
-        }
-    }
+	services.AddSingleton<IAlexaHttpAdapter>((sp) =>
+	{
+	    var telemetryClient = sp.GetService<IBotTelemetryClient>();
+	
+	    var alexaHttpAdapter = new AlexaHttpAdapter(validateRequests: true)
+	    {
+	        OnTurnError = async (context, exception) =>
+	        {
+	            telemetryClient.TrackException(exception);
+	            await context.SendActivityAsync("Sorry, something went wrong");
+	        },
+	        ShouldEndSessionByDefault = true,
+	        ConvertBotBuilderCardsToAlexaCards = false
+	    };
+	
+	    var appInsightsLogger = new TelemetryLoggerMiddleware(telemetryClient);
+	
+		// register middleware
+	    alexaHttpAdapter.Use(appInsightsLogger);
+	    alexaHttpAdapter.Use(new AutoSaveStateMiddleware(userState, conversationState));
+	
+	    return alexaHttpAdapter;
+	});
 ``` 
 
-#### .NET Core
+Once you have registered your the AlexaHttpAdapter in Startup.cs, you can then create a normal
+MVC controller to provide an endpoint for your bot and process requests to them using the Alexa adapter.
 
-An example of using the Alexa adapter with a bot built on Asp.Net Core. Again, The implementation of the 
+```cs 
+
+    [Route("api/skillrequests")]
+    [ApiController]
+    public class BotController : ControllerBase
+    {
+        private readonly IAlexaHttpAdapter _adapter;
+        private readonly IBot _bot;
+
+        public BotController(IAlexaHttpAdapter adapter, IBot bot)
+        {
+            _adapter = adapter;
+            _bot = bot;
+        }
+
+        [HttpPost]
+        public async Task PostAsync()
+        {
+            await _adapter.ProcessAsync(Request, Response, _bot);
+        }
+    }
+
+```
+
+#### .NET Core (non-MVC)
+
+An example of using the Alexa adapter with a bot built on Asp.Net Core (without MVC). The implementation of the 
 integration layer is based upon the same patterns used for the Bot Framework integration layer. 
 In Startup.cs you can configure your bot to use the Alexa adapter using the following;
 
 ```cs
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddAlexaBot<EchoBot>(options =>
-            {
-                options.AlexaOptions.ValidateIncomingAlexaRequests = true;
-                options.AlexaOptions.ShouldEndSessionByDefault = false;
-            });
-        }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddAlexaBot<EchoBot>(options =>
         {
-            app.UseDefaultFiles()
-                .UseStaticFiles()
-                .UseAlexa();
-        }
+            options.AlexaOptions.ValidateIncomingAlexaRequests = true;
+            options.AlexaOptions.ShouldEndSessionByDefault = false;
+        });
+    }
+
+    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+    public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+    {
+        app.UseDefaultFiles()
+            .UseStaticFiles()
+            .UseAlexa();
+    }
+
 ```
 
 
