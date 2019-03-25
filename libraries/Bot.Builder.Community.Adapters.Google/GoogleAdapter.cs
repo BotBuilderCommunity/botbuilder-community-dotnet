@@ -108,10 +108,11 @@ namespace Bot.Builder.Community.Adapters.Google
                 Text = StripInvocation(actionPayload.Inputs[0]?.RawInputs[0]?.Query, googleOptions.ActionInvocationName),
                 Id = new Guid().ToString(),
                 Timestamp = DateTime.UtcNow,
-                Locale = actionPayload.User.Locale
+                Locale = actionPayload.User.Locale,
+                Value = actionPayload.Inputs[0]?.Intent
             };
 
-            if(actionPayload.Inputs.FirstOrDefault()?.Arguments?.FirstOrDefault()?.Name == "OPTION")
+            if (actionPayload.Inputs.FirstOrDefault()?.Arguments?.FirstOrDefault()?.Name == "OPTION")
             {
                 activity.Text = actionPayload.Inputs.First().Arguments.First().TextValue;
             }

@@ -140,6 +140,8 @@ When an incoming request is receieved, the activity sent to your bot is comprise
 * **Recipient Channel Account** : Id = "", Name = "action"
 * **From Channel Account** : Id = User Id from the Google request, Name = "user"
 * **Conversation Account** : Id = "{Google payload conversation Id}"
+* **Text** : Raw text input from the user's query to the Google Assistant
+* **Value** : Google intent matched / triggered
 * **Type** : Message Activity
 * **Id** : Random generated Guid
 * **Timestamp** : Timestamp (UTC)
