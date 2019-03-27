@@ -46,7 +46,7 @@ Basic sample bot available [here](https://github.com/BotBuilderCommunity/botbuil
 
 * [Google Action Configuration](#configuring-your-google-action)
 * [Adding the adapter and skills endpoint to your bot](#adding-the-adapter-and-skills-endpoint-to-your-bot)
-    * [WebApi](#webapi)
+    * [.NET Core MVC](#.net-core-mvc)
 	* [.NET Core](#.net-core)
 * [Default Google Request to Activity mapping](#Default-Google-Request-to-Activity-mapping)
 * [Default Activity to Google Response mapping](#Default-Activity-to-Google-Response-mapping)
@@ -84,29 +84,72 @@ Please use the following configuration for your Google Action;
 
 ### Adding the adapter and skills endpoint to your bot
 
-Currently there are integration libraries available for WebApi and .NET Core available for the adapter.
-When using the integration libraries a new endpoint for your Google skill is created at '/api/actionrequests'. 
-e.g. https://www.yourbot.com/api/actionrequests.  This is the endpoint that you should configure within the Google
-Actions Developer Console as the fulfilment webhook endpoint for your action.
+Currently integration is available for .NET Core applications, with or without MVC.
+When using the non-MVC approach, a new endpoint for your Google skill is created at '/api/actionrequests'. 
+e.g. http://www.yourbot.com/api/actionrequests.  This is the endpoint that you should configure within the Amazon Alexa
+Skills Developer portal as the endpoint for your skill.
 
-#### WebApi
+When using MVC, you configure your chosen endpoint when creating your controller which will handle your skill requests. An example of this can be seen [in the .NET Core MVC secton below](#.net-core-mvc).
 
-When implementing your bot using WebApi, the integration layer for Google works the same as the default for Bot Framework.  The only difference being in your BotConfig file under the App_Start folder you call MapGoogleBotFramework instead;
+#### .NET Core MVC
+
+You can use the Google adapter with your bot within a .NET Core MVC project by registering the GoogleHttpAdapter.
+When registering the GoogleHttpAdapter, you can add middleware and also set settings, such as if a session should 
+end by default or what happens when an error occurs during a bot's turn.
 
 ```cs
-    public class BotConfig
-    {
-        public static void Register(HttpConfiguration config)
-        {
-            config.MapGoogleBotFramework(botConfig => { 
-				botConfig.GoogleBotOptions.GoogleOptions.ShouldEndSessionByDefault = true;
-                botConfig.GoogleBotOptions.GoogleOptions.ActionInvocationName = "Google Action Invocation Name";
-			});
-        }
-    }
+	services.AddSingleton<IGoogleHttpAdapter>((sp) =>
+	{
+	    var telemetryClient = sp.GetService<IBotTelemetryClient>();
+	
+	    var googleHttpAdapter = new GoogleHttpAdapter(validateRequests: true)
+	    {
+	        OnTurnError = async (context, exception) =>
+	        {
+	            telemetryClient.TrackException(exception);
+	            await context.SendActivityAsync("Sorry, something went wrong");
+	        },
+	        ShouldEndSessionByDefault = true,
+	    };
+	
+	    var appInsightsLogger = new TelemetryLoggerMiddleware(telemetryClient);
+	
+		// register middleware
+	    googleHttpAdapter.Use(appInsightsLogger);
+	    googleHttpAdapter.Use(new AutoSaveStateMiddleware(userState, conversationState));
+	
+	    return googleHttpAdapter;
+	});
 ``` 
 
-#### .NET Core
+Once you have registered your the GoogleHttpAdapter in Startup.cs, you can then create a normal
+MVC controller to provide an endpoint for your bot and process requests to them using the Google adapter.
+
+```cs 
+
+    [Route("api/actionrequests")]
+    [ApiController]
+    public class BotController : ControllerBase
+    {
+        private readonly IGoogleHttpAdapter _adapter;
+        private readonly IBot _bot;
+
+        public BotController(IGoogleHttpAdapter adapter, IBot bot)
+        {
+            _adapter = adapter;
+            _bot = bot;
+        }
+
+        [HttpPost]
+        public async Task PostAsync()
+        {
+            await _adapter.ProcessAsync(Request, Response, _bot);
+        }
+    }
+
+```
+
+#### .NET Core (non-MVC)
 
 An example of using the Google adapter with a bot built on Asp.Net Core. Again, The implementation of the 
 integration layer is based upon the same patterns used for the Bot Framework integration layer. 

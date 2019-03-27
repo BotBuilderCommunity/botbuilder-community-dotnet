@@ -34,7 +34,7 @@ namespace Bot.Builder.Community.Adapters.Google.Integration.AspNet.Core
             _googleOptions = googleOptions;
         }
        
-        protected async Task<GoogleResponseBody> ProcessMessageRequestAsync(HttpRequest request, GoogleAdapter googleAdapter, BotCallbackHandler botCallbackHandler)
+        protected async Task<GoogleResponseBody> ProcessMessageRequestAsync(HttpRequest request, GoogleAdapter GoogleAdapter, BotCallbackHandler botCallbackHandler)
         {
             GoogleRequestBody actionRequest;
             Payload actionPayload;
@@ -65,9 +65,8 @@ namespace Bot.Builder.Community.Adapters.Google.Integration.AspNet.Core
                 }
             }
 
-            var GoogleResponseBody = await googleAdapter.ProcessActivity(
+            var GoogleResponseBody = await GoogleAdapter.ProcessActivity(
                     actionPayload,
-                    _googleOptions,
                     botCallbackHandler);
 
             return GoogleResponseBody;
