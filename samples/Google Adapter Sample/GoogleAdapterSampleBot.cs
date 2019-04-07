@@ -48,20 +48,23 @@ namespace Google_Adapter_Sample
                         ImageDisplayOptions.DEFAULT,
                         "This is **some text** to *go into the card*.");
 
-                    turnContext.GoogleSetAudioResponse(
-                        "http://www.hochmuth.com/mp3/Haydn_Cello_Concerto_D-1.mp3",
-                        "Audio Name",
-                        "This is a description of the audio",
-                        new Image()
-                        {
-                            AccessibilityText = "This is the accessibility text",
-                            Url = "https://dev.botframework.com/Client/Images/ChatBot-BotFramework.png",
-                        },
-                        new Image()
-                        {
-                            AccessibilityText = "This is the accessibility text",
-                            Url = "https://dev.botframework.com/Client/Images/ChatBot-BotFramework.png",
-                        });
+                    // If you don't want to use the Google Card, you can uncomment and set the Audio Response. 
+                    // Text specificied in Activity.Text will be spoken by the Google Assistant.
+
+                    //turnContext.GoogleSetAudioResponse(
+                    //    "http://www.hochmuth.com/mp3/Haydn_Cello_Concerto_D-1.mp3",
+                    //    "Audio Name",
+                    //    "This is a description of the audio",
+                    //    new Image()
+                    //    {
+                    //        AccessibilityText = "This is the accessibility text",
+                    //        Url = "https://dev.botframework.com/Client/Images/ChatBot-BotFramework.png",
+                    //    },
+                    //    new Image()
+                    //    {
+                    //        AccessibilityText = "This is the accessibility text",
+                    //        Url = "https://dev.botframework.com/Client/Images/ChatBot-BotFramework.png",
+                    //    });
 
                     await turnContext.SendActivityAsync(activity);
                     break;
