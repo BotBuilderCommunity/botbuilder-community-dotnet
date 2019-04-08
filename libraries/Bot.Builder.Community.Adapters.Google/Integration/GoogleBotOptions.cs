@@ -25,7 +25,7 @@ namespace Bot.Builder.Community.Adapters.Google.Integration
             _middleware = new List<IMiddleware>();
             _paths = new GoogleBotPaths();
 
-            googleOptions = new GoogleOptions();
+            GoogleOptions = new GoogleOptions();
         }
 
         /// <summary>
@@ -35,6 +35,6 @@ namespace Bot.Builder.Community.Adapters.Google.Integration
 
         public GoogleBotPaths Paths { get => _paths; }
 
-        public GoogleOptions googleOptions { get; set; }
+        public GoogleOptions GoogleOptions { get; set; }
     }
 }

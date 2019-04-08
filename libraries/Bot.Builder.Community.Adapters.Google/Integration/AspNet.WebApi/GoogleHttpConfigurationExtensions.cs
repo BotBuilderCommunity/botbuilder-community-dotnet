@@ -51,7 +51,7 @@ namespace Bot.Builder.Community.Adapters.Google.Integration.AspNet.WebApi
                         baseUrl + options.Paths.SkillRequestsPath,
                         defaults: null,
                         constraints: null,
-                        handler: new GoogleRequestHandler(adapter, options.googleOptions));
+                        handler: new GoogleRequestHandler(adapter, options.GoogleOptions));
             }
         }
     }

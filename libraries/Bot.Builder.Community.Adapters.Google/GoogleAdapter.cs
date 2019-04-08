@@ -12,19 +12,33 @@ namespace Bot.Builder.Community.Adapters.Google
 {
     public class GoogleAdapter : BotAdapter
     {
+        public bool ShouldEndSessionByDefault { get; set; }
+
+        public bool TryConvertFirstActivityAttachmentToGoogleCard { get; set; }
+
+        public string ActionInvocationName { get; set; }
+
         private Dictionary<string, List<Activity>> Responses { get; set; }
 
-        private GoogleOptions Options { get; set; }
+        public GoogleAdapter()
+        {
+            ShouldEndSessionByDefault = true;
+            TryConvertFirstActivityAttachmentToGoogleCard = false;
+        }
 
-        public async Task<GoogleResponseBody> ProcessActivity(Payload actionPayload, GoogleOptions googleOptions, BotCallbackHandler callback)
+        public new GoogleAdapter Use(IMiddleware middleware)
+        {
+            MiddlewareSet.Use(middleware);
+            return this;
+        }
+
+        public async Task<GoogleResponseBody> ProcessActivity(Payload actionPayload, BotCallbackHandler callback)
         {
             TurnContext context = null;
 
             try
             {
-                Options = googleOptions;
-
-                var activity = RequestToActivity(actionPayload, googleOptions);
+                var activity = RequestToActivity(actionPayload);
                 BotAssert.ActivityNotNull(activity);
 
                 context = new TurnContext(this, activity);
@@ -52,7 +66,7 @@ namespace Bot.Builder.Community.Adapters.Google
             }
             catch (Exception ex)
             {
-                await googleOptions.OnTurnError(context, ex);
+                await OnTurnError(context, ex);
                 throw;
             }
         }
@@ -92,7 +106,7 @@ namespace Bot.Builder.Community.Adapters.Google
             return Task.FromResult(resourceResponses.ToArray());
         }
 
-        private static Activity RequestToActivity(Payload actionPayload, GoogleOptions googleOptions)
+        private Activity RequestToActivity(Payload actionPayload)
         {
             var activity = new Activity
             {
@@ -105,13 +119,14 @@ namespace Bot.Builder.Community.Adapters.Google
                     $"{actionPayload.Conversation.ConversationId}"),
 
                 Type = ActivityTypes.Message,
-                Text = StripInvocation(actionPayload.Inputs[0]?.RawInputs[0]?.Query, googleOptions.ActionInvocationName),
+                Text = StripInvocation(actionPayload.Inputs[0]?.RawInputs[0]?.Query, ActionInvocationName),
                 Id = new Guid().ToString(),
                 Timestamp = DateTime.UtcNow,
-                Locale = actionPayload.User.Locale
+                Locale = actionPayload.User.Locale,
+                Value = actionPayload.Inputs[0]?.Intent
             };
 
-            if(actionPayload.Inputs.FirstOrDefault()?.Arguments?.FirstOrDefault()?.Name == "OPTION")
+            if (actionPayload.Inputs.FirstOrDefault()?.Arguments?.FirstOrDefault()?.Name == "OPTION")
             {
                 activity.Text = actionPayload.Inputs.First().Arguments.First().TextValue;
             }
@@ -132,7 +147,7 @@ namespace Bot.Builder.Community.Adapters.Google
                     Google = new PayloadContent()
                     {
                         RichResponse = new RichResponse(),
-                        ExpectUserResponse = Options.ShouldEndSessionByDefault ? false : true
+                        ExpectUserResponse = !ShouldEndSessionByDefault
                     }
                 }
             };
@@ -228,7 +243,7 @@ namespace Bot.Builder.Community.Adapters.Google
             {
                 responseItems.Add(context.TurnState.Get<GoogleBasicCard>("GoogleCard"));
             }
-            else if (Options.TryConvertFirstActivityAttachmentTogoogleCard)
+            else if (TryConvertFirstActivityAttachmentToGoogleCard)
             {
                 //TODO: Implement automatic conversion from hero card to Google basic card
                 //CreateAlexaCardFromAttachment(activity, response);

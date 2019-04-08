@@ -13,6 +13,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Integration\AspNet.WebApi\**" />
+    <EmbeddedResource Remove="Integration\AspNet.WebApi\**" />
+    <None Remove="Integration\AspNet.WebApi\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="GoogleConversationalSchema.cs.old" />
   </ItemGroup>
 
