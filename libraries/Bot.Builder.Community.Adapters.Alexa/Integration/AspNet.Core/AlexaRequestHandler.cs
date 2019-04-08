@@ -37,7 +37,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Integration.AspNet.Core
        
         protected async Task<AlexaResponseBody> ProcessMessageRequestAsync(HttpRequest request, AlexaAdapter alexaAdapter, BotCallbackHandler botCallbackHandler)
         {
-            AlexaRequestBody skillRequest;
+            AlexaRequestBody alexaRequest;
 
             var memoryStream = new MemoryStream();
             request.Body.CopyTo(memoryStream);
@@ -46,11 +46,11 @@ namespace Bot.Builder.Community.Adapters.Alexa.Integration.AspNet.Core
 
             using (var bodyReader = new JsonTextReader(new StreamReader(memoryStream, Encoding.UTF8)))
             {
-                skillRequest = AlexaBotMessageSerializer.Deserialize<AlexaRequestBody>(bodyReader);
+                alexaRequest = AlexaBotMessageSerializer.Deserialize<AlexaRequestBody>(bodyReader);
             }
 
-            if (skillRequest.Version != "1.0")
-                throw new Exception($"Unexpected version of '{skillRequest.Version}' received.");
+            if (alexaRequest.Version != "1.0")
+                throw new Exception($"Unexpected version of '{alexaRequest.Version}' received.");
 
             if (_alexaOptions.ValidateIncomingAlexaRequests)
             {
@@ -58,12 +58,11 @@ namespace Bot.Builder.Community.Adapters.Alexa.Integration.AspNet.Core
                 request.Headers.TryGetValue("Signature", out var signatures);
                 var certChainUrl = certUrls.FirstOrDefault();
                 var signature = signatures.FirstOrDefault();
-                await AlexaValidateRequestSecurityHelper.Validate(skillRequest, requestBytes, certChainUrl, signature);
+                await AlexaValidateRequestSecurityHelper.Validate(alexaRequest, requestBytes, certChainUrl, signature);
             }
 
             var alexaResponseBody = await alexaAdapter.ProcessActivity(
-                    skillRequest,
-                    _alexaOptions,
+                    alexaRequest,
                     botCallbackHandler);
 
             return alexaResponseBody;

@@ -50,7 +50,12 @@ namespace Bot.Builder.Community.Adapters.Google.Integration.AspNet.Core
 
             var options = applicationBuilder.ApplicationServices.GetRequiredService<IOptions<GoogleBotOptions>>().Value;
 
-            var googleAdapter = new GoogleAdapter();
+            var googleAdapter = new GoogleAdapter()
+            {
+                ActionInvocationName = options.GoogleOptions.ActionInvocationName,
+                ShouldEndSessionByDefault = options.GoogleOptions.ShouldEndSessionByDefault,
+                TryConvertFirstActivityAttachmentToGoogleCard = options.GoogleOptions.TryConvertFirstActivityAttachmentTogoogleCard
+            };
 
             foreach (var middleware in options.Middleware)
             {
@@ -68,7 +73,7 @@ namespace Bot.Builder.Community.Adapters.Google.Integration.AspNet.Core
 
             applicationBuilder.Map(
                 $"{paths.BasePath}{paths.SkillRequestsPath}", 
-                botActivitiesAppBuilder => botActivitiesAppBuilder.Run(new GoogleRequestHandler(googleAdapter, options.googleOptions).HandleAsync));
+                botActivitiesAppBuilder => botActivitiesAppBuilder.Run(new GoogleRequestHandler(googleAdapter, options.GoogleOptions).HandleAsync));
 
             return applicationBuilder;
         }

@@ -65,23 +65,37 @@ namespace Bot.Builder.Community.Adapters.Google
                 throw new Exception("A Basic Card should have either an Image or Formatted Text set");
             }
 
+            // Fixed
             var card = new GoogleBasicCard()
             {
                 Content = new GoogleBasicCardContent()
                 {
-                    Title = "This is the card title",
-                    Subtitle = "This is the card subtitle",
-                    FormattedText = "This is some text to go into the card." +
-                                    "**This text should be bold** and " +
-                                    "*this text should be italic*.",
+                    Title = title,
+                    Subtitle = subtitle,
+                    FormattedText = formattedText,
                     Display = ImageDisplayOptions.DEFAULT,
-                    Image = new Image()
-                    {
-                        AccessibilityText = "This is the accessibility text",
-                        Url = "https://dev.botframework.com/Client/Images/ChatBot-BotFramework.png"
-                    },
+                    Image = image
                 },
             };
+
+            // Just leaving this as commented to give developers a glimpse of implementation. 
+            //var card = new GoogleBasicCard()
+            //{
+            //    Content = new GoogleBasicCardContent()
+            //    {
+            //        Title = "This is the card title",
+            //        Subtitle = "This is the card subtitle",
+            //        FormattedText = "This is some text to go into the card." +
+            //                        "**This text should be bold** and " +
+            //                        "*this text should be italic*.",
+            //        Display = ImageDisplayOptions.DEFAULT,
+            //        Image = new Image()
+            //        {
+            //            AccessibilityText = "This is the accessibility text",
+            //            Url = "https://dev.botframework.com/Client/Images/ChatBot-BotFramework.png"
+            //        },
+            //    },
+            //};
 
             context.TurnState.Add("GoogleCard", card);
         }

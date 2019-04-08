@@ -25,8 +25,8 @@ namespace Bot.Builder.Community.Adapters.Alexa.Middleware
         {
             if (context.Activity.ChannelId == "alexa" && context.Activity.Type == AlexaRequestTypes.IntentRequest)
             {
-                var alexaRequestBody = (AlexaRequestBody)context.Activity.ChannelData;
-                var alexaIntentRequest = (AlexaIntentRequest)alexaRequestBody.Request;
+                var skillRequest = (AlexaRequestBody)context.Activity.ChannelData;
+                var alexaIntentRequest = (AlexaIntentRequest)skillRequest.Request;
 
                 context.Activity.Type = ActivityTypes.Message;
 

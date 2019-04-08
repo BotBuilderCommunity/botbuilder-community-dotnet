@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28705.295
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.329
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alexa Adapter Sample", "samples\Alexa Adapter Sample\Alexa Adapter Sample.csproj", "{8183FE0F-6F69-48B4-B2C3-7FEB48DCECD6}"
 EndProject
@@ -16,6 +16,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sentiment Middleware Sample", "samples\Sentiment Middleware Sample\Sentiment Middleware Sample.csproj", "{E7531A36-20B4-4B99-9772-7EF34E0F0F66}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChoiceFlow Dialog Sample", "samples\ChoiceFlow Dialog Sample\ChoiceFlow Dialog Sample.csproj", "{7EA0CA57-3D7E-4561-B457-13A1B57879BD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cortana Assistant Alexa Sample", "samples\Cortana Assistant Alexa Sample\Cortana Assistant Alexa Sample.csproj", "{2FD06287-25A1-47A6-BB85-2E508E543E66}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{7EA0CA57-3D7E-4561-B457-13A1B57879BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7EA0CA57-3D7E-4561-B457-13A1B57879BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7EA0CA57-3D7E-4561-B457-13A1B57879BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2FD06287-25A1-47A6-BB85-2E508E543E66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FD06287-25A1-47A6-BB85-2E508E543E66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FD06287-25A1-47A6-BB85-2E508E543E66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FD06287-25A1-47A6-BB85-2E508E543E66}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
