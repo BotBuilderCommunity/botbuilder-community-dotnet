@@ -19,7 +19,7 @@
   <ItemGroup>
 		<PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.4" />
 		<PackageReference Include="Microsoft.Bot.Builder" Version="4.3.2" />
-		<PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
 		<PackageReference Include="Microsoft.Extensions.Options" Version="2.2.0" />
 		<PackageReference Include="Microsoft.Net.Http.Headers" Version="2.2.0" />
