@@ -8,24 +8,37 @@ using System.Threading.Tasks;
 using Bot.Builder.Community.Adapters.Alexa.Directives;
 using Bot.Builder.Community.Adapters.Alexa.Integration;
 using Microsoft.Bot.Builder;
-using Microsoft.Bot.Schema;
+using Microsoft.Bot.Schema; 
 
 namespace Bot.Builder.Community.Adapters.Alexa
 {
     public class AlexaAdapter : BotAdapter
     {
         private Dictionary<string, List<Activity>> Responses { get; set; }
+        public bool ShouldEndSessionByDefault { get; set; }
+        public bool ConvertBotBuilderCardsToAlexaCards { get; set; }
 
-        private AlexaOptions Options { get; set; }
+        public AlexaAdapter()
+        {
+            ShouldEndSessionByDefault = true;
+            ConvertBotBuilderCardsToAlexaCards = false;
+        }
 
-        public async Task<AlexaResponseBody> ProcessActivity(AlexaRequestBody alexaRequest, AlexaOptions alexaOptions, BotCallbackHandler callback)
+        /// <summary>
+        /// Adds middleware to the adapter's pipeline.
+        /// </summary>
+        public new AlexaAdapter Use(IMiddleware middleware)
+        {
+            MiddlewareSet.Use(middleware);
+            return this;
+        }
+
+        public async Task<AlexaResponseBody> ProcessActivity(AlexaRequestBody alexaRequest, BotCallbackHandler callback)
         {
             TurnContext context = null;
 
             try
             {
-                Options = alexaOptions;
-
                 var activity = RequestToActivity(alexaRequest);
                 BotAssert.ActivityNotNull(activity);
 
@@ -66,7 +79,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
             }
             catch (Exception ex)
             {
-                await alexaOptions.OnTurnError(context, ex);
+                await this.OnTurnError(context, ex);
                 throw;
             }
         }
@@ -149,7 +162,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
                 {
                     ShouldEndSession = context.GetAlexaRequestBody().Request.Type ==
                                        AlexaRequestTypes.SessionEndedRequest
-                                       || Options.ShouldEndSessionByDefault
+                                       || ShouldEndSessionByDefault
                 }
             };
 
@@ -237,7 +250,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
             {
                 response.Response.Card = context.TurnState.Get<AlexaCard>("AlexaCard");
             }
-            else if (Options.TryConvertFirstActivityAttachmentToAlexaCard)
+            else if (ConvertBotBuilderCardsToAlexaCards)
             {
                 CreateAlexaCardFromAttachment(activity, response);
             }
