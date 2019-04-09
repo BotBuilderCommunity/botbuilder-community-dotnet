@@ -60,19 +60,12 @@ steps:
   condition: succeeded()
 
 - task: NuGetCommand@2
-  displayName: 'Publish Develop Packages to Artifacts Feed'
-  inputs:
-    command: 'push'
-    packagesToPush: '$(build.artifactStagingDirectory)/packages/*.nupkg'
-    publishVstsFeed: 'BotBuilderCommunity-Alpha'
-  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/develop'), eq('true', variables['FORCE_PUSH_NUGET'])))
-
-- task: NuGetCommand@2
   displayName: 'Publish Master Packages to NuGet Feed'
   inputs:
     command: 'push'
     packagesToPush: '$(build.artifactStagingDirectory)/packages/*.nupkg'
-    publishVstsFeed: 'BotBuilderCommunity-Alpha'
+    nuGetFeedType: external
+    publishFeedCredentials: 'BotBuilderCommunityNuGet'
   condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq('true', variables['FORCE_PUSH_NUGET'])))
 
 - task: KriefMikael.githubtools.GitHubTag.GitHubTag@1
