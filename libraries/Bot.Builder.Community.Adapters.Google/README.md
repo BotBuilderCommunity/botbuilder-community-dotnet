@@ -46,8 +46,8 @@ Basic sample bot available [here](https://github.com/BotBuilderCommunity/botbuil
 
 * [Google Action Configuration](#configuring-your-google-action)
 * [Adding the adapter and skills endpoint to your bot](#adding-the-adapter-and-skills-endpoint-to-your-bot)
-    * [.NET Core MVC](#.net-core-mvc)
-	* [.NET Core](#.net-core)
+    * [.NET Core MVC](#net-core-mvc)
+	* [.NET Core](#net-core-non-mvc)
 * [Default Google Request to Activity mapping](#Default-Google-Request-to-Activity-mapping)
 * [Default Activity to Google Response mapping](#Default-Activity-to-Google-Response-mapping)
 * [Google TurnContext Extension Methods](#TurnContext-Extension-Methods)
@@ -100,23 +100,14 @@ end by default or what happens when an error occurs during a bot's turn.
 ```cs
 	services.AddSingleton<IGoogleHttpAdapter>((sp) =>
 	{
-	    var telemetryClient = sp.GetService<IBotTelemetryClient>();
-	
 	    var googleHttpAdapter = new GoogleHttpAdapter(validateRequests: true)
 	    {
 	        OnTurnError = async (context, exception) =>
 	        {
-	            telemetryClient.TrackException(exception);
 	            await context.SendActivityAsync("Sorry, something went wrong");
 	        },
 	        ShouldEndSessionByDefault = true,
 	    };
-	
-	    var appInsightsLogger = new TelemetryLoggerMiddleware(telemetryClient);
-	
-		// register middleware
-	    googleHttpAdapter.Use(appInsightsLogger);
-	    googleHttpAdapter.Use(new AutoSaveStateMiddleware(userState, conversationState));
 	
 	    return googleHttpAdapter;
 	});

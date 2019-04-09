@@ -52,8 +52,8 @@ Basic sample bot available [here](https://github.com/BotBuilderCommunity/botbuil
 ### Usage
 
 * [Adding the adapter and skills endpoint to your bot](#adding-the-adapter-and-skills-endpoint-to-your-bot)
-    * [.NET Core MVC](#.net-core-mvc)
-	* [.NET Core](#.net-core)
+    * [.NET Core MVC](#net-core-mvc)
+	* [.NET Core](#net-core-non-mvc)
 * [Default Alexa Request to Activity mapping](#Default-Alexa-Request-to-Activity-mapping)
 * [Default Activity to Alexa Response mapping](#Default-Activity-to-Alexa-Response-mapping)
 * [Alexa TurnContext Extension Methods](#TurnContext-Extension-Methods)
@@ -87,24 +87,15 @@ end by default or what happens when an error occurs during a bot's turn.
 ```cs
 	services.AddSingleton<IAlexaHttpAdapter>((sp) =>
 	{
-	    var telemetryClient = sp.GetService<IBotTelemetryClient>();
-	
 	    var alexaHttpAdapter = new AlexaHttpAdapter(validateRequests: true)
 	    {
 	        OnTurnError = async (context, exception) =>
 	        {
-	            telemetryClient.TrackException(exception);
 	            await context.SendActivityAsync("Sorry, something went wrong");
 	        },
 	        ShouldEndSessionByDefault = true,
 	        ConvertBotBuilderCardsToAlexaCards = false
 	    };
-	
-	    var appInsightsLogger = new TelemetryLoggerMiddleware(telemetryClient);
-	
-		// register middleware
-	    alexaHttpAdapter.Use(appInsightsLogger);
-	    alexaHttpAdapter.Use(new AutoSaveStateMiddleware(userState, conversationState));
 	
 	    return alexaHttpAdapter;
 	});
