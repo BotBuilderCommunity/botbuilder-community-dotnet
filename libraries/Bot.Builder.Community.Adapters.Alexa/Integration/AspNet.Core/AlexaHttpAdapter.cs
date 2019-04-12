@@ -52,7 +52,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Integration.AspNet.Core
             AlexaRequestBody skillRequest;
 
             var memoryStream = new MemoryStream();
-            httpResponse.Body.CopyTo(memoryStream);
+            httpRequest.Body.CopyTo(memoryStream);
             var requestBytes = memoryStream.ToArray();
             memoryStream.Position = 0;
 
@@ -89,7 +89,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Integration.AspNet.Core
             {
                 using (var jsonWriter = new JsonTextWriter(writer))
                 {
-                    AlexaBotMessageSerializer.Serialize(jsonWriter, alexaResponse.Response);
+                    AlexaBotMessageSerializer.Serialize(jsonWriter, alexaResponse);
                 }
             }
         }
