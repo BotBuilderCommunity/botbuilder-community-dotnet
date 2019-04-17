@@ -246,13 +246,23 @@ namespace Bot.Builder.Community.Adapters.Alexa
 
         private void AddCardToResponse(ITurnContext context, AlexaResponseBody response, Activity activity)
         {
-            if (context.TurnState.ContainsKey("AlexaCard") && context.TurnState["AlexaCard"] is AlexaCard)
+            if (activity.Attachments.Any(a => a.ContentType == SigninCard.ContentType))
             {
-                response.Response.Card = context.TurnState.Get<AlexaCard>("AlexaCard");
+                response.Response.Card = new AlexaCard()
+                {
+                    Type = AlexaCardType.LinkAccount
+                };
             }
-            else if (ConvertBotBuilderCardsToAlexaCards)
+            else
             {
-                CreateAlexaCardFromAttachment(activity, response);
+                if (context.TurnState.ContainsKey("AlexaCard") && context.TurnState["AlexaCard"] is AlexaCard)
+                {
+                    response.Response.Card = context.TurnState.Get<AlexaCard>("AlexaCard");
+                }
+                else if (ConvertBotBuilderCardsToAlexaCards)
+                {
+                    CreateAlexaCardFromAttachment(activity, response);
+                }
             }
         }
 
