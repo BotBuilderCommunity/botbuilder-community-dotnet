@@ -246,7 +246,8 @@ namespace Bot.Builder.Community.Adapters.Alexa
 
         private void AddCardToResponse(ITurnContext context, AlexaResponseBody response, Activity activity)
         {
-            if (activity.Attachments.Any(a => a.ContentType == SigninCard.ContentType))
+            if (activity.Attachments != null 
+                && activity.Attachments.Any(a => a.ContentType == SigninCard.ContentType))
             {
                 response.Response.Card = new AlexaCard()
                 {
