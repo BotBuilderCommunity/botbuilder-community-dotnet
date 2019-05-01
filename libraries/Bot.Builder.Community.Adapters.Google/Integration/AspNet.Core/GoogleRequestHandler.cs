@@ -2,16 +2,20 @@
 // Licensed under the MIT License.
 
 using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Bot.Builder.Community.Adapters.Google.Helpers;
+using JWT.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Bot.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
 namespace Bot.Builder.Community.Adapters.Google.Integration.AspNet.Core
@@ -34,7 +38,7 @@ namespace Bot.Builder.Community.Adapters.Google.Integration.AspNet.Core
             _googleOptions = googleOptions;
         }
        
-        protected async Task<GoogleResponseBody> ProcessMessageRequestAsync(HttpRequest request, GoogleAdapter GoogleAdapter, BotCallbackHandler botCallbackHandler)
+        protected async Task<object> ProcessMessageRequestAsync(HttpRequest request, GoogleAdapter GoogleAdapter, BotCallbackHandler botCallbackHandler)
         {
             GoogleRequestBody actionRequest;
             Payload actionPayload;
@@ -43,6 +47,9 @@ namespace Bot.Builder.Community.Adapters.Google.Integration.AspNet.Core
             request.Body.CopyTo(memoryStream);
             var requestBytes = memoryStream.ToArray();
             memoryStream.Position = 0;
+
+            var projectId = AuthenticationHelpers.GetProjectIdFromRequest(request);
+            GoogleAdapter.ActionProjectId = projectId;
 
             using (var bodyReader = new StreamReader(memoryStream, Encoding.UTF8))
             {
@@ -65,11 +72,11 @@ namespace Bot.Builder.Community.Adapters.Google.Integration.AspNet.Core
                 }
             }
 
-            var GoogleResponseBody = await GoogleAdapter.ProcessActivity(
+            var responseBody = await GoogleAdapter.ProcessActivity(
                     actionPayload,
                     botCallbackHandler);
 
-            return GoogleResponseBody;
+            return responseBody;
         }
 
         public async Task HandleAsync(HttpContext httpContext)
@@ -101,12 +108,12 @@ namespace Bot.Builder.Community.Adapters.Google.Integration.AspNet.Core
 
             try
             {
-                var GoogleResponseBody = await ProcessMessageRequestAsync(
+                var responseBody = await ProcessMessageRequestAsync(
                     request,
                     _googleAdapter,
                     bot.OnTurnAsync);
                 
-                var GoogleResponseBodyJson = JsonConvert.SerializeObject(GoogleResponseBody, Formatting.None,
+                var GoogleResponseBodyJson = JsonConvert.SerializeObject(responseBody, Formatting.None,
                     new JsonSerializerSettings
                     {
                         NullValueHandling = NullValueHandling.Ignore,
