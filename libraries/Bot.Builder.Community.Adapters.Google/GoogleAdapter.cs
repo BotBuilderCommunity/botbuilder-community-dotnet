@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Bot.Builder.Community.Adapters.Google.Integration;
+using Bot.Builder.Community.Adapters.Google.Model;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 
@@ -178,7 +179,13 @@ namespace Bot.Builder.Community.Adapters.Google
                 // add these to the response as Google Suggestion Chips
                 AddSuggestionChipsToResponse(context, response);
 
-                if(context.TurnState.ContainsKey("systemIntent"))
+                if (context.Activity.Attachments != null
+                    && context.Activity.Attachments.FirstOrDefault(a => a.ContentType == SigninCard.ContentType) != null)
+                {
+                    response.Payload.Google.SystemIntent = new SigninSystemIntent();
+                }
+
+                if (context.TurnState.ContainsKey("systemIntent"))
                 {
                     var optionSystemIntent = context.TurnState.Get<ISystemIntent>("systemIntent");
                     response.Payload.Google.SystemIntent = optionSystemIntent;
