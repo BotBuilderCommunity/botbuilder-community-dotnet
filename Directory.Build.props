@@ -40,7 +40,7 @@
   <PropertyGroup>
     <!-- Rules found at: https://aka.ms/Microsoft-NuGet-Compliance -->
     <PackageProjectUrl>http://www.github.com/botbuildercommunity/botbuildercommunity-dotnet</PackageProjectUrl>
-    <PackageIconUrl>http://docs.botframework.com/images/bot_icon.png</PackageIconUrl>
+    <PackageIconUrl>https://bot-framework.azureedge.net/static/58168-ae253ca613/intercom-webui/v1.6.2/assets/landing-page/images/BotFrame_Logo_Icon.png</PackageIconUrl>
     <PackageLicenseUrl>http://www.github.com/botbuildercommunity/botbuildercommunity-dotnet/blob/master/LICENSE</PackageLicenseUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <RepositoryUrl>
