@@ -76,6 +76,7 @@ namespace Bot.Builder.Community.Adapters.Google
         public DateTime LastSeen { get; set; }
         public string Locale { get; set; }
         public string UserId { get; set; }
+        public string IdToken { get; set; }
     }
 
     public class Conversation
