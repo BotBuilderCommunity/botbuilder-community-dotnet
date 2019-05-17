@@ -11,9 +11,14 @@ namespace Bot.Builder.Community.Adapters.Google.Helpers
     {
         public static string GetProjectIdFromRequest(HttpRequest httpRequest)
         {
-            string payload = new JwtBuilder().Decode(httpRequest.Headers["Authorization"]);
-            JObject payloadJObj = JObject.Parse(payload);
-            return (string)payloadJObj["aud"];
+            if (httpRequest.Headers.ContainsKey("Authorization"))
+            {
+                string payload = new JwtBuilder().Decode(httpRequest.Headers["Authorization"]);
+                JObject payloadJObj = JObject.Parse(payload);
+                return (string) payloadJObj["aud"];
+            }
+
+            return null;
         }
     }
 }
