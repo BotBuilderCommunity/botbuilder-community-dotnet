@@ -11,12 +11,13 @@ namespace Bot.Builder.Community.Adapters.Google
     {
         public string ConversationToken { get; set; }
         public string UserStorage { get; set; }
-        public bool ResetUserStorage { get; set; }
+        public bool? ResetUserStorage { get; set; }
         public bool ExpectUserResponse { get; set; }
         public ExpectedInput[] ExpectedInputs { get; set; }
         public FinalResponse FinalResponse { get; set; }
         public CustomPushMessage CustomPushMessage { get; set; }
         public bool IsInSandbox { get; set; }
+        public ISystemIntent SystemIntent { get; set; }
     }
 
     public class CustomPushMessage
@@ -31,13 +32,20 @@ namespace Bot.Builder.Community.Adapters.Google
 
     public class ExpectedInput
     {
-        public IntentName[] PossibleIntents { get; set; }
+        public PossibleIntent[] PossibleIntents { get; set; }
         public InputPrompt InputPrompt { get; set; }
     }
 
-    public class IntentName
+    public class PossibleIntent
     {
         public string Intent { get; set; }
+        public InputValueData InputValueData { get; set; }
+    }
+
+    public class InputValueData
+    {
+        [JsonProperty(PropertyName = "@type")]
+        public string type { get; set; }
     }
 
     public class InputPrompt

@@ -156,6 +156,49 @@ namespace Bot.Builder.Community.Adapters.Google
 
             var response = new ConversationResponseBody();
 
+            if (activity.Attachments != null
+                && activity.Attachments.FirstOrDefault(a => a.ContentType == SigninCard.ContentType) != null)
+            {
+                response.ExpectUserResponse = true;
+                response.ResetUserStorage = null;
+
+                response.ExpectedInputs = new ExpectedInput[]
+                {
+                    new ExpectedInput()
+                    {
+                        PossibleIntents = new PossibleIntent[]
+                        {
+                            new PossibleIntent()
+                            {
+                                Intent = "actions.intent.SIGN_IN",
+                                InputValueData = new InputValueData()
+                                {
+                                    type = "type.googleapis.com/google.actions.v2.SignInValueSpec"
+                                }
+                            },
+                        },
+                        InputPrompt = new InputPrompt()
+                        {
+                            RichInitialPrompt = new RichResponse()
+                            {
+                                Items = new Item[]
+                                {
+                                    new SimpleResponse()
+                                    {
+                                        Content = new SimpleResponseContent()
+                                        {
+                                            TextToSpeech = "PLACEHOLDER"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                return response;
+            }
+
             if (!string.IsNullOrEmpty(activity.Text))
             {
                 var simpleResponse = new SimpleResponse
@@ -176,6 +219,12 @@ namespace Bot.Builder.Community.Adapters.Google
                 // Add Media response to response if set
                 AddMediaResponseToResponse(context, ref responseItems, activity);
 
+                if (activity.InputHint == null)
+                {
+                    activity.InputHint =
+                        ShouldEndSessionByDefault ? InputHints.IgnoringInput : InputHints.AcceptingInput;
+                }
+
                 // check if we should be listening for more input from the user
                 switch (activity.InputHint)
                 {
@@ -189,24 +238,27 @@ namespace Bot.Builder.Community.Adapters.Google
                     case InputHints.AcceptingInput:
                     case InputHints.ExpectingInput:
                         response.ExpectedInputs = new ExpectedInput[]
-                        {
-                            new ExpectedInput()
                             {
-                                PossibleIntents = new IntentName[]
+                                new ExpectedInput()
                                 {
-                                    new IntentName() { Intent = "actions.intent.TEXT" },
-                                },
-                                InputPrompt = new InputPrompt()
-                                {
-                                    RichInitialPrompt = new RichResponse() { Items = responseItems.ToArray() }
+                                    PossibleIntents = new PossibleIntent[]
+                                    {
+                                        new PossibleIntent() {Intent = "actions.intent.TEXT"},
+                                    },
+                                    InputPrompt = new InputPrompt()
+                                    {
+                                        RichInitialPrompt = new RichResponse() {Items = responseItems.ToArray()}
+                                    }
                                 }
-                            }
-                        };
+                            };
+
                         var suggestionChips = AddSuggestionChipsToResponse(context);
                         if (suggestionChips.Any())
                         {
-                            response.ExpectedInputs.First().InputPrompt.RichInitialPrompt.Suggestions = suggestionChips.ToArray();
+                            response.ExpectedInputs.First().InputPrompt.RichInitialPrompt.Suggestions =
+                                suggestionChips.ToArray();
                         }
+
                         response.ExpectUserResponse = true;
                         break;
                     default:
