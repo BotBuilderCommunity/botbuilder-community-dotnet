@@ -390,9 +390,9 @@ namespace Bot.Builder.Community.Adapters.Google
 
         private static string StripInvocation(string query, string invocationName)
         {
-            if (query.ToLower().StartsWith("talk to") || query.ToLower().StartsWith("speak to")
+            if (query != null && (query.ToLower().StartsWith("talk to") || query.ToLower().StartsWith("speak to")
                                                       || query.ToLower().StartsWith("i want to speak to") ||
-                                                      query.ToLower().StartsWith("ask"))
+                                                      query.ToLower().StartsWith("ask")))
             {
                 query = query.ToLower().Replace($"talk to", string.Empty);
                 query = query.ToLower().Replace($"speak to", string.Empty);
@@ -400,7 +400,7 @@ namespace Bot.Builder.Community.Adapters.Google
                 query = query.ToLower().Replace($"ask", string.Empty);
             }
 
-            query = query.TrimStart().TrimEnd();
+            query = query?.TrimStart().TrimEnd();
 
             if (!string.IsNullOrEmpty(invocationName)
                 && query.ToLower().StartsWith(invocationName.ToLower()))
@@ -408,7 +408,7 @@ namespace Bot.Builder.Community.Adapters.Google
                 query = query.ToLower().Replace(invocationName.ToLower(), string.Empty);
             }
 
-            return query.TrimStart().TrimEnd();
+            return query?.TrimStart().TrimEnd();
         }
 
         public override Task<ResourceResponse> UpdateActivityAsync(ITurnContext turnContext, Activity activity, CancellationToken cancellationToken)
