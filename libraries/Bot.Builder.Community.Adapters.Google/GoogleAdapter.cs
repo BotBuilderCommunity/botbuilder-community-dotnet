@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Bot.Builder.Community.Adapters.Google.Integration;
+using Bot.Builder.Community.Adapters.Google.Model;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 
@@ -12,11 +13,15 @@ namespace Bot.Builder.Community.Adapters.Google
 {
     public class GoogleAdapter : BotAdapter
     {
+        public GoogleWebhookType WebhookType { get; set; } = GoogleWebhookType.DialogFlow;
+
         public bool ShouldEndSessionByDefault { get; set; }
 
         public bool TryConvertFirstActivityAttachmentToGoogleCard { get; set; }
 
         public string ActionInvocationName { get; set; }
+
+        public string ActionProjectId { get; set; }
 
         private Dictionary<string, List<Activity>> Responses { get; set; }
 
@@ -32,7 +37,7 @@ namespace Bot.Builder.Community.Adapters.Google
             return this;
         }
 
-        public async Task<GoogleResponseBody> ProcessActivity(Payload actionPayload, BotCallbackHandler callback)
+        public async Task<object> ProcessActivity(Payload actionPayload, BotCallbackHandler callback)
         {
             TurnContext context = null;
 
@@ -51,9 +56,18 @@ namespace Bot.Builder.Community.Adapters.Google
 
                 try
                 {
-                    GoogleResponseBody response = null;
+                    object response = null;
                     var activities = Responses.ContainsKey(key) ? Responses[key] : new List<Activity>();
-                    response = CreateResponseFromLastActivity(activities, context);
+
+                    if (WebhookType == GoogleWebhookType.DialogFlow)
+                    {
+                        response = CreateDialogFlowResponseFromLastActivity(activities, context);
+                    }
+                    else
+                    {
+                        response = CreateConversationResponseFromLastActivity(activities, context);
+                    }
+
                     return response;
                 }
                 finally
@@ -136,11 +150,134 @@ namespace Bot.Builder.Community.Adapters.Google
             return activity;
         }
 
-        private GoogleResponseBody CreateResponseFromLastActivity(IEnumerable<Activity> activities, ITurnContext context)
+        private ConversationResponseBody CreateConversationResponseFromLastActivity(IEnumerable<Activity> activities, ITurnContext context)
         {
             var activity = activities.Last();
 
-            var response = new GoogleResponseBody()
+            var response = new ConversationResponseBody();
+
+            if (activity.Attachments != null
+                && activity.Attachments.FirstOrDefault(a => a.ContentType == SigninCard.ContentType) != null)
+            {
+                response.ExpectUserResponse = true;
+                response.ResetUserStorage = null;
+
+                response.ExpectedInputs = new ExpectedInput[]
+                {
+                    new ExpectedInput()
+                    {
+                        PossibleIntents = new PossibleIntent[]
+                        {
+                            new PossibleIntent()
+                            {
+                                Intent = "actions.intent.SIGN_IN",
+                                InputValueData = new InputValueData()
+                                {
+                                    type = "type.googleapis.com/google.actions.v2.SignInValueSpec"
+                                }
+                            },
+                        },
+                        InputPrompt = new InputPrompt()
+                        {
+                            RichInitialPrompt = new RichResponse()
+                            {
+                                Items = new Item[]
+                                {
+                                    new SimpleResponse()
+                                    {
+                                        Content = new SimpleResponseContent()
+                                        {
+                                            TextToSpeech = "PLACEHOLDER"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                return response;
+            }
+
+            if (!string.IsNullOrEmpty(activity.Text))
+            {
+                var simpleResponse = new SimpleResponse
+                {
+                    Content = new SimpleResponseContent
+                    {
+                        DisplayText = activity.Text,
+                        Ssml = activity.Speak,
+                        TextToSpeech = activity.Text
+                    }
+                };
+
+                var responseItems = new List<Item> { simpleResponse };
+
+                // Add Google card to response if set
+                AddCardToResponse(context, ref responseItems, activity);
+
+                // Add Media response to response if set
+                AddMediaResponseToResponse(context, ref responseItems, activity);
+
+                if (activity.InputHint == null)
+                {
+                    activity.InputHint =
+                        ShouldEndSessionByDefault ? InputHints.IgnoringInput : InputHints.AcceptingInput;
+                }
+
+                // check if we should be listening for more input from the user
+                switch (activity.InputHint)
+                {
+                    case InputHints.IgnoringInput:
+                        response.FinalResponse = new FinalResponse()
+                        {
+                            RichResponse = new RichResponse() { Items = responseItems.ToArray() }
+                        };
+                        response.ExpectUserResponse = false;
+                        break;
+                    case InputHints.AcceptingInput:
+                    case InputHints.ExpectingInput:
+                        response.ExpectedInputs = new ExpectedInput[]
+                            {
+                                new ExpectedInput()
+                                {
+                                    PossibleIntents = new PossibleIntent[]
+                                    {
+                                        new PossibleIntent() {Intent = "actions.intent.TEXT"},
+                                    },
+                                    InputPrompt = new InputPrompt()
+                                    {
+                                        RichInitialPrompt = new RichResponse() {Items = responseItems.ToArray()}
+                                    }
+                                }
+                            };
+
+                        var suggestionChips = AddSuggestionChipsToResponse(context);
+                        if (suggestionChips.Any())
+                        {
+                            response.ExpectedInputs.First().InputPrompt.RichInitialPrompt.Suggestions =
+                                suggestionChips.ToArray();
+                        }
+
+                        response.ExpectUserResponse = true;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                response.ExpectUserResponse = false;
+            }
+
+            return response;
+        }
+
+        private DialogFlowResponseBody CreateDialogFlowResponseFromLastActivity(IEnumerable<Activity> activities, ITurnContext context)
+        {
+            var activity = activities.Last();
+
+            var response = new DialogFlowResponseBody()
             {
                 Payload = new ResponsePayload()
                 {
@@ -167,18 +304,22 @@ namespace Bot.Builder.Community.Adapters.Google
                 var responseItems = new List<Item> { simpleResponse };
 
                 // Add Google card to response if set
-                AddCardToResponse(context, responseItems, activity);
+                AddCardToResponse(context, ref responseItems, activity);
 
                 // Add Media response to response if set
-                AddMediaResponseToResponse(context, responseItems, activity);
+                AddMediaResponseToResponse(context, ref responseItems, activity);
 
                 response.Payload.Google.RichResponse.Items = responseItems.ToArray();
 
                 // If suggested actions have been added to outgoing activity
                 // add these to the response as Google Suggestion Chips
-                AddSuggestionChipsToResponse(context, response);
+                var suggestionChips = AddSuggestionChipsToResponse(context);
+                if (suggestionChips.Any())
+                {
+                    response.Payload.Google.RichResponse.Suggestions = suggestionChips.ToArray();
+                }
 
-                if(context.TurnState.ContainsKey("systemIntent"))
+                if (context.TurnState.ContainsKey("systemIntent"))
                 {
                     var optionSystemIntent = context.TurnState.Get<ISystemIntent>("systemIntent");
                     response.Payload.Google.SystemIntent = optionSystemIntent;
@@ -206,7 +347,7 @@ namespace Bot.Builder.Community.Adapters.Google
             return response;
         }
 
-        private void AddMediaResponseToResponse(ITurnContext context, List<Item> responseItems, Activity activity)
+        private void AddMediaResponseToResponse(ITurnContext context, ref List<Item> responseItems, Activity activity)
         {
             if (context.TurnState.ContainsKey("GoogleMediaResponse") && context.TurnState["GoogleMediaResponse"] is MediaResponse)
             {
@@ -214,7 +355,7 @@ namespace Bot.Builder.Community.Adapters.Google
             }
         }
 
-        private static void AddSuggestionChipsToResponse(ITurnContext context, GoogleResponseBody response)
+        private static List<Suggestion> AddSuggestionChipsToResponse(ITurnContext context)
         {
             var suggestionChips = new List<Suggestion>();
 
@@ -227,17 +368,14 @@ namespace Bot.Builder.Community.Adapters.Google
             {
                 foreach (var suggestion in context.Activity.SuggestedActions.Actions)
                 {
-                    suggestionChips.Add(new Suggestion {Title = suggestion.Title});
+                    suggestionChips.Add(new Suggestion { Title = suggestion.Title });
                 }
             }
 
-            if (suggestionChips.Any())
-            {
-                response.Payload.Google.RichResponse.Suggestions = suggestionChips.ToArray();
-            }
+            return suggestionChips;
         }
 
-        private void AddCardToResponse(ITurnContext context, List<Item> responseItems, Activity activity)
+        private void AddCardToResponse(ITurnContext context, ref List<Item> responseItems, Activity activity)
         {
             if (context.TurnState.ContainsKey("GoogleCard") && context.TurnState["GoogleCard"] is GoogleBasicCard)
             {
@@ -252,9 +390,9 @@ namespace Bot.Builder.Community.Adapters.Google
 
         private static string StripInvocation(string query, string invocationName)
         {
-            if (query.ToLower().StartsWith("talk to") || query.ToLower().StartsWith("speak to")
+            if (query != null && (query.ToLower().StartsWith("talk to") || query.ToLower().StartsWith("speak to")
                                                       || query.ToLower().StartsWith("i want to speak to") ||
-                                                      query.ToLower().StartsWith("ask"))
+                                                      query.ToLower().StartsWith("ask")))
             {
                 query = query.ToLower().Replace($"talk to", string.Empty);
                 query = query.ToLower().Replace($"speak to", string.Empty);
@@ -262,7 +400,7 @@ namespace Bot.Builder.Community.Adapters.Google
                 query = query.ToLower().Replace($"ask", string.Empty);
             }
 
-            query = query.TrimStart().TrimEnd();
+            query = query?.TrimStart().TrimEnd();
 
             if (!string.IsNullOrEmpty(invocationName)
                 && query.ToLower().StartsWith(invocationName.ToLower()))
@@ -270,7 +408,7 @@ namespace Bot.Builder.Community.Adapters.Google
                 query = query.ToLower().Replace(invocationName.ToLower(), string.Empty);
             }
 
-            return query.TrimStart().TrimEnd();
+            return query?.TrimStart().TrimEnd();
         }
 
         public override Task<ResourceResponse> UpdateActivityAsync(ITurnContext turnContext, Activity activity, CancellationToken cancellationToken)

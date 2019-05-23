@@ -5,6 +5,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Bot.Builder.Community.Adapters.Google.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Bot.Builder;
 using Newtonsoft.Json;
@@ -41,6 +42,9 @@ namespace Bot.Builder.Community.Adapters.Google.Integration.AspNet.Core
             {
                 throw new ArgumentNullException(nameof(bot));
             }
+
+            var projectId = AuthenticationHelpers.GetProjectIdFromRequest(httpRequest);
+            ActionProjectId = projectId;
 
             GoogleRequestBody actionRequest;
             Payload actionPayload;

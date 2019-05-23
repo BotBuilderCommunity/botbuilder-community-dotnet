@@ -8,7 +8,7 @@ To see a list of current extensions available for the Bot Builder .NET SDK, use 
 
 * [C# Middleware](#middleware)
 * [C# Dialogs & Prompts](#dialogs-and-prompts)
-* [C# Adapters](#adapters) - e.g. Alexa and Google
+* [C# Adapters](#adapters) - e.g. Alexa, Google and Twitter DMs
 * [C# Recognizers](#recognizers)
 * [C# Storage](#storage)
 
@@ -29,7 +29,7 @@ The following pieces of middleware are currently available;
 | [Handle Activity Type Middleware](libraries/Bot.Builder.Community.Middleware.HandleActivityType) | Middleware component which allows you to respond to different types of incoming activities, e.g. send a greeting, or even filter out activities you do not care about altogether. | | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.76-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Middleware.HandleActivityType/) |
 | [BestMatch Middleware](libraries/Bot.Builder.Community.Middleware.BestMatch) | A middleware implementation of the popular open source BestMatchDialog for v3 of the SDK. This piece of middleware will allow you to match a message received from a bot user against a list of strings and then carry out an appropriate action. Matching does not have to be exact and you can set the threshold as to how closely the message should match with an item in the list. | [Sample](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/BestMatch%20Middleware%20Sample) | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.76-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Middleware.BestMatch/) |
 | [Azure Active Directory Authentication Middleware](libraries/Bot.Builder.Community.Middleware.AzureAdAuthentication) | This middleware will allow your bot to authenticate with Azure AD. It was created to support integration with Microsoft Graph but it will work with any application that uses the OAuth 2.0 authorization code flow. | | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.76-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Middleware.AzureAdAuthentication/) |
-| [Sentiment Analysis Middleware](libraries/Bot.Builder.Community.Middleware.SentimentAnalysis) | This middleware uses Cognitive Services Sentiment Analysis to identify the sentiment of each inbound message and make it available for your bot or other middleware component. | | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.76-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Middleware.SentimentAnalysis/) |
+| [Sentiment Analysis Middleware](libraries/Bot.Builder.Community.Middleware.SentimentAnalysis) | This middleware uses Cognitive Services Sentiment Analysis to identify the sentiment of each inbound message and make it available for your bot or other middleware component. | [Sample](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/develop/samples/Sentiment%20Middleware%20Sample) | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.76-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Middleware.SentimentAnalysis/) |
 | [Spell Check Middleware](libraries/Bot.Builder.Community.Middleware.SpellCheck) | This middleware uses Cognitive Services Check to automatically correct inbound message text | | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.76-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Middleware.SpellCheck/) |
 
 ## Dialogs and Prompts
@@ -42,6 +42,7 @@ The following dialogs are currently available;
 | [Bot Builder ChoiceFlow](libraries/Bot.Builder.Community.Dialogs.ChoiceFlow) |This dialog allows you to provide the user with a series of guides choice prompts in turn (defined in a JSON file or as a collection of ChoiceFlowItem objects), similar to when calling a telephone line with a series of automated options. The dialog returns the user's last choice as a result from the dialog and optionally provide the user with a simple text response depending on which choice they land on. | [Sample](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/ChoiceFlow%20Dialog%20Sample) | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.0-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Dialogs.ChoiceFlow/) |
 | [Bot Builder v4 FormFlow](libraries/Bot.Builder.Community.Dialogs.FormFlow) | An implemention for v4 of the Bot Build .NET SDK of the [Microsoft.Bot.Builder.FormFlow dialog project built for Bot Builder v3](https://github.com/Microsoft/BotBuilder-V3/tree/master/CSharp/Library/Microsoft.Bot.Builder/FormFlow). FormFlow automatically generates the dialogs that are necessary to manage a guided conversation, based upon guidelines you specify. | [Sample](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/Form%20Flow%20Sample) | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.0-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Dialogs.FormFlow/) |
 | [Bot Builder v4 Prompts](libraries/Bot.Builder.Community.Dialogs.Prompts) | A collection of Prompts for use with Bot Builder v4, providing the ability to prompt for and recognize currencies, age, distances and temperature. | | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.79-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Dialogs.Prompts/) |
+| [Bot Builder v4 Luis Dialog](libraries/Bot.Builder.Community.Dialogs.Luis) | An implementation for v4 of the Bot Builder .NET SDK of the [Microsoft.Bot.Builder.Dialogs.LuisDialog built for Bot Builder V3](https://github.com/microsoft/BotBuilder-V3/tree/master/CSharp/Library/Microsoft.Bot.Builder/Luis) A dialog specialized to handle intents and entities from LUIS. | [Sample](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/Luis%20Dialog%20Sample) | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.79-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Dialogs.Luis/) |
 
 ## Adapters
 
@@ -51,6 +52,7 @@ The following adapters can be used to expose your bot on additional channels not
 | ------ | ------ | ------ | ------ |
 | [Alexa Adapter](libraries/Bot.Builder.Community.Adapters.Alexa) | An adapter to allow for Alexa Skills to be built using the Bot Builder SDK. Includes broad support for Alexa skills capabilities, including devices with displays (Show / Spot), Alexa Cards, access to user profile data and the ability to send Progressive Responses. | [Sample](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/Alexa%20Adapter%20Sample) | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.121-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Adapters.Alexa/) |
 | [Google Adapter](libraries/Bot.Builder.Community.Adapters.Google) | An adapter to allow for Google Actions to be built using the Bot Builder SDK. Includes broad support for Alexa skills capabilities, including Cards and suggestion chips | [Sample](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/Google%20Adapter%20Sample) | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.121-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Adapters.Google/) |
+| [Twitter Adapter](libraries/Bot.Builder.Community.Adapters.Twitter) | An adapter that integrates Twitter Direct Messages with the Bot Builder. The adapter sets up the required webhooks and responds to CRC requests. The webhooks code is based on the work by Tweety with modifications to support the Premium tier of the Account Activity API. | [Sample](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/Twitter%20Adapter%20Sample) | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.121-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Adapters.Twitter/) |
 
 
 ## Recognizers
@@ -64,10 +66,9 @@ The following recognizers are currently available;
 
 ## Storage
 
-The following recognizers are currently available;
+The following Storage implementations are currently available;
 
 | Name | Description | NuGet |
 | ------ | ------ | ------ |
 | [Elasticsearch storage](libraries/Bot.Builder.Community.Storage.Elasticsearch) | Elasticsearch based storage for bots created using Microsoft Bot Builder SDK. | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.184-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Storage.Elasticsearch/) |
-
-
+| [EntityFramework storage](libraries/Bot.Builder.Community.Storage.EntityFramework) | EntityFramework based storage and transcript store for bots created using Microsoft Bot Builder SDK. | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.184-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Storage.EntityFramework/) |

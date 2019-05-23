@@ -53,7 +53,7 @@ You can also, optionally, pass in a FuzzyRecognizerOptions object when creating 
         {
             // The threshold for which matches above this level will be 
             // returned in the results object. Defaults to 0.6.
-            Threshold = 0.6
+            Threshold = 0.6,
             // Should non-alphanumeric characters be taken into account when 
             // matching? Defaults to true.
             IgnoreNonAlphanumeric = true,
