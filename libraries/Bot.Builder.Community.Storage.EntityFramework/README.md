@@ -1,4 +1,4 @@
-## Elasticsearch storage for Bot Builder v4 .NET SDK
+## EntityFrameworkCore storage for Bot Builder v4 .NET SDK
 
 ### Build status
 | Branch | Status | Recommended NuGet package version |
@@ -51,8 +51,9 @@ options.Middleware.Add(transcriptMiddleware);
 
 For concurrency, EntityFrameworkStorage follows the semantics of **Last Write Wins** and does not implement ETag or isolation level based consistency by default.  However, you can provide an Isolation level in EntityFrameworkStorageOptions. The default is IsolationLevel.ReadCommitted.  
 
-#### Table Creation Scripts
+#### Table Creation Script
 
+```sql
 CREATE TABLE [dbo].[BotDataEntity](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[RealId] [varchar](1024) NOT NULL UNIQUE,
@@ -98,3 +99,4 @@ CREATE NONCLUSTERED INDEX [IX_TranscriptConversation] ON [dbo].[TranscriptEntity
 GO
 ALTER TABLE [dbo].[TranscriptEntity] ADD  DEFAULT (getutcdate()) FOR [TimeStamp]
 GO
+```
