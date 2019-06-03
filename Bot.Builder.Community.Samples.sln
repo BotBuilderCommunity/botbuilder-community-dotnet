@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cortana Assistant Alexa Sam
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Twitter Adapter Sample", "samples\Twitter Adapter Sample\Twitter Adapter Sample.csproj", "{036E2C3A-6894-4237-99B7-591D16326602}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Luis Dialog Sample", "samples\Luis Dialog Sample\Luis Dialog Sample.csproj", "{37DCBE88-35C6-4253-A470-2CCBC6181D75}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{036E2C3A-6894-4237-99B7-591D16326602}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{036E2C3A-6894-4237-99B7-591D16326602}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{036E2C3A-6894-4237-99B7-591D16326602}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37DCBE88-35C6-4253-A470-2CCBC6181D75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37DCBE88-35C6-4253-A470-2CCBC6181D75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37DCBE88-35C6-4253-A470-2CCBC6181D75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37DCBE88-35C6-4253-A470-2CCBC6181D75}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

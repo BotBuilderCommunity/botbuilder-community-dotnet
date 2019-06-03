@@ -24,8 +24,6 @@ Take note of namespace changes from **Microsoft.Bot.Builder.Luis** to **Bot.Buil
 
 * [Basic features of LuisDialog](https://docs.microsoft.com/en-us/azure/bot-service/dotnet/bot-builder-dotnet-luis-dialogs)  (Note: this is a V3 docs page, but many of the concepts for the V3 Luis Dialog also apply to the V4 Luis Dialog.)
 
-* [Advanced features of FormFlow](https://docs.microsoft.com/en-us/azure/bot-service/dotnet/bot-builder-dotnet-formflow-advanced)
-
 ### License
 
 Licensed under the MIT License.
