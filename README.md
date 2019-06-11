@@ -20,7 +20,7 @@ Each extension, such as middleware or recognizers, is available individually fro
 
 We welcome and encourage contributions to this project, in the form of bug fixes, enhancements or new extensions. Please fork the repo and raise a PR if you have something you would like us to review for inclusion.  If you want to discuss an idea first then the best way to do this right now is to raise a GitHub issue or reach out to one of us on Twitter.
 
-## Middleware 
+## Middleware
 
 The following pieces of middleware are currently available;
 
@@ -50,10 +50,9 @@ The following adapters can be used to expose your bot on additional channels not
 
 | Name | Description | Sample? | NuGet |
 | ------ | ------ | ------ | ------ |
-| [Alexa Adapter](libraries/Bot.Builder.Community.Adapters.Alexa) | An adapter to allow for Alexa Skills to be built using the Bot Builder SDK. Includes broad support for Alexa skills capabilities, including devices with displays (Show / Spot), Alexa Cards, access to user profile data and the ability to send Progressive Responses. | [Sample](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/Alexa%20Adapter%20Sample) | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.121-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Adapters.Alexa/) |
-| [Google Adapter](libraries/Bot.Builder.Community.Adapters.Google) | An adapter to allow for Google Actions to be built using the Bot Builder SDK. Includes broad support for Alexa skills capabilities, including Cards and suggestion chips | [Sample](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/Google%20Adapter%20Sample) | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.121-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Adapters.Google/) |
+| [Alexa Adapter](libraries/Bot.Builder.Community.Adapters.Alexa) | An adapter to allow for Alexa Skills to be built using the Bot Builder SDK. Includes broad support for Alexa Skills capabilities, including devices with displays (Show / Spot), Alexa Cards, access to user profile data and the ability to send Progressive Responses. | [Sample](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/Alexa%20Adapter%20Sample) | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.121-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Adapters.Alexa/) |
+| [Google Adapter](libraries/Bot.Builder.Community.Adapters.Google) | An adapter to allow for Google Actions to be built using the Bot Builder SDK. Includes broad support for Google Actions capabilities, including Cards and suggestion chips | [Sample](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/Google%20Adapter%20Sample) | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.121-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Adapters.Google/) |
 | [Twitter Adapter](libraries/Bot.Builder.Community.Adapters.Twitter) | An adapter that integrates Twitter Direct Messages with the Bot Builder. The adapter sets up the required webhooks and responds to CRC requests. The webhooks code is based on the work by Tweety with modifications to support the Premium tier of the Account Activity API. | [Sample](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/Twitter%20Adapter%20Sample) | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.121-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Adapters.Twitter/) |
-
 
 ## Recognizers
 
@@ -62,7 +61,6 @@ The following recognizers are currently available;
 | Name | Description | NuGet |
 | ------ | ------ | ------ |
 | [Fuzzy Matching Recognizer](libraries/Bot.Builder.Community.Recognizers.FuzzyRecognizer) | A recognizer that allows you to use fuzzy matching to compare strings.  Useful in situations such as when a user make a spelling mistake etc. When the recognizer is used a list of matches, along with confidence scores, are returned. | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.76-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Recognizers.FuzzyRecognizer/) |
-
 
 ## Storage
 
