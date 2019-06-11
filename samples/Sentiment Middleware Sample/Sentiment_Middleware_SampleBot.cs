@@ -66,10 +66,10 @@ namespace Sentiment_Middleware_Sample
             {
                 try
                 {
-                    var sentimentAnalysisResult = (string)turnContext.TurnState["SentimentScore"];
+                    var sentimentAnalysisResult = (string)turnContext.TurnState["Sentiment"];
 
                     var result = sentimentAnalysisResult;
-                    await turnContext.SendActivityAsync($"You said {turnContext.Activity.Text}, the sentiment score according to the middleware is {result}");
+                    await turnContext.SendActivityAsync($"You said {turnContext.Activity.Text} the sentiment score according to the middleware is {(Convert.ToBoolean(result) ? "Positive" : "Negative")} ");
                 }
                 catch (Exception ex)
                 {
