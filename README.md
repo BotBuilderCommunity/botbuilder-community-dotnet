@@ -8,7 +8,7 @@ To see a list of current extensions available for the Bot Builder .NET SDK, use 
 
 * [C# Middleware](#middleware)
 * [C# Dialogs & Prompts](#dialogs-and-prompts)
-* [C# Adapters](#adapters) - e.g. Alexa and Google
+* [C# Adapters](#adapters) - e.g. Alexa, Google and Twitter DMs
 * [C# Recognizers](#recognizers)
 * [C# Storage](#storage)
 
@@ -52,6 +52,7 @@ The following adapters can be used to expose your bot on additional channels not
 | ------ | ------ | ------ | ------ |
 | [Alexa Adapter](libraries/Bot.Builder.Community.Adapters.Alexa) | An adapter to allow for Alexa Skills to be built using the Bot Builder SDK. Includes broad support for Alexa Skills capabilities, including devices with displays (Show / Spot), Alexa Cards, access to user profile data and the ability to send Progressive Responses. | [Sample](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/Alexa%20Adapter%20Sample) | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.121-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Adapters.Alexa/) |
 | [Google Adapter](libraries/Bot.Builder.Community.Adapters.Google) | An adapter to allow for Google Actions to be built using the Bot Builder SDK. Includes broad support for Google Actions capabilities, including Cards and suggestion chips | [Sample](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/Google%20Adapter%20Sample) | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.121-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Adapters.Google/) |
+| [Twitter Adapter](libraries/Bot.Builder.Community.Adapters.Twitter) | An adapter that integrates Twitter Direct Messages with the Bot Builder. The adapter sets up the required webhooks and responds to CRC requests. The webhooks code is based on the work by Tweety with modifications to support the Premium tier of the Account Activity API. | [Sample](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/Twitter%20Adapter%20Sample) | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.121-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Adapters.Twitter/) |
 
 ## Recognizers
 
