@@ -16,13 +16,15 @@ namespace Bot.Builder.Community.Middleware.SentimentAnalysis
             ApiKey = apiKey;
         }
 
+        public SentimentMiddleware() { }
+
         public string ApiKey { get; }
 
         public async Task OnTurnAsync(ITurnContext turnContext, NextDelegate next, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (turnContext.Activity.Type is ActivityTypes.Message)
             {
-                turnContext.TurnState.Add<string>("SentimentScore", await turnContext.Activity.Text.Sentiment(ApiKey));
+                turnContext.TurnState.Add<string>("Sentiment", await turnContext.Activity.Text.Sentiment(ApiKey));
             }
 
             await next(cancellationToken);

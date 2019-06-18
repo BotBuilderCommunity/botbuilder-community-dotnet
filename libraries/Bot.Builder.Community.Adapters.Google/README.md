@@ -281,4 +281,4 @@ We have provided an extension method to allow you to get the original Google req
     Payload payload = context.GetGoogleRequestPayload();
 ```
 
-***Note: If you call this extension method when the incoming Activity is not from an Google skill then the extension method will simply return null.*** 
+***Note: If you call this extension method when the incoming Activity is not from a Google Action then the extension method will simply return null.*** 

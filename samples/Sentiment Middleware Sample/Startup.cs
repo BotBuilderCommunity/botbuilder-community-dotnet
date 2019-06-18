@@ -115,6 +115,8 @@ namespace Sentiment_Middleware_Sample
                string apiKey = GetAPIKey(botConfig, "TextAnalytics");
                options.Middleware.Add(new Bot.Builder.Community.Middleware.SentimentAnalysis.SentimentMiddleware(apiKey));
 
+               // options.Middleware.Add(new Bot.Builder.Community.Middleware.SentimentAnalysis.SentimentMiddleware());
+
            });
 
 
