@@ -152,11 +152,11 @@ namespace Bot.Builder.Community.Adapters.Google
 
         private ConversationResponseBody CreateConversationResponseFromLastActivity(IEnumerable<Activity> activities, ITurnContext context)
         {
-            var activity = activities.Last();
+            var activity = activities?.Last();
 
             var response = new ConversationResponseBody();
 
-            if (activity.Attachments != null
+            if (activity?.Attachments != null
                 && activity.Attachments.FirstOrDefault(a => a.ContentType == SigninCard.ContentType) != null)
             {
                 response.ExpectUserResponse = true;
@@ -199,7 +199,7 @@ namespace Bot.Builder.Community.Adapters.Google
                 return response;
             }
 
-            if (!string.IsNullOrEmpty(activity.Text))
+            if (!string.IsNullOrEmpty(activity?.Text))
             {
                 var simpleResponse = new SimpleResponse
                 {
@@ -275,7 +275,7 @@ namespace Bot.Builder.Community.Adapters.Google
 
         private DialogFlowResponseBody CreateDialogFlowResponseFromLastActivity(IEnumerable<Activity> activities, ITurnContext context)
         {
-            var activity = activities.Last();
+            var activity = activities?.Last();
 
             var response = new DialogFlowResponseBody()
             {
@@ -289,7 +289,7 @@ namespace Bot.Builder.Community.Adapters.Google
                 }
             };
 
-            if (!string.IsNullOrEmpty(activity.Text))
+            if (!string.IsNullOrEmpty(activity?.Text))
             {
                 var simpleResponse = new SimpleResponse
                 {
