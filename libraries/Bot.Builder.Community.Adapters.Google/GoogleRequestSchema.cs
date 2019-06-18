@@ -105,6 +105,7 @@ namespace Bot.Builder.Community.Adapters.Google
         public string RawText { get; set; }
         public string TextValue { get; set; }
         public string Name { get; set; }
+        public object Extension { get; set; }
     }
 
     public class AvailableSurface
