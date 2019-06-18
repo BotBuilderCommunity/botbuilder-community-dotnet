@@ -152,7 +152,7 @@ namespace Bot.Builder.Community.Adapters.Google
 
         private ConversationResponseBody CreateConversationResponseFromLastActivity(IEnumerable<Activity> activities, ITurnContext context)
         {
-            var activity = activities?.Last();
+            var activity = activities != null && activities.Any() ? activities.Last() : null;
 
             var response = new ConversationResponseBody();
 
@@ -275,7 +275,7 @@ namespace Bot.Builder.Community.Adapters.Google
 
         private DialogFlowResponseBody CreateDialogFlowResponseFromLastActivity(IEnumerable<Activity> activities, ITurnContext context)
         {
-            var activity = activities?.Last();
+            var activity = activities != null && activities.Any() ? activities.Last() : null;
 
             var response = new DialogFlowResponseBody()
             {
