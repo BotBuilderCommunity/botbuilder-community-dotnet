@@ -77,6 +77,7 @@ namespace Bot.Builder.Community.Adapters.Google
         public string Locale { get; set; }
         public string UserId { get; set; }
         public string IdToken { get; set; }
+        public string AccessToken { get; set; }
     }
 
     public class Conversation
@@ -104,6 +105,7 @@ namespace Bot.Builder.Community.Adapters.Google
         public string RawText { get; set; }
         public string TextValue { get; set; }
         public string Name { get; set; }
+        public object Extension { get; set; }
     }
 
     public class AvailableSurface

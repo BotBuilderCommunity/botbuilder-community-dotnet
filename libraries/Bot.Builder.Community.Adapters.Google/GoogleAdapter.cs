@@ -152,11 +152,54 @@ namespace Bot.Builder.Community.Adapters.Google
 
         private ConversationResponseBody CreateConversationResponseFromLastActivity(IEnumerable<Activity> activities, ITurnContext context)
         {
-            var activity = activities.Last();
+            var activity = activities != null && activities.Any() ? activities.Last() : null;
 
             var response = new ConversationResponseBody();
 
-            if (!string.IsNullOrEmpty(activity.Text))
+            if (activity?.Attachments != null
+                && activity.Attachments.FirstOrDefault(a => a.ContentType == SigninCard.ContentType) != null)
+            {
+                response.ExpectUserResponse = true;
+                response.ResetUserStorage = null;
+
+                response.ExpectedInputs = new ExpectedInput[]
+                {
+                    new ExpectedInput()
+                    {
+                        PossibleIntents = new PossibleIntent[]
+                        {
+                            new PossibleIntent()
+                            {
+                                Intent = "actions.intent.SIGN_IN",
+                                InputValueData = new InputValueData()
+                                {
+                                    type = "type.googleapis.com/google.actions.v2.SignInValueSpec"
+                                }
+                            },
+                        },
+                        InputPrompt = new InputPrompt()
+                        {
+                            RichInitialPrompt = new RichResponse()
+                            {
+                                Items = new Item[]
+                                {
+                                    new SimpleResponse()
+                                    {
+                                        Content = new SimpleResponseContent()
+                                        {
+                                            TextToSpeech = "PLACEHOLDER"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                return response;
+            }
+
+            if (!string.IsNullOrEmpty(activity?.Text))
             {
                 var simpleResponse = new SimpleResponse
                 {
@@ -176,6 +219,12 @@ namespace Bot.Builder.Community.Adapters.Google
                 // Add Media response to response if set
                 AddMediaResponseToResponse(context, ref responseItems, activity);
 
+                if (activity.InputHint == null)
+                {
+                    activity.InputHint =
+                        ShouldEndSessionByDefault ? InputHints.IgnoringInput : InputHints.AcceptingInput;
+                }
+
                 // check if we should be listening for more input from the user
                 switch (activity.InputHint)
                 {
@@ -189,24 +238,27 @@ namespace Bot.Builder.Community.Adapters.Google
                     case InputHints.AcceptingInput:
                     case InputHints.ExpectingInput:
                         response.ExpectedInputs = new ExpectedInput[]
-                        {
-                            new ExpectedInput()
                             {
-                                PossibleIntents = new IntentName[]
+                                new ExpectedInput()
                                 {
-                                    new IntentName() { Intent = "actions.intent.TEXT" },
-                                },
-                                InputPrompt = new InputPrompt()
-                                {
-                                    RichInitialPrompt = new RichResponse() { Items = responseItems.ToArray() }
+                                    PossibleIntents = new PossibleIntent[]
+                                    {
+                                        new PossibleIntent() {Intent = "actions.intent.TEXT"},
+                                    },
+                                    InputPrompt = new InputPrompt()
+                                    {
+                                        RichInitialPrompt = new RichResponse() {Items = responseItems.ToArray()}
+                                    }
                                 }
-                            }
-                        };
+                            };
+
                         var suggestionChips = AddSuggestionChipsToResponse(context);
                         if (suggestionChips.Any())
                         {
-                            response.ExpectedInputs.First().InputPrompt.RichInitialPrompt.Suggestions = suggestionChips.ToArray();
+                            response.ExpectedInputs.First().InputPrompt.RichInitialPrompt.Suggestions =
+                                suggestionChips.ToArray();
                         }
+
                         response.ExpectUserResponse = true;
                         break;
                     default:
@@ -223,7 +275,7 @@ namespace Bot.Builder.Community.Adapters.Google
 
         private DialogFlowResponseBody CreateDialogFlowResponseFromLastActivity(IEnumerable<Activity> activities, ITurnContext context)
         {
-            var activity = activities.Last();
+            var activity = activities != null && activities.Any() ? activities.Last() : null;
 
             var response = new DialogFlowResponseBody()
             {
@@ -237,7 +289,7 @@ namespace Bot.Builder.Community.Adapters.Google
                 }
             };
 
-            if (!string.IsNullOrEmpty(activity.Text))
+            if (!string.IsNullOrEmpty(activity?.Text))
             {
                 var simpleResponse = new SimpleResponse
                 {
@@ -338,9 +390,9 @@ namespace Bot.Builder.Community.Adapters.Google
 
         private static string StripInvocation(string query, string invocationName)
         {
-            if (query.ToLower().StartsWith("talk to") || query.ToLower().StartsWith("speak to")
+            if (query != null && (query.ToLower().StartsWith("talk to") || query.ToLower().StartsWith("speak to")
                                                       || query.ToLower().StartsWith("i want to speak to") ||
-                                                      query.ToLower().StartsWith("ask"))
+                                                      query.ToLower().StartsWith("ask")))
             {
                 query = query.ToLower().Replace($"talk to", string.Empty);
                 query = query.ToLower().Replace($"speak to", string.Empty);
@@ -348,7 +400,7 @@ namespace Bot.Builder.Community.Adapters.Google
                 query = query.ToLower().Replace($"ask", string.Empty);
             }
 
-            query = query.TrimStart().TrimEnd();
+            query = query?.TrimStart().TrimEnd();
 
             if (!string.IsNullOrEmpty(invocationName)
                 && query.ToLower().StartsWith(invocationName.ToLower()))
@@ -356,7 +408,7 @@ namespace Bot.Builder.Community.Adapters.Google
                 query = query.ToLower().Replace(invocationName.ToLower(), string.Empty);
             }
 
-            return query.TrimStart().TrimEnd();
+            return query?.TrimStart().TrimEnd();
         }
 
         public override Task<ResourceResponse> UpdateActivityAsync(ITurnContext turnContext, Activity activity, CancellationToken cancellationToken)
