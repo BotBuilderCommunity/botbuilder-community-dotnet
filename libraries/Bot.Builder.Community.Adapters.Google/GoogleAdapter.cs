@@ -37,13 +37,13 @@ namespace Bot.Builder.Community.Adapters.Google
             return this;
         }
 
-        public async Task<object> ProcessActivity(Payload actionPayload, BotCallbackHandler callback)
+        public async Task<object> ProcessActivity(Payload actionPayload, BotCallbackHandler callback, string uniqueRequestId = null)
         {
             TurnContext context = null;
 
             try
             {
-                var activity = RequestToActivity(actionPayload);
+                var activity = RequestToActivity(actionPayload, uniqueRequestId);
                 BotAssert.ActivityNotNull(activity);
 
                 context = new TurnContext(this, activity);
@@ -120,7 +120,7 @@ namespace Bot.Builder.Community.Adapters.Google
             return Task.FromResult(resourceResponses.ToArray());
         }
 
-        private Activity RequestToActivity(Payload actionPayload)
+        private Activity RequestToActivity(Payload actionPayload, string uniqueRequestId = null)
         {
             var activity = new Activity
             {
@@ -134,7 +134,7 @@ namespace Bot.Builder.Community.Adapters.Google
 
                 Type = ActivityTypes.Message,
                 Text = StripInvocation(actionPayload.Inputs[0]?.RawInputs[0]?.Query, ActionInvocationName),
-                Id = new Guid().ToString(),
+                Id = uniqueRequestId ?? Guid.NewGuid().ToString(),
                 Timestamp = DateTime.UtcNow,
                 Locale = actionPayload.User.Locale,
                 Value = actionPayload.Inputs[0]?.Intent

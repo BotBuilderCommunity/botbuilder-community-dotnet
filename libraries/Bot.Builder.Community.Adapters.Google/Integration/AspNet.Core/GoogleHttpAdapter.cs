@@ -15,8 +15,11 @@ namespace Bot.Builder.Community.Adapters.Google.Integration.AspNet.Core
 {
     public class GoogleHttpAdapter : GoogleAdapter, IGoogleHttpAdapter
     {
-        public GoogleHttpAdapter()
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public GoogleHttpAdapter(IHttpContextAccessor httpContextAccessor)
         {
+            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
         }
 
         public static readonly JsonSerializer GoogleBotMessageSerializer = JsonSerializer.Create(new JsonSerializerSettings
@@ -75,9 +78,12 @@ namespace Bot.Builder.Community.Adapters.Google.Integration.AspNet.Core
                 }
             }
 
+            var uniqueRequestId = _httpContextAccessor.HttpContext.Items["GoogleUniqueRequestId"]?.ToString();
+
             var googleResponse = await ProcessActivity(
                 actionPayload,
-                bot.OnTurnAsync);
+                bot.OnTurnAsync,
+                uniqueRequestId);
 
             if (googleResponse == null)
             {

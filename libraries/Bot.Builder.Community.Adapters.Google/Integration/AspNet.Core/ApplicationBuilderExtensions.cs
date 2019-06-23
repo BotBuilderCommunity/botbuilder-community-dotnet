@@ -24,8 +24,8 @@ namespace Bot.Builder.Community.Adapters.Google.Integration.AspNet.Core
         /// <remarks>This method adds any middleware from the <see cref="GoogleBotOptions"/> provided in the
         /// <see cref="ServiceCollectionExtensions.AddGoogleBotGoogleBot{TBot}"/>
         /// method to the adapter.</remarks>
-        public static IApplicationBuilder Usegoogle(this IApplicationBuilder applicationBuilder) =>
-            applicationBuilder.Usegoogle(paths => {});
+        public static IApplicationBuilder UseGoogle(this IApplicationBuilder applicationBuilder) =>
+            applicationBuilder.UseGoogle(paths => {});
 
         /// <summary>
         /// Initializes and adds a bot adapter to the HTTP request pipeline, using custom endpoint paths for the bot.
@@ -36,7 +36,7 @@ namespace Bot.Builder.Community.Adapters.Google.Integration.AspNet.Core
         /// <remarks>This method adds any middleware from the <see cref="GoogleBotOptions"/> provided in the
         /// <see cref="ServiceCollectionExtensions.AddBot{TBot}(IServiceCollection, Action{GoogleBotOptions})"/>
         /// method to the adapter.</remarks>
-        public static IApplicationBuilder Usegoogle(this IApplicationBuilder applicationBuilder, Action<GoogleBotPaths> configurePaths)
+        public static IApplicationBuilder UseGoogle(this IApplicationBuilder applicationBuilder, Action<GoogleBotPaths> configurePaths)
         {
             if (applicationBuilder == null)
             {
@@ -76,6 +76,12 @@ namespace Bot.Builder.Community.Adapters.Google.Integration.AspNet.Core
                 botActivitiesAppBuilder => botActivitiesAppBuilder.Run(new GoogleRequestHandler(googleAdapter, options.GoogleOptions).HandleAsync));
 
             return applicationBuilder;
+        }
+
+        public static IApplicationBuilder UseSetGoogleUniqueRequestId(
+            this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<SetGoogleUniqueRequestIdMiddleware>();
         }
     }
 }
