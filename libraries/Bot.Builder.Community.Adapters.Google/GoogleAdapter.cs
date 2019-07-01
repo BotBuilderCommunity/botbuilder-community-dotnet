@@ -159,7 +159,7 @@ namespace Bot.Builder.Community.Adapters.Google
             if (activity?.Attachments != null
                 && activity.Attachments.FirstOrDefault(a => a.ContentType == SigninCard.ContentType) != null)
             {
-                response.ExpectUserResponse = true;
+                response.ExpectUserResponse = !ShouldEndSessionByDefault;
                 response.ResetUserStorage = null;
 
                 response.ExpectedInputs = new ExpectedInput[]
@@ -222,7 +222,7 @@ namespace Bot.Builder.Community.Adapters.Google
                 if (activity.InputHint == null)
                 {
                     activity.InputHint =
-                        ShouldEndSessionByDefault ? InputHints.IgnoringInput : InputHints.AcceptingInput;
+                        ShouldEndSessionByDefault ? InputHints.IgnoringInput : InputHints.ExpectingInput;
                 }
 
                 // check if we should be listening for more input from the user
@@ -259,7 +259,9 @@ namespace Bot.Builder.Community.Adapters.Google
                                 suggestionChips.ToArray();
                         }
 
-                        response.ExpectUserResponse = true;
+                        response.ExpectUserResponse = activity.InputHint == InputHints.AcceptingInput 
+                            ? !ShouldEndSessionByDefault
+                            : true;
                         break;
                     default:
                         break;
