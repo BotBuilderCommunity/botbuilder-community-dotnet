@@ -78,6 +78,7 @@ namespace Bot.Builder.Community.Adapters.Google
         public string UserId { get; set; }
         public string IdToken { get; set; }
         public string AccessToken { get; set; }
+        public string UserStorage { get; set; }
     }
 
     public class Conversation

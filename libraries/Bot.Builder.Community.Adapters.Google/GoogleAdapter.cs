@@ -8,6 +8,7 @@ using Bot.Builder.Community.Adapters.Google.Integration;
 using Bot.Builder.Community.Adapters.Google.Model;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
+using Newtonsoft.Json.Linq;
 
 namespace Bot.Builder.Community.Adapters.Google
 {
@@ -47,6 +48,8 @@ namespace Bot.Builder.Community.Adapters.Google
                 BotAssert.ActivityNotNull(activity);
 
                 context = new TurnContext(this, activity);
+
+                context.TurnState.Add("GoogleUserId", activity.From.Id);
 
                 Responses = new Dictionary<string, List<Activity>>();
 
@@ -127,11 +130,8 @@ namespace Bot.Builder.Community.Adapters.Google
                 ChannelId = "google",
                 ServiceUrl = $"",
                 Recipient = new ChannelAccount("", "action"),
-                From = new ChannelAccount(actionPayload.User.UserId, "user"),
-
                 Conversation = new ConversationAccount(false, "conversation",
                     $"{actionPayload.Conversation.ConversationId}"),
-
                 Type = ActivityTypes.Message,
                 Text = StripInvocation(actionPayload.Inputs[0]?.RawInputs[0]?.Query, ActionInvocationName),
                 Id = uniqueRequestId ?? Guid.NewGuid().ToString(),
@@ -139,6 +139,26 @@ namespace Bot.Builder.Community.Adapters.Google
                 Locale = actionPayload.User.Locale,
                 Value = actionPayload.Inputs[0]?.Intent
             };
+
+            if (!string.IsNullOrEmpty(actionPayload.User.UserId))
+            {
+                activity.From = new ChannelAccount(actionPayload.User.UserId, "user");
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(actionPayload.User.UserStorage))
+                {
+                    var values = JObject.Parse(actionPayload.User.UserStorage);
+                    if (values.ContainsKey("UserId"))
+                    {
+                        activity.From = new ChannelAccount(values["UserId"].ToString(), "user");
+                    }
+                }
+                else
+                {
+                    activity.From = new ChannelAccount(Guid.NewGuid().ToString(), "user");
+                }
+            }
 
             if (actionPayload.Inputs.FirstOrDefault()?.Arguments?.FirstOrDefault()?.Name == "OPTION")
             {
@@ -156,10 +176,16 @@ namespace Bot.Builder.Community.Adapters.Google
 
             var response = new ConversationResponseBody();
 
+            var userStorage = new JObject
+            {
+                { "UserId", context.TurnState["GoogleUserId"].ToString() }
+            };
+            response.UserStorage = userStorage.ToString();
+
             if (activity?.Attachments != null
                 && activity.Attachments.FirstOrDefault(a => a.ContentType == SigninCard.ContentType) != null)
             {
-                response.ExpectUserResponse = !ShouldEndSessionByDefault;
+                response.ExpectUserResponse = true;
                 response.ResetUserStorage = null;
 
                 response.ExpectedInputs = new ExpectedInput[]
@@ -219,7 +245,7 @@ namespace Bot.Builder.Community.Adapters.Google
                 // Add Media response to response if set
                 AddMediaResponseToResponse(context, ref responseItems, activity);
 
-                if (activity.InputHint == null)
+                if (activity.InputHint == null || activity.InputHint == InputHints.AcceptingInput)
                 {
                     activity.InputHint =
                         ShouldEndSessionByDefault ? InputHints.IgnoringInput : InputHints.ExpectingInput;
@@ -229,14 +255,14 @@ namespace Bot.Builder.Community.Adapters.Google
                 switch (activity.InputHint)
                 {
                     case InputHints.IgnoringInput:
+                        response.ExpectUserResponse = false;
                         response.FinalResponse = new FinalResponse()
                         {
                             RichResponse = new RichResponse() { Items = responseItems.ToArray() }
                         };
-                        response.ExpectUserResponse = false;
                         break;
-                    case InputHints.AcceptingInput:
                     case InputHints.ExpectingInput:
+                        response.ExpectUserResponse = true;
                         response.ExpectedInputs = new ExpectedInput[]
                             {
                                 new ExpectedInput()
@@ -258,10 +284,6 @@ namespace Bot.Builder.Community.Adapters.Google
                             response.ExpectedInputs.First().InputPrompt.RichInitialPrompt.Suggestions =
                                 suggestionChips.ToArray();
                         }
-
-                        response.ExpectUserResponse = activity.InputHint == InputHints.AcceptingInput 
-                            ? !ShouldEndSessionByDefault
-                            : true;
                         break;
                     default:
                         break;
