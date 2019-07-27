@@ -10,7 +10,7 @@ To see a list of current extensions available for the Bot Builder .NET SDK, use 
 * [C# Dialogs & Prompts](#dialogs-and-prompts)
 * [C# Adapters](#adapters) - e.g. Alexa, Google and Twitter DMs
 * [C# Recognizers](#recognizers)
-* [C# Storage](#storage)
+* [C# Storage](#storage) 
 
 ## Installation
 
