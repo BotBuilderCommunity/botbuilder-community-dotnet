@@ -174,6 +174,9 @@ namespace Bot.Builder.Community.Adapters.Google
         {
             var activity = activities != null && activities.Any() ? activities.Last() : null;
 
+            // SSML does not support & therefore, a quick fix is applied to replace '&' with 'and'
+            activity.Text = activity.Text.Replace($"&", "and");
+
             var response = new ConversationResponseBody();
 
             var userStorage = new JObject

@@ -179,6 +179,10 @@ namespace Bot.Builder.Community.Adapters.Alexa
 
             var activity = activities.First();
 
+            // https://github.com/alexa/alexa-skills-kit-sdk-for-nodejs/issues/25
+            // SSML does not support & therefore, a quick fix is applied to replace '&' with 'and'
+            activity.Text = activity.Text.Replace($"&", "and");
+            
             if (activity.Type == ActivityTypes.EndOfConversation)
             {
                 response.Response.ShouldEndSession = true;
