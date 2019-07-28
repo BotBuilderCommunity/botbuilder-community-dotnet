@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using Bot.Builder.Community.Adapters.Google.Integration;
@@ -174,8 +175,10 @@ namespace Bot.Builder.Community.Adapters.Google
         {
             var activity = activities != null && activities.Any() ? activities.Last() : null;
 
-            // SSML does not support & therefore, a quick fix is applied to replace '&' with 'and'
-            activity.Text = activity.Text.Replace($"&", "and");
+            if (!SecurityElement.IsValidText(activity.Text))
+            {
+                activity.Text = SecurityElement.Escape(activity.Text);
+            }
 
             var response = new ConversationResponseBody();
 
