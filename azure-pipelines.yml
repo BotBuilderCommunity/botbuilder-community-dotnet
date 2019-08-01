@@ -4,6 +4,8 @@
 trigger:
 - master
 - develop
+- release/*
+- feature/*
 
 pool:
   vmImage: 'windows-2019'

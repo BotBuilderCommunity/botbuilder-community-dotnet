@@ -8,7 +8,7 @@ continuous-delivery-fallback-tag: ''
 legacy-semver-padding: 4
 build-metadata-padding: 4
 commits-since-version-source-padding: 4
-commit-message-incrementing: Enabled
+commit-message-incrementing: Disabled
 branches:
   master:
     mode: ContinuousDelivery
