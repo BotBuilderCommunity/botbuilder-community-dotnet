@@ -123,6 +123,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
         public IDictionary<string, string> SessionAttributes { get; set; }
 
         public AlexaResponse Response { get; set; }
+        public object Reprompt { get; internal set; }
     }
 
     public class AlexaResponse
@@ -131,14 +132,14 @@ namespace Bot.Builder.Community.Adapters.Alexa
 
         public AlexaCard Card { get; set; }
 
-        public ResponseReprompt Reprompt { get; set; }
+        public Reprompt Reprompt { get; set; }
 
         public bool ShouldEndSession { get; set; }
 
         public object[] Directives { get; set; }
     }
 
-    public class ResponseReprompt
+    public class Reprompt
     {
         public AlexaOutputSpeech OutputSpeech { get; set; }
     }

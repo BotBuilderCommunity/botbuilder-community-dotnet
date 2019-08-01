@@ -215,7 +215,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
             {
                 var repromptSpeech = context.TurnState.Get<string>("AlexaReprompt");
 
-                response.Response.OutputSpeech = new AlexaOutputSpeech()
+                response.Response.Reprompt.OutputSpeech = new AlexaOutputSpeech()
                 {
                     Type = AlexaOutputSpeechType.SSML,
                     Ssml = repromptSpeech.Contains("<speak>")
