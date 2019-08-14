@@ -167,7 +167,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
             };
 
             if (context.GetAlexaRequestBody().Request.Type == AlexaRequestTypes.SessionEndedRequest
-                || activities == null || !activities.Any())
+                && (activities == null || !activities.Any()))
             {
                 response.Response.OutputSpeech = new AlexaOutputSpeech()
                 {
