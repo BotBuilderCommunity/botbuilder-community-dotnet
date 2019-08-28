@@ -13,6 +13,8 @@ namespace Bot.Builder.Community.Adapters.Alexa.Integration
         {
             ValidateIncomingAlexaRequests = true;
             ShouldEndSessionByDefault = false;
+            DirectivesBackgroundImageByDefault = string.Empty;
+            TittleTextByDefault = string.Empty;
         }
 
         public bool ValidateIncomingAlexaRequests { get; set; }
@@ -20,6 +22,10 @@ namespace Bot.Builder.Community.Adapters.Alexa.Integration
         public bool ShouldEndSessionByDefault { get; set; }
 
         public bool TryConvertFirstActivityAttachmentToAlexaCard { get; set; }
+
+        public string DirectivesBackgroundImageByDefault { get; set; }
+
+        public string TittleTextByDefault { get; set; }
 
         public Func<ITurnContext, Exception, Task> OnTurnError { get; set; }
     }

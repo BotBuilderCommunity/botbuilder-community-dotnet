@@ -36,17 +36,17 @@ namespace Bot.Builder.Community.Adapters.Alexa
     {
 
         /** A boolean value indicating whether this is a new session. */
-        public bool New { get; set; }      
-        
+        public bool New { get; set; }
+
         /** A string that represents a unique identifier per a user's active session. */
         public string SessionId { get; set; }
 
         /** A map of key-value pairs. */
         public IDictionary<string, string> Attributes { get; set; }
-        
+
         /** An object containing an application ID. This is used to verify that the request was intended for your service. */
         public AlexaApplication Application { get; set; }
-        
+
         /** An object that describes the user making the request. */
         public AlexaUser User { get; set; }
     }
@@ -98,7 +98,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
 
     public class AlexaAudioPlayer
     {
-        public string Token{ get; set; }
+        public string Token { get; set; }
 
         public int OffsetInMilliseconds { get; set; }
 
@@ -244,6 +244,19 @@ namespace Bot.Builder.Community.Adapters.Alexa
         public string Locale { get; set; }
     }
 
+    public class AlexaElementSelected : IAlexaRequest
+    {
+        public string Type { get; set; }
+
+        public string RequestId { get; set; }
+
+        public string Timestamp { get; set; }
+
+        public string Locale { get; set; }
+
+        public string Token { get; set; }
+    }
+
     public class AlexaError
     {
         public string Type { get; set; }
@@ -264,7 +277,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
 
         public string ConfirmationStatus { get; set; }
 
-        public Dictionary<string,AlexaSlot> Slots { get; set; }
+        public Dictionary<string, AlexaSlot> Slots { get; set; }
     }
 
     public class AlexaSlot
@@ -374,6 +387,10 @@ namespace Bot.Builder.Community.Adapters.Alexa
                     break;
                 case AlexaRequestTypes.IntentRequest:
                     profession = new AlexaIntentRequest();
+                    break;
+                case AlexaRequestTypes.AlexaElementSelected:
+                    // Parse ElementSelected to AlexaIntentRequest
+                    profession = new AlexaElementSelected();
                     break;
             }
             serializer.Populate(jsonObject.CreateReader(), profession);

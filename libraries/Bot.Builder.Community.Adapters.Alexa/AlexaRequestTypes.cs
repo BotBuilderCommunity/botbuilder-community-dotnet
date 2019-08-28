@@ -5,5 +5,6 @@
         public const string IntentRequest = "IntentRequest";
         public const string LaunchRequest = "LaunchRequest";
         public const string SessionEndedRequest = "SessionEndedRequest";
+        public const string AlexaElementSelected = "Display.ElementSelected";
     }
 }

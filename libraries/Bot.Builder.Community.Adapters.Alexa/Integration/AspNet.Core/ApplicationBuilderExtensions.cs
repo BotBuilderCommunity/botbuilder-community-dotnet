@@ -25,7 +25,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Integration.AspNet.Core
         /// <see cref="ServiceCollectionExtensions.AddAlexaBot{TBot}(IServiceCollection, Action{AlexaBotOptions})"/>
         /// method to the adapter.</remarks>
         public static IApplicationBuilder UseAlexa(this IApplicationBuilder applicationBuilder) =>
-            applicationBuilder.UseAlexa(paths => {});
+            applicationBuilder.UseAlexa(paths => { });
 
         /// <summary>
         /// Initializes and adds a bot adapter to the HTTP request pipeline, using custom endpoint paths for the bot.
@@ -53,7 +53,9 @@ namespace Bot.Builder.Community.Adapters.Alexa.Integration.AspNet.Core
             var alexaAdapter = new AlexaAdapter()
             {
                 ShouldEndSessionByDefault = options.AlexaOptions.ShouldEndSessionByDefault,
-                ConvertBotBuilderCardsToAlexaCards = options.AlexaOptions.TryConvertFirstActivityAttachmentToAlexaCard
+                ConvertBotBuilderCardsToAlexaCards = options.AlexaOptions.TryConvertFirstActivityAttachmentToAlexaCard,
+                DirectivesBackgroundImageByDefault = options.AlexaOptions.DirectivesBackgroundImageByDefault,
+                TittleTextByDefault = options.AlexaOptions.TittleTextByDefault
             };
 
             foreach (var middleware in options.Middleware)
@@ -71,8 +73,8 @@ namespace Bot.Builder.Community.Adapters.Alexa.Integration.AspNet.Core
             }
 
             applicationBuilder.Map(
-                $"{paths.BasePath}{paths.SkillRequestsPath}", 
-                botActivitiesAppBuilder => botActivitiesAppBuilder.Run(new AlexaRequestHandler(alexaAdapter, options.AlexaOptions).HandleAsync));
+                            $"{paths.BasePath}{paths.SkillRequestsPath}",
+                            botActivitiesAppBuilder => botActivitiesAppBuilder.Run(new AlexaRequestHandler(alexaAdapter, options.AlexaOptions).HandleAsync));
 
             return applicationBuilder;
         }

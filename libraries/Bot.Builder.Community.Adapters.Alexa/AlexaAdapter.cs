@@ -8,15 +8,27 @@ using System.Threading.Tasks;
 using Bot.Builder.Community.Adapters.Alexa.Directives;
 using Bot.Builder.Community.Adapters.Alexa.Integration;
 using Microsoft.Bot.Builder;
-using Microsoft.Bot.Schema; 
+using Microsoft.Bot.Schema;
+using Newtonsoft.Json;
 
 namespace Bot.Builder.Community.Adapters.Alexa
 {
     public class AlexaAdapter : BotAdapter
     {
+        // Waiting time between messages
+        private const int LongTimeBreak = 1;
+
+        private const string ShortTimeBreak = "0.5";
+
         private Dictionary<string, List<Activity>> Responses { get; set; }
+
         public bool ShouldEndSessionByDefault { get; set; }
+
         public bool ConvertBotBuilderCardsToAlexaCards { get; set; }
+
+        public string DirectivesBackgroundImageByDefault { get; set; }
+
+        public string TittleTextByDefault { get; set; }
 
         public AlexaAdapter()
         {
@@ -177,79 +189,184 @@ namespace Bot.Builder.Community.Adapters.Alexa
                 return response;
             }
 
-            var activity = activities.First();
+            #region ECA_Code
 
-            if (activity.Type == ActivityTypes.EndOfConversation)
+            // Implement multiple parser of activities
+            response.Response.OutputSpeech = new AlexaOutputSpeech { Text = string.Empty, Ssml = string.Empty };
+            foreach (var activity in activities)
             {
-                response.Response.ShouldEndSession = true;
-            }
-
-            if (!string.IsNullOrEmpty(activity.Speak))
-            {
-                response.Response.OutputSpeech = new AlexaOutputSpeech()
+                if (activity.Type == ActivityTypes.EndOfConversation)
                 {
-                    Type = AlexaOutputSpeechType.SSML,
-                    Ssml = activity.Speak.Contains("<speak>")
-                        ? activity.Speak
-                        : $"<speak>{activity.Speak}</speak>",
-                };
-
-                if (!string.IsNullOrEmpty(activity.Text))
-                {
-                    response.Response.OutputSpeech.Text = $"{activity.Text} ";
+                    response.Response.ShouldEndSession = true;
                 }
-            }
-            else if (!string.IsNullOrEmpty(activity.Text))
-            {
-                if (response.Response.OutputSpeech == null)
+
+                if (!string.IsNullOrEmpty(activity.Speak))
                 {
-                    response.Response.OutputSpeech = new AlexaOutputSpeech()
+                    SetResponseSSML(ref response, activity.Speak);
+
+                    if (!string.IsNullOrEmpty(activity.Text))
                     {
-                        Type = AlexaOutputSpeechType.PlainText,
-                        Text = activity.Text
+                        SetResponseText(ref response, activity.Text);
+                    }
+                }
+                else if (!string.IsNullOrEmpty(activity.Text))
+                {
+
+                    SetResponseSSML(ref response, activity.Text);
+                    SetResponseText(ref response, activity.Text);
+                }
+
+                if (context.TurnState.ContainsKey("AlexaReprompt"))
+                {
+                    var repromptSpeech = context.TurnState.Get<string>("AlexaReprompt");
+
+                    response.Response.Reprompt = new Reprompt()
+                    {
+                        OutputSpeech = new AlexaOutputSpeech()
+                        {
+                            Type = AlexaOutputSpeechType.SSML,
+                            Ssml = repromptSpeech
+                        }
                     };
                 }
+
+                AddDirectivesToResponse(context, response);
+
+                AddCardToResponse(context, response, activity);
+
+                switch (activity.InputHint)
+                {
+                    case InputHints.IgnoringInput:
+                        response.Response.ShouldEndSession = true;
+                        break;
+                    case InputHints.ExpectingInput:
+                        response.Response.ShouldEndSession = false;
+                        break;
+                    case InputHints.AcceptingInput:
+                    default:
+                        break;
+                }
             }
 
-            if (context.TurnState.ContainsKey("AlexaReprompt"))
+            // Parse Text message to directives with defautl Background
+            if (response.Response.Card == null && response.Response.Directives.Count() <= 0)
             {
-                var repromptSpeech = context.TurnState.Get<string>("AlexaReprompt");
-
-                response.Response.Reprompt = new Reprompt()
+                Image backgroundImage = new Image();
+                if (!string.IsNullOrEmpty(DirectivesBackgroundImageByDefault))
                 {
-                    OutputSpeech = new AlexaOutputSpeech()
+                    backgroundImage = new Image
                     {
-                        Type = AlexaOutputSpeechType.SSML,
-                        Ssml = repromptSpeech.Contains("<speak>")
-                        ? repromptSpeech
-                        : $"<speak>{repromptSpeech}</speak>"
+                        Sources = new ImageSource[]
+                        {
+                            new ImageSource{Url = DirectivesBackgroundImageByDefault}
+                        }
+                    };
+                }
+
+                DisplayDirective directive = new DisplayDirective()
+                {
+                    Template = new DisplayRenderBodyTemplate1()
+                    {
+                        Title = TittleTextByDefault,
+                        TextContent = new TextContent
+                        {
+                            TertiaryText = new InnerTextContent
+                            {
+                                // centered text
+                                Text = $"<br/><br/><br/><div align='center'><font size=\"5\"><b>{response.Response.OutputSpeech.Text.Replace("\n", "<br/>")}</b></font></div>",
+                                Type = TextContentType.RichText
+                            }
+                        },
+                        BackgroundImage = backgroundImage
                     }
                 };
+
+                context.AlexaResponseDirectives().Add(directive);
+                AddDirectivesToResponse(context, response);
             }
-
-            AddDirectivesToResponse(context, response);
-
-            AddCardToResponse(context, response, activity);
-
-            switch (activity.InputHint)
+            else
             {
-                case InputHints.IgnoringInput:
-                    response.Response.ShouldEndSession = true;
-                    break;
-                case InputHints.ExpectingInput:
-                    response.Response.ShouldEndSession = false;
-                    break;
-                case InputHints.AcceptingInput:
-                default:
-                    break;
+                // if we have directives we add the text to them.
+                if (response.Response.Directives.Count() > 0)
+                {
+                    var directive = (DisplayDirective)response.Response.Directives.First();
+                    if (directive.Template.Type.Equals(nameof(DisplayRenderBodyTemplate1)))
+                    {
+                        var renderBody = (DisplayRenderBodyTemplate1)directive.Template;
+
+                        // we always try to added at TertiaryText If it've text we added a '\n' and next the text.
+                        if (renderBody.TextContent.TertiaryText != null)
+                        {
+                            SetResponseText(ref response, renderBody.TextContent.TertiaryText.Text);
+                        }
+                        else
+                        {
+                            renderBody.TextContent.TertiaryText = new InnerTextContent { Text = response.Response.OutputSpeech.Text };
+                        }
+
+                        directive.Template = renderBody;
+                        response.Response.Directives = new List<DisplayDirective> { directive }.ToArray();
+                    }
+                    else if (directive.Template.Type.Equals("ListTemplate2"))
+                    {
+                        var renderBody = (DisplayRenderListTemplate2)directive.Template;
+
+                        // Add to SSML the options of list
+                        foreach (var item in renderBody.ListItems)
+                        {
+                            response.Response.OutputSpeech.Ssml = response.Response.OutputSpeech.Ssml + $"  <break time=\"{ShortTimeBreak}s\"/>" + item.TextContent.PrimaryText.Text;
+                        }
+
+                        // Add a default backfround if dont exist one
+                        if (renderBody.BackgroundImage == null || renderBody.BackgroundImage.Sources.Count() < 0)
+                        {
+                            if (!string.IsNullOrEmpty(DirectivesBackgroundImageByDefault))
+                            {
+                                renderBody.BackgroundImage = new Image
+                                {
+                                    Sources = new List<ImageSource>
+                                    {
+                                        new ImageSource
+                                        {
+                                            Url = DirectivesBackgroundImageByDefault
+                                        }
+                                    }.ToArray()
+                                };
+                            }
+                        }
+
+                        if (string.IsNullOrEmpty(renderBody.Title))
+                        {
+                            renderBody.Title = TittleTextByDefault;
+                        }
+
+                        directive.Template = renderBody;
+                        response.Response.Directives = new List<DisplayDirective> { directive }.ToArray();
+                    }
+                }
+                else
+                {
+                    SetResponseText(ref response, response.Response.Card.Text);
+
+                    // if we have cards we add the text to them.
+                    response.Response.Card.Text = response.Response.Card.Text.Contains(response.Response.OutputSpeech.Text)
+                        ? response.Response.Card.Text
+                        : response.Response.OutputSpeech.Text;
+                }
             }
 
+            if (response.Response.OutputSpeech.Type.Equals(AlexaOutputSpeechType.SSML))
+            {
+                response.Response.OutputSpeech.Ssml = $"<speak>{response.Response.OutputSpeech.Ssml}</speak> ";
+            }
+
+            #endregion
             return response;
         }
 
         private void AddCardToResponse(ITurnContext context, AlexaResponseBody response, Activity activity)
         {
-            if (activity.Attachments != null 
+            if (activity.Attachments != null
                 && activity.Attachments.Any(a => a.ContentType == SigninCard.ContentType))
             {
                 response.Response.Card = new AlexaCard()
@@ -265,7 +382,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
                 }
                 else if (ConvertBotBuilderCardsToAlexaCards)
                 {
-                    CreateAlexaCardFromAttachment(activity, response);
+                    CreateAlexaCardFromAttachment(activity, response, context);
                 }
             }
         }
@@ -275,11 +392,42 @@ namespace Bot.Builder.Community.Adapters.Alexa
             response.Response.Directives = context.AlexaResponseDirectives().Select(a => a).ToArray();
         }
 
-        private static void CreateAlexaCardFromAttachment(Activity activity, AlexaResponseBody response)
+        private static void CreateAlexaCardFromAttachment(Activity activity, AlexaResponseBody response, ITurnContext context)
         {
-            var attachment = activity.Attachments != null && activity.Attachments.Any()
-                ? activity.Attachments[0]
-                : null;
+            #region ECA_Code
+            // Carousel parse
+            Attachment attachment = new Attachment();
+            if (!string.IsNullOrEmpty(activity.AttachmentLayout) && activity.AttachmentLayout.Equals("carousel") && activity.Attachments.Count() > 1)
+            {
+                List<HeroCard> resHC = new List<HeroCard>();
+                foreach (var attachment1 in activity.Attachments)
+                {
+                    var resContent = attachment1.Content.ToString().Replace("\r\n", string.Empty);
+                    HeroCard heroCard = new HeroCard();
+                    try
+                    {
+                        heroCard = JsonConvert.DeserializeObject<HeroCard>(resContent);
+                    }
+                    catch (JsonException ex)
+                    {
+                        heroCard = (HeroCard)attachment1.Content;
+                    }
+
+                    if (heroCard != null)
+                    {
+                        resHC.Add(heroCard);
+                    }
+                }
+
+                attachment.ContentType = "corousel";
+                attachment.Content = resHC;
+            }
+            else
+            {
+                attachment = activity.Attachments != null && activity.Attachments.Any()
+                   ? activity.Attachments[0]
+                   : null;
+            }
 
             if (attachment != null)
             {
@@ -287,11 +435,18 @@ namespace Bot.Builder.Community.Adapters.Alexa
                 {
                     case HeroCard.ContentType:
                     case ThumbnailCard.ContentType:
-                        if (attachment.Content is HeroCard)
+                        if (attachment.Content is HeroCard hc)
                         {
+                            SetResponseText(ref response, hc.Text);
+                            SetResponseSSML(ref response, hc.Text);
                             response.Response.Card = CreateAlexaCardFromHeroCard(attachment);
                         }
 
+                        break;
+                    case "corousel":
+                        // Create and Add a new directive with Corusel
+                        context.AlexaResponseDirectives().AddRange(CreateAlexaDirectiveFromCarousel(attachment));
+                        AddDirectivesToResponse(context, response);
                         break;
                     case SigninCard.ContentType:
                         response.Response.Card = new AlexaCard()
@@ -301,15 +456,17 @@ namespace Bot.Builder.Community.Adapters.Alexa
                         break;
                 }
             }
+            #endregion
         }
 
         private static AlexaCard CreateAlexaCardFromHeroCard(Attachment attachment)
         {
             if (!(attachment.Content is HeroCard heroCardContent))
+            {
                 return null;
+            }
 
-            AlexaCard alexaCard = null;
-
+            AlexaCard alexaCard;
             if (heroCardContent.Images != null && heroCardContent.Images.Any())
             {
                 alexaCard = new AlexaCard()
@@ -329,7 +486,8 @@ namespace Bot.Builder.Community.Adapters.Alexa
 
                 if (heroCardContent.Text != null)
                 {
-                    alexaCard.Content = heroCardContent.Text;
+                    // Because the content property is not accepting by Alexa.
+                    alexaCard.Text = heroCardContent.Text;
                 }
             }
             else
@@ -357,9 +515,74 @@ namespace Bot.Builder.Community.Adapters.Alexa
             throw new NotImplementedException();
         }
 
-        public override Task DeleteActivityAsync(ITurnContext turnContext, ConversationReference reference, CancellationToken cancellationToken)
+        public override Task DeleteActivityAsync(ITurnContext turnContext, ConversationReference reference, CancellationToken cancellationToken) => throw new NotImplementedException();
+
+        #region ECA_Code
+        private static List<DisplayDirective> CreateAlexaDirectiveFromCarousel(Attachment attachment)
         {
-            throw new NotImplementedException();
+            var listItems = new List<ListItem>();
+            foreach (var hc in (List<HeroCard>)attachment.Content)
+            {
+                listItems.Add(new ListItem
+                {
+                    Token = hc.Text,
+                    Image = new Image
+                    {
+                        Sources = new List<ImageSource>
+                               {
+                                   new ImageSource
+                                   {
+                                       Url = hc.Images.First().Url
+                                   }
+                               }.ToArray()
+                    },
+                    TextContent = new TextContent
+                    {
+                        PrimaryText = new InnerTextContent
+                        {
+                            Text = hc.Text,
+                        }
+                    },
+                });
+            }
+
+            var directive = new DisplayDirective()
+            {
+                Template = new DisplayRenderListTemplate2()
+                {
+                    ListItems = listItems,
+                    BackButton = BackButtonVisibility.VISIBLE,
+                }
+            };
+
+            return new List<DisplayDirective> { directive };
         }
+
+        /// <summary>
+        /// Add to response.Response.OutputSpeech.Ssml
+        /// </summary>
+        private static void SetResponseSSML(ref AlexaResponseBody response, string Text)
+        {
+            response.Response.OutputSpeech.Ssml = string.IsNullOrEmpty(response.Response.OutputSpeech.Ssml)
+                || response.Response.OutputSpeech.Ssml.Contains(Text)
+                ? Text
+                : response.Response.OutputSpeech.Ssml + $"<break time=\"{LongTimeBreak}s\"/>" + Text;
+        }
+
+        /// <summary>
+        /// Add to response.Response.Text
+        /// </summary>
+        private static void SetResponseText(ref AlexaResponseBody response, string Text)
+        {
+            string separatorChar = response.Response.Directives?.Count() > 0
+                ? "<br/>"
+                : "\n";
+
+            response.Response.OutputSpeech.Text = string.IsNullOrEmpty(response.Response.OutputSpeech.Text)
+                || response.Response.OutputSpeech.Text.Contains(Text)
+                ? Text
+                : response.Response.OutputSpeech.Text + separatorChar + Text;
+        }
+        #endregion
     }
 }

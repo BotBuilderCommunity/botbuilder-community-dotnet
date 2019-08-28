@@ -23,6 +23,45 @@ namespace Bot.Builder.Community.Adapters.Alexa.Middleware
 
         public async Task OnTurnAsync(ITurnContext context, NextDelegate next, CancellationToken cancellationToken = default(CancellationToken))
         {
+            #region ECA_CODE
+            // Add a parse for AlexaElementSelected: Parse to Alexa Intent with the default values.
+            if (context.Activity.ChannelId == "alexa" && context.Activity.Type == AlexaRequestTypes.AlexaElementSelected)
+            {
+                context.Activity.Type = AlexaRequestTypes.IntentRequest;
+
+                var skillRequest = (AlexaRequestBody)context.Activity.ChannelData;
+                var alexaES = (AlexaElementSelected)skillRequest.Request;
+
+                AlexaIntentRequest alexaIntent = new AlexaIntentRequest
+                {
+                    Type = AlexaRequestTypes.IntentRequest,
+                    RequestId = alexaES.RequestId,
+                    Timestamp = alexaES.Timestamp,
+                    Locale = alexaES.Locale,
+                    Intent = new AlexaIntent
+                    {
+                        Name = "GetUserIntent",
+                        ConfirmationStatus = "NONE",
+                        Slots = new System.Collections.Generic.Dictionary<string, AlexaSlot>
+                        {
+                            {
+                                string.Empty,
+                                new AlexaSlot
+                                {
+                                    Name = "phrase",
+                                    Value = alexaES.Token,
+                                }
+                            }
+                        },
+                    },
+
+                };
+
+                skillRequest.Request = alexaIntent;
+                context.Activity.ChannelData = skillRequest;
+            }
+            #endregion
+
             if (context.Activity.ChannelId == "alexa" && context.Activity.Type == AlexaRequestTypes.IntentRequest)
             {
                 var skillRequest = (AlexaRequestBody)context.Activity.ChannelData;
@@ -35,7 +74,9 @@ namespace Bot.Builder.Community.Adapters.Alexa.Middleware
                     var messageActivityText = _createMessageActivityText(context, alexaIntentRequest);
                     context.Activity.Text = messageActivityText;
                 }
-                else switch (_transformPattern)
+                else
+                {
+                    switch (_transformPattern)
                     {
                         case RequestTransformPatterns.MessageActivityTextFromSinglePhraseSlotValue:
                             if (alexaIntentRequest.Intent.Slots != null
@@ -47,6 +88,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Middleware
                             {
                                 context.Activity.Text = alexaIntentRequest.Intent.Name;
                             }
+
                             break;
                         case RequestTransformPatterns.MessageActivityTextFromIntentAndAllSlotValues:
                             var messageActivityText = $"Intent='{alexaIntentRequest.Intent.Name}'";
@@ -59,6 +101,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Middleware
                             context.Activity.Text = messageActivityText;
                             break;
                     }
+                }
             }
 
             await next(cancellationToken).ConfigureAwait(false);
