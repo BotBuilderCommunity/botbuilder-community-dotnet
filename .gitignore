@@ -387,3 +387,4 @@ Documentation/docs/
 PublishProfiles/
 
 appsettings.local.json
+/libraries/Bot.Builder.Community.Adapters.Alexa/Bot.Builder.Community.Adapters.Alexa.sln

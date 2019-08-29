@@ -92,10 +92,12 @@ namespace Bot.Builder.Community.Adapters.Alexa.Middleware
                             break;
                         case RequestTransformPatterns.MessageActivityTextFromIntentAndAllSlotValues:
                             var messageActivityText = $"Intent='{alexaIntentRequest.Intent.Name}'";
-
-                            foreach (var intentSlot in alexaIntentRequest.Intent.Slots)
+                            if (alexaIntentRequest.Intent.Slots != null)
                             {
-                                messageActivityText += $" {intentSlot.Key}='{intentSlot.Value.Value}'";
+                                foreach (var intentSlot in alexaIntentRequest.Intent.Slots)
+                                {
+                                    messageActivityText += $" {intentSlot.Key}='{intentSlot.Value.Value}'";
+                                }
                             }
 
                             context.Activity.Text = messageActivityText;
