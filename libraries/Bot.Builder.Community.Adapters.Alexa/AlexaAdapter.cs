@@ -397,30 +397,39 @@ namespace Bot.Builder.Community.Adapters.Alexa
             #region ECA_Code
             // Carousel parse
             Attachment attachment = new Attachment();
-            if (!string.IsNullOrEmpty(activity.AttachmentLayout) && activity.AttachmentLayout.Equals("carousel") && activity.Attachments.Count() > 1)
+            if (!string.IsNullOrEmpty(activity.AttachmentLayout) && activity.AttachmentLayout.Equals("carousel"))
             {
-                List<HeroCard> resHC = new List<HeroCard>();
-                foreach (var attachment1 in activity.Attachments)
+                if (activity.Attachments.Count() > 1)
                 {
-                    var resContent = attachment1.Content.ToString().Replace("\r\n", string.Empty);
-                    HeroCard heroCard = new HeroCard();
-                    try
+                    List<HeroCard> resHC = new List<HeroCard>();
+                    foreach (var attachment1 in activity.Attachments)
                     {
-                        heroCard = JsonConvert.DeserializeObject<HeroCard>(resContent);
-                    }
-                    catch (JsonException ex)
-                    {
-                        heroCard = (HeroCard)attachment1.Content;
+                        var resContent = attachment1.Content.ToString().Replace("\r\n", string.Empty);
+                        HeroCard heroCard = new HeroCard();
+                        try
+                        {
+                            heroCard = JsonConvert.DeserializeObject<HeroCard>(resContent);
+                        }
+                        catch (JsonException ex)
+                        {
+                            heroCard = (HeroCard)attachment1.Content;
+                        }
+
+                        if (heroCard != null)
+                        {
+                            resHC.Add(heroCard);
+                        }
                     }
 
-                    if (heroCard != null)
-                    {
-                        resHC.Add(heroCard);
-                    }
+                    attachment.ContentType = "corousel";
+                    attachment.Content = resHC;
                 }
-
-                attachment.ContentType = "corousel";
-                attachment.Content = resHC;
+                else
+                {
+                    var resContent = activity.Attachments.First().Content.ToString().Replace("\r\n", string.Empty);
+                    attachment.Content = JsonConvert.DeserializeObject<HeroCard>(resContent);
+                    attachment.ContentType = HeroCard.ContentType;
+                }
             }
             else
             {
@@ -525,7 +534,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
             {
                 listItems.Add(new ListItem
                 {
-                    Token = hc.Text,
+                    Token = hc.Title,
                     Image = new Image
                     {
                         Sources = new List<ImageSource>
@@ -540,7 +549,15 @@ namespace Bot.Builder.Community.Adapters.Alexa
                     {
                         PrimaryText = new InnerTextContent
                         {
-                            Text = hc.Text,
+                            Text = hc.Title,
+                        },
+                        SecondaryText = new InnerTextContent
+                        {
+                            Text = hc.Subtitle
+                        },
+                        TertiaryText = new InnerTextContent
+                        {
+                            Text = hc.Text
                         }
                     },
                 });
@@ -561,27 +578,27 @@ namespace Bot.Builder.Community.Adapters.Alexa
         /// <summary>
         /// Add to response.Response.OutputSpeech.Ssml
         /// </summary>
-        private static void SetResponseSSML(ref AlexaResponseBody response, string Text)
+        private static void SetResponseSSML(ref AlexaResponseBody response, string text)
         {
             response.Response.OutputSpeech.Ssml = string.IsNullOrEmpty(response.Response.OutputSpeech.Ssml)
-                || response.Response.OutputSpeech.Ssml.Contains(Text)
-                ? Text
-                : response.Response.OutputSpeech.Ssml + $"<break time=\"{LongTimeBreak}s\"/>" + Text;
+                || response.Response.OutputSpeech.Ssml.Contains(text)
+                ? text
+                : response.Response.OutputSpeech.Ssml + $"<break time=\"{LongTimeBreak}s\"/>" + text;
         }
 
         /// <summary>
         /// Add to response.Response.Text
         /// </summary>
-        private static void SetResponseText(ref AlexaResponseBody response, string Text)
+        private static void SetResponseText(ref AlexaResponseBody response, string text)
         {
             string separatorChar = response.Response.Directives?.Count() > 0
                 ? "<br/>"
                 : "\n";
 
             response.Response.OutputSpeech.Text = string.IsNullOrEmpty(response.Response.OutputSpeech.Text)
-                || response.Response.OutputSpeech.Text.Contains(Text)
-                ? Text
-                : response.Response.OutputSpeech.Text + separatorChar + Text;
+                || response.Response.OutputSpeech.Text.Contains(text)
+                ? text
+                : response.Response.OutputSpeech.Text + separatorChar + text;
         }
         #endregion
     }

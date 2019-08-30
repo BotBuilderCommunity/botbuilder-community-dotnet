@@ -96,7 +96,10 @@ namespace Bot.Builder.Community.Adapters.Alexa.Middleware
                             {
                                 foreach (var intentSlot in alexaIntentRequest.Intent.Slots)
                                 {
-                                    messageActivityText += $" {intentSlot.Key}='{intentSlot.Value.Value}'";
+                                    if (!string.IsNullOrEmpty(intentSlot.Value.Value))
+                                    {
+                                        messageActivityText += $" {intentSlot.Key}='{intentSlot.Value.Value}'";
+                                    }
                                 }
                             }
 
