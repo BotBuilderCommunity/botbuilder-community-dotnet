@@ -64,7 +64,8 @@ namespace Bot.Builder.Community.Adapters.Twitter.Hosting
                     Type = "message",
                     From = new ChannelAccount(obj.Sender.Id, obj.Sender.ScreenName),
                     Recipient = new ChannelAccount(obj.Recipient.Id, obj.Recipient.ScreenName),
-                    Conversation = new ConversationAccount {Id = obj.Sender.Id}
+                    Conversation = new ConversationAccount {Id = obj.Sender.Id},
+                    ChannelId = "twitter"
                 }));
             }
         }
