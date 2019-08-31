@@ -1,9 +1,10 @@
 ﻿using System;
+using Bot.Builder.Community.Adapters.Twitter;
 using Bot.Builder.Community.Adapters.Twitter.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Bot.Builder.Community.Adapters.Twitter
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ServiceCollectionExtensions
     {
