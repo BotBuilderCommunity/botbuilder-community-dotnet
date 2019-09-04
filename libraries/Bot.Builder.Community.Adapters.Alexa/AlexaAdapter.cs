@@ -426,8 +426,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
                 }
                 else
                 {
-                    var resContent = activity.Attachments.First().Content.ToString().Replace("\r\n", string.Empty);
-                    attachment.Content = JsonConvert.DeserializeObject<HeroCard>(resContent);
+                    attachment.Content = activity.Attachments.First().Content;
                     attachment.ContentType = HeroCard.ContentType;
                 }
             }
@@ -440,6 +439,12 @@ namespace Bot.Builder.Community.Adapters.Alexa
 
             if (attachment != null)
             {
+                if (!string.IsNullOrEmpty(activity.Text))
+                {
+                    SetResponseText(ref response, activity.Text);
+                    SetResponseSSML(ref response, activity.Text);
+                }
+
                 switch (attachment.ContentType)
                 {
                     case HeroCard.ContentType:
@@ -581,8 +586,11 @@ namespace Bot.Builder.Community.Adapters.Alexa
         private static void SetResponseSSML(ref AlexaResponseBody response, string text)
         {
             response.Response.OutputSpeech.Ssml = string.IsNullOrEmpty(response.Response.OutputSpeech.Ssml)
-                || response.Response.OutputSpeech.Ssml.Contains(text)
                 ? text
+                : response.Response.OutputSpeech.Ssml;
+
+            response.Response.OutputSpeech.Ssml = response.Response.OutputSpeech.Ssml.Contains(text) || string.IsNullOrEmpty(response.Response.OutputSpeech.Ssml)
+                ? response.Response.OutputSpeech.Ssml
                 : response.Response.OutputSpeech.Ssml + $"<break time=\"{LongTimeBreak}s\"/>" + text;
         }
 
@@ -596,8 +604,11 @@ namespace Bot.Builder.Community.Adapters.Alexa
                 : "\n";
 
             response.Response.OutputSpeech.Text = string.IsNullOrEmpty(response.Response.OutputSpeech.Text)
-                || response.Response.OutputSpeech.Text.Contains(text)
                 ? text
+                : response.Response.OutputSpeech.Text;
+
+            response.Response.OutputSpeech.Text = response.Response.OutputSpeech.Text.Contains(text)
+                ? response.Response.OutputSpeech.Text
                 : response.Response.OutputSpeech.Text + separatorChar + text;
         }
         #endregion
