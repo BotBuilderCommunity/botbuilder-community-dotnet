@@ -30,7 +30,7 @@ namespace Bot.Builder.Community.Adapters.Twitter
             Activity[] activities, CancellationToken cancellationToken)
         {
             var responses = new List<ResourceResponse>();
-            foreach (var activity in activities)
+            foreach (var activity in activities.Where(a => a.Type == ActivityTypes.Message))
             {
                 await _sender.SendAsync(activity.AsTwitterMessage());
                 responses.Add(new ResourceResponse(activity.Id));
