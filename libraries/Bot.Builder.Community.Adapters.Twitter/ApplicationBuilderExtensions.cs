@@ -1,10 +1,11 @@
 ﻿using System;
+using Bot.Builder.Community.Adapters.Twitter;
 using Bot.Builder.Community.Adapters.Twitter.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Bot.Builder.Community.Adapters.Twitter
+namespace Microsoft.AspNetCore.Builder
 {
     public static class ApplicationBuilderExtensions
     {
