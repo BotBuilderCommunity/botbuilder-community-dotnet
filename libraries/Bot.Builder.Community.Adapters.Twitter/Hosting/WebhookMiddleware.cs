@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using Bot.Builder.Community.Adapters.Twitter.Webhooks.Models;
 using Bot.Builder.Community.Adapters.Twitter.Webhooks.Services;
@@ -58,14 +60,7 @@ namespace Bot.Builder.Community.Adapters.Twitter.Hosting
                 || !_options.AllowedUsernamesConfigured())
             {
                 // Only respond if sender is different than the bot
-                await _bot.OnTurnAsync(new TurnContext(_adapter, new Activity
-                {
-                    Text = obj.MessageText,
-                    Type = "message",
-                    From = new ChannelAccount(obj.Sender.Id, obj.Sender.ScreenName),
-                    Recipient = new ChannelAccount(obj.Recipient.Id, obj.Recipient.ScreenName),
-                    Conversation = new ConversationAccount {Id = obj.Sender.Id}
-                }));
+                await _adapter.ProcessActivity(obj, _bot.OnTurnAsync);
             }
         }
     }
