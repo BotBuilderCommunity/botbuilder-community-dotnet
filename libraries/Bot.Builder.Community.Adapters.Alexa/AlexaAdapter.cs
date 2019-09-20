@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using Bot.Builder.Community.Adapters.Alexa.Directives;
@@ -167,7 +168,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
             };
 
             if (context.GetAlexaRequestBody().Request.Type == AlexaRequestTypes.SessionEndedRequest
-                || activities == null || !activities.Any())
+                && (activities == null || !activities.Any()))
             {
                 response.Response.OutputSpeech = new AlexaOutputSpeech()
                 {
@@ -178,6 +179,14 @@ namespace Bot.Builder.Community.Adapters.Alexa
             }
 
             var activity = activities.First();
+
+            // https://github.com/alexa/alexa-skills-kit-sdk-for-nodejs/issues/25
+            // https://stackoverflow.com/questions/53019696/special-characters-not-supported-by-aws-polly/53020501#53020501 
+            // Fixed the above issues
+            if (!SecurityElement.IsValidText(activity.Text))
+            {
+                activity.Text = SecurityElement.Escape(activity.Text);
+            }
 
             if (activity.Type == ActivityTypes.EndOfConversation)
             {
