@@ -1,9 +1,6 @@
-﻿using Microsoft.Azure.CognitiveServices.Language.TextAnalytics;
-using Microsoft.Azure.CognitiveServices.Language.TextAnalytics.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 using System.Threading.Tasks;
+using Microsoft.Azure.CognitiveServices.Language.TextAnalytics;
 
 namespace Bot.Builder.Community.Middleware.SentimentAnalysis
 {
@@ -36,24 +33,20 @@ namespace Bot.Builder.Community.Middleware.SentimentAnalysis
         {
             ITextAnalyticsClient client = new TextAnalyticsClient(new ApiKeyServiceClientCredentials(apiKey))
             {
+                // Replace 'westus' with the correct region for your Text Analytics subscription
                 Endpoint = "https://westus.api.cognitive.microsoft.com"
-            }; //Replace 'westus' with the correct region for your Text Analytics subscription
+            };
 
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
             // Extract the language
-            var result = await client.DetectLanguageAsync(false, new LanguageBatchInput(new List<LanguageInput>() { new LanguageInput(id: "1", text: text) }));
-            var language = result.Documents?[0].DetectedLanguages?[0].Iso6391Name;
+            var result = await client.DetectLanguageAsync(text);
+            var language = result.DetectedLanguages?[0].Iso6391Name;
 
             // Get the sentiment
-            var sentimentResult = await client.SentimentAsync(false,
-                    new MultiLanguageBatchInput(
-                        new List<MultiLanguageInput>()
-                        {
-                          new MultiLanguageInput(language, "0", text),
-                        }));
+            var sentimentResult = await client.SentimentAsync(text, language);
 
-            return sentimentResult.Documents?[0].Score?.ToString("#.#");
+            return sentimentResult?.Score?.ToString("#.#");
         }
     }
 }

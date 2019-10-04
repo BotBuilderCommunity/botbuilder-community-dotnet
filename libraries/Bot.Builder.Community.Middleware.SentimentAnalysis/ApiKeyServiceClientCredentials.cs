@@ -1,7 +1,7 @@
-﻿using Microsoft.Rest;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Rest;
 
 namespace Bot.Builder.Community.Middleware.SentimentAnalysis
 {
