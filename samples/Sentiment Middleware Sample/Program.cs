@@ -1,5 +1,5 @@
-﻿
-
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
@@ -11,28 +11,20 @@ namespace Sentiment_Middleware_Sample
     {
         public static void Main(string[] args)
         {
-            BuildWebHost(args).Run();
+            CreateWebHostBuilder(args).Build().Run();
         }
 
-        public static IWebHost BuildWebHost(string[] args) =>
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .ConfigureLogging((hostingContext, logging) =>
+                .ConfigureLogging(logging =>
                 {
-                    // Add Azure Logging
-                    logging.AddAzureWebAppDiagnostics();
-
-                    // Logging Options.
-                    // There are other logging options available:
-                    // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/logging/?view=aspnetcore-2.1
-                    // logging.AddDebug();
-                    // logging.AddConsole();
+                    logging.AddDebug();
+                    logging.AddConsole();
                 })
-
                 // Logging Options.
                 // Consider using Application Insights for your logging and metrics needs.
                 // https://azure.microsoft.com/en-us/services/application-insights/
                 // .UseApplicationInsights()
-                .UseStartup<Startup>()
-                .Build();
+                .UseStartup<Startup>();
     }
 }
