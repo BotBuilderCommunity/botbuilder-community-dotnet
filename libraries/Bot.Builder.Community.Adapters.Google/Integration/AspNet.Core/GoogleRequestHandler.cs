@@ -45,7 +45,6 @@ namespace Bot.Builder.Community.Adapters.Google.Integration.AspNet.Core
 
             var memoryStream = new MemoryStream();
             request.Body.CopyTo(memoryStream);
-            var requestBytes = memoryStream.ToArray();
             memoryStream.Position = 0;
 
             var projectId = AuthenticationHelpers.GetProjectIdFromRequest(request);
@@ -59,16 +58,9 @@ namespace Bot.Builder.Community.Adapters.Google.Integration.AspNet.Core
                     actionRequest = JsonConvert.DeserializeObject<GoogleRequestBody>(skillRequestContent);
                     actionPayload = actionRequest.OriginalDetectIntentRequest.Payload;
                 }
-                catch (Exception ex)
+                catch
                 {
-                    try
-                    {
-                        actionPayload = JsonConvert.DeserializeObject<Payload>(skillRequestContent);
-                    }
-                    catch (Exception e)
-                    {
-                        throw;
-                    }
+                    actionPayload = JsonConvert.DeserializeObject<Payload>(skillRequestContent);
                 }
             }
 
