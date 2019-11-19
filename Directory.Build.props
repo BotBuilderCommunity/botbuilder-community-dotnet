@@ -7,19 +7,10 @@
     <CodeAnalysisRuleSet>$(SolutionDir)BotBuilderCommunity-DotNet.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="StyleCop.Analyzers" Version="1.0.2" PrivateAssets="all" />
-  </ItemGroup>
-
   <PropertyGroup>
-    <Company>Microsoft</Company>
-
-    <!-- Rules found at: https://aka.ms/Microsoft-NuGet-Compliance -->
-
-    <!-- Per rules,this must be *EXACTLY* "Microsoft. Otherwise Nuget.org will reject the packages." -->
-    <Authors>Microsoft</Authors>
-    <Product>Microsoft Bot Builder SDK</Product>
-    <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
+    <Company>BotBuilderCommunity</Company>
+    <Authors>BotBuilderCommunity</Authors>
+    <Product>Microsoft Bot Builder Community</Product>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -59,11 +50,5 @@
   <PropertyGroup Condition="$(Configuration) == 'Debug'">
     <!-- For debug builds, we don't generate documentation. Supress the StyleCop rule that warns about this. -->
     <NoWarn>$(NoWarn);SA0001</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup Condition="$(Configuration) == 'Debug - NuGet Packages'">
-    <!-- For debug Nuget builds, we don't generate documentation. Supress the StyleCop rule that warns about this. -->
-    <NoWarn>$(NoWarn);SA0001</NoWarn>
-
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 </Project>

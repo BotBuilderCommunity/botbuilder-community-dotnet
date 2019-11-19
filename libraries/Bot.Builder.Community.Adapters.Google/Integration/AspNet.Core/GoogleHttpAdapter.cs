@@ -54,7 +54,6 @@ namespace Bot.Builder.Community.Adapters.Google.Integration.AspNet.Core
 
             var memoryStream = new MemoryStream();
             httpRequest.Body.CopyTo(memoryStream);
-            var requestBytes = memoryStream.ToArray();
             memoryStream.Position = 0;
 
             using (var bodyReader = new StreamReader(memoryStream, Encoding.UTF8))
@@ -65,16 +64,9 @@ namespace Bot.Builder.Community.Adapters.Google.Integration.AspNet.Core
                     actionRequest = JsonConvert.DeserializeObject<GoogleRequestBody>(skillRequestContent);
                     actionPayload = actionRequest.OriginalDetectIntentRequest.Payload;
                 }
-                catch (Exception ex)
+                catch
                 {
-                    try
-                    {
-                        actionPayload = JsonConvert.DeserializeObject<Payload>(skillRequestContent);
-                    }
-                    catch (Exception e)
-                    {
-                        throw;
-                    }
+                    actionPayload = JsonConvert.DeserializeObject<Payload>(skillRequestContent);
                 }
             }
 
