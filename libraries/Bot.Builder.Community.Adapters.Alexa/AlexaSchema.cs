@@ -56,6 +56,8 @@ namespace Bot.Builder.Community.Adapters.Alexa
         public AlexaSystem System { get; set; }
 
         public AlexaAudioPlayer AudioPlayer { get; set; }
+
+        public AlexaGeolocation Geolocation { get; set; }
     }
 
     public class AlexaSystem
@@ -114,6 +116,47 @@ namespace Bot.Builder.Community.Adapters.Alexa
         BUFFER_UNDERRUN,
         FINISHED,
         STOPPED
+    }
+
+    public class LocationServices
+    {
+        public string Access { get; set; }
+        public string Status { get; set; }
+    }
+
+    public class Coordinate
+    {
+        public double LatitudeInDegrees { get; set; }
+        public double LongitudeInDegrees { get; set; }
+        public double AccuracyInMeters { get; set; }
+    }
+    
+    public class Altitude
+    {
+        public double AltitudeInMeters { get; set; }
+        public double AccuracyInMeters { get; set; }
+    }
+    
+    public class Heading
+    {
+        public double DirectionInDegrees { get; set; }
+        public double AccuracyInDegrees { get; set; }
+    }
+    
+    public class Speed
+    {
+        public double SpeedInMetersPerSecond { get; set; }
+        public double AccuracyInMetresPerSecond { get; set; }
+    }
+    
+    public class AlexaGeolocation
+    {
+        public LocationServices LocationServices { get; set; }
+        public string Timestamp { get; set; }
+        public Coordinate Coordinate { get; set; }
+        public Altitude Altitude { get; set; }
+        public Heading Heading { get; set; }
+        public Speed Speed { get; set; }
     }
 
     public class AlexaResponseBody
@@ -310,6 +353,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
 
         public string Id { get; set; }
     }
+
 
     public enum AlexaConfirmationState
     {

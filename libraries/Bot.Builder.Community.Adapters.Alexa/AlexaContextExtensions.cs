@@ -69,7 +69,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
             {
                 return (AlexaRequestBody)context.Activity.ChannelData;
             }
-            catch (Exception ex)
+            catch
             {
                 return null;
             }

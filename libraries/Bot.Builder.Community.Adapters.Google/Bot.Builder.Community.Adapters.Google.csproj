@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -25,7 +25,7 @@
   <ItemGroup>
 		<PackageReference Include="JWT" Version="5.0.1" />
 		<PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.4" />
-		<PackageReference Include="Microsoft.Bot.Builder" Version="4.5.1" />
+		<PackageReference Include="Microsoft.Bot.Builder" Version="4.6.3" />
 		<PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="2.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Options" Version="2.1.1" />
