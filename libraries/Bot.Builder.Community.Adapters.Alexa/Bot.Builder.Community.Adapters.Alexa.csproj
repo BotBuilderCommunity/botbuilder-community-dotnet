@@ -12,6 +12,11 @@
     <AssemblyVersion>1.0.0</AssemblyVersion>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+  </PropertyGroup>
+
   <ItemGroup>
 		<PackageReference Include="Alexa.NET" Version="1.10.2" />
 		<PackageReference Include="Microsoft.Bot.Builder" Version="4.6.3" />
