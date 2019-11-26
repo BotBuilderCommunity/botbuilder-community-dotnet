@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Alexa.NET.Request;
+using Alexa.NET.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
@@ -58,6 +60,24 @@ namespace Bot.Builder.Community.Adapters.Alexa
             if (!valid || !isTimestampValid)
             {
                 logger.LogError("Validation failed - RequestVerification failed");
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Under certain circumstances, such as the inclusion of certain types of directives
+        /// on a response, should force the 'ShouldEndSession' property not be included on
+        /// an outgoing response. This method determines if this property is allowed to have
+        /// a value assigned.
+        /// </summary>
+        /// <param name="response">Boolean indicating if the 'ShouldEndSession' property can be populated on the response.'</param>
+        /// <returns>bool</returns>
+        internal static bool ShouldSetEndSession(SkillResponse response)
+        {
+            if (response.Response.Directives.Any(d => d.Type == "VideoApp.Launch"))
+            {
                 return false;
             }
 

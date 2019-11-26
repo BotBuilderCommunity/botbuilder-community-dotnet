@@ -10,7 +10,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Alexa.NET;
 using Alexa.NET.Request;
-using Alexa.NET.Request.Type;
 using Alexa.NET.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Bot.Builder;
@@ -95,21 +94,11 @@ namespace Bot.Builder.Community.Adapters.Alexa
         public async Task<SkillResponse> ProcessActivity(SkillRequest alexaRequest, BotCallbackHandler callback)
         {
             var activity = RequestToActivity(alexaRequest);
-
             var context = new TurnContext(this, activity);
-
-            if (alexaRequest.Session.Attributes != null && alexaRequest.Session.Attributes.Any())
-            {
-                context.TurnState.Add("AlexaSessionAttributes", alexaRequest.Session.Attributes);
-            }
-            else
-            {
-                context.TurnState.Add("AlexaSessionAttributes", new Dictionary<string, string>());
-            }
 
             Responses = new Dictionary<string, List<Activity>>();
 
-            await RunPipelineAsync(context, callback, default(CancellationToken)).ConfigureAwait(false);
+            await RunPipelineAsync(context, callback, default).ConfigureAwait(false);
 
             var key = $"{activity.Conversation.Id}:{activity.Id}";
 
@@ -185,22 +174,9 @@ namespace Bot.Builder.Community.Adapters.Alexa
                 Type = skillRequest.Request.Type,
                 Id = skillRequest.Request.RequestId,
                 Timestamp = skillRequest.Request.Timestamp,
-                Locale = skillRequest.Request.Locale
+                Locale = skillRequest.Request.Locale,
+                ChannelData = skillRequest
             };
-
-            switch (activity.Type)
-            {
-                case "IntentRequest":
-                    activity.Value = (skillRequest.Request as IntentRequest)?.Intent;
-                    activity.Code = (skillRequest.Request as IntentRequest)?.DialogState;
-                    break;
-                case "SessionEndedRequest":
-                    activity.Code = (skillRequest.Request as SessionEndedRequest)?.Reason.ToString();
-                    activity.Value = (skillRequest.Request as SessionEndedRequest)?.Error;
-                    break;
-            }
-
-            activity.ChannelData = skillRequest;
 
             return activity;
         }
@@ -238,17 +214,21 @@ namespace Bot.Builder.Community.Adapters.Alexa
                     "<speak>" + activity.Text + "</speak>");
             }
 
-            switch (activity.InputHint)
+            if (AlexaHelper.ShouldSetEndSession(response))
             {
-                case InputHints.IgnoringInput:
-                    response.Response.ShouldEndSession = true;
-                    break;
-                case InputHints.ExpectingInput:
-                    response.Response.ShouldEndSession = false;
-                    break;
-                default:
-                    response.Response.ShouldEndSession = _options.ShouldEndSessionByDefault;
-                    break;
+                switch (activity.InputHint)
+                {
+                    case InputHints.IgnoringInput:
+                        response.Response.ShouldEndSession = true;
+                        break;
+                    case InputHints.ExpectingInput:
+                        response.Response.ShouldEndSession = false;
+                        response.Response.Reprompt = new Reprompt(activity.Text);
+                        break;
+                    default:
+                        response.Response.ShouldEndSession = _options.ShouldEndSessionByDefault;
+                        break;
+                }
             }
 
             return response;
