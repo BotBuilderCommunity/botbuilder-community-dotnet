@@ -10,7 +10,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Attachments
     {
         public DirectiveAttachment(IDirective directive)
         {
-            Directive = directive;
+            this.Directive = directive;
         }
 
         public IDirective Directive { get; set; }

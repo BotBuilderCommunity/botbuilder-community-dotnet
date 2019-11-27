@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Alexa.NET.Request;
@@ -11,8 +10,8 @@ namespace Bot.Builder.Community.Adapters.Alexa
 {
     internal class AlexaHelper
     {
-        public static async Task<bool> ValidateRequest(HttpRequest request, ILogger logger, SkillRequest skillRequest)
-        {
+        public static async Task<bool> ValidateRequest(HttpRequest request, SkillRequest skillRequest, string body, ILogger logger)
+        { 
             request.Headers.TryGetValue("SignatureCertChainUrl", out var signatureChainUrl);
             if (string.IsNullOrWhiteSpace(signatureChainUrl))
             {
@@ -35,22 +34,6 @@ namespace Bot.Builder.Community.Adapters.Alexa
             if (string.IsNullOrWhiteSpace(signature))
             {
                 logger.LogError("Validation failed - Empty Signature header");
-                return false;
-            }
-
-            request.Body.Position = 0;
-            string body;
-            
-            using (var sr = new StreamReader(request.Body))
-            {
-                body = await sr.ReadToEndAsync();
-            }
-
-            request.Body.Position = 0;
-
-            if (string.IsNullOrWhiteSpace(body))
-            {
-                logger.LogError("Validation failed - the JSON is empty");
                 return false;
             }
 

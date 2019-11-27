@@ -18,7 +18,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Middleware
         }
 
         public async Task OnTurnAsync(
-            ITurnContext context, 
+            ITurnContext context,
             NextDelegate next,
             CancellationToken cancellationToken = default)
         {
@@ -26,8 +26,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Middleware
             {
                 var skillRequest = (SkillRequest)context.Activity.ChannelData;
 
-                if (context.Activity.Type == "IntentRequest" 
-                    && skillRequest.Request is IntentRequest intentRequest
+                if (skillRequest.Request is IntentRequest intentRequest
                     && intentRequest.Intent.Slots != null
                     && intentRequest.Intent.Slots.ContainsKey(_slotName))
                 {
@@ -42,6 +41,10 @@ namespace Bot.Builder.Community.Adapters.Alexa.Middleware
 
                     switch (skillRequest.Request.Type)
                     {
+                        case "IntentRequest":
+                            var request = skillRequest.Request as IntentRequest;
+                            context.Activity.Value = request;
+                            break;
                         case "AccountLinkSkillEventRequest":
                             context.Activity.Value = skillRequest.Request as AccountLinkSkillEventRequest;
                             break;

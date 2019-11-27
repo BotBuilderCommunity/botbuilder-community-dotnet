@@ -11,11 +11,13 @@ using System.Threading.Tasks;
 using Alexa.NET;
 using Alexa.NET.Request;
 using Alexa.NET.Response;
+using Bot.Builder.Community.Adapters.Alexa.Attachments;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -33,10 +35,10 @@ namespace Bot.Builder.Community.Adapters.Alexa
         private readonly AlexaAdapterOptions _options;
         private readonly ILogger _logger;
 
-        public AlexaAdapter(AlexaAdapterOptions options, ILogger logger = null)
+        public AlexaAdapter(AlexaAdapterOptions options = null, ILogger logger = null)
         {
-            _options = options;
-            _logger = logger;
+            _options = options ?? new AlexaAdapterOptions();
+            _logger = logger ?? NullLogger.Instance;
         }
 
         private Dictionary<string, List<Activity>> Responses { get; set; }
@@ -72,7 +74,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
             }
 
             if (_options.ValidateIncomingAlexaRequests
-                && !await AlexaHelper.ValidateRequest(httpRequest, _logger, skillRequest))
+                && !await AlexaHelper.ValidateRequest(httpRequest, skillRequest, body, _logger))
             {
                 throw new AuthenticationException("Failed to validate incoming request.");
             }
@@ -87,7 +89,9 @@ namespace Bot.Builder.Community.Adapters.Alexa
             httpResponse.ContentType = "application/json";
             httpResponse.StatusCode = (int)HttpStatusCode.OK;
 
-            var responseData = Encoding.UTF8.GetBytes(alexaResponse.ToString());
+            var responseJson = JsonConvert.SerializeObject(alexaResponse, JsonSerializerSettings);
+
+            var responseData = Encoding.UTF8.GetBytes(responseJson);
             await httpResponse.Body.WriteAsync(responseData, 0, responseData.Length, cancellationToken).ConfigureAwait(false);
         }
 
@@ -99,6 +103,11 @@ namespace Bot.Builder.Community.Adapters.Alexa
             Responses = new Dictionary<string, List<Activity>>();
 
             await RunPipelineAsync(context, callback, default).ConfigureAwait(false);
+
+            if (context.GetAlexaRequestBody().Request.Type == "SessionEndedRequest")
+            {
+                return ResponseBuilder.Tell(string.Empty);
+            }
 
             var key = $"{activity.Conversation.Id}:{activity.Id}";
 
@@ -183,11 +192,6 @@ namespace Bot.Builder.Community.Adapters.Alexa
 
         private SkillResponse CreateResponseFromActivity(Activity activity, ITurnContext context)
         {
-            if (context.GetAlexaRequestBody().Request.Type == "SessionEndedRequest")
-            {
-                return ResponseBuilder.Tell(string.Empty);
-            }
-
             var response = new SkillResponse()
             {
                 Version = "1.0",
@@ -214,6 +218,8 @@ namespace Bot.Builder.Community.Adapters.Alexa
                     "<speak>" + activity.Text + "</speak>");
             }
 
+            ProcessActivityAttachments(activity, response);
+
             if (AlexaHelper.ShouldSetEndSession(response))
             {
                 switch (activity.InputHint)
@@ -232,6 +238,23 @@ namespace Bot.Builder.Community.Adapters.Alexa
             }
 
             return response;
+        }
+
+        private static void ProcessActivityAttachments(Activity activity, SkillResponse response)
+        {
+            var card = activity.Attachments?.FirstOrDefault(a => a.GetType() == typeof(CardAttachment)) as CardAttachment;
+            if (card != null)
+            {
+                response.Response.Card = card.Card;
+            }
+
+            var directiveAttachments = activity.Attachments?.Where(a => a.GetType() == typeof(DirectiveAttachment))
+                .Select(d => d as DirectiveAttachment);
+            var directives = directiveAttachments?.Select(d => d.Directive).ToList();
+            if (directives != null && directives.Any())
+            {
+                response.Response.Directives = directives;
+            }
         }
     }
 }
