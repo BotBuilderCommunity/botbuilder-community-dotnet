@@ -14,7 +14,7 @@ branches:
     mode: ContinuousDelivery
     tag:
     increment: Patch
-    prevent-increment-of-merged-branch-version: false
+    prevent-increment-of-merged-branch-version: true
     track-merge-target: false
   release:
     mode: ContinuousDelivery
@@ -24,7 +24,7 @@ branches:
     track-merge-target: false
   feature:
     mode: ContinuousDelivery
-    tag: useBranchName
+    tag: alpha
     increment: Inherit
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
@@ -37,7 +37,7 @@ branches:
     track-merge-target: false
   develop:
     mode: ContinuousDelivery
-    tag: unstable
+    tag: rc
     increment: Patch
     prevent-increment-of-merged-branch-version: false
     track-merge-target: true
