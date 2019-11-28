@@ -17,13 +17,13 @@ branches:
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
   release:
-    mode: ContinuousDelivery
+    mode: ContinuousDeployment
     tag: beta
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
   feature:
-    mode: ContinuousDelivery
+    mode: ContinuousDeployment
     tag: useBranchName
     increment: Inherit
     prevent-increment-of-merged-branch-version: false
@@ -36,7 +36,7 @@ branches:
     tag-number-pattern: '[/-](?<number>\d+)[-/]'
     track-merge-target: false
   develop:
-    mode: ContinuousDelivery
+    mode: ContinuousDeployment
     tag: rc
     increment: Patch
     prevent-increment-of-merged-branch-version: false
