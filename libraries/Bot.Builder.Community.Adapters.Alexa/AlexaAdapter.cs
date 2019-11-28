@@ -190,6 +190,23 @@ namespace Bot.Builder.Community.Adapters.Alexa
             return activity;
         }
 
+        private static void ProcessActivityAttachments(Activity activity, SkillResponse response)
+        {
+            var card = activity.Attachments?.FirstOrDefault(a => a.GetType() == typeof(CardAttachment)) as CardAttachment;
+            if (card != null)
+            {
+                response.Response.Card = card.Card;
+            }
+
+            var directiveAttachments = activity.Attachments?.Where(a => a.GetType() == typeof(DirectiveAttachment))
+                .Select(d => d as DirectiveAttachment);
+            var directives = directiveAttachments?.Select(d => d.Directive).ToList();
+            if (directives != null && directives.Any())
+            {
+                response.Response.Directives = directives;
+            }
+        }
+
         private SkillResponse CreateResponseFromActivity(Activity activity, ITurnContext context)
         {
             var response = new SkillResponse()
@@ -238,23 +255,6 @@ namespace Bot.Builder.Community.Adapters.Alexa
             }
 
             return response;
-        }
-
-        private static void ProcessActivityAttachments(Activity activity, SkillResponse response)
-        {
-            var card = activity.Attachments?.FirstOrDefault(a => a.GetType() == typeof(CardAttachment)) as CardAttachment;
-            if (card != null)
-            {
-                response.Response.Card = card.Card;
-            }
-
-            var directiveAttachments = activity.Attachments?.Where(a => a.GetType() == typeof(DirectiveAttachment))
-                .Select(d => d as DirectiveAttachment);
-            var directives = directiveAttachments?.Select(d => d.Directive).ToList();
-            if (directives != null && directives.Any())
-            {
-                response.Response.Directives = directives;
-            }
         }
     }
 }
