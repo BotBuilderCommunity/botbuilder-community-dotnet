@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -22,10 +22,6 @@
 		<PackageReference Include="Alexa.NET.CustomerProfile" Version="2.1.1" />
 		<PackageReference Include="Microsoft.Bot.Builder" Version="4.6.3" />
 		<PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.6.3" />
-		<PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.1.1" />
-		<PackageReference Include="Microsoft.Extensions.Configuration" Version="2.1.1" />
-		<PackageReference Include="Microsoft.Extensions.Options" Version="2.1.1" />
 		<PackageReference Include="Microsoft.Net.Http.Headers" Version="2.1.1" />
   </ItemGroup>
 
