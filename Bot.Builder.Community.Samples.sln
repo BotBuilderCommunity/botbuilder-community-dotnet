@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29318.209
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alexa Adapter Sample", "samples\Alexa Adapter Sample\Alexa Adapter Sample.csproj", "{8183FE0F-6F69-48B4-B2C3-7FEB48DCECD6}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BestMatch Middleware Sample", "samples\BestMatch Middleware Sample\BestMatch Middleware Sample.csproj", "{7927A7EE-C327-4403-A5F4-B5E2C0BF4D47}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Location Dialog Sample", "samples\Location Dialog Sample\Location Dialog Sample.csproj", "{10BEDE11-C9DE-4B67-9467-4E48272229C6}"
@@ -23,16 +21,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Luis Dialog Sample", "sampl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sentiment Middleware Sample", "samples\Sentiment Middleware Sample\Sentiment Middleware Sample.csproj", "{55F863F1-9EC8-420C-9099-BD8378D72F18}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alexa Adapter Sample", "samples\Alexa Adapter Sample\Alexa Adapter Sample.csproj", "{37ED6FBD-12B5-40CF-837F-6F75ACC65484}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8183FE0F-6F69-48B4-B2C3-7FEB48DCECD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8183FE0F-6F69-48B4-B2C3-7FEB48DCECD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8183FE0F-6F69-48B4-B2C3-7FEB48DCECD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8183FE0F-6F69-48B4-B2C3-7FEB48DCECD6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7927A7EE-C327-4403-A5F4-B5E2C0BF4D47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7927A7EE-C327-4403-A5F4-B5E2C0BF4D47}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7927A7EE-C327-4403-A5F4-B5E2C0BF4D47}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -69,6 +65,10 @@ Global
 		{55F863F1-9EC8-420C-9099-BD8378D72F18}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55F863F1-9EC8-420C-9099-BD8378D72F18}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55F863F1-9EC8-420C-9099-BD8378D72F18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37ED6FBD-12B5-40CF-837F-6F75ACC65484}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37ED6FBD-12B5-40CF-837F-6F75ACC65484}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37ED6FBD-12B5-40CF-837F-6F75ACC65484}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37ED6FBD-12B5-40CF-837F-6F75ACC65484}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
