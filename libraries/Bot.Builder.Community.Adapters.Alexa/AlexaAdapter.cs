@@ -5,6 +5,8 @@ using System.Linq;
 using System.Net;
 using System.Security;
 using System.Security.Authentication;
+using System.Security.Claims;
+using System.Security.Principal;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,6 +27,8 @@ namespace Bot.Builder.Community.Adapters.Alexa
 {
     public class AlexaAdapter : BotAdapter, IBotFrameworkHttpAdapter
     {
+        internal const string BotIdentityKey = "BotIdentity";
+
         private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
         {
             ContractResolver = new CamelCasePropertyNamesContractResolver(),
@@ -167,6 +171,16 @@ namespace Bot.Builder.Community.Adapters.Alexa
         public override Task DeleteActivityAsync(ITurnContext turnContext, ConversationReference reference, CancellationToken cancellationToken)
         {
             return Task.FromException(new NotImplementedException("Alexa adapter does not support deleteActivity."));
+        }
+
+        public override async Task ContinueConversationAsync(ClaimsIdentity claimsIdentity, ConversationReference reference, BotCallbackHandler callback, CancellationToken cancellationToken)
+        {
+            using (var context = new TurnContext(this, reference.GetContinuationActivity()))
+            {
+                context.TurnState.Add<IIdentity>(BotIdentityKey, claimsIdentity);
+                context.TurnState.Add<BotCallbackHandler>(callback);
+                await RunPipelineAsync(context, callback, cancellationToken).ConfigureAwait(false);
+            }
         }
 
         private static Activity RequestToActivity(SkillRequest skillRequest)

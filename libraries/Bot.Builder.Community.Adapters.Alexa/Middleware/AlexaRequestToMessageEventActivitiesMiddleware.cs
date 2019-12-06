@@ -26,52 +26,55 @@ namespace Bot.Builder.Community.Adapters.Alexa.Middleware
             {
                 var skillRequest = (SkillRequest)context.Activity.ChannelData;
 
-                if (skillRequest.Request is IntentRequest intentRequest
-                    && intentRequest.Intent.Slots != null
-                    && intentRequest.Intent.Slots.ContainsKey(_slotName))
+                if (skillRequest != null)
                 {
-                    context.Activity.Type = ActivityTypes.Message;
-                    context.Activity.Text = intentRequest.Intent.Slots[_slotName].Value;
-                    context.Activity.Value = intentRequest;
-                }
-                else
-                {
-                    context.Activity.Type = ActivityTypes.Event;
-                    context.Activity.Name = skillRequest.Request.Type;
-
-                    switch (skillRequest.Request.Type)
+                    if (skillRequest.Request is IntentRequest intentRequest
+                        && intentRequest.Intent.Slots != null
+                        && intentRequest.Intent.Slots.ContainsKey(_slotName))
                     {
-                        case "IntentRequest":
-                            var request = skillRequest.Request as IntentRequest;
-                            context.Activity.Value = request;
-                            break;
-                        case "AccountLinkSkillEventRequest":
-                            context.Activity.Value = skillRequest.Request as AccountLinkSkillEventRequest;
-                            break;
-                        case "AudioPlayerRequest":
-                            context.Activity.Value = skillRequest.Request as AudioPlayerRequest;
-                            break;
-                        case "DisplayElementSelectedRequest":
-                            context.Activity.Value = skillRequest.Request as DisplayElementSelectedRequest;
-                            break;
-                        case "LaunchRequest":
-                            context.Activity.Value = skillRequest.Request as LaunchRequest;
-                            break;
-                        case "PermissionSkillEventRequest":
-                            context.Activity.Value = skillRequest.Request as PermissionSkillEventRequest;
-                            break;
-                        case "PlaybackControllerRequest":
-                            context.Activity.Value = skillRequest.Request as PlaybackControllerRequest;
-                            break;
-                        case "SessionEndedRequest":
-                            context.Activity.Value = skillRequest.Request as SessionEndedRequest;
-                            break;
-                        case "SkillEventRequest":
-                            context.Activity.Value = skillRequest.Request as SkillEventRequest;
-                            break;
-                        case "SystemExceptionRequest":
-                            context.Activity.Value = skillRequest.Request as SystemExceptionRequest;
-                            break;
+                        context.Activity.Type = ActivityTypes.Message;
+                        context.Activity.Text = intentRequest.Intent.Slots[_slotName].Value;
+                        context.Activity.Value = intentRequest;
+                    }
+                    else
+                    {
+                        context.Activity.Type = ActivityTypes.Event;
+                        context.Activity.Name = skillRequest.Request.Type;
+
+                        switch (skillRequest.Request.Type)
+                        {
+                            case "IntentRequest":
+                                var request = skillRequest.Request as IntentRequest;
+                                context.Activity.Value = request;
+                                break;
+                            case "AccountLinkSkillEventRequest":
+                                context.Activity.Value = skillRequest.Request as AccountLinkSkillEventRequest;
+                                break;
+                            case "AudioPlayerRequest":
+                                context.Activity.Value = skillRequest.Request as AudioPlayerRequest;
+                                break;
+                            case "DisplayElementSelectedRequest":
+                                context.Activity.Value = skillRequest.Request as DisplayElementSelectedRequest;
+                                break;
+                            case "LaunchRequest":
+                                context.Activity.Value = skillRequest.Request as LaunchRequest;
+                                break;
+                            case "PermissionSkillEventRequest":
+                                context.Activity.Value = skillRequest.Request as PermissionSkillEventRequest;
+                                break;
+                            case "PlaybackControllerRequest":
+                                context.Activity.Value = skillRequest.Request as PlaybackControllerRequest;
+                                break;
+                            case "SessionEndedRequest":
+                                context.Activity.Value = skillRequest.Request as SessionEndedRequest;
+                                break;
+                            case "SkillEventRequest":
+                                context.Activity.Value = skillRequest.Request as SkillEventRequest;
+                                break;
+                            case "SystemExceptionRequest":
+                                context.Activity.Value = skillRequest.Request as SystemExceptionRequest;
+                                break;
+                        }
                     }
                 }
             }
