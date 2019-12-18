@@ -25,9 +25,4 @@
 		<PackageReference Include="Microsoft.Net.Http.Headers" Version="2.1.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Microsoft\botbuilder-dotnet\libraries\integration\Microsoft.Bot.Builder.Integration.AspNet.Core\Microsoft.Bot.Builder.Integration.AspNet.Core.csproj" />
-    <ProjectReference Include="..\..\..\..\Microsoft\botbuilder-dotnet\libraries\Microsoft.Bot.Builder\Microsoft.Bot.Builder.csproj" />
-  </ItemGroup>
-
 </Project>

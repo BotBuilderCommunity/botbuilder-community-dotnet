@@ -41,38 +41,37 @@ namespace Bot.Builder.Community.Adapters.Alexa.Middleware
                         context.Activity.Type = ActivityTypes.Event;
                         context.Activity.Name = skillRequest.Request.Type;
 
-                        switch (skillRequest.Request.Type)
+                        switch (skillRequest.Request)
                         {
-                            case "IntentRequest":
-                                var request = skillRequest.Request as IntentRequest;
-                                context.Activity.Value = request;
+                            case IntentRequest skillIntentRequest:
+                                context.Activity.Value = skillIntentRequest;
                                 break;
-                            case "AccountLinkSkillEventRequest":
-                                context.Activity.Value = skillRequest.Request as AccountLinkSkillEventRequest;
+                            case AccountLinkSkillEventRequest accountLinkSkillEventRequest:
+                                context.Activity.Value = accountLinkSkillEventRequest;
                                 break;
-                            case "AudioPlayerRequest":
-                                context.Activity.Value = skillRequest.Request as AudioPlayerRequest;
+                            case AudioPlayerRequest audioPlayerRequest:
+                                context.Activity.Value = audioPlayerRequest;
                                 break;
-                            case "DisplayElementSelectedRequest":
-                                context.Activity.Value = skillRequest.Request as DisplayElementSelectedRequest;
+                            case DisplayElementSelectedRequest displayElementSelectedRequest:
+                                context.Activity.Value = displayElementSelectedRequest;
                                 break;
-                            case "LaunchRequest":
-                                context.Activity.Value = skillRequest.Request as LaunchRequest;
+                            case LaunchRequest launchRequest:
+                                context.Activity.Value = launchRequest;
                                 break;
-                            case "PermissionSkillEventRequest":
-                                context.Activity.Value = skillRequest.Request as PermissionSkillEventRequest;
+                            case PermissionSkillEventRequest permissionSkillEventRequest:
+                                context.Activity.Value = permissionSkillEventRequest;
                                 break;
-                            case "PlaybackControllerRequest":
-                                context.Activity.Value = skillRequest.Request as PlaybackControllerRequest;
+                            case PlaybackControllerRequest playbackControllerRequest:
+                                context.Activity.Value = playbackControllerRequest;
                                 break;
-                            case "SessionEndedRequest":
-                                context.Activity.Value = skillRequest.Request as SessionEndedRequest;
+                            case SessionEndedRequest sessionEndedRequest:
+                                context.Activity.Value = sessionEndedRequest;
                                 break;
-                            case "SkillEventRequest":
-                                context.Activity.Value = skillRequest.Request as SkillEventRequest;
+                            case SkillEventRequest skillEventRequest:
+                                context.Activity.Value = skillEventRequest;
                                 break;
-                            case "SystemExceptionRequest":
-                                context.Activity.Value = skillRequest.Request as SystemExceptionRequest;
+                            case SystemExceptionRequest systemExceptionRequest:
+                                context.Activity.Value = systemExceptionRequest;
                                 break;
                         }
                     }

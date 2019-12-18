@@ -45,13 +45,13 @@ namespace Bot.Builder.Community.Adapters.Alexa
             return hasDisplay.HasValue && hasDisplay.Value;
         }
 
-        public static async Task AlexaSendPermissionConsentRequestActivity(this ITurnContext context, List<string> permissions, string message)
+        public static async Task AlexaSendPermissionConsentRequestActivity(this ITurnContext context, string message, List<string> permissions)
         {
             var activity = MessageFactory.Attachment(new PermissionConsentRequestAttachment(permissions), message);
             await context.SendActivityAsync(activity).ConfigureAwait(false);
         }
 
-        public static CustomerProfileClient AlexaGetCustomerProfileClient(this ITurnContext context, string item)
+        public static CustomerProfileClient AlexaGetCustomerProfileClient(this ITurnContext context)
         {
             return new CustomerProfileClient(context.GetAlexaRequestBody());
         }
