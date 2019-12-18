@@ -173,16 +173,6 @@ namespace Bot.Builder.Community.Adapters.Alexa
             return Task.FromException(new NotImplementedException("Alexa adapter does not support deleteActivity."));
         }
 
-        public override async Task ContinueConversationAsync(ClaimsIdentity claimsIdentity, ConversationReference reference, BotCallbackHandler callback, CancellationToken cancellationToken)
-        {
-            using (var context = new TurnContext(this, reference.GetContinuationActivity()))
-            {
-                context.TurnState.Add<IIdentity>(BotIdentityKey, claimsIdentity);
-                context.TurnState.Add<BotCallbackHandler>(callback);
-                await RunPipelineAsync(context, callback, cancellationToken).ConfigureAwait(false);
-            }
-        }
-
         private static Activity RequestToActivity(SkillRequest skillRequest)
         {
             var system = skillRequest.Context.System;
