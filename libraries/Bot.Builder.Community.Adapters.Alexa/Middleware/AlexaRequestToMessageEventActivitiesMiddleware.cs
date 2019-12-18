@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Alexa.NET.Request;
@@ -36,6 +37,12 @@ namespace Bot.Builder.Community.Adapters.Alexa.Middleware
                         context.Activity.Text = intentRequest.Intent.Slots[_slotName].Value;
                         context.Activity.Value = intentRequest;
                     }
+                    else if (skillRequest.Request is LaunchRequest launchRequest)
+                    {
+                        context.Activity.Type = ActivityTypes.ConversationUpdate;
+                        context.Activity.MembersAdded = new List<ChannelAccount>() { new ChannelAccount() { Id = skillRequest.Session.User.UserId } };
+                        context.Activity.Value = launchRequest;
+                    }
                     else
                     {
                         context.Activity.Type = ActivityTypes.Event;
@@ -54,9 +61,6 @@ namespace Bot.Builder.Community.Adapters.Alexa.Middleware
                                 break;
                             case DisplayElementSelectedRequest displayElementSelectedRequest:
                                 context.Activity.Value = displayElementSelectedRequest;
-                                break;
-                            case LaunchRequest launchRequest:
-                                context.Activity.Value = launchRequest;
                                 break;
                             case PermissionSkillEventRequest permissionSkillEventRequest:
                                 context.Activity.Value = permissionSkillEventRequest;
