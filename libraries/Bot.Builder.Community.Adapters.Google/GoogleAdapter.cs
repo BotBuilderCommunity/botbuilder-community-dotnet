@@ -20,6 +20,7 @@ namespace Bot.Builder.Community.Adapters.Google
         public bool ShouldEndSessionByDefault { get; set; }
 
         public bool TryConvertFirstActivityAttachmentToGoogleCard { get; set; }
+        public bool TryConcatMultipleTextActivties { get; set; }
 
         public string ActionInvocationName { get; set; }
 
@@ -31,6 +32,7 @@ namespace Bot.Builder.Community.Adapters.Google
         {
             ShouldEndSessionByDefault = true;
             TryConvertFirstActivityAttachmentToGoogleCard = false;
+            TryConcatMultipleTextActivties = false;
         }
 
         public new GoogleAdapter Use(IMiddleware middleware)
@@ -305,7 +307,7 @@ namespace Bot.Builder.Community.Adapters.Google
 
         private DialogFlowResponseBody CreateDialogFlowResponseFromLastActivity(IEnumerable<Activity> activities, ITurnContext context)
         {
-            var activity = processMultipleActivities(activities.ToList());
+            var activity = activities != null && activities.Any() ? processMultipleActivities(activities.ToList()) : null;
 
             var response = new DialogFlowResponseBody()
             {
@@ -463,7 +465,7 @@ namespace Bot.Builder.Community.Adapters.Google
         private Activity processMultipleActivities(List<Activity> activities)
         {
             Activity resultActivity = activities.Last();
-            if (/*_options.TryConcatMultipleTextActivties &&*/ activities.Count() > 1)
+            if (TryConcatMultipleTextActivties && activities.Count() > 1)
             {
                 for (int i = activities.Count - 2; i >= 0; i--)
                 {
