@@ -7,5 +7,10 @@
         public bool ValidateIncomingAlexaRequests { get; set; } = true;
 
         public bool ShouldEndSessionByDefault { get; set; } = true;
+
+        public bool TryConvertSuggestedActionsToText { get; set; } = false;
+
+        public bool TryConcatMultipleTextActivties { get; set; } = false;
+
     }
 }

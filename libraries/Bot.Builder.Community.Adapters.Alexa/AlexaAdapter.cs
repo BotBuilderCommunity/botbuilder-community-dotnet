@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices.ComTypes;
 using System.Security;
 using System.Security.Authentication;
 using System.Security.Claims;
@@ -118,7 +119,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
             try
             {
                 var activities = Responses.ContainsKey(key) ? Responses[key] : new List<Activity>();
-                var response = CreateResponseFromActivity(activities.First(), context);
+                var response = CreateResponseFromActivity(activities, context);
                 return response;
             }
             finally
@@ -211,8 +212,10 @@ namespace Bot.Builder.Community.Adapters.Alexa
             }
         }
 
-        private SkillResponse CreateResponseFromActivity(Activity activity, ITurnContext context)
+        private SkillResponse CreateResponseFromActivity(List<Activity> activities, ITurnContext context)
         {
+            Activity activity = processMultipleActivities(activities);
+
             var response = new SkillResponse()
             {
                 Version = "1.0",
@@ -227,6 +230,8 @@ namespace Bot.Builder.Community.Adapters.Alexa
 
             if (!string.IsNullOrEmpty(activity.Speak))
             {
+                activity.Speak = processSuggestedActions(activity, activity.Speak);
+
                 response.Response.OutputSpeech =
                     new SsmlOutputSpeech(
                         activity.Speak.Contains("<speak>")
@@ -235,6 +240,8 @@ namespace Bot.Builder.Community.Adapters.Alexa
             }
             else if (!string.IsNullOrEmpty(activity.Text))
             {
+                activity.Text = processSuggestedActions(activity, activity.Text);
+
                 response.Response.OutputSpeech = new SsmlOutputSpeech(
                     "<speak>" + activity.Text + "</speak>");
             }
@@ -259,6 +266,40 @@ namespace Bot.Builder.Community.Adapters.Alexa
             }
 
             return response;
+        }
+
+        private Activity processMultipleActivities(List<Activity> activities)
+        {
+            Activity resultActivity = activities.Last();
+            if (_options.TryConcatMultipleTextActivties && activities.Count() > 1)
+            {   
+                for (int i = activities.Count - 2; i >= 0; i--)
+                {
+                    if (!string.IsNullOrEmpty(activities[i].Speak))
+                    {
+                        activities[i].Speak = activities[i].Speak.Trim(new char[] { ' ', '.' });
+                        resultActivity.Text = string.Format("{0}. {1}", activities[i].Speak, resultActivity.Text);
+
+                    }
+                    else if (!string.IsNullOrEmpty(activities[i].Text)) {
+                        activities[i].Text = activities[i].Text.Trim(new char[] { ' ', '.'});
+                        resultActivity.Text = string.Format("{0}. {1}", activities[i].Text, resultActivity.Text);
+                    }
+                }
+            }
+            return resultActivity;
+        }
+
+        private string processSuggestedActions(Activity activity, string text)
+        {
+            if (_options.TryConvertSuggestedActionsToText && activity.SuggestedActions?.Actions != null && activity.SuggestedActions.Actions.Count() > 0)
+            {
+                for (int i = 0; i < activity.SuggestedActions.Actions.Count(); i++)
+                {
+                    text = string.Format("{0} ({1}) {2}", text, i+1, activity.SuggestedActions.Actions[i].Value);
+                }
+            }
+            return text;
         }
     }
 }

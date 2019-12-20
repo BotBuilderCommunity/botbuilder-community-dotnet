@@ -284,7 +284,7 @@ namespace Bot.Builder.Community.Adapters.Google
                                 }
                             };
 
-                        var suggestionChips = AddSuggestionChipsToResponse(context);
+                        var suggestionChips = AddSuggestionChipsToResponse(context, activity);
                         if (suggestionChips.Any())
                         {
                             response.ExpectedInputs.First().InputPrompt.RichInitialPrompt.Suggestions =
@@ -305,7 +305,7 @@ namespace Bot.Builder.Community.Adapters.Google
 
         private DialogFlowResponseBody CreateDialogFlowResponseFromLastActivity(IEnumerable<Activity> activities, ITurnContext context)
         {
-            var activity = activities != null && activities.Any() ? activities.Last() : null;
+            var activity = processMultipleActivities(activities.ToList());
 
             var response = new DialogFlowResponseBody()
             {
@@ -343,7 +343,7 @@ namespace Bot.Builder.Community.Adapters.Google
 
                 // If suggested actions have been added to outgoing activity
                 // add these to the response as Google Suggestion Chips
-                var suggestionChips = AddSuggestionChipsToResponse(context);
+                var suggestionChips = AddSuggestionChipsToResponse(context, activity);
                 if (suggestionChips.Any())
                 {
                     response.Payload.Google.RichResponse.Suggestions = suggestionChips.ToArray();
@@ -385,23 +385,32 @@ namespace Bot.Builder.Community.Adapters.Google
             }
         }
 
-        private static List<Suggestion> AddSuggestionChipsToResponse(ITurnContext context)
+        private static List<Suggestion> AddSuggestionChipsToResponse(ITurnContext context, Activity activity)
         {
             var suggestionChips = new List<Suggestion>();
 
-            if (context.TurnState.ContainsKey("GoogleSuggestionChips") && context.TurnState["GoogleSuggestionChips"] is List<Suggestion>)
+            if (activity.SuggestedActions?.Actions != null && activity.SuggestedActions.Actions.Count() > 0)
             {
-                suggestionChips.AddRange(context.TurnState.Get<List<Suggestion>>("GoogleSuggestionChips"));
-            }
-
-            if (context.Activity.SuggestedActions != null && context.Activity.SuggestedActions.Actions.Any())
-            {
-                foreach (var suggestion in context.Activity.SuggestedActions.Actions)
+                foreach(CardAction action in activity.SuggestedActions.Actions)
                 {
-                    suggestionChips.Add(new Suggestion { Title = suggestion.Title });
+                    suggestionChips.Add(new Suggestion { Title = action.Value.ToString() });
                 }
             }
+            else
+            {
+                if (context.TurnState.ContainsKey("GoogleSuggestionChips") && context.TurnState["GoogleSuggestionChips"] is List<Suggestion>)
+                {
+                    suggestionChips.AddRange(context.TurnState.Get<List<Suggestion>>("GoogleSuggestionChips"));
+                }
 
+                if (context.Activity.SuggestedActions != null && context.Activity.SuggestedActions.Actions.Any())
+                {
+                    foreach (var suggestion in context.Activity.SuggestedActions.Actions)
+                    {
+                        suggestionChips.Add(new Suggestion { Title = suggestion.Title });
+                    }
+                }
+            }
             return suggestionChips;
         }
 
@@ -449,6 +458,29 @@ namespace Bot.Builder.Community.Adapters.Google
         public override Task DeleteActivityAsync(ITurnContext turnContext, ConversationReference reference, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
+        }
+
+        private Activity processMultipleActivities(List<Activity> activities)
+        {
+            Activity resultActivity = activities.Last();
+            if (/*_options.TryConcatMultipleTextActivties &&*/ activities.Count() > 1)
+            {
+                for (int i = activities.Count - 2; i >= 0; i--)
+                {
+                    if (!string.IsNullOrEmpty(activities[i].Speak))
+                    {
+                        activities[i].Speak = activities[i].Speak.Trim(new char[] { ' ', '.' });
+                        resultActivity.Text = string.Format("{0}. {1}", activities[i].Speak, resultActivity.Text);
+
+                    }
+                    else if (!string.IsNullOrEmpty(activities[i].Text))
+                    {
+                        activities[i].Text = activities[i].Text.Trim(new char[] { ' ', '.' });
+                        resultActivity.Text = string.Format("{0}. {1}", activities[i].Text, resultActivity.Text);
+                    }
+                }
+            }
+            return resultActivity;
         }
     }
 }
