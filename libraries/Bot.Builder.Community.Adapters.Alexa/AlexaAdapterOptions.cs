@@ -8,8 +8,6 @@
 
         public bool ShouldEndSessionByDefault { get; set; } = true;
 
-        public bool TryConvertSuggestedActionsToText { get; set; } = false;
-
         public bool TryConcatenateTextFromMultipleActivities { get; set; } = false;
 
     }
