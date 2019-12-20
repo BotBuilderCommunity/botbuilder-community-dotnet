@@ -10,7 +10,7 @@
 
         public bool TryConvertSuggestedActionsToText { get; set; } = false;
 
-        public bool TryConcatMultipleTextActivties { get; set; } = false;
+        public bool TryConcatenateTextFromMultipleActivities { get; set; } = false;
 
     }
 }

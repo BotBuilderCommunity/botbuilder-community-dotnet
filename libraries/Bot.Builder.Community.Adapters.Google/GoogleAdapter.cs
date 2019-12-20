@@ -20,7 +20,6 @@ namespace Bot.Builder.Community.Adapters.Google
         public bool ShouldEndSessionByDefault { get; set; }
 
         public bool TryConvertFirstActivityAttachmentToGoogleCard { get; set; }
-        public bool TryConcatMultipleTextActivties { get; set; }
 
         public string ActionInvocationName { get; set; }
 
@@ -32,7 +31,6 @@ namespace Bot.Builder.Community.Adapters.Google
         {
             ShouldEndSessionByDefault = true;
             TryConvertFirstActivityAttachmentToGoogleCard = false;
-            TryConcatMultipleTextActivties = false;
         }
 
         public new GoogleAdapter Use(IMiddleware middleware)
@@ -286,7 +284,7 @@ namespace Bot.Builder.Community.Adapters.Google
                                 }
                             };
 
-                        var suggestionChips = AddSuggestionChipsToResponse(context, activity);
+                        var suggestionChips = AddSuggestionChipsToResponse(context);
                         if (suggestionChips.Any())
                         {
                             response.ExpectedInputs.First().InputPrompt.RichInitialPrompt.Suggestions =
@@ -307,7 +305,7 @@ namespace Bot.Builder.Community.Adapters.Google
 
         private DialogFlowResponseBody CreateDialogFlowResponseFromLastActivity(IEnumerable<Activity> activities, ITurnContext context)
         {
-            var activity = activities != null && activities.Any() ? processMultipleActivities(activities.ToList()) : null;
+            var activity = activities != null && activities.Any() ? activities.Last() : null;
 
             var response = new DialogFlowResponseBody()
             {
@@ -345,7 +343,7 @@ namespace Bot.Builder.Community.Adapters.Google
 
                 // If suggested actions have been added to outgoing activity
                 // add these to the response as Google Suggestion Chips
-                var suggestionChips = AddSuggestionChipsToResponse(context, activity);
+                var suggestionChips = AddSuggestionChipsToResponse(context);
                 if (suggestionChips.Any())
                 {
                     response.Payload.Google.RichResponse.Suggestions = suggestionChips.ToArray();
@@ -387,32 +385,23 @@ namespace Bot.Builder.Community.Adapters.Google
             }
         }
 
-        private static List<Suggestion> AddSuggestionChipsToResponse(ITurnContext context, Activity activity)
+        private static List<Suggestion> AddSuggestionChipsToResponse(ITurnContext context)
         {
             var suggestionChips = new List<Suggestion>();
 
-            if (activity.SuggestedActions?.Actions != null && activity.SuggestedActions.Actions.Count() > 0)
+            if (context.TurnState.ContainsKey("GoogleSuggestionChips") && context.TurnState["GoogleSuggestionChips"] is List<Suggestion>)
             {
-                foreach(CardAction action in activity.SuggestedActions.Actions)
-                {
-                    suggestionChips.Add(new Suggestion { Title = action.Value.ToString() });
-                }
+                suggestionChips.AddRange(context.TurnState.Get<List<Suggestion>>("GoogleSuggestionChips"));
             }
-            else
-            {
-                if (context.TurnState.ContainsKey("GoogleSuggestionChips") && context.TurnState["GoogleSuggestionChips"] is List<Suggestion>)
-                {
-                    suggestionChips.AddRange(context.TurnState.Get<List<Suggestion>>("GoogleSuggestionChips"));
-                }
 
-                if (context.Activity.SuggestedActions != null && context.Activity.SuggestedActions.Actions.Any())
+            if (context.Activity.SuggestedActions != null && context.Activity.SuggestedActions.Actions.Any())
+            {
+                foreach (var suggestion in context.Activity.SuggestedActions.Actions)
                 {
-                    foreach (var suggestion in context.Activity.SuggestedActions.Actions)
-                    {
-                        suggestionChips.Add(new Suggestion { Title = suggestion.Title });
-                    }
+                    suggestionChips.Add(new Suggestion { Title = suggestion.Title });
                 }
             }
+
             return suggestionChips;
         }
 
@@ -460,29 +449,6 @@ namespace Bot.Builder.Community.Adapters.Google
         public override Task DeleteActivityAsync(ITurnContext turnContext, ConversationReference reference, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
-        }
-
-        private Activity processMultipleActivities(List<Activity> activities)
-        {
-            Activity resultActivity = activities.Last();
-            if (TryConcatMultipleTextActivties && activities.Count() > 1)
-            {
-                for (int i = activities.Count - 2; i >= 0; i--)
-                {
-                    if (!string.IsNullOrEmpty(activities[i].Speak))
-                    {
-                        activities[i].Speak = activities[i].Speak.Trim(new char[] { ' ', '.' });
-                        resultActivity.Text = string.Format("{0}. {1}", activities[i].Speak, resultActivity.Text);
-
-                    }
-                    else if (!string.IsNullOrEmpty(activities[i].Text))
-                    {
-                        activities[i].Text = activities[i].Text.Trim(new char[] { ' ', '.' });
-                        resultActivity.Text = string.Format("{0}. {1}", activities[i].Text, resultActivity.Text);
-                    }
-                }
-            }
-            return resultActivity;
         }
     }
 }
