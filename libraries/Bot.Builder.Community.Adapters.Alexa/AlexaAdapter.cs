@@ -119,7 +119,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
             try
             {
                 var activities = Responses.ContainsKey(key) ? Responses[key] : new List<Activity>();
-                var response = CreateResponseFromActivity(activities, context);
+                var response = CreateResponseFromActivity(processMultipleActivities(activities), context);
                 return response;
             }
             finally
@@ -212,10 +212,8 @@ namespace Bot.Builder.Community.Adapters.Alexa
             }
         }
 
-        private SkillResponse CreateResponseFromActivity(List<Activity> activities, ITurnContext context)
+        private SkillResponse CreateResponseFromActivity(Activity activity, ITurnContext context)
         {
-            Activity activity = processMultipleActivities(activities);
-
             var response = new SkillResponse()
             {
                 Version = "1.0",
