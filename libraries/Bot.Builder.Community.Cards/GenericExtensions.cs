@@ -7,9 +7,9 @@ using Microsoft.Bot.Builder;
 
 namespace Bot.Builder.Community.Cards
 {
-    public static class GenericExtensions
+    internal static class GenericExtensions
     {
-        public static async Task<T> GetNonNullAsync<T>(
+        internal static async Task<T> GetNotNullAsync<T>(
             this IStatePropertyAccessor<T> statePropertyAccessor,
             ITurnContext turnContext,
             Func<T> defaultValueFactory = null,
@@ -47,7 +47,7 @@ namespace Bot.Builder.Community.Cards
         /// True if the value was added because the key was not present.
         /// False if the value was not added because the key was present.
         /// </returns>
-        public static bool InitializeKey<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key, TValue value = default)
+        internal static bool InitializeKey<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, TValue value = default)
         {
             if (dict is null)
             {
@@ -64,12 +64,12 @@ namespace Bot.Builder.Community.Cards
             return true;
         }
 
-        public static bool IsOneOf<T>(this T obj, params T[] list)
+        internal static bool IsOneOf<T>(this T obj, params T[] list)
         {
             return list.Contains(obj);
         }
 
-        public static bool IsOneOf<T>(this T obj, IEqualityComparer<T> equalityComparer, params T[] list)
+        internal static bool IsOneOf<T>(this T obj, IEqualityComparer<T> equalityComparer, params T[] list)
         {
             return list.Contains(obj, equalityComparer);
         }

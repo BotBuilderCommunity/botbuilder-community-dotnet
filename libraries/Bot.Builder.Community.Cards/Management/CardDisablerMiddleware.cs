@@ -35,7 +35,7 @@ namespace Bot.Builder.Community.Cards.Management
 
             if (turnContext.Activity?.Type == ActivityTypes.Message && turnContext.Activity.Value is JObject value)
             {
-                var state = await Manager.StateAccessor.GetNonNullAsync(turnContext, () => new CardDisablerState(), cancellationToken);
+                var state = await Manager.StateAccessor.GetNotNullAsync(turnContext, () => new CardDisablerState(), cancellationToken);
 
                 foreach (var type in Enum.GetValues(typeof(IdType)).Cast<IdType>())
                 {
@@ -43,7 +43,7 @@ namespace Bot.Builder.Community.Cards.Management
 
                     if (Options.IdOptions.HasIdType(type) && id != null)
                     {
-                        state.DisabledIdsByType.TryGetValue(type, out var disabledList);
+                        state.TrackedIdsByType.TryGetValue(type, out var disabledList);
 
                         if (disabledList?.Contains(id) == true)
                         {

@@ -39,7 +39,7 @@ namespace Bot.Builder.Community.Cards.Management
 
                 if (id != null && id == state?.FocusedId)
                 {
-                    if (Options.AutoUnfocus)
+                    if (Options.AutoUnfocusOnAction)
                     {
                         state.FocusedId = null;
                     }
@@ -58,6 +58,13 @@ namespace Bot.Builder.Community.Cards.Management
 
         private async Task<ResourceResponse[]> OnSendActivities(ITurnContext turnContext, List<Activity> activities, Func<Task<ResourceResponse[]>> next)
         {
+            if (Options.AutoUnfocusOnSend)
+            {
+                var state = await Manager.StateAccessor.GetNotNullAsync(turnContext, () => new CardFocuserState());
+
+                state.FocusedId = null;
+            }
+
             if (Options.AutoApplyId)
             {
                 var options = new IdOptions(Options.IdType);
@@ -65,7 +72,7 @@ namespace Bot.Builder.Community.Cards.Management
 
                 if (Options.AutoFocus)
                 {
-                    var state = await Manager.StateAccessor.GetNonNullAsync(turnContext, () => new CardFocuserState());
+                    var state = await Manager.StateAccessor.GetNotNullAsync(turnContext, () => new CardFocuserState());
 
                     state.FocusedId = id;
                 }

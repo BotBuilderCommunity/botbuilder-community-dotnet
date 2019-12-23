@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json.Linq;
 
@@ -124,17 +125,11 @@ namespace Bot.Builder.Community.Cards
             // Iterate over all objects named "data" that aren't nested in another object named "data".
             // This effectively finds all the "payloads" of submit actions while accounting for situations
             // where a submit action's data itself contains a property with the name "data".
-            foreach (var data in adaptiveCard.Descendants()
-                .Where(token =>
-                    token.Type == JTokenType.Property
-                    && !token.Ancestors().Any(ancestor =>
-                        (ancestor as JProperty)?.Name.Equals(
-                            CardConstants.SubmitActionDataKey,
-                            StringComparison.OrdinalIgnoreCase) == true))
+            foreach (var data in adaptiveCard.NonDataDescendants()
                 .Select(token => token as JProperty)
                 .Where(prop =>
                     prop.Name.Equals(
-                        CardConstants.SubmitActionDataKey,
+                        CardConstants.KeyData,
                         StringComparison.OrdinalIgnoreCase)
                     && prop.Value?.Type == JTokenType.Object)
                 .Select(prop => prop.Value as JObject))
@@ -278,6 +273,15 @@ namespace Bot.Builder.Community.Cards
             return null;
         }
 
+        public static IEnumerable<JToken> NonDataDescendants(this JContainer container)
+        {
+            return container.Descendants().Where(token =>
+                !token.Ancestors().Any(ancestor =>
+                    (ancestor as JProperty)?.Name.Equals(
+                        CardConstants.KeyData,
+                        StringComparison.OrdinalIgnoreCase) == true));
+        }
+
         internal static string GetKey(this IdType type)
         {
             // If multiple flags are present, only use the first one
@@ -294,9 +298,9 @@ namespace Bot.Builder.Community.Cards
 
             if (options.HasIdType(type))
             {
-                var id = options.GetId(type);
+                var id = options.Get(type);
 
-                return id is null ? options.SetId(type, type.GenerateId()) : id;
+                return id is null ? options.Set(type, type.GenerateId()) : id;
             }
 
             return null;

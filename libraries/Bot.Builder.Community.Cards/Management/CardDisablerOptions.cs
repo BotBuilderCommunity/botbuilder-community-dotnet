@@ -8,6 +8,8 @@ namespace Bot.Builder.Community.Cards.Management
 
         public bool AutoDisable { get; set; } = true;
 
+        public bool TrackEnabledIds { get; set; } = true;
+
         public IdOptions IdOptions { get; set; } = new IdOptions(IdType.Card);
     }
 }

@@ -34,16 +34,13 @@ namespace Bot.Builder.Community.Cards.Management
                 throw new ArgumentNullException(nameof(id));
             }
 
-            var state = await StateAccessor.GetAsync(turnContext, () => new CardDisablerState(), cancellationToken);
+            var state = await StateAccessor.GetNotNullAsync(turnContext, () => new CardDisablerState(), cancellationToken);
 
-            if (state is null)
-            {
-                await StateAccessor.SetAsync(turnContext, state = new CardDisablerState(), cancellationToken);
-            }
+            state.TrackedIdsByType.TryGetValue(type, out var disabledList);
 
-            if (!state.DisabledIdsByType.TryGetValue(type, out var disabledList))
+            if (disabledList is null)
             {
-                state.DisabledIdsByType[type] = disabledList = new List<string>();
+                state.TrackedIdsByType[type] = disabledList = new List<string>();
             }
 
             disabledList.Add(id);

@@ -33,12 +33,7 @@ namespace Bot.Builder.Community.Cards.Management
                 throw new ArgumentNullException(nameof(id));
             }
 
-            var state = await StateAccessor.GetAsync(turnContext, () => new CardFocuserState(), cancellationToken);
-
-            if (state is null)
-            {
-                await StateAccessor.SetAsync(turnContext, state = new CardFocuserState(), cancellationToken);
-            }
+            var state = await StateAccessor.GetNotNullAsync(turnContext, () => new CardFocuserState(), cancellationToken);
 
             state.FocusedId = id;
         }

@@ -6,24 +6,15 @@ namespace Bot.Builder.Community.Cards
 {
     public class IdOptions
     {
-        private readonly Dictionary<IdType, string> _ids = new Dictionary<IdType, string>();
+        private readonly IDictionary<IdType, string> _ids = new Dictionary<IdType, string>();
 
-        public IdOptions(bool overwrite = false)
-        {
-            Overwrite = overwrite;
-        }
+        public IdOptions(bool overwrite = false) => Overwrite = overwrite;
 
         public IdOptions(IdType type, bool overwrite = false)
-            : this(overwrite)
-        {
-            _ids.Add(type, null);
-        }
+            : this(overwrite) => _ids.Add(type, null);
 
         public IdOptions(IdType type, string id, bool overwrite = false)
-            : this(overwrite)
-        {
-            _ids.Add(type, id);
-        }
+            : this(overwrite) => _ids.Add(type, id);
 
         public IdOptions(IEnumerable<IdType> types, bool overwrite = false)
             : this(overwrite)
@@ -39,7 +30,7 @@ namespace Bot.Builder.Community.Cards
             }
         }
 
-        public IdOptions(Dictionary<IdType, string> ids, bool overwrite = false)
+        public IdOptions(IDictionary<IdType, string> ids, bool overwrite = false)
             : this(overwrite)
         {
             if (ids is null)
@@ -54,11 +45,15 @@ namespace Bot.Builder.Community.Cards
 
         public IdOptions Clone() => new IdOptions(_ids, Overwrite);
 
-        public string GetId(IdType type) => _ids.TryGetValue(type, out var value) ? value : null;
+        public string Get(IdType type) => _ids.TryGetValue(type, out var value) ? value : null;
 
-        public Dictionary<IdType, string> GetIds() => new Dictionary<IdType, string>(_ids);
+        public string Set(IdType type, string id = null) => _ids[type] = id;
 
-        public List<IdType> GetIdTypes() => new List<IdType>(_ids.Keys);
+        public bool Remove(IdType type) => _ids.Remove(type);
+
+        public IDictionary<IdType, string> GetIds() => new Dictionary<IdType, string>(_ids);
+
+        public IEnumerable<IdType> GetIdTypes() => new List<IdType>(_ids.Keys);
 
         public bool HasIdType(IdType type) => _ids.ContainsKey(type);
 
@@ -71,14 +66,6 @@ namespace Bot.Builder.Community.Cards
         /// True if the ID was assigned because the ID type was not present.
         /// False if the ID was not assigned because the ID type was present.
         /// </returns>
-        public bool InitializeId(IdType type, string id = null)
-        {
-            return _ids.InitializeKey(type, id);
-        }
-
-        public string SetId(IdType type, string id = null)
-        {
-            return _ids[type] = id;
-        }
+        public bool InitializeId(IdType type, string id = null) => _ids.InitializeKey(type, id);
     }
 }

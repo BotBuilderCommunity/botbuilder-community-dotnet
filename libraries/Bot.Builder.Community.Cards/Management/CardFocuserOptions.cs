@@ -6,8 +6,9 @@
 
         public bool AutoFocus { get; set; } = true;
 
-        public bool AutoUnfocus { get; set; } = true;
+        public bool AutoUnfocusOnAction { get; set; } = true;
 
         public IdType IdType { get; set; } = IdType.Batch;
+        public bool AutoUnfocusOnSend { get; internal set; }
     }
 }

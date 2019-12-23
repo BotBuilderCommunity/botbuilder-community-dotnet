@@ -5,7 +5,7 @@ namespace Bot.Builder.Community.Cards.Management
 {
     public class CardDisablerState
     {
-        [JsonProperty("disabledIdsByType")]
-        public Dictionary<IdType, List<string>> DisabledIdsByType { get; } = new Dictionary<IdType, List<string>>();
+        [JsonProperty("trackedIdsByType")]
+        public Dictionary<IdType, List<string>> TrackedIdsByType { get; } = new Dictionary<IdType, List<string>>();
     }
 }
