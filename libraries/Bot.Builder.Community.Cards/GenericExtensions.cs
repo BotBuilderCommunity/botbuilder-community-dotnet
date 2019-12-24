@@ -4,11 +4,22 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Dialogs;
 
 namespace Bot.Builder.Community.Cards
 {
+    /// <summary>
+    /// These are general-purpose extension methods that aren't directly related to the library
+    /// and so they're not made public.
+    /// </summary>
     internal static class GenericExtensions
     {
+        internal static void Deconstruct<T1, T2>(this KeyValuePair<T1, T2> tuple, out T1 key, out T2 value)
+        {
+            key = tuple.Key;
+            value = tuple.Value;
+        }
+
         internal static async Task<T> GetNotNullAsync<T>(
             this IStatePropertyAccessor<T> statePropertyAccessor,
             ITurnContext turnContext,
@@ -60,6 +71,23 @@ namespace Bot.Builder.Community.Cards
             }
 
             dict.Add(key, value);
+
+            return true;
+        }
+
+        internal static bool SetExistingValue<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, TValue value = default)
+        {
+            if (dict is null)
+            {
+                throw new ArgumentNullException(nameof(dict));
+            }
+
+            if (!dict.ContainsKey(key))
+            {
+                return false;
+            }
+
+            dict[key] = value;
 
             return true;
         }

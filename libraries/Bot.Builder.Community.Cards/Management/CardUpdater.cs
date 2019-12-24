@@ -15,8 +15,6 @@ namespace Bot.Builder.Community.Cards.Management
     public class CardUpdater<T>
         where T : BotState
     {
-        private readonly string[] inputTypes = new[] { "Input.Text", "Input.Number", "Input.Date", "Input.Time", "Input.Toggle", "Input.ChoiceSet" };
-
         public CardUpdater(T botState, CardSet cardSet = null)
             : this(botState?.CreateProperty<CardUpdaterState>(nameof(CardUpdaterState)) ?? throw new ArgumentNullException(nameof(botState)), cardSet)
         {
@@ -39,6 +37,7 @@ namespace Bot.Builder.Community.Cards.Management
 
         public async Task PreserveValuesAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
         {
+            var inputTypes = new[] { "Input.Text", "Input.Number", "Input.Date", "Input.Time", "Input.Toggle", "Input.ChoiceSet" };
             var activity = turnContext?.Activity;
             var value = activity?.Value;
 

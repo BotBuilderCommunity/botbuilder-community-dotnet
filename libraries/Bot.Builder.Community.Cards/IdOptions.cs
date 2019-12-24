@@ -13,9 +13,6 @@ namespace Bot.Builder.Community.Cards
         public IdOptions(IdType type, bool overwrite = false)
             : this(overwrite) => _ids.Add(type, null);
 
-        public IdOptions(IdType type, string id, bool overwrite = false)
-            : this(overwrite) => _ids.Add(type, id);
-
         public IdOptions(IEnumerable<IdType> types, bool overwrite = false)
             : this(overwrite)
         {
@@ -30,28 +27,12 @@ namespace Bot.Builder.Community.Cards
             }
         }
 
-        public IdOptions(IDictionary<IdType, string> ids, bool overwrite = false)
-            : this(overwrite)
-        {
-            if (ids is null)
-            {
-                throw new ArgumentNullException(nameof(ids));
-            }
-
-            _ids = new Dictionary<IdType, string>(ids);
-        }
+        private IdOptions(IDictionary<IdType, string> ids, bool overwrite = false)
+            : this(overwrite) => _ids = new Dictionary<IdType, string>(ids);
 
         public bool Overwrite { get; set; }
 
         public IdOptions Clone() => new IdOptions(_ids, Overwrite);
-
-        public string Get(IdType type) => _ids.TryGetValue(type, out var value) ? value : null;
-
-        public string Set(IdType type, string id = null) => _ids[type] = id;
-
-        public bool Remove(IdType type) => _ids.Remove(type);
-
-        public IDictionary<IdType, string> GetIds() => new Dictionary<IdType, string>(_ids);
 
         public IEnumerable<IdType> GetIdTypes() => new List<IdType>(_ids.Keys);
 
@@ -67,5 +48,13 @@ namespace Bot.Builder.Community.Cards
         /// False if the ID was not assigned because the ID type was present.
         /// </returns>
         public bool InitializeId(IdType type, string id = null) => _ids.InitializeKey(type, id);
+
+        public bool SetExistingId(IdType type, string id = null) => _ids.SetExistingValue(type, id);
+
+        public string Get(IdType type) => _ids.TryGetValue(type, out var value) ? value : null;
+
+        public string Set(IdType type, string id = null) => _ids[type] = id;
+
+        public IDictionary<IdType, string> GetIds() => new Dictionary<IdType, string>(_ids);
     }
 }
