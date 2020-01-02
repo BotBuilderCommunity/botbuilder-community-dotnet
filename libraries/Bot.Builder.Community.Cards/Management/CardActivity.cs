@@ -1,15 +1,21 @@
-﻿namespace Bot.Builder.Community.Cards.Management
+﻿using Microsoft.Bot.Schema;
+
+namespace Bot.Builder.Community.Cards.Management
 {
-    public class CardActivity
+    internal class CardActivity
     {
-        public CardActivity(string activityId, string cardName = null)
+        public CardActivity(Attachment attachment)
         {
-            ActivityId = activityId;
-            CardName = cardName;
+            Attachment = attachment ?? throw new System.ArgumentNullException(nameof(attachment));
         }
 
-        public string ActivityId { get; }
+        public CardActivity(GenerateCardsDelegate generateCards)
+        {
+            GenerateCards = generateCards;
+        }
 
-        public string CardName { get; }
+        public GenerateCardsDelegate GenerateCards { get; }
+
+        public Attachment Attachment { get; }
     }
 }

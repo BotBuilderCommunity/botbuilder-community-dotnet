@@ -2,11 +2,11 @@
 
 namespace Bot.Builder.Community.Cards.Management
 {
-    public class CardManagerOptions
+    public class CardManagerMiddlewareOptions
     {
-        public bool AutoApplyId { get; set; } = true;
+        public bool AutoApplyId { get; set; }
 
-        public bool AutoDisableOnAction { get; set; } = true;
+        public bool AutoDisableOnAction { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether to disable all ID's every time a message activity is sent from the bot.
@@ -15,10 +15,14 @@ namespace Bot.Builder.Community.Cards.Management
         /// <value>
         /// If true, the middleware will clear the enabled ID list every time a message activity is sent from the bot.
         /// </value>
-        public bool AutoClearListOnSend { get; set; } = true;
+        public bool AutoClearTrackedOnSend { get; set; }
 
-        public bool AutoEnableSentId { get; set; } = true;
+        public bool AutoEnableSentIds { get; set; }
 
-        public IdOptions IdOptions { get; set; } = new IdOptions(IdType.Batch);
+        public bool AutoSaveActivitiesOnSend { get; set; }
+
+        public bool AutoSeparateAttachments { get; set; }
+
+        public IdOptions IdOptions { get; set; }
     }
 }

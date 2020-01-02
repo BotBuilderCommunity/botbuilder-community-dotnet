@@ -23,13 +23,12 @@ namespace Bot.Builder.Community.Cards
         Card,
 
         /// <summary>
-        /// An attachments ID should be the same for every action across all card attachment
-        /// in a single activity's <see cref="Activity.Attachments">Attachments</see> property.
-        /// This is not called an activity ID to avoid confusion
-        /// because that would be ambiguous with an actual activity's activity ID.
+        /// A carousel ID should be the same for every action across all card attachments
+        /// in a single activity. This is not called an activity ID to avoid confusion because
+        /// that would be ambiguous with an activity's actual activity ID from the channel.
         /// </summary>
-        [EnumMember(Value = "attachments")]
-        Attachments,
+        [EnumMember(Value = "carousel")]
+        Carousel,
 
         /// <summary>
         /// A batch ID should be the same for every action in a batch of activities.

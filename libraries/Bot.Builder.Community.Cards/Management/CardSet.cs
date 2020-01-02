@@ -8,7 +8,7 @@ namespace Bot.Builder.Community.Cards.Management
 {
     public class CardSet
     {
-        private readonly IDictionary<string, CardAttachment> _cards = new Dictionary<string, CardAttachment>();
+        private readonly IDictionary<string, CardActivity> _cards = new Dictionary<string, CardActivity>();
 
         public CardSet()
         {
@@ -21,7 +21,7 @@ namespace Bot.Builder.Community.Cards.Management
                 throw new ArgumentNullException(nameof(cards));
             }
 
-            _cards = cards.ToDictionary(card => card.Key, card => new CardAttachment(card.Value));
+            _cards = cards.ToDictionary(card => card.Key, card => new CardActivity(card.Value));
         }
 
         public CardSet Add(string name, Attachment attachment)
@@ -36,7 +36,7 @@ namespace Bot.Builder.Community.Cards.Management
                 throw new ArgumentNullException(nameof(attachment));
             }
 
-            _cards[name] = new CardAttachment(attachment);
+            _cards[name] = new CardActivity(attachment);
 
             return this;
         }

@@ -36,11 +36,11 @@ namespace Bot.Builder.Community.Cards
                 throw new ArgumentNullException(nameof(turnContext));
             }
 
-            var state = await statePropertyAccessor.GetAsync(turnContext, defaultValueFactory, cancellationToken);
+            var state = await statePropertyAccessor.GetAsync(turnContext, defaultValueFactory, cancellationToken).ConfigureAwait(false);
 
             if (state == null && defaultValueFactory != null)
             {
-                await statePropertyAccessor.SetAsync(turnContext, state = defaultValueFactory());
+                await statePropertyAccessor.SetAsync(turnContext, state = defaultValueFactory()).ConfigureAwait(false);
             }
 
             return state;
@@ -92,14 +92,14 @@ namespace Bot.Builder.Community.Cards
             return true;
         }
 
-        internal static bool IsOneOf<T>(this T obj, params T[] list)
+        internal static bool IsOneOf<T>(this T obj, params T[] these)
         {
-            return list.Contains(obj);
+            return these.Contains(obj);
         }
 
-        internal static bool IsOneOf<T>(this T obj, IEqualityComparer<T> equalityComparer, params T[] list)
+        internal static bool IsOneOf<T>(this T obj, IEqualityComparer<T> equalityComparer, params T[] these)
         {
-            return list.Contains(obj, equalityComparer);
+            return these.Contains(obj, equalityComparer);
         }
     }
 }

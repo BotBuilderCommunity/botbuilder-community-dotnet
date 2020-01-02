@@ -82,18 +82,18 @@ namespace Bot.Builder.Community.Cards.Translation
                         request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
                         request.Headers.Add("Ocp-Apim-Subscription-Key", translatorKey);
 
-                        var response = await _lazyClient.Value.SendAsync(request, innerCancellationToken);
+                        var response = await _lazyClient.Value.SendAsync(request, innerCancellationToken).ConfigureAwait(false);
 
                         response.EnsureSuccessStatusCode();
 
-                        var responseBody = await response.Content.ReadAsStringAsync();
+                        var responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                         var result = JsonConvert.DeserializeObject<TranslatorResponse[]>(responseBody);
 
                         return result.Select(translatorResponse => translatorResponse?.Translations?.FirstOrDefault()?.Text).ToList();
                     }
                 },
                 settings,
-                cancellationToken);
+                cancellationToken).ConfigureAwait(false);
         }
 
         public static async Task<object> TranslateAsync(
@@ -106,11 +106,11 @@ namespace Bot.Builder.Community.Cards.Translation
                 card,
                 async (inputs, innerCancellationToken) =>
                 {
-                    var tasks = inputs.Select(async input => await translateOneAsync(input, innerCancellationToken));
-                    return await Task.WhenAll(tasks);
+                    var tasks = inputs.Select(async input => await translateOneAsync(input, innerCancellationToken).ConfigureAwait(false));
+                    return await Task.WhenAll(tasks).ConfigureAwait(false);
                 },
                 settings,
-                cancellationToken);
+                cancellationToken).ConfigureAwait(false);
         }
 
         public static async Task<object> TranslateAsync(
@@ -122,7 +122,7 @@ namespace Bot.Builder.Community.Cards.Translation
             var cardJObject = JObject.FromObject(card);
             var tokens = GetTokens(cardJObject, settings ?? DefaultSettings);
 
-            var translations = await translateManyAsync(tokens.Select(token => (string)token).ToList(), cancellationToken);
+            var translations = await translateManyAsync(tokens.Select(token => (string)token).ToList(), cancellationToken).ConfigureAwait(false);
 
             if (translations != null)
             {
@@ -144,12 +144,12 @@ namespace Bot.Builder.Community.Cards.Translation
 
         public async Task<object> TranslateAsync(object card, string targetLocale, CancellationToken cancellationToken = default)
         {
-            return await TranslateAsync(card, targetLocale, TranslatorKey, Settings, cancellationToken);
+            return await TranslateAsync(card, targetLocale, TranslatorKey, Settings, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<object> TranslateAsync(object card, CancellationToken cancellationToken = default)
         {
-            return await TranslateAsync(card, TargetLocale, TranslatorKey, Settings, cancellationToken);
+            return await TranslateAsync(card, TargetLocale, TranslatorKey, Settings, cancellationToken).ConfigureAwait(false);
         }
 
         private static List<JToken> GetTokens(JObject cardJObject, AdaptiveCardTranslatorSettings settings)

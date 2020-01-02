@@ -34,7 +34,7 @@ namespace Bot.Builder.Community.Cards
 
         public IdOptions Clone() => new IdOptions(_ids, Overwrite);
 
-        public IEnumerable<IdType> GetIdTypes() => new List<IdType>(_ids.Keys);
+        public IEnumerable<IdType> GetIdTypes() => new HashSet<IdType>(_ids.Keys);
 
         public bool HasIdType(IdType type) => _ids.ContainsKey(type);
 
