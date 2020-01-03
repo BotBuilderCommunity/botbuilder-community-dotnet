@@ -304,13 +304,13 @@ namespace Bot.Builder.Community.Adapters.Alexa
 
             if(activities.Count() > 1)
             {
-                switch (_options.MultipleOutgoingActivityPolicy)
+                switch (_options.MultipleOutgoingActivitiesPolicy)
                 {
-                    case MultipleOutgoingActivityPolicies.TakeFirstActivity:
+                    case MultipleOutgoingActivitiesPolicies.TakeFirstActivity:
                         return activities.First();
-                    case MultipleOutgoingActivityPolicies.TakeLastActivity:
+                    case MultipleOutgoingActivitiesPolicies.TakeLastActivity:
                         return activities.Last();
-                    case MultipleOutgoingActivityPolicies.ConcatenateTextSpeakPropertiesFromAllActivities:
+                    case MultipleOutgoingActivitiesPolicies.ConcatenateTextSpeakPropertiesFromAllActivities:
                         var resultActivity = activities.Last();
 
                         for (int i = activities.Count - 2; i >= 0; i--)

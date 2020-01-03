@@ -8,10 +8,10 @@
 
         public bool ShouldEndSessionByDefault { get; set; } = true;
 
-        public MultipleOutgoingActivityPolicies MultipleOutgoingActivityPolicy { get; set; } = MultipleOutgoingActivityPolicies.TakeLastActivity;
+        public MultipleOutgoingActivitiesPolicies MultipleOutgoingActivitiesPolicy { get; set; } = MultipleOutgoingActivitiesPolicies.TakeLastActivity;
     }
 
-    public enum MultipleOutgoingActivityPolicies
+    public enum MultipleOutgoingActivitiesPolicies
     {
         TakeFirstActivity,
         TakeLastActivity,
