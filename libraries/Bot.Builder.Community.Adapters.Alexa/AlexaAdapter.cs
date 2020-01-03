@@ -306,11 +306,11 @@ namespace Bot.Builder.Community.Adapters.Alexa
             {
                 switch (_options.MultipleOutgoingActivityPolicy)
                 {
-                    case AlexaAdapterOptions.MultipleOutgoingActivityPolicies.TakeFirstActivity:
+                    case MultipleOutgoingActivityPolicies.TakeFirstActivity:
                         return activities.First();
-                    case AlexaAdapterOptions.MultipleOutgoingActivityPolicies.TakeLastActivity:
+                    case MultipleOutgoingActivityPolicies.TakeLastActivity:
                         return activities.Last();
-                    case AlexaAdapterOptions.MultipleOutgoingActivityPolicies.ConcatenateTextSpeakPropertiesFromAllActivities:
+                    case MultipleOutgoingActivityPolicies.ConcatenateTextSpeakPropertiesFromAllActivities:
                         var resultActivity = activities.Last();
 
                         for (int i = activities.Count - 2; i >= 0; i--)

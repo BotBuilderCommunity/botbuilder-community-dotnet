@@ -9,12 +9,12 @@
         public bool ShouldEndSessionByDefault { get; set; } = true;
 
         public MultipleOutgoingActivityPolicies MultipleOutgoingActivityPolicy { get; set; } = MultipleOutgoingActivityPolicies.TakeLastActivity;
+    }
 
-        public enum MultipleOutgoingActivityPolicies
-        {
-            TakeFirstActivity,
-            TakeLastActivity,
-            ConcatenateTextSpeakPropertiesFromAllActivities
-        }
+    public enum MultipleOutgoingActivityPolicies
+    {
+        TakeFirstActivity,
+        TakeLastActivity,
+        ConcatenateTextSpeakPropertiesFromAllActivities
     }
 }
