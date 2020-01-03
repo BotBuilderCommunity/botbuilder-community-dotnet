@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices.ComTypes;
 using System.Security;
 using System.Security.Authentication;
 using System.Security.Claims;
@@ -118,7 +119,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
             try
             {
                 var activities = Responses.ContainsKey(key) ? Responses[key] : new List<Activity>();
-                var response = CreateResponseFromActivity(activities.First(), context);
+                var response = CreateResponseFromActivities(activities, context);
                 return response;
             }
             finally
@@ -211,8 +212,10 @@ namespace Bot.Builder.Community.Adapters.Alexa
             }
         }
 
-        private SkillResponse CreateResponseFromActivity(Activity activity, ITurnContext context)
+        private SkillResponse CreateResponseFromActivities(List<Activity> activities, ITurnContext context)
         {
+            Activity activity = processMultipleActivities(activities);
+
             var response = new SkillResponse()
             {
                 Version = "1.0",
@@ -259,6 +262,28 @@ namespace Bot.Builder.Community.Adapters.Alexa
             }
 
             return response;
+        }
+
+        private Activity processMultipleActivities(List<Activity> activities)
+        {
+            Activity resultActivity = activities.Last();
+            if (_options.TryConcatenateTextFromMultipleActivities && activities.Count() > 1)
+            {   
+                for (int i = activities.Count - 2; i >= 0; i--)
+                {
+                    if (!string.IsNullOrEmpty(activities[i].Speak))
+                    {
+                        activities[i].Speak = activities[i].Speak.Trim(new char[] { ' ', '.' });
+                        resultActivity.Text = string.Format("{0}. {1}", activities[i].Speak, resultActivity.Text);
+
+                    }
+                    else if (!string.IsNullOrEmpty(activities[i].Text)) {
+                        activities[i].Text = activities[i].Text.Trim(new char[] { ' ', '.'});
+                        resultActivity.Text = string.Format("{0}. {1}", activities[i].Text, resultActivity.Text);
+                    }
+                }
+            }
+            return resultActivity;
         }
     }
 }
