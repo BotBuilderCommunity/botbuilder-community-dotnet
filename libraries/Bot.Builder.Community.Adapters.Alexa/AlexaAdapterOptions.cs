@@ -8,7 +8,13 @@
 
         public bool ShouldEndSessionByDefault { get; set; } = true;
 
-        public bool TryConcatenateTextFromMultipleActivities { get; set; } = false;
+        public MultipleOutgoingActivityPolicies MultipleOutgoingActivityPolicy { get; set; } = MultipleOutgoingActivityPolicies.TakeLastActivity;
 
+        public enum MultipleOutgoingActivityPolicies
+        {
+            TakeFirstActivity,
+            TakeLastActivity,
+            ConcatenateTextSpeakPropertiesFromAllActivities
+        }
     }
 }

@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Runtime.InteropServices.ComTypes;
 using System.Security;
 using System.Security.Authentication;
-using System.Security.Claims;
-using System.Security.Principal;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,14 +36,13 @@ namespace Bot.Builder.Community.Adapters.Alexa
 
         private readonly AlexaAdapterOptions _options;
         private readonly ILogger _logger;
+        private Dictionary<string, List<Activity>> _responses;
 
         public AlexaAdapter(AlexaAdapterOptions options = null, ILogger logger = null)
         {
             _options = options ?? new AlexaAdapterOptions();
             _logger = logger ?? NullLogger.Instance;
         }
-
-        private Dictionary<string, List<Activity>> Responses { get; set; }
 
         public async Task ProcessAsync(HttpRequest httpRequest, HttpResponse httpResponse, IBot bot, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -84,7 +80,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
                 throw new AuthenticationException("Failed to validate incoming request.");
             }
 
-            var alexaResponse = await ProcessActivity(skillRequest, bot.OnTurnAsync);
+            var alexaResponse = await ProcessAlexaRequestAsync(skillRequest, bot.OnTurnAsync);
 
             if (alexaResponse == null)
             {
@@ -100,37 +96,6 @@ namespace Bot.Builder.Community.Adapters.Alexa
             await httpResponse.Body.WriteAsync(responseData, 0, responseData.Length, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SkillResponse> ProcessActivity(SkillRequest alexaRequest, BotCallbackHandler callback)
-        {
-            var activity = RequestToActivity(alexaRequest);
-            var context = new TurnContext(this, activity);
-
-            Responses = new Dictionary<string, List<Activity>>();
-
-            await RunPipelineAsync(context, callback, default).ConfigureAwait(false);
-
-            if (context.GetAlexaRequestBody().Request.Type == "SessionEndedRequest")
-            {
-                return ResponseBuilder.Tell(string.Empty);
-            }
-
-            var key = $"{activity.Conversation.Id}:{activity.Id}";
-
-            try
-            {
-                var activities = Responses.ContainsKey(key) ? Responses[key] : new List<Activity>();
-                var response = CreateResponseFromActivities(activities, context);
-                return response;
-            }
-            finally
-            {
-                if (Responses.ContainsKey(key))
-                {
-                    Responses.Remove(key);
-                }
-            }
-        }
-
         public override Task<ResourceResponse[]> SendActivitiesAsync(ITurnContext turnContext, Activity[] activities, CancellationToken cancellationToken)
         {
             var resourceResponses = new List<ResourceResponse>();
@@ -143,13 +108,13 @@ namespace Bot.Builder.Community.Adapters.Alexa
                         var conversation = activity.Conversation ?? new ConversationAccount();
                         var key = $"{conversation.Id}:{activity.ReplyToId}";
 
-                        if (Responses.ContainsKey(key))
+                        if (_responses.ContainsKey(key))
                         {
-                            Responses[key].Add(activity);
+                            _responses[key].Add(activity);
                         }
                         else
                         {
-                            Responses[key] = new List<Activity> { activity };
+                            _responses[key] = new List<Activity> { activity };
                         }
 
                         break;
@@ -164,6 +129,41 @@ namespace Bot.Builder.Community.Adapters.Alexa
             return Task.FromResult(resourceResponses.ToArray());
         }
 
+        /// <summary>
+        /// Sends a proactive message to a conversation.
+        /// </summary>
+        /// <param name="reference">A reference to the conversation to continue.</param>
+        /// <param name="logic">The method to call for the resulting bot turn.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects
+        /// or threads to receive notice of cancellation.</param>
+        /// <returns>A task that represents the work queued to execute.</returns>
+        /// <remarks>Call this method to proactively send a message to a conversation.
+        /// Most channels require a user to initiate a conversation with a bot
+        /// before the bot can send activities to the user.</remarks>
+        /// <seealso cref="BotAdapter.RunPipelineAsync(ITurnContext, BotCallbackHandler, CancellationToken)"/>
+        /// <exception cref="ArgumentNullException"><paramref name="reference"/> or
+        /// <paramref name="logic"/> is <c>null</c>.</exception>
+        public async Task ContinueConversationAsync(ConversationReference reference, BotCallbackHandler logic, CancellationToken cancellationToken)
+        {
+            if (reference == null)
+            {
+                throw new ArgumentNullException(nameof(reference));
+            }
+
+            if (logic == null)
+            {
+                throw new ArgumentNullException(nameof(logic));
+            }
+
+            var request = reference.GetContinuationActivity().ApplyConversationReference(reference, true);
+
+            using (var context = new TurnContext(this, request))
+            {
+                await RunPipelineAsync(context, logic, cancellationToken).ConfigureAwait(false);
+            }
+        }
+
+
         public override Task<ResourceResponse> UpdateActivityAsync(ITurnContext turnContext, Activity activity, CancellationToken cancellationToken)
         {
             return Task.FromException<ResourceResponse>(new NotImplementedException("Alexa adapter does not support updateActivity."));
@@ -172,6 +172,37 @@ namespace Bot.Builder.Community.Adapters.Alexa
         public override Task DeleteActivityAsync(ITurnContext turnContext, ConversationReference reference, CancellationToken cancellationToken)
         {
             return Task.FromException(new NotImplementedException("Alexa adapter does not support deleteActivity."));
+        }
+
+        private async Task<SkillResponse> ProcessAlexaRequestAsync(SkillRequest alexaRequest, BotCallbackHandler logic)
+        {
+            var activity = RequestToActivity(alexaRequest);
+            var context = new TurnContext(this, activity);
+
+            _responses = new Dictionary<string, List<Activity>>();
+
+            await RunPipelineAsync(context, logic, default).ConfigureAwait(false);
+
+            if (context.GetAlexaRequestBody().Request.Type == "SessionEndedRequest")
+            {
+                return ResponseBuilder.Tell(string.Empty);
+            }
+
+            var key = $"{activity.Conversation.Id}:{activity.Id}";
+
+            try
+            {
+                var activities = _responses.ContainsKey(key) ? _responses[key] : new List<Activity>();
+                var response = CreateResponseFromActivities(activities, context);
+                return response;
+            }
+            finally
+            {
+                if (_responses.ContainsKey(key))
+                {
+                    _responses.Remove(key);
+                }
+            }
         }
 
         private static Activity RequestToActivity(SkillRequest skillRequest)
@@ -197,10 +228,10 @@ namespace Bot.Builder.Community.Adapters.Alexa
 
         private static void ProcessActivityAttachments(Activity activity, SkillResponse response)
         {
-            var card = activity.Attachments?.FirstOrDefault(a => a.GetType() == typeof(CardAttachment)) as CardAttachment;
-            if (card != null)
+            var cardAttachment = activity.Attachments?.FirstOrDefault(a => a.GetType() == typeof(CardAttachment)) as CardAttachment;
+            if (cardAttachment != null)
             {
-                response.Response.Card = card.Card;
+                response.Response.Card = cardAttachment.Card;
             }
 
             var directiveAttachments = activity.Attachments?.Where(a => a.GetType() == typeof(DirectiveAttachment))
@@ -214,7 +245,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
 
         private SkillResponse CreateResponseFromActivities(List<Activity> activities, ITurnContext context)
         {
-            Activity activity = processMultipleActivities(activities);
+            Activity activity = ProcessOutgoingActivities(activities);
 
             var response = new SkillResponse()
             {
@@ -264,26 +295,44 @@ namespace Bot.Builder.Community.Adapters.Alexa
             return response;
         }
 
-        private Activity processMultipleActivities(List<Activity> activities)
+        private Activity ProcessOutgoingActivities(List<Activity> activities)
         {
-            Activity resultActivity = activities.Last();
-            if (_options.TryConcatenateTextFromMultipleActivities && activities.Count() > 1)
-            {   
-                for (int i = activities.Count - 2; i >= 0; i--)
-                {
-                    if (!string.IsNullOrEmpty(activities[i].Speak))
-                    {
-                        activities[i].Speak = activities[i].Speak.Trim(new char[] { ' ', '.' });
-                        resultActivity.Text = string.Format("{0}. {1}", activities[i].Speak, resultActivity.Text);
+            if(activities.Count == 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(activities));
+            }
 
-                    }
-                    else if (!string.IsNullOrEmpty(activities[i].Text)) {
-                        activities[i].Text = activities[i].Text.Trim(new char[] { ' ', '.'});
-                        resultActivity.Text = string.Format("{0}. {1}", activities[i].Text, resultActivity.Text);
-                    }
+            if(activities.Count() > 1)
+            {
+                switch (_options.MultipleOutgoingActivityPolicy)
+                {
+                    case AlexaAdapterOptions.MultipleOutgoingActivityPolicies.TakeFirstActivity:
+                        return activities.First();
+                    case AlexaAdapterOptions.MultipleOutgoingActivityPolicies.TakeLastActivity:
+                        return activities.Last();
+                    case AlexaAdapterOptions.MultipleOutgoingActivityPolicies.ConcatenateTextSpeakPropertiesFromAllActivities:
+                        var resultActivity = activities.Last();
+
+                        for (int i = activities.Count - 2; i >= 0; i--)
+                        {
+                            if (!string.IsNullOrEmpty(activities[i].Speak))
+                            {
+                                activities[i].Speak = activities[i].Speak.Trim(new char[] { ' ', '.' });
+                                resultActivity.Text = string.Format("{0}. {1}", activities[i].Speak, resultActivity.Text);
+
+                            }
+                            else if (!string.IsNullOrEmpty(activities[i].Text))
+                            {
+                                activities[i].Text = activities[i].Text.Trim(new char[] { ' ', '.' });
+                                resultActivity.Text = string.Format("{0}. {1}", activities[i].Text, resultActivity.Text);
+                            }
+                        }
+
+                        return resultActivity;
                 }
             }
-            return resultActivity;
+
+            return activities.Last();
         }
     }
 }
