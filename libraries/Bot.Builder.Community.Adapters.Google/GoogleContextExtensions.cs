@@ -142,7 +142,7 @@ namespace Bot.Builder.Community.Adapters.Google
             {
                 return (Payload)context.Activity.ChannelData;
             }
-            catch (Exception ex)
+            catch
             {
                 return null;
             }

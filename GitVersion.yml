@@ -14,30 +14,30 @@ branches:
     mode: ContinuousDelivery
     tag:
     increment: Patch
-    prevent-increment-of-merged-branch-version: false
+    prevent-increment-of-merged-branch-version: true
     track-merge-target: false
   release:
-    mode: ContinuousDelivery
+    mode: ContinuousDeployment
     tag: beta
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
   feature:
-    mode: ContinuousDelivery
-    tag: useBranchName
+    mode: ContinuousDeployment
+    tag: alpha
     increment: Inherit
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
   pull-request:
-    mode: ContinuousDelivery
+    mode: ContinuousDeployment
     tag: PullRequest
     increment: Inherit
     prevent-increment-of-merged-branch-version: false
     tag-number-pattern: '[/-](?<number>\d+)[-/]'
     track-merge-target: false
   develop:
-    mode: ContinuousDelivery
-    tag: unstable
+    mode: ContinuousDeployment
+    tag: rc
     increment: Patch
     prevent-increment-of-merged-branch-version: false
     track-merge-target: true

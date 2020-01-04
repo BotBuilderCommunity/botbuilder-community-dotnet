@@ -223,6 +223,7 @@ namespace Bot.Builder.Community.Dialogs.FormFlow
 
         public async override Task<DialogTurnResult> BeginDialogAsync(DialogContext outerDc, object options = null, CancellationToken cancellationToken = default(CancellationToken))
         {
+             _formState.Reset();
             if (this._entities.Any())
             {
                 var inputs = new List<Tuple<int, string>>();
@@ -256,9 +257,7 @@ namespace Bot.Builder.Community.Dialogs.FormFlow
                 }
             }
             await SkipSteps();
-            _formState.Step = 0;
-            _formState.StepState = null;
-
+           
             //var result = await base.BeginDialogAsync(outerDc, options, cancellationToken);
             var result = await MessageReceived(outerDc, outerDc.Context.Activity);
 

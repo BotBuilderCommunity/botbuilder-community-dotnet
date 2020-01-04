@@ -133,7 +133,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
                 Conversation = new ConversationAccount(false, "conversation", skillRequest.Session.SessionId),
                 Type = skillRequest.Request.Type,
                 Id = skillRequest.Request.RequestId,
-                Timestamp = DateTime.ParseExact(skillRequest.Request.Timestamp, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture),
+                Timestamp = DateTime.ParseExact(skillRequest.Request.Timestamp, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal),
                 Locale = skillRequest.Request.Locale
             };
 
