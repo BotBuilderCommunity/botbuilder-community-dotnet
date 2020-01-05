@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
 using Bot.Builder.Community.Adapters.Google.Model;
 using Microsoft.Bot.Builder;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace Bot.Builder.Community.Adapters.Google
 {
@@ -136,11 +131,11 @@ namespace Bot.Builder.Community.Adapters.Google
             context.GoogleSetMediaResponse(mediaResponse);
         }
 
-        public static Payload GetGoogleRequestPayload(this ITurnContext context)
+        public static ActionsPayload GetGoogleRequestPayload(this ITurnContext context)
         {
             try
             {
-                return (Payload)context.Activity.ChannelData;
+                return (ActionsPayload)context.Activity.ChannelData;
             }
             catch
             {
@@ -150,7 +145,7 @@ namespace Bot.Builder.Community.Adapters.Google
 
         public static List<string> GoogleGetSurfaceCapabilities(this ITurnContext context)
         {
-            var payload = (Payload)context.Activity.ChannelData;
+            var payload = (ActionsPayload)context.Activity.ChannelData;
             var capabilities = payload.Surface.Capabilities.Select(c => c.Name);
             return capabilities.ToList();
         }

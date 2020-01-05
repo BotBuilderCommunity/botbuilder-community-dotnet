@@ -1,92 +1,117 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Security;
+using System.Security.Authentication;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Bot.Builder.Community.Adapters.Google.Integration;
 using Bot.Builder.Community.Adapters.Google.Model;
+using Google.Cloud.Dialogflow.V2;
+using Google.Protobuf;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Schema;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 
 namespace Bot.Builder.Community.Adapters.Google
 {
-    public class GoogleAdapter : BotAdapter
+    public class GoogleAdapter : BotAdapter, IBotFrameworkHttpAdapter
     {
-        public GoogleWebhookType WebhookType { get; set; } = GoogleWebhookType.DialogFlow;
+        internal const string BotIdentityKey = "BotIdentity";
 
-        public bool ShouldEndSessionByDefault { get; set; }
+        private static readonly JsonParser _dialogFlowJsonParser = new JsonParser(JsonParser.Settings.Default.WithIgnoreUnknownFields(true));
 
-        public bool TryConvertFirstActivityAttachmentToGoogleCard { get; set; }
-
-        public string ActionInvocationName { get; set; }
-
-        public string ActionProjectId { get; set; }
-
-        private Dictionary<string, List<Activity>> Responses { get; set; }
-
-        public GoogleAdapter()
+        private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
         {
-            ShouldEndSessionByDefault = true;
-            TryConvertFirstActivityAttachmentToGoogleCard = false;
+            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            Formatting = Formatting.Indented,
+            NullValueHandling = NullValueHandling.Ignore,
+        };
+
+        private readonly GoogleAdapterOptions _options;
+        private readonly ILogger _logger;
+        private Dictionary<string, List<Activity>> _responses;
+
+        public GoogleAdapter(GoogleAdapterOptions options = null, ILogger logger = null)
+        {
+            _options = options ?? new GoogleAdapterOptions();
+            _logger = logger ?? NullLogger.Instance;
         }
 
-        public new GoogleAdapter Use(IMiddleware middleware)
+        public async Task ProcessAsync(HttpRequest httpRequest, HttpResponse httpResponse, IBot bot, CancellationToken cancellationToken = default)
         {
-            MiddlewareSet.Use(middleware);
-            return this;
-        }
-
-        public async Task<object> ProcessActivity(Payload actionPayload, BotCallbackHandler callback, string uniqueRequestId = null)
-        {
-            TurnContext context = null;
-
-            try
+            if (httpRequest == null)
             {
-                var activity = RequestToActivity(actionPayload, uniqueRequestId);
-                BotAssert.ActivityNotNull(activity);
-
-                context = new TurnContext(this, activity);
-
-                context.TurnState.Add("GoogleUserId", activity.From.Id);
-
-                Responses = new Dictionary<string, List<Activity>>();
-
-                await base.RunPipelineAsync(context, callback, default(CancellationToken)).ConfigureAwait(false);
-
-                var key = $"{activity.Conversation.Id}:{activity.Id}";
-
-                try
-                {
-                    object response = null;
-                    var activities = Responses.ContainsKey(key) ? Responses[key] : new List<Activity>();
-
-                    if (WebhookType == GoogleWebhookType.DialogFlow)
-                    {
-                        response = CreateDialogFlowResponseFromLastActivity(activities, context);
-                    }
-                    else
-                    {
-                        response = CreateConversationResponseFromLastActivity(activities, context);
-                    }
-
-                    return response;
-                }
-                finally
-                {
-                    if (Responses.ContainsKey(key))
-                    {
-                        Responses.Remove(key);
-                    }
-                }
+                throw new ArgumentNullException(nameof(httpRequest));
             }
-            catch (Exception ex)
+
+            if (httpResponse == null)
             {
-                await OnTurnError(context, ex);
-                throw;
+                throw new ArgumentNullException(nameof(httpResponse));
             }
+
+            if (bot == null)
+            {
+                throw new ArgumentNullException(nameof(bot));
+            }
+
+            string body;
+            using (var sr = new StreamReader(httpRequest.Body))
+            {
+                body = await sr.ReadToEndAsync();
+            }
+
+            if (_options.WebhookType == GoogleWebhookType.DialogFlow)
+            {
+                var dialogFlowRequest = _dialogFlowJsonParser.Parse<WebhookRequest>(body);
+            }
+
+            Activity activity = null;
+
+            if (_options.WebhookType == GoogleWebhookType.DialogFlow)
+            {
+                var dialogFlowRequest = JsonConvert.DeserializeObject<DialogFlowRequest>(body);
+                activity = DialogFlowRequestToActivity(dialogFlowRequest);
+            }
+            else
+            {
+                if (_options.ValidateIncomingRequests && !GoogleHelper.ValidateRequest(httpRequest, _options.ActionProjectId))
+                {
+                    throw new AuthenticationException("Failed to validate incoming request. Project ID in authentication header did not match project ID in AlexaAdapterOptions");
+                }
+
+                var actionPayload = JsonConvert.DeserializeObject<ActionsPayload>(body);
+                activity = PayloadToActivity(actionPayload);
+            }
+
+            var googleResponse = await ProcessActivityAsync(activity, bot.OnTurnAsync);
+
+            if (googleResponse == null)
+            {
+                throw new ArgumentNullException(nameof(googleResponse));
+            }
+
+            if (googleResponse == null)
+            {
+                throw new ArgumentNullException(nameof(googleResponse));
+            }
+
+            httpResponse.ContentType = "application/json";
+            httpResponse.StatusCode = (int)HttpStatusCode.OK;
+
+            var responseJson = JsonConvert.SerializeObject(googleResponse, JsonSerializerSettings);
+
+            var responseData = Encoding.UTF8.GetBytes(responseJson);
+            await httpResponse.Body.WriteAsync(responseData, 0, responseData.Length, cancellationToken).ConfigureAwait(false);
         }
 
         public override Task<ResourceResponse[]> SendActivitiesAsync(ITurnContext turnContext, Activity[] activities, CancellationToken CancellationToken)
@@ -102,13 +127,13 @@ namespace Bot.Builder.Community.Adapters.Google
                         var conversation = activity.Conversation ?? new ConversationAccount();
                         var key = $"{conversation.Id}:{activity.ReplyToId}";
 
-                        if (Responses.ContainsKey(key))
+                        if (_responses.ContainsKey(key))
                         {
-                            Responses[key].Add(activity);
+                            _responses[key].Add(activity);
                         }
                         else
                         {
-                            Responses[key] = new List<Activity> { activity };
+                            _responses[key] = new List<Activity> { activity };
                         }
 
                         break;
@@ -124,7 +149,95 @@ namespace Bot.Builder.Community.Adapters.Google
             return Task.FromResult(resourceResponses.ToArray());
         }
 
-        private Activity RequestToActivity(Payload actionPayload, string uniqueRequestId = null)
+        /// <summary>
+        /// Sends a proactive message to a conversation.
+        /// </summary>
+        /// <param name="reference">A reference to the conversation to continue.</param>
+        /// <param name="logic">The method to call for the resulting bot turn.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects
+        /// or threads to receive notice of cancellation.</param>
+        /// <returns>A task that represents the work queued to execute.</returns>
+        /// <remarks>Call this method to proactively send a message to a conversation.
+        /// Most channels require a user to initiate a conversation with a bot
+        /// before the bot can send activities to the user.</remarks>
+        /// <seealso cref="BotAdapter.RunPipelineAsync(ITurnContext, BotCallbackHandler, CancellationToken)"/>
+        /// <exception cref="ArgumentNullException"><paramref name="reference"/> or
+        /// <paramref name="logic"/> is <c>null</c>.</exception>
+        public async Task ContinueConversationAsync(ConversationReference reference, BotCallbackHandler logic, CancellationToken cancellationToken)
+        {
+            if (reference == null)
+            {
+                throw new ArgumentNullException(nameof(reference));
+            }
+
+            if (logic == null)
+            {
+                throw new ArgumentNullException(nameof(logic));
+            }
+
+            var request = reference.GetContinuationActivity().ApplyConversationReference(reference, true);
+
+            using (var context = new TurnContext(this, request))
+            {
+                await RunPipelineAsync(context, logic, cancellationToken).ConfigureAwait(false);
+            }
+        }
+
+        public override Task<ResourceResponse> UpdateActivityAsync(ITurnContext turnContext, Activity activity, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task DeleteActivityAsync(ITurnContext turnContext, ConversationReference reference, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        private async Task<object> ProcessActivityAsync(Activity activity, BotCallbackHandler logic, string uniqueRequestId = null)
+        {
+            var context = new TurnContext(this, activity);
+
+            context.TurnState.Add("GoogleUserId", activity.From.Id);
+
+            _responses = new Dictionary<string, List<Activity>>();
+
+            await RunPipelineAsync(context, logic, default).ConfigureAwait(false);
+
+            var key = $"{activity.Conversation.Id}:{activity.Id}";
+
+            try
+            {
+                object response = null;
+                var activities = _responses.ContainsKey(key) ? _responses[key] : new List<Activity>();
+
+                if (_options.WebhookType == GoogleWebhookType.DialogFlow)
+                {
+                    response = CreateDialogFlowResponseFromLastActivity(activities, context);
+                }
+                else
+                {
+                    response = CreateConversationResponseFromLastActivity(activities, context);
+                }
+
+                return response;
+            }
+            finally
+            {
+                if (_responses.ContainsKey(key))
+                {
+                    _responses.Remove(key);
+                }
+            }
+        }
+
+        private Activity DialogFlowRequestToActivity(DialogFlowRequest request)
+        {
+            var activity = PayloadToActivity(request.OriginalDetectIntentRequest.Payload);
+            activity.ChannelData = request;
+            return activity;
+        }
+
+        private Activity PayloadToActivity(ActionsPayload payload)
         {
             var activity = new Activity
             {
@@ -132,24 +245,25 @@ namespace Bot.Builder.Community.Adapters.Google
                 ServiceUrl = $"",
                 Recipient = new ChannelAccount("", "action"),
                 Conversation = new ConversationAccount(false, "conversation",
-                    $"{actionPayload.Conversation.ConversationId}"),
+                    $"{payload.Conversation.ConversationId}"),
                 Type = ActivityTypes.Message,
-                Text = StripInvocation(actionPayload.Inputs[0]?.RawInputs[0]?.Query, ActionInvocationName),
-                Id = uniqueRequestId ?? Guid.NewGuid().ToString(),
+                Text = GoogleHelper.StripInvocation(payload.Inputs[0]?.RawInputs[0]?.Query, _options.ActionInvocationName),
+                Id = Guid.NewGuid().ToString(),
                 Timestamp = DateTime.UtcNow,
-                Locale = actionPayload.User.Locale,
-                Value = actionPayload.Inputs[0]?.Intent
+                Locale = payload.User.Locale,
+                Value = payload.Inputs[0]?.Intent,
+                ChannelData = payload
             };
 
-            if (!string.IsNullOrEmpty(actionPayload.User.UserId))
+            if (!string.IsNullOrEmpty(payload.User.UserId))
             {
-                activity.From = new ChannelAccount(actionPayload.User.UserId, "user");
+                activity.From = new ChannelAccount(payload.User.UserId, "user");
             }
             else
             {
-                if (!string.IsNullOrEmpty(actionPayload.User.UserStorage))
+                if (!string.IsNullOrEmpty(payload.User.UserStorage))
                 {
-                    var values = JObject.Parse(actionPayload.User.UserStorage);
+                    var values = JObject.Parse(payload.User.UserStorage);
                     if (values.ContainsKey("UserId"))
                     {
                         activity.From = new ChannelAccount(values["UserId"].ToString(), "user");
@@ -161,26 +275,26 @@ namespace Bot.Builder.Community.Adapters.Google
                 }
             }
 
-            if (actionPayload.Inputs.FirstOrDefault()?.Arguments?.FirstOrDefault()?.Name == "OPTION")
+            if (payload.Inputs.FirstOrDefault()?.Arguments?.FirstOrDefault()?.Name == "OPTION")
             {
-                activity.Text = actionPayload.Inputs.First().Arguments.First().TextValue;
+                activity.Text = payload.Inputs.First().Arguments.First().TextValue;
             }
 
-            activity.ChannelData = actionPayload;
+            activity.ChannelData = payload;
 
             return activity;
         }
 
-        private ConversationResponseBody CreateConversationResponseFromLastActivity(IEnumerable<Activity> activities, ITurnContext context)
+        private ConversationWebhookResponse CreateConversationResponseFromLastActivity(List<Activity> activities, ITurnContext context)
         {
-            var activity = activities != null && activities.Any() ? activities.Last() : null;
+            var activity = ProcessOutgoingActivities(activities);
 
             if (!SecurityElement.IsValidText(activity.Text))
             {
                 activity.Text = SecurityElement.Escape(activity.Text);
             }
 
-            var response = new ConversationResponseBody();
+            var response = new ConversationWebhookResponse();
 
             var userStorage = new JObject
             {
@@ -254,7 +368,7 @@ namespace Bot.Builder.Community.Adapters.Google
                 if (activity.InputHint == null || activity.InputHint == InputHints.AcceptingInput)
                 {
                     activity.InputHint =
-                        ShouldEndSessionByDefault ? InputHints.IgnoringInput : InputHints.ExpectingInput;
+                        _options.ShouldEndSessionByDefault ? InputHints.IgnoringInput : InputHints.ExpectingInput;
                 }
 
                 // check if we should be listening for more input from the user
@@ -303,18 +417,18 @@ namespace Bot.Builder.Community.Adapters.Google
             return response;
         }
 
-        private DialogFlowResponseBody CreateDialogFlowResponseFromLastActivity(IEnumerable<Activity> activities, ITurnContext context)
+        private DialogFlowResponse CreateDialogFlowResponseFromLastActivity(List<Activity> activities, ITurnContext context)
         {
-            var activity = activities != null && activities.Any() ? activities.Last() : null;
+            var activity = ProcessOutgoingActivities(activities);
 
-            var response = new DialogFlowResponseBody()
+            var response = new DialogFlowResponse()
             {
                 Payload = new ResponsePayload()
                 {
                     Google = new PayloadContent()
                     {
                         RichResponse = new RichResponse(),
-                        ExpectUserResponse = !ShouldEndSessionByDefault
+                        ExpectUserResponse = !_options.ShouldEndSessionByDefault
                     }
                 }
             };
@@ -411,44 +525,51 @@ namespace Bot.Builder.Community.Adapters.Google
             {
                 responseItems.Add(context.TurnState.Get<GoogleBasicCard>("GoogleCard"));
             }
-            else if (TryConvertFirstActivityAttachmentToGoogleCard)
+            else if (_options.TryConvertFirstActivityAttachmentToGoogleCard)
             {
                 //TODO: Implement automatic conversion from hero card to Google basic card
                 //CreateAlexaCardFromAttachment(activity, response);
             }
         }
 
-        private static string StripInvocation(string query, string invocationName)
+        private Activity ProcessOutgoingActivities(List<Activity> activities)
         {
-            if (query != null && (query.ToLower().StartsWith("talk to") || query.ToLower().StartsWith("speak to")
-                                                      || query.ToLower().StartsWith("i want to speak to") ||
-                                                      query.ToLower().StartsWith("ask")))
+            if (activities.Count == 0)
             {
-                query = query.ToLower().Replace($"talk to", string.Empty);
-                query = query.ToLower().Replace($"speak to", string.Empty);
-                query = query.ToLower().Replace($"I want to speak to", string.Empty);
-                query = query.ToLower().Replace($"ask", string.Empty);
+                throw new ArgumentOutOfRangeException(nameof(activities));
             }
 
-            query = query?.TrimStart().TrimEnd();
-
-            if (!string.IsNullOrEmpty(invocationName)
-                && query.ToLower().StartsWith(invocationName.ToLower()))
+            if (activities.Count() > 1)
             {
-                query = query.ToLower().Replace(invocationName.ToLower(), string.Empty);
+                switch (_options.MultipleOutgoingActivitiesPolicy)
+                {
+                    case MultipleOutgoingActivitiesPolicies.TakeFirstActivity:
+                        return activities.First();
+                    case MultipleOutgoingActivitiesPolicies.TakeLastActivity:
+                        return activities.Last();
+                    case MultipleOutgoingActivitiesPolicies.ConcatenateTextSpeakPropertiesFromAllActivities:
+                        var resultActivity = activities.Last();
+
+                        for (int i = activities.Count - 2; i >= 0; i--)
+                        {
+                            if (!string.IsNullOrEmpty(activities[i].Speak))
+                            {
+                                activities[i].Speak = activities[i].Speak.Trim(new char[] { ' ', '.' });
+                                resultActivity.Text = string.Format("{0}. {1}", activities[i].Speak, resultActivity.Text);
+
+                            }
+                            else if (!string.IsNullOrEmpty(activities[i].Text))
+                            {
+                                activities[i].Text = activities[i].Text.Trim(new char[] { ' ', '.' });
+                                resultActivity.Text = string.Format("{0}. {1}", activities[i].Text, resultActivity.Text);
+                            }
+                        }
+
+                        return resultActivity;
+                }
             }
 
-            return query?.TrimStart().TrimEnd();
-        }
-
-        public override Task<ResourceResponse> UpdateActivityAsync(ITurnContext turnContext, Activity activity, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Task DeleteActivityAsync(ITurnContext turnContext, ConversationReference reference, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
+            return activities.Last();
         }
     }
 }

@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Bot.Builder.Community.Adapters.Google
 {
-    public class GoogleRequestBody
+    public class DialogFlowRequest
     {
         public string ResponseId { get; set; }
         public QueryResult QueryResult { get; set; }
@@ -48,10 +46,10 @@ namespace Bot.Builder.Community.Adapters.Google
     {
         public string Source { get; set; }
         public string Version { get; set; }
-        public Payload Payload { get; set; }
+        public ActionsPayload Payload { get; set; }
     }
 
-    public class Payload
+    public class ActionsPayload
     {
         public bool IsInSandbox { get; set; }
         public Surface Surface { get; set; }

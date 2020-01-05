@@ -13,9 +13,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Directives\**" />
     <Compile Remove="Integration\AspNet.WebApi\**" />
+    <Compile Remove="Middleware\**" />
+    <EmbeddedResource Remove="Directives\**" />
     <EmbeddedResource Remove="Integration\AspNet.WebApi\**" />
+    <EmbeddedResource Remove="Middleware\**" />
+    <None Remove="Directives\**" />
     <None Remove="Integration\AspNet.WebApi\**" />
+    <None Remove="Middleware\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,19 +29,16 @@
   </ItemGroup>
 
   <ItemGroup>
+		<PackageReference Include="Google.Cloud.Dialogflow.V2" Version="1.2.0" />
 		<PackageReference Include="JWT" Version="5.0.1" />
 		<PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.4" />
 		<PackageReference Include="Microsoft.Bot.Builder" Version="4.6.3" />
 		<PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.1.1" />
+		<PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.6.3" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="2.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Options" Version="2.1.1" />
 		<PackageReference Include="Microsoft.Net.Http.Headers" Version="2.1.1" />
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Directives\" />
-    <Folder Include="Middleware\" />
   </ItemGroup>
 
 </Project>

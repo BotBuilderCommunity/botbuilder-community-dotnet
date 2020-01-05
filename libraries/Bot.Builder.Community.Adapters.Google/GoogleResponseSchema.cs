@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 
 namespace Bot.Builder.Community.Adapters.Google
 {
-    public class ConversationResponseBody
+    public class ConversationWebhookResponse
     {
         public string ConversationToken { get; set; }
         public string UserStorage { get; set; }
@@ -53,7 +50,7 @@ namespace Bot.Builder.Community.Adapters.Google
         public RichResponse RichInitialPrompt { get; set; }
     }
 
-    public class DialogFlowResponseBody
+    public class DialogFlowResponse
     {
         public ResponsePayload Payload { get; set; }
     }
