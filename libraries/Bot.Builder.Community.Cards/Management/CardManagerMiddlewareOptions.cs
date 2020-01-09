@@ -21,7 +21,9 @@ namespace Bot.Builder.Community.Cards.Management
 
         public bool AutoSaveActivitiesOnSend { get; set; }
 
-        public bool AutoSeparateAttachments { get; set; }
+        public bool AutoSeparateAttachmentsOnSend { get; set; }
+
+        public bool TrackEnabledIds { get; set; }
 
         public IdOptions IdOptions { get; set; }
     }

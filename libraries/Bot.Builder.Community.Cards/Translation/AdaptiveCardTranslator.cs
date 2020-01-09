@@ -22,17 +22,18 @@ namespace Bot.Builder.Community.Cards.Translation
             TranslatorKey = configuration[nameof(TranslatorKey)];
         }
 
-        public AdaptiveCardTranslator()
-        {
-        }
-
         public static AdaptiveCardTranslatorSettings DefaultSettings => new AdaptiveCardTranslatorSettings
         {
-            IsArrayElementTranslatable = arrayContainer => arrayContainer.Type == JTokenType.Property && (arrayContainer as JProperty).Name == "inlines",
+            IsArrayElementTranslatable = arrayContainer => (arrayContainer as JProperty)?.Name == "inlines",
             IsValueTranslatable = valueContainer =>
             {
-                var elementType = valueContainer?["type"];
-                var parent = valueContainer?.Parent;
+                if (valueContainer is null)
+                {
+                    return false;
+                }
+
+                var elementType = valueContainer["type"];
+                var parent = valueContainer.Parent;
                 var grandparent = parent?.Parent;
 
                 // value should be translated in facts, imBack (for MS Teams), and Input.Text,
@@ -40,9 +41,8 @@ namespace Bot.Builder.Community.Cards.Translation
                 return (elementType?.Type == JTokenType.String
                         && elementType.IsOneOf("Input.Text", "imBack"))
                     || (elementType == null
-                        && parent?.Type == JTokenType.Array
-                        && grandparent?.Type == JTokenType.Property
-                        && ((JProperty)grandparent)?.Name == "facts");
+                        && (grandparent as JProperty)?.Name == "facts"
+                        && parent.Type == JTokenType.Array);
             },
             PropertiesToTranslate = new[] { "text", "altText", "fallbackText", "displayText", "title", "placeholder", "data" },
         };
@@ -52,10 +52,10 @@ namespace Bot.Builder.Community.Cards.Translation
         public string TargetLocale { get; set; }
 
         /// <summary>
-        /// Sets the key used for the Cognitive Services translator API. This has an internal getter for security.
+        /// Sets the key used for the Cognitive Services translator API.
         /// </summary>
         /// <value>
-        /// The key used for the Cognitive Services translator API. This has an internal getter for security.
+        /// The key used for the Cognitive Services translator API.
         /// </value>
         public string TranslatorKey { internal get; set; }
 
@@ -66,6 +66,21 @@ namespace Bot.Builder.Community.Cards.Translation
             AdaptiveCardTranslatorSettings settings = null,
             CancellationToken cancellationToken = default)
         {
+            if (card is null)
+            {
+                throw new ArgumentNullException(nameof(card));
+            }
+
+            if (string.IsNullOrEmpty(targetLocale))
+            {
+                throw new ArgumentException("message", nameof(targetLocale));
+            }
+
+            if (string.IsNullOrEmpty(translatorKey))
+            {
+                throw new ArgumentException("message", nameof(translatorKey));
+            }
+
             return await TranslateAsync(
                 card,
                 async (inputs, innerCancellationToken) =>
@@ -102,6 +117,16 @@ namespace Bot.Builder.Community.Cards.Translation
             AdaptiveCardTranslatorSettings settings = null,
             CancellationToken cancellationToken = default)
         {
+            if (card is null)
+            {
+                throw new ArgumentNullException(nameof(card));
+            }
+
+            if (translateOneAsync is null)
+            {
+                throw new ArgumentNullException(nameof(translateOneAsync));
+            }
+
             return await TranslateAsync(
                 card,
                 async (inputs, innerCancellationToken) =>
@@ -119,37 +144,63 @@ namespace Bot.Builder.Community.Cards.Translation
             AdaptiveCardTranslatorSettings settings = null,
             CancellationToken cancellationToken = default)
         {
-            var cardJObject = JObject.FromObject(card);
-            var tokens = GetTokens(cardJObject, settings ?? DefaultSettings);
-
-            var translations = await translateManyAsync(tokens.Select(token => (string)token).ToList(), cancellationToken).ConfigureAwait(false);
-
-            if (translations != null)
+            if (card is null)
             {
-                for (int i = 0; i < tokens.Count && i < translations.Count; i++)
-                {
-                    var item = tokens[i];
-                    var translatedText = translations[i];
-
-                    if (!string.IsNullOrWhiteSpace(translatedText))
-                    {
-                        // Modify each stored JToken with the translated text
-                        item.Replace(translatedText);
-                    }
-                }
+                throw new ArgumentNullException(nameof(card));
             }
 
-            return cardJObject;
-        }
+            if (translateManyAsync is null)
+            {
+                throw new ArgumentNullException(nameof(translateManyAsync));
+            }
 
-        public async Task<object> TranslateAsync(object card, string targetLocale, CancellationToken cancellationToken = default)
-        {
-            return await TranslateAsync(card, targetLocale, TranslatorKey, Settings, cancellationToken).ConfigureAwait(false);
+            return await card.ToJObjectAndBackAsync(
+                async cardJObject =>
+                {
+                    var tokens = GetTokens(cardJObject, settings ?? DefaultSettings);
+                    var translations = await translateManyAsync(
+                        tokens.Select(token => (string)token).ToList(),
+                        cancellationToken).ConfigureAwait(false);
+
+                    if (translations != null)
+                    {
+                        for (int i = 0; i < tokens.Count && i < translations.Count; i++)
+                        {
+                            var item = tokens[i];
+                            var translatedText = translations[i];
+
+                            if (!string.IsNullOrWhiteSpace(translatedText))
+                            {
+                                // Modify each stored JToken with the translated text
+                                item.Replace(translatedText);
+                            }
+                        }
+                    }
+                },
+                true,
+                false).ConfigureAwait(false) ?? throw new ArgumentException(
+                    "The Adaptive Card must be convertible to a JObject.",
+                    nameof(card));
         }
 
         public async Task<object> TranslateAsync(object card, CancellationToken cancellationToken = default)
         {
+            if (card is null)
+            {
+                throw new ArgumentNullException(nameof(card));
+            }
+
             return await TranslateAsync(card, TargetLocale, TranslatorKey, Settings, cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task<object> TranslateAsync(object card, string targetLocale, CancellationToken cancellationToken = default)
+        {
+            if (card is null)
+            {
+                throw new ArgumentNullException(nameof(card));
+            }
+
+            return await TranslateAsync(card, targetLocale, TranslatorKey, Settings, cancellationToken).ConfigureAwait(false);
         }
 
         private static List<JToken> GetTokens(JObject cardJObject, AdaptiveCardTranslatorSettings settings)
@@ -174,7 +225,8 @@ namespace Bot.Builder.Community.Cards.Translation
                             var propertyName = (parent as JProperty).Name;
 
                             // container is assumed to be a JObject because it's the parent of a JProperty in this case
-                            if (settings.PropertiesToTranslate.Contains(propertyName) || (propertyName == "value" && settings.IsValueTranslatable(container as JObject)))
+                            if (settings.PropertiesToTranslate.Contains(propertyName)
+                                || (propertyName == "value" && settings.IsValueTranslatable(container as JObject)))
                             {
                                 shouldTranslate = true;
                             }

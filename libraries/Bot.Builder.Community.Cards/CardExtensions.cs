@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Bot.Builder.Community.Cards
@@ -68,10 +70,16 @@ namespace Bot.Builder.Community.Cards
             switch (attachment.ContentType)
             {
                 case CardConstants.AdaptiveCardContentType:
-                    var type = attachment.Content.GetType();
-                    var jObject = JObject.FromObject(attachment.Content);
-                    var ids = jObject.ApplyIdsToAdaptiveCard(options);
-                    attachment.Content = jObject.ToObject(type);
+                    RecursiveIdCollection ids = null;
+
+                    attachment.Content = attachment.Content?.ToJObjectAndBackAsync(
+                        card =>
+                        {
+                            ids = card.ApplyIdsToAdaptiveCard(options);
+
+                            return Task.CompletedTask;
+                        }).Result;
+
                     return ids;
                 case AnimationCard.ContentType:
                     return (attachment.Content as AnimationCard)?.ApplyIds(options);
@@ -112,9 +120,9 @@ namespace Bot.Builder.Community.Cards
             foreach (var data in adaptiveCard.NonDataDescendants()
                 .Select(token => token as JProperty)
                 .Where(prop =>
-                    prop.Name.Equals(
+                    prop?.Name.Equals(
                         CardConstants.KeyData,
-                        StringComparison.OrdinalIgnoreCase)
+                        StringComparison.OrdinalIgnoreCase) == true
                     && prop.Value?.Type == JTokenType.Object)
                 .Select(prop => prop.Value as JObject))
             {
@@ -154,9 +162,15 @@ namespace Bot.Builder.Community.Cards
 
             foreach (var button in buttons)
             {
-                if ((button.Type == ActionTypes.MessageBack || button.Type == ActionTypes.PostBack) && button.Value is JObject value)
+                if ((button.Type == ActionTypes.MessageBack || button.Type == ActionTypes.PostBack) && button.Value != null)
                 {
-                    ids.Add(value.ApplyIdsToPayload(options));
+                    button.Value = button.Value.ToJObjectAndBackAsync(
+                        value =>
+                        {
+                            ids.Add(value.ApplyIdsToPayload(options));
+                            return Task.CompletedTask;
+                        },
+                        true).Result;
                 }
             }
 
@@ -290,9 +304,9 @@ namespace Bot.Builder.Community.Cards
             foreach (var data in adaptiveCard.NonDataDescendants()
                 .Select(token => token as JProperty)
                 .Where(prop =>
-                    prop.Name.Equals(
+                    prop?.Name.Equals(
                         CardConstants.KeyData,
-                        StringComparison.OrdinalIgnoreCase)
+                        StringComparison.OrdinalIgnoreCase) == true
                     && prop.Value?.Type == JTokenType.Object)
                 .Select(prop => prop.Value as JObject))
             {
@@ -329,9 +343,15 @@ namespace Bot.Builder.Community.Cards
 
             foreach (var button in buttons)
             {
-                if ((button.Type == ActionTypes.MessageBack || button.Type == ActionTypes.PostBack) && button.Value is JObject value)
+                if ((button.Type == ActionTypes.MessageBack || button.Type == ActionTypes.PostBack) && button.Value != null)
                 {
-                    ids.Add(value.GetIdsFromPayload());
+                    button.Value.ToJObjectAndBackAsync(
+                        value =>
+                        {
+                            ids.Add(value.GetIdsFromPayload());
+                            return Task.CompletedTask;
+                        },
+                        true).Wait();
                 }
             }
 
@@ -367,7 +387,7 @@ namespace Bot.Builder.Community.Cards
                 throw new ArgumentNullException(nameof(payload));
             }
 
-            return payload[type.GetKey()].ToString();
+            return JsonConvert.SerializeObject(payload[type.GetKey()]);
         }
 
         public static IEnumerable<JToken> NonDataDescendants(this JContainer container)

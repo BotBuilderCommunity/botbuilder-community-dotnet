@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Bot.Builder.Community.Cards;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Schema;
@@ -34,7 +33,8 @@ namespace Bot.Builder.Community.Cards.Management
             AutoDisableOnAction = false,
             AutoEnableSentIds = false,
             AutoSaveActivitiesOnSend = true,
-            AutoSeparateAttachments = true,
+            AutoSeparateAttachmentsOnSend = true,
+            TrackEnabledIds = false,
             IdOptions = new IdOptions(IdType.Carousel),
         };
 
@@ -45,7 +45,8 @@ namespace Bot.Builder.Community.Cards.Management
             AutoDisableOnAction = true,
             AutoEnableSentIds = true,
             AutoSaveActivitiesOnSend = false,
-            AutoSeparateAttachments = false,
+            AutoSeparateAttachmentsOnSend = false,
+            TrackEnabledIds = true,
             IdOptions = new IdOptions(IdType.Batch),
         };
 
@@ -59,9 +60,10 @@ namespace Bot.Builder.Community.Cards.Management
         {
             BotAssert.ContextNotNull(turnContext);
 
-            // Whether we should proceed by default depends on the ID-tracking style
-            var shouldProceed = !Manager.TrackEnabledIds;
             var options = GetOptionsForChannel(turnContext.Activity.ChannelId);
+
+            // Whether we should proceed by default depends on the ID-tracking style
+            var shouldProceed = !options.TrackEnabledIds;
 
             if (options.IdOptions != null
                 && turnContext.Activity?.Type == ActivityTypes.Message
@@ -81,14 +83,14 @@ namespace Bot.Builder.Community.Cards.Management
                         {
                             // Proceed if the presence of the ID indicates that the ID is enabled (opt-in logic),
                             // short-circuit if the presence of the ID indicates that the ID is disabled (opt-out logic)
-                            shouldProceed = Manager.TrackEnabledIds;
+                            shouldProceed = options.TrackEnabledIds;
                         }
 
                         // Whether we should disable the ID depends on both the ID-tracking style (TrackEnabledIds)
                         // and whether the ID is already tracked (listHasId)
-                        if (options.AutoDisableOnAction && setContainsId == Manager.TrackEnabledIds)
+                        if (options.AutoDisableOnAction && setContainsId == options.TrackEnabledIds)
                         {
-                            await Manager.DisableIdAsync(turnContext, id, type, cancellationToken).ConfigureAwait(false);
+                            await Manager.DisableIdAsync(turnContext, id, type, options.TrackEnabledIds, cancellationToken).ConfigureAwait(false);
                         }
                     }
                 }
@@ -98,6 +100,7 @@ namespace Bot.Builder.Community.Cards.Management
 
             if (shouldProceed && next != null)
             {
+                // If this is not called, the middleware chain is effectively "short-circuited"
                 await next(cancellationToken).ConfigureAwait(false);
             }
         }
@@ -106,7 +109,7 @@ namespace Bot.Builder.Community.Cards.Management
         {
             var options = GetOptionsForChannel(turnContext.Activity.ChannelId);
 
-            if (options.AutoSeparateAttachments)
+            if (options.AutoSeparateAttachmentsOnSend)
             {
                 // We need to iterate backwards because we're changing the length of the list
                 for (int i = activities.Count() - 1; i > -1; i--)
@@ -119,11 +122,12 @@ namespace Bot.Builder.Community.Cards.Management
                         && ((attachmentCount > 0 && hasText) || attachmentCount > 1))
                     {
                         var separateActivities = new List<Activity>();
-                        var json = JsonConvert.SerializeObject(activity);
+                        var js = new JsonSerializerSettings();
+                        var json = JsonConvert.SerializeObject(activity, js);
 
                         if (hasText)
                         {
-                            var textActivity = JsonConvert.DeserializeObject<Activity>(json);
+                            var textActivity = JsonConvert.DeserializeObject<Activity>(json, js);
 
                             textActivity.Attachments = null;
                             separateActivities.Add(textActivity);
@@ -131,7 +135,7 @@ namespace Bot.Builder.Community.Cards.Management
 
                         foreach (var attachment in activity.Attachments)
                         {
-                            var attachmentActivity = JsonConvert.DeserializeObject<Activity>(json);
+                            var attachmentActivity = JsonConvert.DeserializeObject<Activity>(json, js);
 
                             attachmentActivity.Text = null;
                             attachmentActivity.Attachments = new List<Attachment> { attachment };
@@ -144,7 +148,7 @@ namespace Bot.Builder.Community.Cards.Management
                 }
             }
 
-            if (options.AutoClearTrackedOnSend && Manager.TrackEnabledIds && activities.Any(activity => activity.Type == ActivityTypes.Message))
+            if (options.AutoClearTrackedOnSend && options.TrackEnabledIds && activities.Any(activity => activity.Type == ActivityTypes.Message))
             {
                 await Manager.ClearTrackedIdsAsync(turnContext).ConfigureAwait(false);
             }
@@ -154,15 +158,18 @@ namespace Bot.Builder.Community.Cards.Management
                 activities.ApplyIdsToBatch(options.IdOptions);
             }
 
+            // The resource response ID's will be automatically applied to the activities
+            // so this return value is only passed along as the next return value.
+            // The activity ID's can be extracted from the activities directly.
             var resourceResponses = await next().ConfigureAwait(false);
 
-            if (options.AutoEnableSentIds && Manager.TrackEnabledIds)
+            if (options.AutoEnableSentIds && options.TrackEnabledIds)
             {
                 await activities.GetIdsFromBatch().RecurseOverIdsAsync(async (id, type) =>
                 {
                     if (id != null)
                     {
-                        await Manager.EnableIdAsync(turnContext, id, type).ConfigureAwait(false);
+                        await Manager.EnableIdAsync(turnContext, id, type, options.TrackEnabledIds).ConfigureAwait(false);
                     }
                 }).ConfigureAwait(false);
             }

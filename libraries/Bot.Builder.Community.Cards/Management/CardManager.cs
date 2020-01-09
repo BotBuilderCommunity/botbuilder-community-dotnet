@@ -12,28 +12,28 @@ namespace Bot.Builder.Community.Cards.Management
     public class CardManager<TState>
         where TState : BotState
     {
-        public CardManager(TState botState, bool trackEnabledIds = true)
-            : this(botState?.CreateProperty<CardManagerState>(nameof(CardManagerState)) ?? throw new ArgumentNullException(nameof(botState)), trackEnabledIds)
+        public CardManager(TState botState)
+            : this(botState?.CreateProperty<CardManagerState>(nameof(CardManagerState)) ?? throw new ArgumentNullException(nameof(botState)))
         {
         }
 
-        public CardManager(IStatePropertyAccessor<CardManagerState> stateAccessor, bool trackEnabledIds = true)
+        private CardManager(IStatePropertyAccessor<CardManagerState> stateAccessor)
         {
             StateAccessor = stateAccessor ?? throw new ArgumentNullException(nameof(stateAccessor));
-            TrackEnabledIds = trackEnabledIds;
         }
 
         public IStatePropertyAccessor<CardManagerState> StateAccessor { get; }
 
-        public CardSet Cards { get; }
-
-        public bool TrackEnabledIds { get; set; } = true;
+        public static CardManager<TState> Create(IStatePropertyAccessor<CardManagerState> stateAccessor)
+        {
+            return new CardManager<TState>(stateAccessor ?? throw new ArgumentNullException(nameof(stateAccessor)));
+        }
 
         // --------------------
         // NON-UPDATING METHODS
         // --------------------
 
-        public async Task DisableIdAsync(ITurnContext turnContext, string id, IdType type = IdType.Card, CancellationToken cancellationToken = default)
+        public async Task DisableIdAsync(ITurnContext turnContext, string id, IdType type = IdType.Card, bool trackEnabledIds = true, CancellationToken cancellationToken = default)
         {
             BotAssert.ContextNotNull(turnContext);
 
@@ -42,10 +42,10 @@ namespace Bot.Builder.Community.Cards.Management
                 throw new ArgumentNullException(nameof(id));
             }
 
-            await (TrackEnabledIds ? ForgetIdAsync(turnContext, id, cancellationToken) : TrackIdAsync(turnContext, id, type, cancellationToken)).ConfigureAwait(false);
+            await (trackEnabledIds ? ForgetIdAsync(turnContext, id, cancellationToken) : TrackIdAsync(turnContext, id, type, cancellationToken)).ConfigureAwait(false);
         }
 
-        public async Task EnableIdAsync(ITurnContext turnContext, string id, IdType type = IdType.Card, CancellationToken cancellationToken = default)
+        public async Task EnableIdAsync(ITurnContext turnContext, string id, IdType type = IdType.Card, bool trackEnabledIds = true, CancellationToken cancellationToken = default)
         {
             BotAssert.ContextNotNull(turnContext);
 
@@ -54,7 +54,7 @@ namespace Bot.Builder.Community.Cards.Management
                 throw new ArgumentNullException(nameof(id));
             }
 
-            await (TrackEnabledIds ? TrackIdAsync(turnContext, id, type, cancellationToken) : ForgetIdAsync(turnContext, id, cancellationToken)).ConfigureAwait(false);
+            await (trackEnabledIds ? TrackIdAsync(turnContext, id, type, cancellationToken) : ForgetIdAsync(turnContext, id, cancellationToken)).ConfigureAwait(false);
         }
 
         public async Task TrackIdAsync(ITurnContext turnContext, string id, IdType type = IdType.Card, CancellationToken cancellationToken = default)
@@ -132,59 +132,70 @@ namespace Bot.Builder.Community.Cards.Management
         {
             var inputTypes = new[] { "Input.Text", "Input.Number", "Input.Date", "Input.Time", "Input.Toggle", "Input.ChoiceSet" };
             var incomingActivity = turnContext?.Activity;
-            var value = incomingActivity?.Value;
 
-            if (value != null)
+            if (incomingActivity?.Value is object value)
             {
-                var payload = JObject.FromObject(value);
-                var state = await StateAccessor.GetNotNullAsync(turnContext, () => new CardManagerState(), cancellationToken).ConfigureAwait(false);
-
-                foreach (var savedActivities in Helper.GetEnumValues<IdType>()
-                    .Select(type => payload.GetIdFromPayload(type))
-                    .Where(id => id != null && state.ActivitiesById.ContainsKey(id))
-                    .Select(id => state.ActivitiesById[id])
-                    .Where(savedActivities => savedActivities != null))
-                {
-                    foreach (var savedActivity in savedActivities)
+                _ = await value.ToJObjectAndBackAsync(
+                    async payload =>
                     {
-                        if (savedActivity is Activity activity && activity.Attachments?.Any() == true)
+                        var state = await StateAccessor.GetNotNullAsync(turnContext, () => new CardManagerState(), cancellationToken).ConfigureAwait(false);
+
+                        foreach (var savedActivities in Helper.GetEnumValues<IdType>()
+                            .Select(type => payload.GetIdFromPayload(type))
+                            .Where(id => id != null && state.ActivitiesById.ContainsKey(id))
+                            .Select(id => state.ActivitiesById[id])
+                            .Where(savedActivities => savedActivities != null))
                         {
-                            foreach (var attachment in activity.Attachments)
+                            foreach (var savedActivity in savedActivities)
                             {
-                                if (attachment.ContentType == CardConstants.AdaptiveCardContentType && attachment.Content != null)
+                                if (savedActivity is Activity activity && activity.Attachments?.Any() == true)
                                 {
-                                    var card = JObject.FromObject(attachment.Content);
-
-                                    foreach (var input in card.NonDataDescendants()
-                                        .Select(token => token as JObject)
-                                        .Where(element => inputTypes.Contains((element?[CardConstants.KeyType] as JProperty)?.Value?.ToString())
-                                            && element[CardConstants.KeyId] != null
-                                            && payload.ContainsKey(element[CardConstants.KeyId].ToString())))
+                                    foreach (var attachment in activity.Attachments)
                                     {
-                                        input[CardConstants.KeyValue] = payload[input[CardConstants.KeyId].ToString()];
-                                    }
+                                        if (attachment.ContentType == CardConstants.AdaptiveCardContentType && attachment.Content != null)
+                                        {
+                                            attachment.Content = attachment.Content?.ToJObjectAndBackAsync(
+                                                card =>
+                                                {
+                                                    // Iterate through all inputs in the card
+                                                    foreach (var input in card.NonDataDescendants()
+                                                            .Select(token => token as JObject)
+                                                            .Where(element => inputTypes.Contains((element?[CardConstants.KeyType] as JProperty)?.Value?.ToString())
+                                                                && element[CardConstants.KeyId] != null))
+                                                    {
+                                                        var id = input[CardConstants.KeyId].ToString();
 
-                                    var update = MessageFactory.Attachment(attachment);
+                                                        if (payload.ContainsKey(id))
+                                                        {
+                                                            input[CardConstants.KeyValue] = payload[id]; 
+                                                        }
+                                                    }
 
-                                    update.Conversation = incomingActivity.Conversation;
-                                    update.Id = savedActivity.Id;
+                                                    return Task.CompletedTask;
+                                                }).Result;
 
-                                    try
-                                    {
-                                        await turnContext.UpdateActivityAsync(update).ConfigureAwait(false);
-                                    }
-                                    catch
-                                    {
-                                        // TODO: Find out what exceptions I need to handle
-                                        throw;
+                                            var update = MessageFactory.Attachment(attachment);
+
+                                            update.Conversation = incomingActivity.Conversation;
+                                            update.Id = savedActivity.Id;
+
+                                            try
+                                            {
+                                                await turnContext.UpdateActivityAsync(update).ConfigureAwait(false);
+                                            }
+                                            catch
+                                            {
+                                                // TODO: Find out what exceptions I need to handle
+                                                throw;
+                                            }
+                                        }
                                     }
                                 }
                             }
-                        }
-                    }
 
-                    break;
-                }
+                            break;
+                        }
+                    }, true).ConfigureAwait(false);
             }
         }
     }

@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Bot.Builder.Community.Cards
 {
@@ -14,10 +17,10 @@ namespace Bot.Builder.Community.Cards
     /// </summary>
     internal static class GenericExtensions
     {
-        internal static void Deconstruct<T1, T2>(this KeyValuePair<T1, T2> tuple, out T1 key, out T2 value)
+        internal static ConfiguredTaskAwaitable<T> CoalesceAwait<T>(this Task<T> task)
+            where T : class
         {
-            key = tuple.Key;
-            value = tuple.Value;
+            return (task ?? Task.FromResult<T>(null)).ConfigureAwait(false);
         }
 
         internal static async Task<T> GetNotNullAsync<T>(
@@ -100,6 +103,53 @@ namespace Bot.Builder.Community.Cards
         internal static bool IsOneOf<T>(this T obj, IEqualityComparer<T> equalityComparer, params T[] these)
         {
             return these.Contains(obj, equalityComparer);
+        }
+
+        internal static async Task<T> ToJObjectAndBackAsync<T>(
+            this T input,
+            Func<JObject, Task> funcAsync,
+            bool shouldParseStrings = false,
+            bool shouldIgnoreWrongType = true)
+            where T : class
+        {
+            JToken jToken = null;
+
+            if (shouldParseStrings && input is string inputString)
+            {
+                try
+                {
+                    jToken = JObject.Parse(inputString);
+                }
+                catch (JsonReaderException)
+                {
+                    jToken = null;
+                }
+            }
+            else if (input is JObject inputJObject)
+            {
+                jToken = inputJObject;
+            }
+            else if (input != null)
+            {
+                jToken = JToken.FromObject(input);
+            }
+
+            if (jToken is JObject jObject)
+            {
+                await funcAsync(jObject).ConfigureAwait(false);
+
+                return input is string
+                    ? JsonConvert.SerializeObject(jObject) as T
+                    : input is JObject
+                        ? jObject as T
+                        : jObject.ToObject<T>(); 
+            }
+            else if (shouldIgnoreWrongType)
+            {
+                return input;
+            }
+
+            return null;
         }
     }
 }
