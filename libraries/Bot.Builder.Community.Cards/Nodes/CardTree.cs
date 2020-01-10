@@ -159,7 +159,7 @@ namespace Bot.Builder.Community.Cards.Nodes
                 })
             },
             {
-                NodeType.Payload, new Node<object, IdTypeValue>(async (payload, nextAsync) =>
+                NodeType.Payload, new Node<object, TypedId>(async (payload, nextAsync) =>
                 {
                     return await payload.ToJObjectAndBackAsync(async payloadJObject =>
                     {
@@ -169,18 +169,18 @@ namespace Bot.Builder.Community.Cards.Nodes
 
                             if (id != null)
                             {
-                                await nextAsync(new IdTypeValue(type, id), NodeType.Id);
+                                await nextAsync(new TypedId(type, id), NodeType.Id);
                             }
                         }
                     });
                 })
             },
             {
-                NodeType.Id, new Node<IdTypeValue, object>((id, _) => Task.FromResult(id))
+                NodeType.Id, new Node<TypedId, object>((id, _) => Task.FromResult(id))
             },
         };
 
-        public static async Task<TEntry> RecurseAsync<TEntry, TExit>(
+        internal static async Task<TEntry> RecurseAsync<TEntry, TExit>(
             TEntry entryValue,
             Func<TExit, Task> funcAsync,
             NodeType? entryType = null,
@@ -228,7 +228,7 @@ namespace Bot.Builder.Community.Cards.Nodes
             return await entryNode.CallChild(entryValue, NextAsync).ConfigureAwait(false) as TEntry;
         }
 
-        public static TEntry ApplyIds<TEntry>(TEntry entryValue, NodeType? entryType = null, IdOptions options = null)
+        internal static TEntry ApplyIds<TEntry>(TEntry entryValue, NodeType? entryType = null, IdOptions options = null)
             where TEntry : class
         {
             INode entryNode = null;
@@ -275,26 +275,6 @@ namespace Bot.Builder.Community.Cards.Nodes
             }
 
             return entryNode.CallChild(entryValue, NextAsync).Result as TEntry;
-        }
-
-        public static IEnumerable<TExit> GetAll<TEntry, TExit>(TEntry entryValue, NodeType? entryType = null, NodeType? exitType = null)
-            where TEntry : class
-            where TExit : class
-        {
-            var list = new List<TExit>();
-
-            RecurseAsync(
-                entryValue,
-                (TExit id) =>
-                {
-                    list.Add(id);
-
-                    return Task.CompletedTask;
-                },
-                entryType,
-                exitType).Wait();
-
-            return list;
         }
 
         private static INode GetNode<T>(NodeType? nodeType)

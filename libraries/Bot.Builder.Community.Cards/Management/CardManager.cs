@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Bot.Builder.Community.Cards.Nodes;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json.Linq;
@@ -33,47 +34,44 @@ namespace Bot.Builder.Community.Cards.Management
         // NON-UPDATING METHODS
         // --------------------
 
-        public async Task DisableIdAsync(ITurnContext turnContext, string id, IdType type = IdType.Card, bool trackEnabledIds = true, CancellationToken cancellationToken = default)
+        public async Task DisableIdAsync(ITurnContext turnContext, TypedId typedId, bool trackEnabledIds = true, CancellationToken cancellationToken = default)
         {
             BotAssert.ContextNotNull(turnContext);
 
-            if (id is null)
+            if (typedId is null)
             {
-                throw new ArgumentNullException(nameof(id));
+                throw new ArgumentNullException(nameof(typedId));
             }
 
-            await (trackEnabledIds ? ForgetIdAsync(turnContext, id, cancellationToken) : TrackIdAsync(turnContext, id, type, cancellationToken)).ConfigureAwait(false);
+            await (trackEnabledIds ? ForgetIdAsync(turnContext, typedId.Id, cancellationToken) : TrackIdAsync(turnContext, typedId, cancellationToken)).ConfigureAwait(false);
         }
 
-        public async Task EnableIdAsync(ITurnContext turnContext, string id, IdType type = IdType.Card, bool trackEnabledIds = true, CancellationToken cancellationToken = default)
+        public async Task EnableIdAsync(ITurnContext turnContext, TypedId typedId, bool trackEnabledIds = true, CancellationToken cancellationToken = default)
         {
             BotAssert.ContextNotNull(turnContext);
 
-            if (id is null)
+            if (typedId is null)
             {
-                throw new ArgumentNullException(nameof(id));
+                throw new ArgumentNullException(nameof(typedId));
             }
 
-            await (trackEnabledIds ? TrackIdAsync(turnContext, id, type, cancellationToken) : ForgetIdAsync(turnContext, id, cancellationToken)).ConfigureAwait(false);
+            await (trackEnabledIds ? TrackIdAsync(turnContext, typedId, cancellationToken) : ForgetIdAsync(turnContext, typedId.Id, cancellationToken)).ConfigureAwait(false);
         }
 
-        public async Task TrackIdAsync(ITurnContext turnContext, string id, IdType type = IdType.Card, CancellationToken cancellationToken = default)
+        public async Task TrackIdAsync(ITurnContext turnContext, TypedId typedId, CancellationToken cancellationToken = default)
         {
             BotAssert.ContextNotNull(turnContext);
 
-            if (id is null)
+            if (typedId is null)
             {
-                throw new ArgumentNullException(nameof(id));
+                throw new ArgumentNullException(nameof(typedId));
             }
 
+            var type = typedId.Type;
+            var id = typedId.Id;
             var state = await StateAccessor.GetNotNullAsync(turnContext, () => new CardManagerState(), cancellationToken).ConfigureAwait(false);
-
-            state.TrackedIdsByType.TryGetValue(type, out var trackedSet);
-
-            if (trackedSet is null)
-            {
-                state.TrackedIdsByType[type] = trackedSet = new HashSet<string>();
-            }
+            var trackedIdsByType = state.TrackedIdsByType;
+            var trackedSet = trackedIdsByType.ContainsKey(type) ? trackedIdsByType[type] : trackedIdsByType[type] = new HashSet<string>();
 
             trackedSet.Add(id);
         }
@@ -112,14 +110,14 @@ namespace Bot.Builder.Community.Cards.Management
 
             foreach (var activity in activities)
             {
-                var savedActivity = activity.ToAttachmentActivity();
-                var idsFromAttachments = activity.GetIdsFromAttachments().FlattenIntoSet();
+                var storedActivity = activity.ToStoredActivity();
 
-                foreach (var id in idsFromAttachments)
+                CardTree.RecurseAsync(activity, (TypedId typedId) =>
                 {
-                    activitiesById.InitializeKey(id, new HashSet<Activity>());
-                    activitiesById[id].Add(savedActivity);
-                }
+                    activitiesById.InitializeKey(typedId.Id, new HashSet<Activity>()).Add(storedActivity);
+
+                    return Task.CompletedTask;
+                }).Wait();
             }
         }
 
@@ -135,7 +133,7 @@ namespace Bot.Builder.Community.Cards.Management
 
             if (incomingActivity?.Value is object value)
             {
-                _ = await value.ToJObjectAndBackAsync(
+                await value.ToJObjectAndBackAsync(
                     async payload =>
                     {
                         var state = await StateAccessor.GetNotNullAsync(turnContext, () => new CardManagerState(), cancellationToken).ConfigureAwait(false);

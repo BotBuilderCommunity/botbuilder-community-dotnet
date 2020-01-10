@@ -58,10 +58,9 @@ namespace Bot.Builder.Community.Cards
         /// <param name="key">The key to potentially add to the dictionary.</param>
         /// <param name="value">The value to potentially add to the dictionary.</param>
         /// <returns>
-        /// True if the value was added because the key was not present.
-        /// False if the value was not added because the key was present.
+        /// The value.
         /// </returns>
-        internal static bool InitializeKey<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, TValue value = default)
+        internal static TValue InitializeKey<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, TValue value = default)
         {
             if (dict is null)
             {
@@ -70,12 +69,12 @@ namespace Bot.Builder.Community.Cards
 
             if (dict.ContainsKey(key))
             {
-                return false;
+                return dict[key];
             }
 
             dict.Add(key, value);
 
-            return true;
+            return value;
         }
 
         internal static bool SetExistingValue<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, TValue value = default)

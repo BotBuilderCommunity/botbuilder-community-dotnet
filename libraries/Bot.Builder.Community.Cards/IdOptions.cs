@@ -44,10 +44,9 @@ namespace Bot.Builder.Community.Cards
         /// <param name="type">The ID type to potentially assign.</param>
         /// <param name="id">The ID to potentially assign.</param>
         /// <returns>
-        /// True if the ID was assigned because the ID type was not present.
-        /// False if the ID was not assigned because the ID type was present.
+        /// The ID.
         /// </returns>
-        public bool InitializeId(IdType type, string id = null) => _ids.InitializeKey(type, id);
+        public string InitializeId(IdType type, string id = null) => _ids.InitializeKey(type, id);
 
         public bool SetExistingId(IdType type, string id = null) => _ids.SetExistingValue(type, id);
 

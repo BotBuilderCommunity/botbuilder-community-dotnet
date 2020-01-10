@@ -4,12 +4,12 @@ using System.Text;
 
 namespace Bot.Builder.Community.Cards.Nodes
 {
-    public class IdTypeValue
+    public class TypedId
     {
-        public IdTypeValue(IdType type, string id)
+        public TypedId(IdType type, string id)
         {
             Type = type;
-            Id = id;
+            Id = id ?? throw new ArgumentNullException(nameof(id));
         }
 
         public IdType Type { get; }

@@ -7,7 +7,7 @@ namespace Bot.Builder.Community.Cards.Management
     public class CardManagerState
     {
         [JsonProperty("trackedIdsByType")]
-        public IDictionary<IdType, ICollection<string>> TrackedIdsByType { get; } = new Dictionary<IdType, ICollection<string>>();
+        public IDictionary<IdType, ISet<string>> TrackedIdsByType { get; } = new Dictionary<IdType, ISet<string>>();
 
         [JsonProperty("activitiesById")]
         public IDictionary<string, ISet<Activity>> ActivitiesById { get; } = new Dictionary<string, ISet<Activity>>();
