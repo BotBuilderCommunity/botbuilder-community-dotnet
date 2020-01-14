@@ -29,7 +29,6 @@
   </ItemGroup>
 
   <ItemGroup>
-		<PackageReference Include="Google.Cloud.Dialogflow.V2" Version="1.2.0" />
 		<PackageReference Include="JWT" Version="5.0.1" />
 		<PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.4" />
 		<PackageReference Include="Microsoft.Bot.Builder" Version="4.6.3" />

@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using JWT.Builder;
+﻿using JWT.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Bot.Schema;
 using Newtonsoft.Json.Linq;
 
 namespace Bot.Builder.Community.Adapters.Google

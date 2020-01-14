@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
+using System.Collections.Generic;
 
 namespace Bot.Builder.Community.Adapters.Google
 {
@@ -29,20 +30,8 @@ namespace Bot.Builder.Community.Adapters.Google
 
     public class ExpectedInput
     {
-        public PossibleIntent[] PossibleIntents { get; set; }
+        public ISystemIntent[] PossibleIntents { get; set; }
         public InputPrompt InputPrompt { get; set; }
-    }
-
-    public class PossibleIntent
-    {
-        public string Intent { get; set; }
-        public InputValueData InputValueData { get; set; }
-    }
-
-    public class InputValueData
-    {
-        [JsonProperty(PropertyName = "@type")]
-        public string type { get; set; }
     }
 
     public class InputPrompt
@@ -108,13 +97,13 @@ namespace Bot.Builder.Community.Adapters.Google
         public string DisplayText { get; set; }
     }
 
-    public class GoogleBasicCard : Item
+    public class BasicCard : Item
     {
         [JsonProperty(PropertyName = "basicCard")]
-        public GoogleBasicCardContent Content { get; set; }
+        public BasicCardContent Content { get; set; }
     }
 
-    public class GoogleBasicCardContent
+    public class BasicCardContent
     {
         public string Title { get; set; }
         public string Subtitle { get; set; }
@@ -124,16 +113,55 @@ namespace Bot.Builder.Community.Adapters.Google
         public ImageDisplayOptions? Display { get; set; }
     }
 
-    public class MediaResponseContent
+    public class TableCard : Item
     {
-        public MediaType MediaType { get; set; }
-        public MediaObject[] MediaObjects { get; set; }
+        [JsonProperty(PropertyName = "tableCard")]
+        public TableCardContent Content { get; set; }
+    }
+
+    public class TableCardContent
+    {
+        public string Title { get; set; }
+        public string Subtitle { get; set; }
+        public Image Image { get; set; }
+        public List<ColumnProperties> ColumnProperties { get; set; }
+        public List<Row> Rows { get; set; }
+        public List<Button> Buttons { get; set; }
+    }
+
+    public class ColumnProperties
+    {
+        public string Header { get; set; }
+        public HorizontalAlignment HorizontalAlignment { get; set; }
+    }
+
+    public class Row
+    {
+        public List<Cell> Cells { get; set; }
+    }
+
+    public class Cell
+    {
+        public string Text { get; set; }
+    }
+
+    public enum HorizontalAlignment
+    {
+        LEADING,
+        CENTER,
+        TRAILING
     }
 
     public class MediaResponse : Item
     {
         [JsonProperty(PropertyName = "mediaResponse")]
         public MediaResponseContent Content { get; set; }
+    }
+
+    public class MediaResponseContent
+    {
+        public MediaType MediaType { get; set; }
+        public MediaObject[] MediaObjects { get; set; }
     }
 
     public class Image

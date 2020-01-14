@@ -9,7 +9,7 @@ namespace Bot.Builder.Community.Adapters.Google
     {
         public GoogleWebhookType WebhookType { get; set; } = GoogleWebhookType.Conversation;
 
-        public bool ShouldEndSessionByDefault { get; set; }
+        public bool ShouldEndSessionByDefault { get; set; } = true;
 
         public bool TryConvertFirstActivityAttachmentToGoogleCard { get; set; }
 
@@ -18,6 +18,7 @@ namespace Bot.Builder.Community.Adapters.Google
         public string ActionProjectId { get; set; }
 
         public MultipleOutgoingActivitiesPolicies MultipleOutgoingActivitiesPolicy { get; set; } = MultipleOutgoingActivitiesPolicies.TakeLastActivity;
+
         public bool ValidateIncomingRequests { get; internal set; }
     }
 

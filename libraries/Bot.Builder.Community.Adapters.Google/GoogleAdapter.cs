@@ -10,8 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Bot.Builder.Community.Adapters.Google.Model;
-using Google.Cloud.Dialogflow.V2;
-using Google.Protobuf;
+using Bot.Builder.Community.Adapters.Google.Model.Attachments;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
@@ -27,8 +26,6 @@ namespace Bot.Builder.Community.Adapters.Google
     public class GoogleAdapter : BotAdapter, IBotFrameworkHttpAdapter
     {
         internal const string BotIdentityKey = "BotIdentity";
-
-        private static readonly JsonParser _dialogFlowJsonParser = new JsonParser(JsonParser.Settings.Default.WithIgnoreUnknownFields(true));
 
         private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
         {
@@ -70,11 +67,6 @@ namespace Bot.Builder.Community.Adapters.Google
                 body = await sr.ReadToEndAsync();
             }
 
-            if (_options.WebhookType == GoogleWebhookType.DialogFlow)
-            {
-                var dialogFlowRequest = _dialogFlowJsonParser.Parse<WebhookRequest>(body);
-            }
-
             Activity activity = null;
 
             if (_options.WebhookType == GoogleWebhookType.DialogFlow)
@@ -94,11 +86,6 @@ namespace Bot.Builder.Community.Adapters.Google
             }
 
             var googleResponse = await ProcessActivityAsync(activity, bot.OnTurnAsync);
-
-            if (googleResponse == null)
-            {
-                throw new ArgumentNullException(nameof(googleResponse));
-            }
 
             if (googleResponse == null)
             {
@@ -298,9 +285,9 @@ namespace Bot.Builder.Community.Adapters.Google
 
             var userStorage = new JObject
             {
-                { "UserId", context.TurnState["GoogleUserId"].ToString() }
+                { "UserId", context.TurnState["GoogleUserId"]?.ToString() }
             };
-            response.UserStorage = userStorage.ToString();
+            response.UserStorage = userStorage?.ToString();
 
             if (activity?.Attachments != null
                 && activity.Attachments.FirstOrDefault(a => a.ContentType == SigninCard.ContentType) != null)
@@ -312,16 +299,9 @@ namespace Bot.Builder.Community.Adapters.Google
                 {
                     new ExpectedInput()
                     {
-                        PossibleIntents = new PossibleIntent[]
+                        PossibleIntents = new ISystemIntent[]
                         {
-                            new PossibleIntent()
-                            {
-                                Intent = "actions.intent.SIGN_IN",
-                                InputValueData = new InputValueData()
-                                {
-                                    type = "type.googleapis.com/google.actions.v2.SignInValueSpec"
-                                }
-                            },
+                            new SigninIntent(),
                         },
                         InputPrompt = new InputPrompt()
                         {
@@ -345,6 +325,44 @@ namespace Bot.Builder.Community.Adapters.Google
                 return response;
             }
 
+            if (activity?.Attachments != null
+                && activity.Attachments.Any(a => a.ContentType == "google/list-attachment"))
+            {
+                var listAttachment = activity.Attachments?.FirstOrDefault(a => a.ContentType == "google/list-attachment") as ListAttachment;
+                var optionIntentData = GetOptionIntentDataFromListAttachment(listAttachment);
+
+                response.ExpectUserResponse = true;
+                response.ExpectedInputs = new ExpectedInput[]
+                    {
+                        new ExpectedInput()
+                        {
+                            PossibleIntents = new ISystemIntent[]
+                            {
+                                new OptionIntent() { InputValueData = optionIntentData }
+                            },
+                            InputPrompt = new InputPrompt()
+                            {
+                                RichInitialPrompt = new RichResponse() {
+                                    Items = new List<Item>()
+                                        { 
+                                            new SimpleResponse() 
+                                            { 
+                                                Content = new SimpleResponseContent
+                                                {
+                                                    DisplayText = activity.Text,
+                                                    Ssml = activity.Speak,
+                                                    TextToSpeech = activity.Text
+                                                }
+                                            }
+                                        }.ToArray()
+                                }
+                            }
+                        }
+                    };
+
+                return response;
+            }
+
             if (!string.IsNullOrEmpty(activity?.Text))
             {
                 var simpleResponse = new SimpleResponse
@@ -359,11 +377,17 @@ namespace Bot.Builder.Community.Adapters.Google
 
                 var responseItems = new List<Item> { simpleResponse };
 
-                // Add Google card to response if set
-                AddCardToResponse(context, ref responseItems, activity);
+                if(activity.Attachments != null && activity.Attachments.Any(a => a.ContentType == "google/card-attachment"))
+                {
+                    var cardAttachment = activity.Attachments.First(a => a.ContentType == "google/card-attachment") as BasicCardAttachment;
+                    responseItems.Add(cardAttachment.Card);
+                }
 
-                // Add Media response to response if set
-                AddMediaResponseToResponse(context, ref responseItems, activity);
+                if (activity.Attachments != null && activity.Attachments.Any(a => a.ContentType == "google/table-card-attachment"))
+                {
+                    var cardAttachment = activity.Attachments.First(a => a.ContentType == "google/table-card-attachment") as TableCardAttachment;
+                    responseItems.Add(cardAttachment.Card);
+                }
 
                 if (activity.InputHint == null || activity.InputHint == InputHints.AcceptingInput)
                 {
@@ -387,9 +411,9 @@ namespace Bot.Builder.Community.Adapters.Google
                             {
                                 new ExpectedInput()
                                 {
-                                    PossibleIntents = new PossibleIntent[]
+                                    PossibleIntents = new ISystemIntent[]
                                     {
-                                        new PossibleIntent() {Intent = "actions.intent.TEXT"},
+                                        new TextIntent(),
                                     },
                                     InputPrompt = new InputPrompt()
                                     {
@@ -398,7 +422,7 @@ namespace Bot.Builder.Community.Adapters.Google
                                 }
                             };
 
-                        var suggestionChips = AddSuggestionChipsToResponse(context);
+                        var suggestionChips = GetSuggestionChips(context);
                         if (suggestionChips.Any())
                         {
                             response.ExpectedInputs.First().InputPrompt.RichInitialPrompt.Suggestions =
@@ -433,6 +457,13 @@ namespace Bot.Builder.Community.Adapters.Google
                 }
             };
 
+            if (activity.Attachments.Any(a => a.GetType() == typeof(ListAttachment)))
+            {
+                var listAttachment = activity.Attachments?.FirstOrDefault(a => a.GetType() == typeof(ListAttachment)) as ListAttachment;
+                var optionIntentData = GetOptionIntentDataFromListAttachment(listAttachment);
+                response.Payload.Google.SystemIntent = new DialogFlowOptionSystemIntent() { Data = optionIntentData };
+            }
+
             if (!string.IsNullOrEmpty(activity?.Text))
             {
                 var simpleResponse = new SimpleResponse
@@ -447,26 +478,14 @@ namespace Bot.Builder.Community.Adapters.Google
 
                 var responseItems = new List<Item> { simpleResponse };
 
-                // Add Google card to response if set
-                AddCardToResponse(context, ref responseItems, activity);
-
-                // Add Media response to response if set
-                AddMediaResponseToResponse(context, ref responseItems, activity);
-
                 response.Payload.Google.RichResponse.Items = responseItems.ToArray();
 
                 // If suggested actions have been added to outgoing activity
                 // add these to the response as Google Suggestion Chips
-                var suggestionChips = AddSuggestionChipsToResponse(context);
+                var suggestionChips = GetSuggestionChips(context);
                 if (suggestionChips.Any())
                 {
                     response.Payload.Google.RichResponse.Suggestions = suggestionChips.ToArray();
-                }
-
-                if (context.TurnState.ContainsKey("systemIntent"))
-                {
-                    var optionSystemIntent = context.TurnState.Get<ISystemIntent>("systemIntent");
-                    response.Payload.Google.SystemIntent = optionSystemIntent;
                 }
 
                 // check if we should be listening for more input from the user
@@ -491,15 +510,7 @@ namespace Bot.Builder.Community.Adapters.Google
             return response;
         }
 
-        private void AddMediaResponseToResponse(ITurnContext context, ref List<Item> responseItems, Activity activity)
-        {
-            if (context.TurnState.ContainsKey("GoogleMediaResponse") && context.TurnState["GoogleMediaResponse"] is MediaResponse)
-            {
-                responseItems.Add(context.TurnState.Get<MediaResponse>("GoogleMediaResponse"));
-            }
-        }
-
-        private static List<Suggestion> AddSuggestionChipsToResponse(ITurnContext context)
+        private static List<Suggestion> GetSuggestionChips(ITurnContext context)
         {
             var suggestionChips = new List<Suggestion>();
 
@@ -519,16 +530,30 @@ namespace Bot.Builder.Community.Adapters.Google
             return suggestionChips;
         }
 
-        private void AddCardToResponse(ITurnContext context, ref List<Item> responseItems, Activity activity)
+        private static OptionIntentData GetOptionIntentDataFromListAttachment(ListAttachment listAttachment)
         {
-            if (context.TurnState.ContainsKey("GoogleCard") && context.TurnState["GoogleCard"] is GoogleBasicCard)
+            switch (listAttachment.ListStyle)
             {
-                responseItems.Add(context.TurnState.Get<GoogleBasicCard>("GoogleCard"));
-            }
-            else if (_options.TryConvertFirstActivityAttachmentToGoogleCard)
-            {
-                //TODO: Implement automatic conversion from hero card to Google basic card
-                //CreateAlexaCardFromAttachment(activity, response);
+                case ListAttachmentStyle.Carousel:
+                    return new CarouselOptionIntentData
+                    {
+                        CarouselSelect = new OptionIntentSelect()
+                        {
+                            Items = listAttachment.Items,
+                            Title = listAttachment.Title
+                        }
+                    };
+                case ListAttachmentStyle.List:
+                    return new ListOptionIntentData
+                    {
+                        ListSelect = new OptionIntentSelect()
+                        {
+                            Items = listAttachment.Items,
+                            Title = listAttachment.Title
+                        }
+                    };
+                default:
+                    return null;
             }
         }
 
