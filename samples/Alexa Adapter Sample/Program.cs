@@ -4,7 +4,7 @@
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace Bot.Builder.Community.Samples.Alexa
+namespace Bot.Builder.Community.Samples.Google
 {
     public class Program
     {

@@ -1,5 +1,5 @@
 ﻿using Bot.Builder.Community.Adapters.Alexa;
-using Bot.Builder.Community.Samples.Alexa.Bots;
+using Bot.Builder.Community.Samples.Google.Bots;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +8,7 @@ using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Bot.Builder.Community.Samples.Alexa
+namespace Bot.Builder.Community.Samples.Google
 {
     public class Startup
     {
@@ -28,11 +28,6 @@ namespace Bot.Builder.Community.Samples.Alexa
             services.AddSingleton<IBotFrameworkHttpAdapter, AdapterWithErrorHandler>();
 
             services.AddSingleton<AlexaAdapter, AlexaAdapterWithErrorHandler>();
-
-            //services.AddSingleton<AlexaAdapter>(sp =>
-            //{
-            //    return new AlexaAdapter(new AlexaAdapterOptions() { ValidateIncomingAlexaRequests = false });
-            //});
 
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
             services.AddTransient<IBot, EchoBot>();

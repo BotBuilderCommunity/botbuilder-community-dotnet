@@ -1,13 +1,13 @@
-﻿using Microsoft.Bot.Builder.Integration.AspNet.Core;
-using Microsoft.Extensions.Configuration;
+﻿using Bot.Builder.Community.Adapters.Google;
+using Bot.Builder.Community.Adapters.Google.Model;
 using Microsoft.Extensions.Logging;
 
 namespace Bot.Builder.Community.Samples.Google
 {
-    public class AdapterWithErrorHandler : BotFrameworkHttpAdapter
+    public class GoogleAdapterWithErrorHandler : GoogleAdapter
     {
-        public AdapterWithErrorHandler(IConfiguration configuration, ILogger<BotFrameworkHttpAdapter> logger)
-            : base(configuration, logger)
+        public GoogleAdapterWithErrorHandler(ILogger<GoogleAdapter> logger, GoogleAdapterOptions adapterOptions)
+            : base(adapterOptions, logger)
         {
             OnTurnError = async (turnContext, exception) =>
             {

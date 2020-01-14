@@ -2,15 +2,13 @@
 using Bot.Builder.Community.Adapters.Alexa.Middleware;
 using Microsoft.Extensions.Logging;
 
-namespace Bot.Builder.Community.Samples.Alexa
+namespace Bot.Builder.Community.Samples.Google
 {
     public class AlexaAdapterWithErrorHandler : AlexaAdapter
     {
         public AlexaAdapterWithErrorHandler(ILogger<AlexaAdapter> logger)
             : base(new AlexaAdapterOptions(), logger)
         {
-            //Adapter.Use(new AlexaIntentRequestToMessageActivityMiddleware());
-
             OnTurnError = async (turnContext, exception) =>
             {
                 // Log any leaked exception from the application.
