@@ -11,23 +11,17 @@ This is part of the [Bot Builder Community Extensions](https://github.com/botbui
 
 The Google Adapter allows you to add an additional endpoint to your bot for custom Google Actions. The Google endpoint can be used
 in conjunction with other channels meaning, for example, you can have a bot exposed on out of the box channels such as Facebook and 
-Teams, but also via an Google Skill (as well as side by side with the Alexa Adapter also available from the Bot Builder Community Project).
+Teams, but also via a Google Action (as well as side by side with the Alexa / Twitter Adapters also available from the Bot Builder Community Project).
 
-Incoming Google Action requests are transformed, by the adapter, into Bot Builder Activties and then when your bot responds, the adapter transforms the outgoing Activity into an Google response.
+Incoming Google Action requests are transformed, by the adapter, into Bot Builder Activties and then when your bot responds, the adapter transforms the outgoing Activity into a Google response.
 
-A basic sample bot is available [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/Google%20Adapter%20Sample).
+The adapter currently supports the following scenarios;
 
-At the moment the adapter supports building voice / text based Google Actions, with the addition of some features, such as card support. 
-**We will be adding many new features (similar to those found within the Alexa adapter) soon!**
-
-* Support for voice based Google bots
-* Support for Google Cards
-* Integration libraries (similar to those for the Bot Framework Adapter), allowing for the bot to also have its own middleware pipeline for Google Actions
-* TurnContext extensions allowing the developer to;
-    * Attach an Google Card to the response
-    * Retrieve the raw Google request
-	* Set choice list to use native choice prompt for Google Actions
-* Automatic conversion of Suggested Actions into Google Suggestion Chips
+* Support for voice based Google actions
+* Support for Basic Card, Table Card and Signin Card
+* Send Lists and Carousels to allow the user to select from a visual list
+* Automatic conversion of Suggested Actions on outgoing activity into Google Suggestion Chips
+* Full incoming request from Google is added to the incoming activity as ChannelData
 
 ## Installation
 
@@ -49,7 +43,7 @@ Sample bot, showing examples of Google specific functionality using the current 
 * [Wiring up the Google adapter in your bot](#wiring-up-the-google-adapter-in-your-bot)
 * [Complete configuration of your Action package](#complete-configuration-of-your-action-package)
 * [Test your Google Action](#test-your-google-action) - Test your bot in the Google Actions simulator
-* [Customising your conversation](#customising-your-conversaton) - Learn about controlling end of session and use of basic card, table card, list and carousel
+* [Customising your conversation](#customising-your-conversation) - Learn about controlling end of session and use of basic card, table card, list and carousel
 
 In this article you will learn how to connect a bot to Google Assistant using the Google adapter.  This article will walk you through modifying the EchoBot sample to connect it to a skill.
 
@@ -65,21 +59,21 @@ In this article you will learn how to connect a bot to Google Assistant using th
 
 2. In the **New Project** popup dialog, enter a name for your project and choose your desired language and country or region, then click **Create project**.
 
-![New proejct details](media/project-name.png)
+![New proejct details](/media/project-name.png)
 
 3. You will now be asked to choose the development experience for your project.  In the **More Options** area below, choose **Actions SDK**.
 
-![Project development experience](media/project-development-experience.png)
+![Project development experience](/media/project-development-experience.png)
 
 4. A popup window will now be shown advising you how to **Use Actions SDK to add Actions to your project**.  The following steps will walk you through this process. Make note of the **gactions** command shown, as you'll need to use this command when uploading your Action package in a later step.
 
-![Project development experience](media/actions-sdk-getting-started.png)
+![Project development experience](/media/actions-sdk-getting-started.png)
 
 5. Click the **OK** button, which will take you to your new project's **Overview** page.
 
 6. Click the **Develop** tab at the top and you will be able to enter a **Display Name** for your new action. This **Display Name** will also be your action's invocation name, which people will use to talk to your action on Google Assistant.  For example, if the display name was 'Adapter Helper', then people would say 'Hey Google, talk to Adapter Helper'.  Enter your desired display / invocation name and click the **Save** button.
 
-![Simulator](media/display-name.png)
+![Simulator](/media/display-name.png)
 
 7. Download the **gactions CLI** tool for your platform from [https://developers.google.com/assistant/tools/gactions-cli](https://developers.google.com/assistant/tools/gactions-cli) and save it in a location of your choice.
 
@@ -294,7 +288,7 @@ You can now test interacting with your action using the simulator.
 
 2. To perform a basic test enter "ask <ACTION DISPLAY NAME> hello world" into the simulator input box. For example, if your action display name was 'Adapter Helper', you would type 'Talk to Adapter Helper hello world'. This should return an echo of your message.
 
-![Simulator](media/simulator-test.png)
+![Simulator](/media/simulator-test.png)
 
 Now that you have enabled testing for your action, you can also test your action using a physical Google assistant device or using Google assistant on an Android device. Providing you are logged into the device with the same account used to login to the Actions on Google Console (or an account that you have added as a beta tester for your action within the console).
 
