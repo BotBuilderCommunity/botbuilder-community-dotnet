@@ -226,15 +226,12 @@ namespace Bot.Builder.Community.Adapters.Google
 
         private Activity PayloadToActivity(ActionsPayload payload)
         {
-            var activity = new Activity
+            var activity = new Activity()
             {
                 ChannelId = "google",
                 ServiceUrl = $"",
                 Recipient = new ChannelAccount("", "action"),
-                Conversation = new ConversationAccount(false, "conversation",
-                    $"{payload.Conversation.ConversationId}"),
-                Type = ActivityTypes.Message,
-                Text = GoogleHelper.StripInvocation(payload.Inputs[0]?.RawInputs[0]?.Query, _options.ActionInvocationName),
+                Conversation = new ConversationAccount(false, "conversation", $"{payload.Conversation.ConversationId}"),
                 Id = Guid.NewGuid().ToString(),
                 Timestamp = DateTime.UtcNow,
                 Locale = payload.User.Locale,
@@ -262,9 +259,22 @@ namespace Bot.Builder.Community.Adapters.Google
                 }
             }
 
+            activity.Text = GoogleHelper.StripInvocation(payload.Inputs[0]?.RawInputs[0]?.Query, _options.ActionInvocationName);
+
+            if (string.IsNullOrEmpty(activity.Text))
+            {
+                activity.Type = ActivityTypes.ConversationUpdate;
+                activity.MembersAdded = new List<ChannelAccount>() { new ChannelAccount() { Id = activity.From.Id } };
+            }
+            else
+            {
+                activity.Type = ActivityTypes.Message;
+                activity.Text = GoogleHelper.StripInvocation(payload.Inputs[0]?.RawInputs[0]?.Query, _options.ActionInvocationName);
+            }
+
             if (payload.Inputs.FirstOrDefault()?.Arguments?.FirstOrDefault()?.Name == "OPTION")
             {
-                activity.Text = payload.Inputs.First().Arguments.First().TextValue;
+                activity.Value = payload.Inputs.First().Arguments.First().TextValue;
             }
 
             activity.ChannelData = payload;
@@ -329,7 +339,7 @@ namespace Bot.Builder.Community.Adapters.Google
                 && activity.Attachments.Any(a => a.ContentType == "google/list-attachment"))
             {
                 var listAttachment = activity.Attachments?.FirstOrDefault(a => a.ContentType == "google/list-attachment") as ListAttachment;
-                var optionIntentData = GetOptionIntentDataFromListAttachment(listAttachment);
+                var optionIntentData = GoogleHelper.GetOptionIntentDataFromListAttachment(listAttachment);
 
                 response.ExpectUserResponse = true;
                 response.ExpectedInputs = new ExpectedInput[]
@@ -422,7 +432,7 @@ namespace Bot.Builder.Community.Adapters.Google
                                 }
                             };
 
-                        var suggestionChips = GetSuggestionChips(context);
+                        var suggestionChips = GoogleHelper.GetSuggestionChipsFromActivity(activity, context);
                         if (suggestionChips.Any())
                         {
                             response.ExpectedInputs.First().InputPrompt.RichInitialPrompt.Suggestions =
@@ -460,7 +470,7 @@ namespace Bot.Builder.Community.Adapters.Google
             if (activity.Attachments.Any(a => a.GetType() == typeof(ListAttachment)))
             {
                 var listAttachment = activity.Attachments?.FirstOrDefault(a => a.GetType() == typeof(ListAttachment)) as ListAttachment;
-                var optionIntentData = GetOptionIntentDataFromListAttachment(listAttachment);
+                var optionIntentData = GoogleHelper.GetOptionIntentDataFromListAttachment(listAttachment);
                 response.Payload.Google.SystemIntent = new DialogFlowOptionSystemIntent() { Data = optionIntentData };
             }
 
@@ -482,7 +492,7 @@ namespace Bot.Builder.Community.Adapters.Google
 
                 // If suggested actions have been added to outgoing activity
                 // add these to the response as Google Suggestion Chips
-                var suggestionChips = GetSuggestionChips(context);
+                var suggestionChips = GoogleHelper.GetSuggestionChipsFromActivity(activity, context);
                 if (suggestionChips.Any())
                 {
                     response.Payload.Google.RichResponse.Suggestions = suggestionChips.ToArray();
@@ -508,53 +518,6 @@ namespace Bot.Builder.Community.Adapters.Google
             }
 
             return response;
-        }
-
-        private static List<Suggestion> GetSuggestionChips(ITurnContext context)
-        {
-            var suggestionChips = new List<Suggestion>();
-
-            if (context.TurnState.ContainsKey("GoogleSuggestionChips") && context.TurnState["GoogleSuggestionChips"] is List<Suggestion>)
-            {
-                suggestionChips.AddRange(context.TurnState.Get<List<Suggestion>>("GoogleSuggestionChips"));
-            }
-
-            if (context.Activity.SuggestedActions != null && context.Activity.SuggestedActions.Actions.Any())
-            {
-                foreach (var suggestion in context.Activity.SuggestedActions.Actions)
-                {
-                    suggestionChips.Add(new Suggestion { Title = suggestion.Title });
-                }
-            }
-
-            return suggestionChips;
-        }
-
-        private static OptionIntentData GetOptionIntentDataFromListAttachment(ListAttachment listAttachment)
-        {
-            switch (listAttachment.ListStyle)
-            {
-                case ListAttachmentStyle.Carousel:
-                    return new CarouselOptionIntentData
-                    {
-                        CarouselSelect = new OptionIntentSelect()
-                        {
-                            Items = listAttachment.Items,
-                            Title = listAttachment.Title
-                        }
-                    };
-                case ListAttachmentStyle.List:
-                    return new ListOptionIntentData
-                    {
-                        ListSelect = new OptionIntentSelect()
-                        {
-                            Items = listAttachment.Items,
-                            Title = listAttachment.Title
-                        }
-                    };
-                default:
-                    return null;
-            }
         }
 
         private Activity ProcessOutgoingActivities(List<Activity> activities)
