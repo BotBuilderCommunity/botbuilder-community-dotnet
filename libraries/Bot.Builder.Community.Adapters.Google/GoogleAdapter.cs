@@ -92,7 +92,7 @@ namespace Bot.Builder.Community.Adapters.Google
                 throw new ArgumentNullException(nameof(googleResponse));
             }
 
-            httpResponse.ContentType = "application/json";
+            httpResponse.ContentType = "application/json;charset=utf-8";
             httpResponse.StatusCode = (int)HttpStatusCode.OK;
 
             var responseJson = JsonConvert.SerializeObject(googleResponse, JsonSerializerSettings);
