@@ -59,7 +59,7 @@ In this article you will learn how to connect a bot to Google Assistant using th
 
 2. In the **New Project** popup dialog, enter a name for your project and choose your desired language and country or region, then click **Create project**.
 
-![New proejct details](libraries/Bot.Builder.Community.Adapters.Google/media/project-name.png?raw=true)
+![New proejct details](/media/project-name.png?raw=true)
 
 3. You will now be asked to choose the development experience for your project.  In the **More Options** area below, choose **Actions SDK**.
 
