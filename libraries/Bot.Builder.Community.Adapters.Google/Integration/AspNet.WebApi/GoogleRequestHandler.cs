@@ -135,7 +135,7 @@ namespace Bot.Builder.Community.Adapters.Google.Integration.AspNet.WebApi
 
             var response = request.CreateResponse(HttpStatusCode.OK);
             response.Content = new StringContent(GoogleResponseBodyJson);
-            response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json;charset=utf-8");
 
             return response;
         }
