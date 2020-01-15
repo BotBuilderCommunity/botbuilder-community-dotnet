@@ -7,7 +7,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Bot.Builder.Community.Cards.Nodes
 {
-    public static class CardTree
+    internal static class CardTree
     {
         private const string SpecifyManually = " Try specifying the node type manually instead of using null.";
 
@@ -228,7 +228,7 @@ namespace Bot.Builder.Community.Cards.Nodes
             return await entryNode.CallChild(entryValue, NextAsync).ConfigureAwait(false) as TEntry;
         }
 
-        internal static TEntry ApplyIds<TEntry>(TEntry entryValue, NodeType? entryType = null, IdOptions options = null)
+        internal static TEntry ApplyIds<TEntry>(TEntry entryValue, IdOptions options = null, NodeType? entryType = null)
             where TEntry : class
         {
             INode entryNode = null;

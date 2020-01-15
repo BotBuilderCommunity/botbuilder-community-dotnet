@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Bot.Builder.Community.Cards.Nodes
 {
-    public enum NodeType
+    internal enum NodeType
     {
         /// <summary>
         /// Corresponds to <see cref="IEnumerable{}">IEnumerable</see>&lt;<see cref="Microsoft.Bot.Schema.Activity">Activity</see>&gt;.

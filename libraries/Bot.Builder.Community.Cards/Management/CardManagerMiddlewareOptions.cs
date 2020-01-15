@@ -4,7 +4,9 @@ namespace Bot.Builder.Community.Cards.Management
 {
     public class CardManagerMiddlewareOptions
     {
-        public bool AutoApplyId { get; set; }
+        public bool AutoAdaptCardActions { get; set; }
+
+        public bool AutoApplyIds { get; set; }
 
         public bool AutoDisableOnAction { get; set; }
 

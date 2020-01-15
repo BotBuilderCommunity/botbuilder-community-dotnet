@@ -67,13 +67,9 @@ namespace Bot.Builder.Community.Cards.Management
                 throw new ArgumentNullException(nameof(typedId));
             }
 
-            var type = typedId.Type;
-            var id = typedId.Id;
             var state = await StateAccessor.GetNotNullAsync(turnContext, () => new CardManagerState(), cancellationToken).ConfigureAwait(false);
-            var trackedIdsByType = state.TrackedIdsByType;
-            var trackedSet = trackedIdsByType.ContainsKey(type) ? trackedIdsByType[type] : trackedIdsByType[type] = new HashSet<string>();
 
-            trackedSet.Add(id);
+            state.TrackedIdsByType.InitializeKey(typedId.Type, new HashSet<string>()).Add(typedId.Id);
         }
 
         public async Task ForgetIdAsync(ITurnContext turnContext, string id, CancellationToken cancellationToken = default)

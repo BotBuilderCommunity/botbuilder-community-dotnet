@@ -29,7 +29,8 @@ namespace Bot.Builder.Community.Cards.Management
 
         public static CardManagerMiddlewareOptions DefaultUpdatingOptions => new CardManagerMiddlewareOptions
         {
-            AutoApplyId = true,
+            AutoAdaptCardActions = true,
+            AutoApplyIds = true,
             AutoClearTrackedOnSend = false,
             AutoDisableOnAction = false,
             AutoEnableSentIds = false,
@@ -41,7 +42,8 @@ namespace Bot.Builder.Community.Cards.Management
 
         public static CardManagerMiddlewareOptions DefaultNonUpdatingOptions => new CardManagerMiddlewareOptions
         {
-            AutoApplyId = true,
+            AutoAdaptCardActions = true,
+            AutoApplyIds = true,
             AutoClearTrackedOnSend = true,
             AutoDisableOnAction = true,
             AutoEnableSentIds = true,
@@ -62,14 +64,15 @@ namespace Bot.Builder.Community.Cards.Management
             BotAssert.ContextNotNull(turnContext);
 
             var options = GetOptionsForChannel(turnContext.Activity.ChannelId);
-
-            // Whether we should proceed by default depends on the ID-tracking style
-            var shouldProceed = !options.TrackEnabledIds;
+            var shouldProceed = true;
 
             if (options.IdOptions != null
                 && turnContext.Activity?.Type == ActivityTypes.Message
                 && turnContext.Activity.Value is JObject value)
             {
+                // Whether we should proceed by default depends on the ID-tracking style
+                shouldProceed = !options.TrackEnabledIds;
+
                 var state = await Manager.StateAccessor.GetNotNullAsync(turnContext, () => new CardManagerState(), cancellationToken).ConfigureAwait(false);
 
                 foreach (var type in options.IdOptions.GetIdTypes())
@@ -125,9 +128,14 @@ namespace Bot.Builder.Community.Cards.Management
                 activities.SeparateAttachments();
             }
 
-            if (options.AutoApplyId)
+            if (options.AutoApplyIds)
             {
                 activities.ApplyIdsToBatch(options.IdOptions);
+            }
+
+            if (options.AutoAdaptCardActions)
+            {
+                activities.AdaptCardActions(turnContext.Activity.ChannelId);
             }
 
             // The resource response ID's will be automatically applied to the activities

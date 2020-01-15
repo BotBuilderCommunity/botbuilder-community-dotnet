@@ -62,11 +62,6 @@ namespace Bot.Builder.Community.Cards
         /// </returns>
         internal static TValue InitializeKey<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, TValue value = default)
         {
-            if (dict is null)
-            {
-                throw new ArgumentNullException(nameof(dict));
-            }
-
             if (dict.ContainsKey(key))
             {
                 return dict[key];
@@ -79,11 +74,6 @@ namespace Bot.Builder.Community.Cards
 
         internal static bool SetExistingValue<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, TValue value = default)
         {
-            if (dict is null)
-            {
-                throw new ArgumentNullException(nameof(dict));
-            }
-
             if (!dict.ContainsKey(key))
             {
                 return false;
@@ -115,14 +105,7 @@ namespace Bot.Builder.Community.Cards
 
             if (shouldParseStrings && input is string inputString)
             {
-                try
-                {
-                    jToken = JObject.Parse(inputString);
-                }
-                catch (JsonReaderException)
-                {
-                    jToken = null;
-                }
+                jToken = TryParseJObject(inputString);
             }
             else if (input is JObject inputJObject)
             {
@@ -149,6 +132,18 @@ namespace Bot.Builder.Community.Cards
             }
 
             return null;
+        }
+
+        internal static JObject TryParseJObject(this string inputString)
+        {
+            try
+            {
+                return JObject.Parse(inputString);
+            }
+            catch (JsonReaderException)
+            {
+                return null;
+            }
         }
     }
 }
