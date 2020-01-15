@@ -63,17 +63,17 @@ In this article you will learn how to connect a bot to Google Assistant using th
 
 3. You will now be asked to choose the development experience for your project.  In the **More Options** area below, choose **Actions SDK**.
 
-![Project development experience](libraries/Bot.Builder.Community.Adapters.Google/media/project-development-experience.png?raw=true)
+![Project development experience](/libraries/Bot.Builder.Community.Adapters.Google/media/project-development-experience.PNG?raw=true)
 
 4. A popup window will now be shown advising you how to **Use Actions SDK to add Actions to your project**.  The following steps will walk you through this process. Make note of the **gactions** command shown, as you'll need to use this command when uploading your Action package in a later step.
 
-![Project development experience](libraries/Bot.Builder.Community.Adapters.Google/media/actions-sdk-getting-started.png?raw=true)
+![Project development experience](/libraries/Bot.Builder.Community.Adapters.Google/media/actions-sdk-getting-started.PNG?raw=true)
 
 5. Click the **OK** button, which will take you to your new project's **Overview** page.
 
 6. Click the **Develop** tab at the top and you will be able to enter a **Display Name** for your new action. This **Display Name** will also be your action's invocation name, which people will use to talk to your action on Google Assistant.  For example, if the display name was 'Adapter Helper', then people would say 'Hey Google, talk to Adapter Helper'.  Enter your desired display / invocation name and click the **Save** button.
 
-![Simulator](libraries/Bot.Builder.Community.Adapters.Google/media/display-name.png?raw=true)
+![Simulator](/libraries/Bot.Builder.Community.Adapters.Google/media/display-name.PNG?raw=true)
 
 7. Download the **gactions CLI** tool for your platform from [https://developers.google.com/assistant/tools/gactions-cli](https://developers.google.com/assistant/tools/gactions-cli) and save it in a location of your choice.
 
@@ -288,7 +288,7 @@ You can now test interacting with your action using the simulator.
 
 2. To perform a basic test enter "ask <ACTION DISPLAY NAME> hello world" into the simulator input box. For example, if your action display name was 'Adapter Helper', you would type 'Talk to Adapter Helper hello world'. This should return an echo of your message.
 
-![Simulator](libraries/Bot.Builder.Community.Adapters.Google/media/simulator-test.png?raw=true)
+![Simulator](/libraries/Bot.Builder.Community.Adapters.Google/media/simulator-test.PNG?raw=true)
 
 Now that you have enabled testing for your action, you can also test your action using a physical Google assistant device or using Google assistant on an Android device. Providing you are logged into the device with the same account used to login to the Actions on Google Console (or an account that you have added as a beta tester for your action within the console).
 
@@ -360,13 +360,13 @@ var activityWithListAttachment = MessageFactory.Text($"Ok, I included a list.");
                             new OptionItem() {
                                 Title = "List item 1",
                                 Description = "This is the List Item 1 description",
-                                Image = new OptionItemImage() { AccessibilityText = "Item 1 image", Url = "https://storage.googleapis.com/actionsresources/logo_assistant_2x_64dp.png"},
+                                Image = new OptionItemImage() { AccessibilityText = "Item 1 image", Url = "https://storage.googleapis.com/actionsresources/logo_assistant_2x_64dp.PNG"},
                                 OptionInfo = new OptionItemInfo() { Key = "Item1", Synonyms = new List<string>(){ "first" } }
                             },
                         new OptionItem() {
                                 Title = "List item 2",
                                 Description = "This is the List Item 2 description",
-                                Image = new OptionItemImage() { AccessibilityText = "Item 1 image", Url = "https://storage.googleapis.com/actionsresources/logo_assistant_2x_64dp.png"},
+                                Image = new OptionItemImage() { AccessibilityText = "Item 1 image", Url = "https://storage.googleapis.com/actionsresources/logo_assistant_2x_64dp.PNG"},
                                 OptionInfo = new OptionItemInfo() { Key = "Item2", Synonyms = new List<string>(){ "second" } }
                             }
                         },
