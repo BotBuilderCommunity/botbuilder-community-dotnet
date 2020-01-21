@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bot.Builder.Community.Cards.Nodes
+namespace Bot.Builder.Community.Cards.Management.Tree
 {
-    internal class Node<TValue, TChild> : INode
+    internal class TreeNode<TValue, TChild> : ITreeNode
         where TValue : class
         where TChild : class
     {
-        public Node(ChildCallerDelegate<TValue, TChild> childCaller)
+        public TreeNode(ChildCallerDelegate<TValue, TChild> childCaller)
         {
             ChildCaller = childCaller;
         }
@@ -18,7 +18,7 @@ namespace Bot.Builder.Community.Cards.Nodes
 
         private ChildCallerDelegate<TValue, TChild> ChildCaller { get; }
 
-        public async Task<object> CallChild(object value, Func<object, NodeType, Task<object>> nextAsync)
+        public async Task<object> CallChild(object value, Func<object, TreeNodeType, Task<object>> nextAsync)
         {
             // This check will prevent child callers from needing to check for nulls
             if (value is TValue typedValue)

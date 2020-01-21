@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Bot.Builder.Community.Cards.Nodes
+namespace Bot.Builder.Community.Cards.Management.Tree
 {
-    internal delegate Task<TValue> ChildCallerDelegate<TValue, TChild>(TValue value, Func<TChild, NodeType, Task<TChild>> nextAsync);
+    internal delegate Task<TValue> ChildCallerDelegate<TValue, TChild>(TValue value, Func<TChild, TreeNodeType, Task<TChild>> nextAsync);
 }

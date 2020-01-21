@@ -4,16 +4,16 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Bot.Schema;
 
-namespace Bot.Builder.Community.Cards.Nodes
+namespace Bot.Builder.Community.Cards.Management.Tree
 {
-    internal class RichCardNode<T> : Node<T, IEnumerable<CardAction>>
+    internal class RichCardTreeNode<T> : TreeNode<T, IEnumerable<CardAction>>
         where T : class
     {
-        public RichCardNode(Func<T, IEnumerable<CardAction>> buttonFactory)
+        public RichCardTreeNode(Func<T, IEnumerable<CardAction>> buttonFactory)
             : base(async (card, nextAsync) =>
             {
                 // The nextAsync return value is not needed here because the Buttons property reference will remain unchanged
-                await nextAsync(buttonFactory(card), NodeType.CardActionList).ConfigureAwait(false);
+                await nextAsync(buttonFactory(card), TreeNodeType.CardActionList).ConfigureAwait(false);
 
                 return card;
             })

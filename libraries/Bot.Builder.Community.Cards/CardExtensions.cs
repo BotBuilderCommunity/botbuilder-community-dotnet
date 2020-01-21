@@ -18,11 +18,13 @@ namespace Bot.Builder.Community.Cards
                     options = new PayloadIdOptions(PayloadIdType.Action);
                 }
 
-                foreach (var type in Helper.GetEnumValues<PayloadIdType>())
+                foreach (var kvp in options.GetIds())
                 {
+                    var type = kvp.Key;
+
                     if (options.Overwrite || payload.GetIdFromPayload(type) is null)
                     {
-                        var id = options.Get(type);
+                        var id = kvp.Value;
 
                         if (id is null)
                         {

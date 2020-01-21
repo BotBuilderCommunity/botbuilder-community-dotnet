@@ -4,9 +4,9 @@ using System.Text;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json.Linq;
 
-namespace Bot.Builder.Community.Cards.Nodes
+namespace Bot.Builder.Community.Cards.Management.Tree
 {
-    internal enum NodeType
+    internal enum TreeNodeType
     {
         /// <summary>
         /// Corresponds to <see cref="IEnumerable{}">IEnumerable</see>&lt;<see cref="Microsoft.Bot.Schema.Activity">Activity</see>&gt;.

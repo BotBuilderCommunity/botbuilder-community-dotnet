@@ -8,30 +8,38 @@ namespace Bot.Builder.Community.Cards.Management
 {
     internal class PayloadMatchResult
     {
-        public List<PayloadMatch> Matches { get; } = new List<PayloadMatch>();
+        private ISet<IMessageActivity> ActivityMatches { get; } = new HashSet<IMessageActivity>();
 
-        internal void Add(IMessageActivity savedActivity, Attachment savedAttachment, CardAction savedAction)
+        private ISet<Attachment> AttachmentMatches { get; } = new HashSet<Attachment>();
+
+        private ISet<object> ActionMatches { get; } = new HashSet<object>();
+
+        private IDictionary<Attachment, IMessageActivity> ActivitiesByAttachment { get; } = new Dictionary<Attachment, IMessageActivity>();
+
+        private IDictionary<object, Attachment> AttachmentsByAction { get; } = new Dictionary<object, Attachment>();
+
+        internal void Add(IMessageActivity savedActivity, Attachment savedAttachment, object savedAction)
         {
-            Matches.Add(new PayloadMatch(savedActivity, savedAttachment, savedAction));
+            ActivityMatches.Add(savedActivity);
+            AttachmentMatches.Add(savedAttachment);
+            ActionMatches.Add(savedAction);
+            ActivitiesByAttachment.Add(savedAttachment, savedActivity);
+            AttachmentsByAction.Add(savedAction, savedAttachment);
         }
 
-        internal void Add(IMessageActivity savedActivity, Attachment savedAttachment, JObject submitAction)
-        {
-            Matches.Add(new PayloadMatch(savedActivity, savedAttachment, submitAction));
-        }
+        internal IMessageActivity FoundActivity() => GetMatch(ActivityMatches);
 
-        internal IMessageActivity FoundActivity() => GetMatchNode(match => match.Activity);
+        internal Attachment FoundAttachment() => GetMatch(AttachmentMatches);
 
-        internal Attachment FoundAttachment() => GetMatchNode(match => match.Attachment);
+        internal IMessageActivity GetAttachmentParent(Attachment attachment) =>
+            ActivitiesByAttachment.TryGetValue(attachment, out var activity) ? activity : null;
 
-        private T GetMatchNode<T>(Func<PayloadMatch, T> selector)
+        private T GetMatch<T>(ISet<T> set)
             where T : class
         {
-            var matches = Matches.Select(selector).Distinct();
-
             // If there's more than one match then there might as well be zero
             // because there's no way to tell which is correct
-            return matches.Count() == 1 ? matches.Single() : null;
+            return set.Count() == 1 ? set.Single() : null;
         }
     }
 }

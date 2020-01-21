@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Bot.Builder.Community.Cards.Nodes
+namespace Bot.Builder.Community.Cards.Management.Tree
 {
-    internal interface INode
+    internal interface ITreeNode
     {
         PayloadIdType? IdType { get; set; }
 
-        Task<object> CallChild(object value, Func<object, NodeType, Task<object>> nextAsync);
+        Task<object> CallChild(object value, Func<object, TreeNodeType, Task<object>> nextAsync);
 
         Type GetTValue();
     }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Bot.Builder.Community.Cards.Nodes;
+using Bot.Builder.Community.Cards.Management.Tree;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json;

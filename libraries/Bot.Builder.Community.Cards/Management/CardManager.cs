@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Bot.Builder.Community.Cards.Nodes;
+using Bot.Builder.Community.Cards.Management.Tree;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json.Linq;
@@ -136,8 +136,8 @@ namespace Bot.Builder.Community.Cards.Management
                     {
                         var matchResult = await GetPayloadMatchAsync(turnContext, cancellationToken).ConfigureAwait(false);
 
-                        if (matchResult.FoundActivity() is IMessageActivity savedActivity
-                            && matchResult.FoundAttachment() is Attachment savedAttachment
+                        if (matchResult.FoundAttachment() is Attachment savedAttachment
+                            && matchResult.GetAttachmentParent(savedAttachment) is IMessageActivity savedActivity
                             && savedAttachment.ContentType.Equals(CardConstants.AdaptiveCardContentType, StringComparison.OrdinalIgnoreCase))
                         {
                             savedAttachment.Content = savedAttachment.Content?.ToJObjectAndBackAsync(
@@ -245,8 +245,8 @@ namespace Bot.Builder.Community.Cards.Management
 
                                                         return Task.CompletedTask;
                                                     },
-                                                    NodeType.AdaptiveCard,
-                                                    NodeType.SubmitAction).Wait();
+                                                    TreeNodeType.AdaptiveCard,
+                                                    TreeNodeType.SubmitAction).Wait();
                                             }
 
                                             return Task.CompletedTask;

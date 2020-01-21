@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 
-namespace Bot.Builder.Community.Cards.Nodes
+namespace Bot.Builder.Community.Cards.Management.Tree
 {
-    internal class ListNode<T> : Node<IEnumerable<T>, T>
+    internal class ListTreeNode<T> : TreeNode<IEnumerable<T>, T>
         where T : class
     {
-        public ListNode(NodeType childNodeType, PayloadIdType? idType)
+        public ListTreeNode(TreeNodeType childNodeType, PayloadIdType? idType)
             : base(async (value, nextAsync) =>
             {
                 foreach (var child in value)

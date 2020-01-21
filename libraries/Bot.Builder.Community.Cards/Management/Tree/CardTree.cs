@@ -5,44 +5,44 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json.Linq;
 
-namespace Bot.Builder.Community.Cards.Nodes
+namespace Bot.Builder.Community.Cards.Management.Tree
 {
     internal static class CardTree
     {
         private const string SpecifyManually = " Try specifying the node type manually instead of using null.";
 
-        private static readonly Dictionary<string, NodeType> _cardTypes = new Dictionary<string, NodeType>(StringComparer.OrdinalIgnoreCase)
+        private static readonly Dictionary<string, TreeNodeType> _cardTypes = new Dictionary<string, TreeNodeType>(StringComparer.OrdinalIgnoreCase)
         {
-            { CardConstants.AdaptiveCardContentType, NodeType.AdaptiveCard },
-            { AnimationCard.ContentType, NodeType.AnimationCard },
-            { AudioCard.ContentType, NodeType.AudioCard },
-            { HeroCard.ContentType, NodeType.HeroCard },
-            { ReceiptCard.ContentType, NodeType.ReceiptCard },
-            { SigninCard.ContentType, NodeType.SigninCard },
-            { OAuthCard.ContentType, NodeType.OAuthCard },
-            { ThumbnailCard.ContentType, NodeType.ThumbnailCard },
-            { VideoCard.ContentType, NodeType.VideoCard },
+            { CardConstants.AdaptiveCardContentType, TreeNodeType.AdaptiveCard },
+            { AnimationCard.ContentType, TreeNodeType.AnimationCard },
+            { AudioCard.ContentType, TreeNodeType.AudioCard },
+            { HeroCard.ContentType, TreeNodeType.HeroCard },
+            { ReceiptCard.ContentType, TreeNodeType.ReceiptCard },
+            { SigninCard.ContentType, TreeNodeType.SigninCard },
+            { OAuthCard.ContentType, TreeNodeType.OAuthCard },
+            { ThumbnailCard.ContentType, TreeNodeType.ThumbnailCard },
+            { VideoCard.ContentType, TreeNodeType.VideoCard },
         };
 
-        private static readonly Dictionary<NodeType, INode> _tree = new Dictionary<NodeType, INode>
+        private static readonly Dictionary<TreeNodeType, ITreeNode> _tree = new Dictionary<TreeNodeType, ITreeNode>
         {
             {
-                NodeType.Batch, new ListNode<IMessageActivity>(NodeType.Activity, PayloadIdType.Batch)
+                TreeNodeType.Batch, new ListTreeNode<IMessageActivity>(TreeNodeType.Activity, PayloadIdType.Batch)
             },
             {
-                NodeType.Activity, new Node<IMessageActivity, IEnumerable<Attachment>>(async (activity, nextAsync) =>
+                TreeNodeType.Activity, new TreeNode<IMessageActivity, IEnumerable<Attachment>>(async (activity, nextAsync) =>
                 {
                     // The nextAsync return value is not needed here because the Attachments property reference will remain unchanged
-                    await nextAsync(activity.Attachments, NodeType.Carousel).ConfigureAwait(false);
+                    await nextAsync(activity.Attachments, TreeNodeType.Carousel).ConfigureAwait(false);
 
                     return activity;
                 })
             },
             {
-                NodeType.Carousel, new ListNode<Attachment>(NodeType.Attachment, PayloadIdType.Carousel)
+                TreeNodeType.Carousel, new ListTreeNode<Attachment>(TreeNodeType.Attachment, PayloadIdType.Carousel)
             },
             {
-                NodeType.Attachment, new Node<Attachment, object>(async (attachment, nextAsync) =>
+                TreeNodeType.Attachment, new TreeNode<Attachment, object>(async (attachment, nextAsync) =>
                 {
                     if (_cardTypes.ContainsKey(attachment.ContentType))
                     {
@@ -55,7 +55,7 @@ namespace Bot.Builder.Community.Cards.Nodes
                 })
             },
             {
-                NodeType.AdaptiveCard, new Node<object, IEnumerable<JObject>>(async (card, nextAsync) =>
+                TreeNodeType.AdaptiveCard, new TreeNode<object, IEnumerable<JObject>>(async (card, nextAsync) =>
                 {
                     // Return the new object after it's been converted to a JObject and back
                     // so that the attachment node can assign it back to the Content property
@@ -70,42 +70,42 @@ namespace Bot.Builder.Community.Cards.Nodes
                                         CardConstants.ActionSubmit,
                                         StringComparison.OrdinalIgnoreCase)
                                     ? element : null)
-                                .WhereNotNull(), NodeType.SubmitActionList).ConfigureAwait(false);
+                                .WhereNotNull(), TreeNodeType.SubmitActionList).ConfigureAwait(false);
                     }).ConfigureAwait(false);
                 })
             },
             {
-                NodeType.AnimationCard, new RichCardNode<AnimationCard>(card => card.Buttons)
+                TreeNodeType.AnimationCard, new RichCardTreeNode<AnimationCard>(card => card.Buttons)
             },
             {
-                NodeType.AudioCard, new RichCardNode<AudioCard>(card => card.Buttons)
+                TreeNodeType.AudioCard, new RichCardTreeNode<AudioCard>(card => card.Buttons)
             },
             {
-                NodeType.HeroCard, new RichCardNode<HeroCard>(card => card.Buttons)
+                TreeNodeType.HeroCard, new RichCardTreeNode<HeroCard>(card => card.Buttons)
             },
             {
-                NodeType.OAuthCard, new RichCardNode<OAuthCard>(card => card.Buttons)
+                TreeNodeType.OAuthCard, new RichCardTreeNode<OAuthCard>(card => card.Buttons)
             },
             {
-                NodeType.ReceiptCard, new RichCardNode<ReceiptCard>(card => card.Buttons)
+                TreeNodeType.ReceiptCard, new RichCardTreeNode<ReceiptCard>(card => card.Buttons)
             },
             {
-                NodeType.SigninCard, new RichCardNode<SigninCard>(card => card.Buttons)
+                TreeNodeType.SigninCard, new RichCardTreeNode<SigninCard>(card => card.Buttons)
             },
             {
-                NodeType.ThumbnailCard, new RichCardNode<ThumbnailCard>(card => card.Buttons)
+                TreeNodeType.ThumbnailCard, new RichCardTreeNode<ThumbnailCard>(card => card.Buttons)
             },
             {
-                NodeType.VideoCard, new RichCardNode<VideoCard>(card => card.Buttons)
+                TreeNodeType.VideoCard, new RichCardTreeNode<VideoCard>(card => card.Buttons)
             },
             {
-                NodeType.SubmitActionList, new ListNode<object>(NodeType.SubmitAction, PayloadIdType.Card)
+                TreeNodeType.SubmitActionList, new ListTreeNode<object>(TreeNodeType.SubmitAction, PayloadIdType.Card)
             },
             {
-                NodeType.CardActionList, new ListNode<CardAction>(NodeType.CardAction, PayloadIdType.Card)
+                TreeNodeType.CardActionList, new ListTreeNode<CardAction>(TreeNodeType.CardAction, PayloadIdType.Card)
             },
             {
-                NodeType.SubmitAction, new Node<object, JObject>(async (action, nextAsync) =>
+                TreeNodeType.SubmitAction, new TreeNode<object, JObject>(async (action, nextAsync) =>
                 {
                     // If the entry point was the Adaptive Card or higher
                     // then the action will already be a JObject
@@ -116,19 +116,19 @@ namespace Bot.Builder.Community.Cards.Nodes
 
                             if (data is JObject dataJObject)
                             {
-                                await nextAsync(dataJObject, NodeType.Payload).ConfigureAwait(false); 
+                                await nextAsync(dataJObject, TreeNodeType.Payload).ConfigureAwait(false); 
                             }
                         }, true).ConfigureAwait(false);
                 })
             },
             {
-                NodeType.CardAction, new Node<CardAction, JObject>(async (action, nextAsync) =>
+                TreeNodeType.CardAction, new TreeNode<CardAction, JObject>(async (action, nextAsync) =>
                 {
                     if (action.Type == ActionTypes.MessageBack || action.Type == ActionTypes.PostBack)
                     {
                         async Task CallNextAsync(JObject jObject)
                         {
-                            await nextAsync(jObject, NodeType.Payload).ConfigureAwait(false);
+                            await nextAsync(jObject, TreeNodeType.Payload).ConfigureAwait(false);
                         }
 
                         var valueResult = await action.Value.ToJObjectAndBackAsync(
@@ -158,7 +158,7 @@ namespace Bot.Builder.Community.Cards.Nodes
                 })
             },
             {
-                NodeType.Payload, new Node<object, PayloadId>(async (payload, nextAsync) =>
+                TreeNodeType.Payload, new TreeNode<object, PayloadId>(async (payload, nextAsync) =>
                 {
                     return await payload.ToJObjectAndBackAsync(async payloadJObject =>
                     {
@@ -168,27 +168,27 @@ namespace Bot.Builder.Community.Cards.Nodes
 
                             if (id != null)
                             {
-                                await nextAsync(new PayloadId(type, id), NodeType.Id);
+                                await nextAsync(new PayloadId(type, id), TreeNodeType.Id);
                             }
                         }
                     });
                 })
             },
             {
-                NodeType.Id, new Node<PayloadId, object>((id, _) => Task.FromResult(id))
+                TreeNodeType.Id, new TreeNode<PayloadId, object>((id, _) => Task.FromResult(id))
             },
         };
 
         internal static async Task<TEntry> RecurseAsync<TEntry, TExit>(
             TEntry entryValue,
             Func<TExit, Task> funcAsync,
-            NodeType? entryType = null,
-            NodeType? exitType = null)
+            TreeNodeType? entryType = null,
+            TreeNodeType? exitType = null)
             where TEntry : class
             where TExit : class
         {
-            INode entryNode = null;
-            INode exitNode = null;
+            ITreeNode entryNode = null;
+            ITreeNode exitNode = null;
 
             try
             {
@@ -208,7 +208,7 @@ namespace Bot.Builder.Community.Cards.Nodes
                 throw GetNodeArgumentException<TExit>(ex, "exit");
             }
 
-            async Task<object> NextAsync(object child, NodeType childType)
+            async Task<object> NextAsync(object child, TreeNodeType childType)
             {
                 var childNode = _tree[childType];
 
@@ -227,10 +227,10 @@ namespace Bot.Builder.Community.Cards.Nodes
             return await entryNode.CallChild(entryValue, NextAsync).ConfigureAwait(false) as TEntry;
         }
 
-        internal static TEntry ApplyIds<TEntry>(TEntry entryValue, PayloadIdOptions options = null, NodeType? entryType = null)
+        internal static TEntry ApplyIds<TEntry>(TEntry entryValue, PayloadIdOptions options = null, TreeNodeType? entryType = null)
             where TEntry : class
         {
-            INode entryNode = null;
+            ITreeNode entryNode = null;
 
             try
             {
@@ -241,9 +241,9 @@ namespace Bot.Builder.Community.Cards.Nodes
                 throw GetNodeArgumentException<TEntry>(ex);
             }
 
-            Task<object> NextAsync(object child, NodeType childType)
+            Task<object> NextAsync(object child, TreeNodeType childType)
             {
-                if (childType == NodeType.Payload)
+                if (childType == TreeNodeType.Payload)
                 {
                     return child.ToJObjectAndBackAsync(
                         payload =>
@@ -276,7 +276,7 @@ namespace Bot.Builder.Community.Cards.Nodes
             return entryNode.CallChild(entryValue, NextAsync).Result as TEntry;
         }
 
-        private static INode GetNode<T>(NodeType? nodeType)
+        private static ITreeNode GetNode<T>(TreeNodeType? nodeType)
         {
             var t = typeof(T);
 
@@ -287,7 +287,7 @@ namespace Bot.Builder.Community.Cards.Nodes
                     throw new Exception("A node cannot be automatically determined from a System.Object type argument." + SpecifyManually);
                 }
 
-                var matchingNodes = new List<INode>();
+                var matchingNodes = new List<ITreeNode>();
 
                 foreach (var possibleNode in _tree.Values)
                 {
