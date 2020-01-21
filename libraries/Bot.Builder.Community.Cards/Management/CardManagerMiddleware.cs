@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Bot.Builder.Community.Cards.Nodes;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Schema;
@@ -37,7 +36,7 @@ namespace Bot.Builder.Community.Cards.Management
             AutoSaveActivitiesOnSend = true,
             AutoSeparateAttachmentsOnSend = true,
             TrackEnabledIds = false,
-            IdOptions = new IdOptions(IdType.Carousel),
+            IdOptions = new PayloadIdOptions(PayloadIdType.Carousel),
         };
 
         public static CardManagerMiddlewareOptions DefaultNonUpdatingOptions => new CardManagerMiddlewareOptions
@@ -50,7 +49,7 @@ namespace Bot.Builder.Community.Cards.Management
             AutoSaveActivitiesOnSend = false,
             AutoSeparateAttachmentsOnSend = false,
             TrackEnabledIds = true,
-            IdOptions = new IdOptions(IdType.Batch),
+            IdOptions = new PayloadIdOptions(PayloadIdType.Batch),
         };
 
         public CardManagerMiddlewareOptions UpdatingOptions { get; } = DefaultUpdatingOptions;
@@ -79,7 +78,7 @@ namespace Bot.Builder.Community.Cards.Management
                 {
                     if (value.GetIdFromPayload(type) is string id)
                     {
-                        state.TrackedIdsByType.TryGetValue(type, out var trackedSet);
+                        state.PayloadIdsByType.TryGetValue(type, out var trackedSet);
 
                         var setContainsId = trackedSet?.Contains(id) == true;
 
@@ -96,7 +95,7 @@ namespace Bot.Builder.Community.Cards.Management
                         {
                             await Manager.DisableIdAsync(
                                 turnContext,
-                                new TypedId(type, id),
+                                new PayloadId(type, id),
                                 options.TrackEnabledIds,
                                 cancellationToken).ConfigureAwait(false);
                         }
@@ -152,7 +151,7 @@ namespace Bot.Builder.Community.Cards.Management
 
                     foreach (var id in kvp.Value)
                     {
-                        await Manager.EnableIdAsync(turnContext, new TypedId(type, id), options.TrackEnabledIds).ConfigureAwait(false);
+                        await Manager.EnableIdAsync(turnContext, new PayloadId(type, id), options.TrackEnabledIds).ConfigureAwait(false);
                     }
                 }
             }

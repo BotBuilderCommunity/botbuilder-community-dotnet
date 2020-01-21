@@ -1,5 +1,4 @@
 ﻿using System.Runtime.Serialization;
-using Microsoft.Bot.Schema;
 
 namespace Bot.Builder.Community.Cards
 {
@@ -8,7 +7,7 @@ namespace Bot.Builder.Community.Cards
     /// Note: The <see cref="EnumMemberAttribute">EnumMember</see> attributes are used
     /// for when this enum is a dictionary key and the dictionary is serialized into JSON.
     /// </summary>
-    public enum IdType
+    public enum PayloadIdType
     {
         /// <summary>
         /// An action ID should be globally unique and not found on different actions.

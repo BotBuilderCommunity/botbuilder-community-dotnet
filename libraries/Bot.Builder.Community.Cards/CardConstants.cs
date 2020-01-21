@@ -5,7 +5,6 @@
         public const string AdaptiveCardContentType = "application/vnd.microsoft.card.adaptive";
         public const string ActionSubmit = "Action.Submit";
 
-        public const string KeyActions = "actions";
         public const string KeyData = "data";
         public const string KeyId = "id";
         public const string KeyType = "type";

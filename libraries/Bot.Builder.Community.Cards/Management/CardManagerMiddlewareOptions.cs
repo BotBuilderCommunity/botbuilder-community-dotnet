@@ -27,6 +27,6 @@ namespace Bot.Builder.Community.Cards.Management
 
         public bool TrackEnabledIds { get; set; }
 
-        public IdOptions IdOptions { get; set; }
+        public PayloadIdOptions IdOptions { get; set; }
     }
 }

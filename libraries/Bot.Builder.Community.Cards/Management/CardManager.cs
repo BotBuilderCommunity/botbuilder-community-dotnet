@@ -34,42 +34,42 @@ namespace Bot.Builder.Community.Cards.Management
         // NON-UPDATING METHODS
         // --------------------
 
-        public async Task DisableIdAsync(ITurnContext turnContext, TypedId typedId, bool trackEnabledIds = true, CancellationToken cancellationToken = default)
+        public async Task DisableIdAsync(ITurnContext turnContext, PayloadId payloadId, bool trackEnabledIds = true, CancellationToken cancellationToken = default)
         {
             BotAssert.ContextNotNull(turnContext);
 
-            if (typedId is null)
+            if (payloadId is null)
             {
-                throw new ArgumentNullException(nameof(typedId));
+                throw new ArgumentNullException(nameof(payloadId));
             }
 
-            await (trackEnabledIds ? ForgetIdAsync(turnContext, typedId.Id, cancellationToken) : TrackIdAsync(turnContext, typedId, cancellationToken)).ConfigureAwait(false);
+            await (trackEnabledIds ? ForgetIdAsync(turnContext, payloadId.Id, cancellationToken) : TrackIdAsync(turnContext, payloadId, cancellationToken)).ConfigureAwait(false);
         }
 
-        public async Task EnableIdAsync(ITurnContext turnContext, TypedId typedId, bool trackEnabledIds = true, CancellationToken cancellationToken = default)
+        public async Task EnableIdAsync(ITurnContext turnContext, PayloadId payloadId, bool trackEnabledIds = true, CancellationToken cancellationToken = default)
         {
             BotAssert.ContextNotNull(turnContext);
 
-            if (typedId is null)
+            if (payloadId is null)
             {
-                throw new ArgumentNullException(nameof(typedId));
+                throw new ArgumentNullException(nameof(payloadId));
             }
 
-            await (trackEnabledIds ? TrackIdAsync(turnContext, typedId, cancellationToken) : ForgetIdAsync(turnContext, typedId.Id, cancellationToken)).ConfigureAwait(false);
+            await (trackEnabledIds ? TrackIdAsync(turnContext, payloadId, cancellationToken) : ForgetIdAsync(turnContext, payloadId.Id, cancellationToken)).ConfigureAwait(false);
         }
 
-        public async Task TrackIdAsync(ITurnContext turnContext, TypedId typedId, CancellationToken cancellationToken = default)
+        public async Task TrackIdAsync(ITurnContext turnContext, PayloadId payloadId, CancellationToken cancellationToken = default)
         {
             BotAssert.ContextNotNull(turnContext);
 
-            if (typedId is null)
+            if (payloadId is null)
             {
-                throw new ArgumentNullException(nameof(typedId));
+                throw new ArgumentNullException(nameof(payloadId));
             }
 
             var state = await StateAccessor.GetNotNullAsync(turnContext, () => new CardManagerState(), cancellationToken).ConfigureAwait(false);
 
-            state.TrackedIdsByType.InitializeKey(typedId.Type, new HashSet<string>()).Add(typedId.Id);
+            state.PayloadIdsByType.InitializeKey(payloadId.Type, new HashSet<string>()).Add(payloadId.Id);
         }
 
         public async Task ForgetIdAsync(ITurnContext turnContext, string id, CancellationToken cancellationToken = default)
@@ -83,7 +83,7 @@ namespace Bot.Builder.Community.Cards.Management
 
             var state = await StateAccessor.GetAsync(turnContext, () => new CardManagerState(), cancellationToken).ConfigureAwait(false);
 
-            state?.TrackedIdsByType?.Values.Where(list => list != null).ToList().ForEach(list => list.Remove(id));
+            state?.PayloadIdsByType?.Values.WhereNotNull().ToList().ForEach(list => list.Remove(id));
         }
 
         public async Task ClearTrackedIdsAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
@@ -92,7 +92,7 @@ namespace Bot.Builder.Community.Cards.Management
 
             var state = await StateAccessor.GetNotNullAsync(turnContext, () => new CardManagerState(), cancellationToken).ConfigureAwait(false);
 
-            state.TrackedIdsByType.Clear();
+            state.PayloadIdsByType.Clear();
         }
 
         // ----------------
@@ -102,18 +102,21 @@ namespace Bot.Builder.Community.Cards.Management
         public async Task SaveActivities(ITurnContext turnContext, IEnumerable<Activity> activities)
         {
             var state = await StateAccessor.GetNotNullAsync(turnContext, () => new CardManagerState()).ConfigureAwait(false);
+            var activityIdsByPayloadId = state.ActivityIdsByPayloadId;
             var activitiesById = state.ActivitiesById;
 
             foreach (var activity in activities)
             {
-                var storedActivity = activity.ToStoredActivity();
+                var activityId = activity.Id;
 
-                CardTree.RecurseAsync(activity, (TypedId typedId) =>
+                CardTree.RecurseAsync(activity, (PayloadId payloadId) =>
                 {
-                    activitiesById.InitializeKey(typedId.Id, new HashSet<Activity>()).Add(storedActivity);
+                    activityIdsByPayloadId.InitializeKey(payloadId.Id, new HashSet<string>()).Add(activityId);
 
                     return Task.CompletedTask;
                 }).Wait();
+
+                activitiesById[activityId] = activity;
             }
         }
 
@@ -124,7 +127,6 @@ namespace Bot.Builder.Community.Cards.Management
 
         public async Task PreserveValuesAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
         {
-            var inputTypes = new[] { "Input.Text", "Input.Number", "Input.Date", "Input.Time", "Input.Toggle", "Input.ChoiceSet" };
             var incomingActivity = turnContext?.Activity;
 
             if (incomingActivity?.Value is object value)
@@ -132,65 +134,149 @@ namespace Bot.Builder.Community.Cards.Management
                 await value.ToJObjectAndBackAsync(
                     async payload =>
                     {
-                        var state = await StateAccessor.GetNotNullAsync(turnContext, () => new CardManagerState(), cancellationToken).ConfigureAwait(false);
+                        var matchResult = await GetPayloadMatchAsync(turnContext, cancellationToken).ConfigureAwait(false);
 
-                        foreach (var savedActivities in Helper.GetEnumValues<IdType>()
-                            .Select(type => payload.GetIdFromPayload(type))
-                            .Where(id => id != null && state.ActivitiesById.ContainsKey(id))
-                            .Select(id => state.ActivitiesById[id])
-                            .Where(savedActivities => savedActivities != null))
+                        if (matchResult.FoundActivity() is IMessageActivity savedActivity
+                            && matchResult.FoundAttachment() is Attachment savedAttachment
+                            && savedAttachment.ContentType.Equals(CardConstants.AdaptiveCardContentType, StringComparison.OrdinalIgnoreCase))
                         {
-                            foreach (var savedActivity in savedActivities)
-                            {
-                                if (savedActivity is Activity activity && activity.Attachments?.Any() == true)
+                            savedAttachment.Content = savedAttachment.Content?.ToJObjectAndBackAsync(
+                                card =>
                                 {
-                                    foreach (var attachment in activity.Attachments)
+                                    // Iterate through all inputs in the card
+                                    foreach (var input in card.GetAdaptiveInputs())
                                     {
-                                        if (attachment.ContentType == CardConstants.AdaptiveCardContentType && attachment.Content != null)
-                                        {
-                                            attachment.Content = attachment.Content?.ToJObjectAndBackAsync(
-                                                card =>
-                                                {
-                                                    // Iterate through all inputs in the card
-                                                    foreach (var input in card.NonDataDescendants()
-                                                            .Select(token => token as JObject)
-                                                            .Where(element => inputTypes.Contains((element?[CardConstants.KeyType] as JProperty)?.Value?.ToString())
-                                                                && element[CardConstants.KeyId] != null))
-                                                    {
-                                                        var id = input[CardConstants.KeyId].ToString();
+                                        var id = input.GetAdaptiveInputId();
+                                        var inputValue = payload.GetValue(id, StringComparison.OrdinalIgnoreCase);
 
-                                                        if (payload.ContainsKey(id))
-                                                        {
-                                                            input[CardConstants.KeyValue] = payload[id]; 
-                                                        }
-                                                    }
-
-                                                    return Task.CompletedTask;
-                                                }).Result;
-
-                                            var update = MessageFactory.Attachment(attachment);
-
-                                            update.Conversation = incomingActivity.Conversation;
-                                            update.Id = savedActivity.Id;
-
-                                            try
-                                            {
-                                                await turnContext.UpdateActivityAsync(update).ConfigureAwait(false);
-                                            }
-                                            catch
-                                            {
-                                                // TODO: Find out what exceptions I need to handle
-                                                throw;
-                                            }
-                                        }
+                                        input.SetValue(CardConstants.KeyValue, inputValue);
                                     }
-                                }
-                            }
 
-                            break;
+                                    return Task.CompletedTask;
+                                }).Result;
+
+                            try
+                            {
+                                // The changes to the attachment will already be reflected in the activity
+                                await turnContext.UpdateActivityAsync(savedActivity).ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                // TODO: Find out what exceptions I need to handle
+                                throw;
+                            }
                         }
                     }, true).ConfigureAwait(false);
             }
+        }
+
+        private async Task<PayloadMatchResult> GetPayloadMatchAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
+        {
+            var incomingActivity = turnContext?.Activity;
+            var result = new PayloadMatchResult();
+
+            if (incomingActivity?.Value is object incomingValue)
+            {
+                await incomingValue.ToJObjectAndBackAsync(
+                    async incomingPayload =>
+                    {
+                        var state = await StateAccessor.GetNotNullAsync(turnContext, () => new CardManagerState(), cancellationToken).ConfigureAwait(false);
+
+                        // Iterate over all saved activities
+                        foreach (var savedActivity in Helper.GetEnumValues<PayloadIdType>()
+                            .SelectMany(type => incomingPayload.GetIdFromPayload(type) is string payloadId
+                                && state.ActivityIdsByPayloadId.TryGetValue(payloadId, out var activityIds)
+                                    ? activityIds
+                                    : new HashSet<string>())
+                            .Distinct()
+                            .Select(activityId => activityId != null
+                                && state.ActivitiesById.TryGetValue(activityId, out var activity)
+                                    ? activity
+                                    : null)
+                            .Where(activity => activity?.Attachments?.Any() == true))
+                        {
+                            foreach (var savedAttachment in savedActivity.Attachments.WhereNotNull())
+                            {
+                                if (savedAttachment.ContentType.Equals(CardConstants.AdaptiveCardContentType, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    savedAttachment.Content.ToJObjectAndBackAsync(
+                                        adaptiveCard =>
+                                        {
+                                            // For Adaptive Cards we need to check the inputs
+                                            var inputsMatch = true;
+                                            var payloadWithoutInputs = incomingPayload.DeepClone() as JObject;
+
+                                            foreach (var inputId in adaptiveCard.GetAdaptiveInputs()
+                                                .Select(CardExtensions.GetAdaptiveInputId))
+                                            {
+                                                // If the Adaptive Card is poorly designed,
+                                                // the same input ID might show up multiple times.
+                                                // Therefore we're checking if the original payload
+                                                // contained the key, because it might still be valid
+                                                // even if the input was already removed.
+                                                if (incomingPayload.TryGetValue(inputId, StringComparison.OrdinalIgnoreCase, out _))
+                                                {
+                                                    // Removing a property that doesn't exist
+                                                    // will not throw an exception.
+                                                    payloadWithoutInputs.Remove(inputId);
+                                                }
+                                                else
+                                                {
+                                                    inputsMatch = false;
+
+                                                    break;
+                                                }
+                                            }
+
+                                            if (inputsMatch)
+                                            {
+                                                CardTree.RecurseAsync(
+                                                    adaptiveCard,
+                                                    (JObject submitAction) =>
+                                                    {
+                                                        var submitActionData = submitAction?.GetValue(
+                                                            CardConstants.KeyData,
+                                                            StringComparison.OrdinalIgnoreCase)?.DeepClone();
+
+                                                        if (JToken.DeepEquals(submitActionData, payloadWithoutInputs))
+                                                        {
+                                                            result.Add(savedActivity, savedAttachment, submitAction);
+                                                        }
+
+                                                        return Task.CompletedTask;
+                                                    },
+                                                    NodeType.AdaptiveCard,
+                                                    NodeType.SubmitAction).Wait();
+                                            }
+
+                                            return Task.CompletedTask;
+                                        }).Wait();
+                                }
+                                else
+                                {
+                                    // For Bot Framework cards that are not Adaptive Cards
+                                    CardTree.RecurseAsync(savedAttachment, (CardAction savedAction) =>
+                                    {
+                                        savedAction?.Value.ToJObjectAndBackAsync(
+                                            savedPayload =>
+                                            {
+                                                if (JToken.DeepEquals(savedPayload, incomingPayload))
+                                                {
+                                                    result.Add(savedActivity, savedAttachment, savedAction);
+                                                }
+
+                                                return Task.CompletedTask;
+                                            }, true).Wait();
+
+                                        return Task.CompletedTask;
+                                    }).Wait();
+                                }
+                            }
+                        }
+                    }, true).ConfigureAwait(false);
+            }
+
+            return result;
         }
     }
 }

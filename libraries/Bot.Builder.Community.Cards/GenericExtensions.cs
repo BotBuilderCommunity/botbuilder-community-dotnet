@@ -5,7 +5,6 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
-using Microsoft.Bot.Builder.Dialogs;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -17,6 +16,12 @@ namespace Bot.Builder.Community.Cards
     /// </summary>
     internal static class GenericExtensions
     {
+        public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T> source)
+            where T : class
+        {
+            return source.Where(x => x != null);
+        }
+
         internal static ConfiguredTaskAwaitable<T> CoalesceAwait<T>(this Task<T> task)
             where T : class
         {
@@ -98,7 +103,7 @@ namespace Bot.Builder.Community.Cards
             this T input,
             Func<JObject, Task> funcAsync,
             bool shouldParseStrings = false,
-            bool shouldIgnoreWrongType = true)
+            bool returnNullForWrongType = false)
             where T : class
         {
             JToken jToken = null;
@@ -124,14 +129,14 @@ namespace Bot.Builder.Community.Cards
                     ? JsonConvert.SerializeObject(jObject) as T
                     : input is JObject
                         ? jObject as T
-                        : jObject.ToObject<T>(); 
+                        : jObject.ToObject<T>();
             }
-            else if (shouldIgnoreWrongType)
+            else if (returnNullForWrongType)
             {
-                return input;
+                return null;
             }
 
-            return null;
+            return input;
         }
 
         internal static JObject TryParseJObject(this string inputString)
@@ -144,6 +149,22 @@ namespace Bot.Builder.Community.Cards
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Clears any properties with the same name before setting the value.
+        /// </summary>
+        /// <param name="jObject">A JObject.</param>
+        /// <param name="key">The name of the property to set.</param>
+        /// <param name="value">The value.</param>
+        internal static void SetValue(this JObject jObject, string key, JToken value)
+        {
+            while (jObject.TryGetValue(key, StringComparison.OrdinalIgnoreCase, out var token))
+            {
+                token.Parent.Remove();
+            }
+
+            jObject[key] = value;
         }
     }
 }

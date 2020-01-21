@@ -5,7 +5,7 @@ namespace Bot.Builder.Community.Cards.Nodes
 {
     internal interface INode
     {
-        IdType? IdType { get; set; }
+        PayloadIdType? IdType { get; set; }
 
         Task<object> CallChild(object value, Func<object, NodeType, Task<object>> nextAsync);
 

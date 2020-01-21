@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Bot.Builder.Community.Cards.Nodes
 {
     internal class ListNode<T> : Node<IEnumerable<T>, T>
         where T : class
     {
-        public ListNode(NodeType childNodeType, IdType? idType)
+        public ListNode(NodeType childNodeType, PayloadIdType? idType)
             : base(async (value, nextAsync) =>
             {
                 foreach (var child in value)

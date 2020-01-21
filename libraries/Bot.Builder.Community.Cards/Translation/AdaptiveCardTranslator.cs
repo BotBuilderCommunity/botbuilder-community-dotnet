@@ -157,9 +157,9 @@ namespace Bot.Builder.Community.Cards.Translation
             return await card.ToJObjectAndBackAsync(
                 async cardJObject =>
                 {
-                    var tokens = GetTokens(cardJObject, settings ?? DefaultSettings);
+                    var tokens = GetTokensToTranslate(cardJObject, settings ?? DefaultSettings);
                     var translations = await translateManyAsync(
-                        tokens.Select(token => (string)token).ToList(),
+                        tokens.Select(Convert.ToString).ToList(),
                         cancellationToken).ConfigureAwait(false);
 
                     if (translations != null)
@@ -178,7 +178,7 @@ namespace Bot.Builder.Community.Cards.Translation
                     }
                 },
                 true,
-                false).ConfigureAwait(false) ?? throw new ArgumentException(
+                true).ConfigureAwait(false) ?? throw new ArgumentException(
                     "The Adaptive Card must be convertible to a JObject.",
                     nameof(card));
         }
@@ -203,7 +203,7 @@ namespace Bot.Builder.Community.Cards.Translation
             return await TranslateAsync(card, targetLocale, TranslatorKey, Settings, cancellationToken).ConfigureAwait(false);
         }
 
-        private static List<JToken> GetTokens(JObject cardJObject, AdaptiveCardTranslatorSettings settings)
+        private static List<JToken> GetTokensToTranslate(JObject cardJObject, AdaptiveCardTranslatorSettings settings)
         {
             var tokens = new List<JToken>();
 

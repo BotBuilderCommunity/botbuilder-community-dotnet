@@ -11,7 +11,7 @@ namespace Bot.Builder.Community.Cards.Nodes
     {
         private const string SpecifyManually = " Try specifying the node type manually instead of using null.";
 
-        private static readonly Dictionary<string, NodeType> _cardTypes = new Dictionary<string, NodeType>
+        private static readonly Dictionary<string, NodeType> _cardTypes = new Dictionary<string, NodeType>(StringComparer.OrdinalIgnoreCase)
         {
             { CardConstants.AdaptiveCardContentType, NodeType.AdaptiveCard },
             { AnimationCard.ContentType, NodeType.AnimationCard },
@@ -27,7 +27,7 @@ namespace Bot.Builder.Community.Cards.Nodes
         private static readonly Dictionary<NodeType, INode> _tree = new Dictionary<NodeType, INode>
         {
             {
-                NodeType.Batch, new ListNode<IMessageActivity>(NodeType.Activity, IdType.Batch)
+                NodeType.Batch, new ListNode<IMessageActivity>(NodeType.Activity, PayloadIdType.Batch)
             },
             {
                 NodeType.Activity, new Node<IMessageActivity, IEnumerable<Attachment>>(async (activity, nextAsync) =>
@@ -39,7 +39,7 @@ namespace Bot.Builder.Community.Cards.Nodes
                 })
             },
             {
-                NodeType.Carousel, new ListNode<Attachment>(NodeType.Attachment, IdType.Carousel)
+                NodeType.Carousel, new ListNode<Attachment>(NodeType.Attachment, PayloadIdType.Carousel)
             },
             {
                 NodeType.Attachment, new Node<Attachment, object>(async (attachment, nextAsync) =>
@@ -63,15 +63,14 @@ namespace Bot.Builder.Community.Cards.Nodes
                     {
                         await nextAsync(
                             cardJObject.NonDataDescendants()
-                                .Select(token => token as JObject)
-                                .Where(element =>
-                                {
-                                    var type = element?[CardConstants.KeyType];
-                                    return type?.Type == JTokenType.String
-                                        && type.ToString().Equals(
-                                            CardConstants.ActionSubmit,
-                                            StringComparison.OrdinalIgnoreCase);
-                                }), NodeType.SubmitActionList).ConfigureAwait(false);
+                                .Select(token => token is JObject element
+                                    && element.GetValue(CardConstants.KeyType, StringComparison.OrdinalIgnoreCase) is JToken type
+                                    && type.Type == JTokenType.String
+                                    && type.ToString().Equals(
+                                        CardConstants.ActionSubmit,
+                                        StringComparison.OrdinalIgnoreCase)
+                                    ? element : null)
+                                .WhereNotNull(), NodeType.SubmitActionList).ConfigureAwait(false);
                     }).ConfigureAwait(false);
                 })
             },
@@ -100,10 +99,10 @@ namespace Bot.Builder.Community.Cards.Nodes
                 NodeType.VideoCard, new RichCardNode<VideoCard>(card => card.Buttons)
             },
             {
-                NodeType.SubmitActionList, new ListNode<object>(NodeType.SubmitAction, IdType.Card)
+                NodeType.SubmitActionList, new ListNode<object>(NodeType.SubmitAction, PayloadIdType.Card)
             },
             {
-                NodeType.CardActionList, new ListNode<CardAction>(NodeType.CardAction, IdType.Card)
+                NodeType.CardActionList, new ListNode<CardAction>(NodeType.CardAction, PayloadIdType.Card)
             },
             {
                 NodeType.SubmitAction, new Node<object, JObject>(async (action, nextAsync) =>
@@ -113,7 +112,7 @@ namespace Bot.Builder.Community.Cards.Nodes
                     return await action.ToJObjectAndBackAsync(
                         async actionJObject =>
                         {
-                            var data = actionJObject[CardConstants.KeyData];
+                            var data = actionJObject.GetValue(CardConstants.KeyData, StringComparison.OrdinalIgnoreCase);
 
                             if (data is JObject dataJObject)
                             {
@@ -132,10 +131,10 @@ namespace Bot.Builder.Community.Cards.Nodes
                             await nextAsync(jObject, NodeType.Payload).ConfigureAwait(false);
                         }
 
-                        var valueResult = await (action.Value?.ToJObjectAndBackAsync(
+                        var valueResult = await action.Value.ToJObjectAndBackAsync(
                             CallNextAsync,
                             true,
-                            false)).CoalesceAwait();
+                            true).CoalesceAwait();
 
                         if (valueResult != null)
                         {
@@ -143,10 +142,10 @@ namespace Bot.Builder.Community.Cards.Nodes
                         }
                         else
                         {
-                            var textResult = await (action.Text?.ToJObjectAndBackAsync(
+                            var textResult = await action.Text.ToJObjectAndBackAsync(
                                 CallNextAsync,
                                 true,
-                                false)).CoalesceAwait();
+                                true).CoalesceAwait();
 
                             if (textResult != null)
                             {
@@ -159,24 +158,24 @@ namespace Bot.Builder.Community.Cards.Nodes
                 })
             },
             {
-                NodeType.Payload, new Node<object, TypedId>(async (payload, nextAsync) =>
+                NodeType.Payload, new Node<object, PayloadId>(async (payload, nextAsync) =>
                 {
                     return await payload.ToJObjectAndBackAsync(async payloadJObject =>
                     {
-                        foreach (var type in Helper.GetEnumValues<IdType>())
+                        foreach (var type in Helper.GetEnumValues<PayloadIdType>())
                         {
                             var id = payloadJObject.GetIdFromPayload(type);
 
                             if (id != null)
                             {
-                                await nextAsync(new TypedId(type, id), NodeType.Id);
+                                await nextAsync(new PayloadId(type, id), NodeType.Id);
                             }
                         }
                     });
                 })
             },
             {
-                NodeType.Id, new Node<TypedId, object>((id, _) => Task.FromResult(id))
+                NodeType.Id, new Node<PayloadId, object>((id, _) => Task.FromResult(id))
             },
         };
 
@@ -197,7 +196,7 @@ namespace Bot.Builder.Community.Cards.Nodes
             }
             catch (Exception ex)
             {
-                throw GetNodeArgumentException<TEntry>(ex, nameof(entryType));
+                throw GetNodeArgumentException<TEntry>(ex);
             }
 
             try
@@ -206,7 +205,7 @@ namespace Bot.Builder.Community.Cards.Nodes
             }
             catch (Exception ex)
             {
-                throw GetNodeArgumentException<TExit>(ex, nameof(exitType), "exit");
+                throw GetNodeArgumentException<TExit>(ex, "exit");
             }
 
             async Task<object> NextAsync(object child, NodeType childType)
@@ -215,7 +214,7 @@ namespace Bot.Builder.Community.Cards.Nodes
 
                 if (childNode == exitNode)
                 {
-                    await funcAsync(child as TExit).ConfigureAwait(false);
+                    await funcAsync(child is JToken jToken ? jToken.ToObject<TExit>() : child as TExit).ConfigureAwait(false);
 
                     return child;
                 }
@@ -228,7 +227,7 @@ namespace Bot.Builder.Community.Cards.Nodes
             return await entryNode.CallChild(entryValue, NextAsync).ConfigureAwait(false) as TEntry;
         }
 
-        internal static TEntry ApplyIds<TEntry>(TEntry entryValue, IdOptions options = null, NodeType? entryType = null)
+        internal static TEntry ApplyIds<TEntry>(TEntry entryValue, PayloadIdOptions options = null, NodeType? entryType = null)
             where TEntry : class
         {
             INode entryNode = null;
@@ -239,7 +238,7 @@ namespace Bot.Builder.Community.Cards.Nodes
             }
             catch (Exception ex)
             {
-                throw GetNodeArgumentException<TEntry>(ex, nameof(entryType));
+                throw GetNodeArgumentException<TEntry>(ex);
             }
 
             Task<object> NextAsync(object child, NodeType childType)
@@ -321,11 +320,11 @@ namespace Bot.Builder.Community.Cards.Nodes
                     + " Make sure you're providing the correct node type.");
         }
 
-        private static ArgumentException GetNodeArgumentException<TEntry>(Exception inner, string paramName, string entryOrExit = "entry")
+        private static ArgumentException GetNodeArgumentException<TEntry>(Exception inner, string entryOrExit = "entry")
         {
             return new ArgumentException(
                 $"The {entryOrExit} node could not be determined from the type argument: {typeof(TEntry)}.",
-                paramName,
+                $"{entryOrExit}Type",
                 inner);
         }
     }
