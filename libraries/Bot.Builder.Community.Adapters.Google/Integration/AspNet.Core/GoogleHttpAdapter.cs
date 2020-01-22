@@ -82,7 +82,7 @@ namespace Bot.Builder.Community.Adapters.Google.Integration.AspNet.Core
                 throw new ArgumentNullException(nameof(googleResponse));
             }
 
-            httpResponse.ContentType = "application/json";
+            httpResponse.ContentType = "application/json;charset=utf-8";
             httpResponse.StatusCode = (int)HttpStatusCode.OK;
 
             using (var writer = new StreamWriter(httpResponse.Body))
