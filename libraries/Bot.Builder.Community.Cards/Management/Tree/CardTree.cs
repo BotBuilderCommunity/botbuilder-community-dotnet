@@ -59,19 +59,18 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 {
                     // Return the new object after it's been converted to a JObject and back
                     // so that the attachment node can assign it back to the Content property
-                    return await card.ToJObjectAndBackAsync(async cardJObject =>
-                    {
-                        await nextAsync(
-                            cardJObject.NonDataDescendants()
-                                .Select(token => token is JObject element
-                                    && element.GetValue(CardConstants.KeyType, StringComparison.OrdinalIgnoreCase) is JToken type
-                                    && type.Type == JTokenType.String
-                                    && type.ToString().Equals(
-                                        CardConstants.ActionSubmit,
-                                        StringComparison.OrdinalIgnoreCase)
-                                    ? element : null)
-                                .WhereNotNull(), TreeNodeType.SubmitActionList).ConfigureAwait(false);
-                    }).ConfigureAwait(false);
+                    return await card.ToJObjectAndBackAsync(
+                        async cardJObject =>
+                        {
+                            await nextAsync(
+                                cardJObject.NonDataDescendants()
+                                    .Select(token => token is JObject element
+                                            && element.GetValueCI(CardConstants.KeyType) is JToken type
+                                            && type.Type == JTokenType.String
+                                            && type.ToString().EqualsCI(CardConstants.ActionSubmit)
+                                        ? element : null)
+                                    .WhereNotNull(), TreeNodeType.SubmitActionList).ConfigureAwait(false);
+                        }, true).ConfigureAwait(false);
                 })
             },
             {
@@ -112,7 +111,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                     return await action.ToJObjectAndBackAsync(
                         async actionJObject =>
                         {
-                            var data = actionJObject.GetValue(CardConstants.KeyData, StringComparison.OrdinalIgnoreCase);
+                            var data = actionJObject.GetValueCI(CardConstants.KeyData);
 
                             if (data is JObject dataJObject)
                             {
@@ -126,15 +125,16 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 {
                     if (action.Type == ActionTypes.MessageBack || action.Type == ActionTypes.PostBack)
                     {
-                        async Task CallNextAsync(JObject jObject)
+                        async Task<T> CallNextAsync<T>(T input)
+                            where T : class
                         {
-                            await nextAsync(jObject, TreeNodeType.Payload).ConfigureAwait(false);
+                            return await input.ToJObjectAndBackAsync(
+                                async jObject => await nextAsync(jObject, TreeNodeType.Payload).ConfigureAwait(false),
+                                true,
+                                true).ConfigureAwait(false);
                         }
 
-                        var valueResult = await action.Value.ToJObjectAndBackAsync(
-                            CallNextAsync,
-                            true,
-                            true).CoalesceAwait();
+                        var valueResult = await CallNextAsync(action.Value).ConfigureAwait(false);
 
                         if (valueResult != null)
                         {
@@ -142,10 +142,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                         }
                         else
                         {
-                            var textResult = await action.Text.ToJObjectAndBackAsync(
-                                CallNextAsync,
-                                true,
-                                true).CoalesceAwait();
+                            var textResult = await CallNextAsync(action.Text).ConfigureAwait(false);
 
                             if (textResult != null)
                             {
@@ -171,7 +168,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                                 await nextAsync(new PayloadId(type, id), TreeNodeType.Id);
                             }
                         }
-                    });
+                    }).ConfigureAwait(false);
                 })
             },
             {
@@ -179,6 +176,24 @@ namespace Bot.Builder.Community.Cards.Management.Tree
             },
         };
 
+        /// <summary>
+        /// Enters and exits the tree at the specified nodes.
+        /// </summary>
+        /// <typeparam name="TEntry">The .NET type of the entry node.</typeparam>
+        /// <typeparam name="TExit">The .NET type of the exit node.</typeparam>
+        /// <param name="entryValue">The entry value.</param>
+        /// <param name="funcAsync">A delegate to perform on each exit value.
+        /// Note that exit values are not guaranteed to be non-null.</param>
+        /// <param name="entryType">The explicit position of the entry node in the tree.
+        /// If this is null then the position is inferred from the TEntry type parameter.
+        /// Note that this parameter is required if the type is <see cref="object"/>
+        /// or if the position otherwise cannot be unambiguously inferred from the type.</param>
+        /// <param name="exitType">The explicit position of the exit node in the tree.
+        /// If this is null then the position is inferred from the TExit type parameter.
+        /// Note that this parameter is required if the type is <see cref="object"/>
+        /// or if the position otherwise cannot be unambiguously inferred from the type.</param>
+        /// <returns>The possibly-modified entry value. This is needed if a new object was created
+        /// to modify the value, such as when an Adaptive Card is converted to a JObject.</returns>
         internal static async Task<TEntry> RecurseAsync<TEntry, TExit>(
             TEntry entryValue,
             Func<TExit, Task> funcAsync,
@@ -245,6 +260,8 @@ namespace Bot.Builder.Community.Cards.Management.Tree
             {
                 if (childType == TreeNodeType.Payload)
                 {
+                    // This local function is not async
+                    // so just return the task without awaiting it
                     return child.ToJObjectAndBackAsync(
                         payload =>
                         {
@@ -255,6 +272,21 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 }
                 else
                 {
+                    if (childType == TreeNodeType.SubmitAction)
+                    {
+                        // We need to create a "data" object in the submit action
+                        // if there isn't one already.
+                        child = child.ToJObjectAndBackAsync(submitAction =>
+                        {
+                            if (submitAction.GetValueCI(CardConstants.KeyData).IsNullish())
+                            {
+                                submitAction.SetValueCI(CardConstants.KeyData, new JObject());
+                            }
+
+                            return Task.CompletedTask;
+                        }).Result;
+                    }
+
                     var childNode = _tree[childType];
 
                     if (childNode.IdType.HasValue)

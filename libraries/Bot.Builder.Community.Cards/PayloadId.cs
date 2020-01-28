@@ -6,7 +6,7 @@ namespace Bot.Builder.Community.Cards
     {
         public PayloadId(PayloadIdType type, string id)
         {
-            Type = type;
+            Type = type.CheckIdType();
             Id = id ?? throw new ArgumentNullException(nameof(id));
         }
 

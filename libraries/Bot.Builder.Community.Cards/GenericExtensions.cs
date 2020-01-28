@@ -99,12 +99,19 @@ namespace Bot.Builder.Community.Cards
             return these.Contains(obj, equalityComparer);
         }
 
-        internal static async Task<T> ToJObjectAndBackAsync<T>(
-            this T input,
-            Func<JObject, Task> funcAsync,
-            bool shouldParseStrings = false,
-            bool returnNullForWrongType = false)
-            where T : class
+        internal static JObject TryParseJObject(this string inputString)
+        {
+            try
+            {
+                return JObject.Parse(inputString);
+            }
+            catch (JsonReaderException)
+            {
+                return null;
+            }
+        }
+
+        internal static JObject ToJObject<T>(this T input, bool shouldParseStrings = false)
         {
             JToken jToken = null;
 
@@ -121,7 +128,17 @@ namespace Bot.Builder.Community.Cards
                 jToken = JToken.FromObject(input);
             }
 
-            if (jToken is JObject jObject)
+            return jToken as JObject;
+        }
+
+        internal static async Task<T> ToJObjectAndBackAsync<T>(
+            this T input,
+            Func<JObject, Task> funcAsync,
+            bool shouldParseStrings = false,
+            bool returnNullForWrongType = false)
+            where T : class
+        {
+            if (input.ToJObject(shouldParseStrings) is JObject jObject)
             {
                 await funcAsync(jObject).ConfigureAwait(false);
 
@@ -139,25 +156,16 @@ namespace Bot.Builder.Community.Cards
             return input;
         }
 
-        internal static JObject TryParseJObject(this string inputString)
-        {
-            try
-            {
-                return JObject.Parse(inputString);
-            }
-            catch (JsonReaderException)
-            {
-                return null;
-            }
-        }
+        internal static JToken GetValueCI(this JObject jObject, string key) => jObject?.GetValue(key, StringComparison.OrdinalIgnoreCase);
 
         /// <summary>
-        /// Clears any properties with the same name before setting the value.
+        /// Clears any properties with the same name before setting the value,
+        /// thus performing a "case-insentive" set.
         /// </summary>
         /// <param name="jObject">A JObject.</param>
         /// <param name="key">The name of the property to set.</param>
         /// <param name="value">The value.</param>
-        internal static void SetValue(this JObject jObject, string key, JToken value)
+        internal static void SetValueCI(this JObject jObject, string key, JToken value)
         {
             while (jObject.TryGetValue(key, StringComparison.OrdinalIgnoreCase, out var token))
             {
@@ -166,5 +174,9 @@ namespace Bot.Builder.Community.Cards
 
             jObject[key] = value;
         }
+
+        internal static bool EqualsCI(this string left, string right) => left?.Equals(right, StringComparison.OrdinalIgnoreCase) == true;
+
+        internal static bool IsNullish(this JToken jToken) => jToken is null || jToken.Type.IsOneOf(JTokenType.None, JTokenType.Null, JTokenType.Undefined);
     }
 }

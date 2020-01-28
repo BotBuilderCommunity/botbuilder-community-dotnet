@@ -48,14 +48,13 @@ namespace Bot.Builder.Community.Cards
         }
 
         public static string GetIdFromPayload(this JObject payload, PayloadIdType type = PayloadIdType.Card) =>
-            payload?.GetValue(type.GetKey(), StringComparison.OrdinalIgnoreCase) is JToken id ? id.ToString() : null;
+            payload?.GetValueCI(type.GetKey()) is JToken id ? id.ToString() : null;
 
         public static IEnumerable<JToken> NonDataDescendants(this JContainer container) =>
             container?.Descendants().Where(token =>
                 !token.Ancestors().Any(ancestor =>
-                    (ancestor as JProperty)?.Name.Equals(
-                        CardConstants.KeyData,
-                        StringComparison.OrdinalIgnoreCase) == true));
+                    (ancestor as JProperty)?.Name.EqualsCI(
+                        CardConstants.KeyData) == true));
 
         public static IEnumerable<JObject> GetAdaptiveInputs(this JContainer container)
         {
@@ -63,21 +62,15 @@ namespace Bot.Builder.Community.Cards
 
             return container?.NonDataDescendants()
                 .Select(token => token is JObject element
-                    && inputTypes.Contains(element.GetValue(CardConstants.KeyType, StringComparison.OrdinalIgnoreCase)?.ToString())
-                    && element.GetValue(CardConstants.KeyId, StringComparison.OrdinalIgnoreCase) != null ? element : null)
+                    && inputTypes.Contains(element.GetValueCI(CardConstants.KeyType)?.ToString())
+                    && element.GetValueCI(CardConstants.KeyId) != null ? element : null)
                 .WhereNotNull();
         }
 
         public static string GetAdaptiveInputId(this JObject input) =>
-            input?.GetValue(CardConstants.KeyId, StringComparison.OrdinalIgnoreCase)?.ToString();
+            input?.GetValueCI(CardConstants.KeyId)?.ToString();
 
-        internal static string GetKey(this PayloadIdType type)
-        {
-            // If multiple flags are present, only use the first one
-            var typeString = type.ToString().Split(',').First();
-
-            return $"{CardConstants.PackageId}{typeString}Id";
-        }
+        internal static string GetKey(this PayloadIdType type) => $"{CardConstants.PackageId}{type}Id";
 
         internal static string GenerateId(this PayloadIdType type) => $"{type}-{Guid.NewGuid()}";
 
@@ -93,6 +86,29 @@ namespace Bot.Builder.Community.Cards
             }
 
             return null;
+        }
+
+        internal static PayloadIdType CheckIdType(this PayloadIdType type)
+        {
+            if (!Enum.IsDefined(typeof(PayloadIdType), type))
+            {
+                throw new ArgumentException("The payload ID type must be defined.", nameof(type));
+            }
+
+            return type;
+        }
+
+        internal static IEnumerable<PayloadIdType> CheckIdTypes(this IEnumerable<PayloadIdType> types)
+        {
+            foreach (var type in types)
+            {
+                if (!Enum.IsDefined(typeof(PayloadIdType), type))
+                {
+                    throw new ArgumentException("Each payload ID type must be defined.");
+                }
+            }
+
+            return types;
         }
     }
 }

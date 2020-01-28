@@ -134,7 +134,7 @@ namespace Bot.Builder.Community.Cards.Management
 
             if (options.AutoAdaptCardActions)
             {
-                activities.AdaptCardActions(turnContext.Activity.ChannelId);
+                activities.AdaptOutgoingCardActions();
             }
 
             // The resource response ID's will be automatically applied to the activities

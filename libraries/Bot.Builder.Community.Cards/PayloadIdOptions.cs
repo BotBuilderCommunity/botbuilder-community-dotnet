@@ -11,7 +11,7 @@ namespace Bot.Builder.Community.Cards
         public PayloadIdOptions(bool overwrite = false) => Overwrite = overwrite;
 
         public PayloadIdOptions(PayloadIdType type, bool overwrite = false)
-            : this(overwrite) => _ids.Add(type, null);
+            : this(overwrite) => _ids.Add(type.CheckIdType(), null);
 
         public PayloadIdOptions(IEnumerable<PayloadIdType> types, bool overwrite = false)
             : this(overwrite)
@@ -21,7 +21,7 @@ namespace Bot.Builder.Community.Cards
                 throw new ArgumentNullException(nameof(types));
             }
 
-            foreach (var type in types.Distinct())
+            foreach (var type in types.CheckIdTypes().Distinct())
             {
                 _ids.Add(type, null);
             }
@@ -46,13 +46,13 @@ namespace Bot.Builder.Community.Cards
         /// <returns>
         /// The ID.
         /// </returns>
-        public string InitializeId(PayloadIdType type, string id = null) => _ids.InitializeKey(type, id);
+        public string InitializeId(PayloadIdType type, string id = null) => _ids.InitializeKey(type.CheckIdType(), id);
 
-        public bool SetExistingId(PayloadIdType type, string id = null) => _ids.SetExistingValue(type, id);
+        public bool SetExistingId(PayloadIdType type, string id = null) => _ids.SetExistingValue(type.CheckIdType(), id);
 
         public string Get(PayloadIdType type) => _ids.TryGetValue(type, out var value) ? value : null;
 
-        public string Set(PayloadIdType type, string id = null) => _ids[type] = id;
+        public string Set(PayloadIdType type, string id = null) => _ids[type.CheckIdType()] = id;
 
         public IDictionary<PayloadIdType, string> GetIds() => new Dictionary<PayloadIdType, string>(_ids);
     }

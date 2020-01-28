@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Bot.Builder.Community.Cards.Management.Tree;
+using Microsoft.Bot.Builder;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json;
@@ -85,143 +86,217 @@ namespace Bot.Builder.Community.Cards.Management
             return dict;
         }
 
-        public static void AdaptCardActions(this List<Activity> activities, string channelId)
+        public static void AdaptOutgoingCardActions(this List<Activity> activities, string channelId = null)
         {
             if (activities is null)
             {
                 throw new ArgumentNullException(nameof(activities));
             }
 
-            CardTree.RecurseAsync(activities, (CardAction action) =>
+            foreach (var activity in activities)
             {
-                var text = action.Text;
-                var value = action.Value;
-                var type = action.Type;
+                channelId = channelId ?? activity.ChannelId;
 
-                void EnsureText()
+                CardTree.RecurseAsync(activity, (CardAction action) =>
                 {
-                    if (text == null && value != null)
-                    {
-                        action.Text = JsonConvert.SerializeObject(value);
-                    }
-                }
+                    var text = action.Text;
+                    var value = action.Value;
+                    var type = action.Type;
 
-                void EnsureValue()
-                {
-                    if (value == null && text != null)
+                    void EnsureText()
                     {
-                        action.Value = text;
-                    }
-                }
-
-                void EnsureStringValue()
-                {
-                    if (!(value is string))
-                    {
-                        if (value != null)
+                        if (text == null && value != null)
                         {
-                            action.Value = JsonConvert.SerializeObject(value);
+                            action.Text = JsonConvert.SerializeObject(value);
                         }
-                        else if (text != null)
+                    }
+
+                    void EnsureValue()
+                    {
+                        if (value == null && text != null)
                         {
                             action.Value = text;
                         }
                     }
-                }
 
-                void EnsureObjectValue()
-                {
-                    if (value is string stringValue && stringValue.TryParseJObject() is JObject parsedValue)
+                    void EnsureStringValue()
                     {
-                        action.Value = parsedValue;
+                        if (!(value is string))
+                        {
+                            if (value != null)
+                            {
+                                action.Value = JsonConvert.SerializeObject(value);
+                            }
+                            else if (text != null)
+                            {
+                                action.Value = text;
+                            }
+                        }
                     }
-                }
 
-                if (type == ActionTypes.MessageBack)
-                {
-                    switch (channelId)
+                    void EnsureObjectValue()
                     {
-                        case Channels.Cortana:
-                        case Channels.Skype:
-                            // MessageBack does not work on these channels
-                            action.Type = ActionTypes.PostBack;
-                            break;
-
-                        case Channels.Directline:
-                        case Channels.Emulator:
-                        case Channels.Line:
-                        case Channels.Webchat:
-                            EnsureValue();
-                            break;
-
-                        case Channels.Email:
-                        case Channels.Slack:
-                        case Channels.Telegram:
-                            EnsureText();
-                            break;
-
-                        case Channels.Facebook:
-                            EnsureStringValue();
-                            break;
-
-                        case Channels.Msteams:
-                            EnsureObjectValue();
-                            break;
+                        if (value is string stringValue && stringValue.TryParseJObject() is JObject parsedValue)
+                        {
+                            action.Value = parsedValue;
+                        }
                     }
-                }
 
-                // Using if instead of else-if so this block can be executed in addition to the previous one
-                if (type == ActionTypes.PostBack)
-                {
-                    switch (channelId)
+                    if (type == ActionTypes.MessageBack)
                     {
-                        case Channels.Cortana:
-                        case Channels.Facebook:
-                        case Channels.Slack:
-                        case Channels.Telegram:
-                            EnsureStringValue();
-                            break;
+                        switch (channelId)
+                        {
+                            case Channels.Cortana:
+                            case Channels.Skype:
+                                // MessageBack does not work on these channels
+                                action.Type = ActionTypes.PostBack;
+                                break;
 
-                        case Channels.Directline:
-                        case Channels.Email:
-                        case Channels.Emulator:
-                        case Channels.Line:
-                        case Channels.Skype:
-                        case Channels.Webchat:
-                            EnsureValue();
-                            break;
+                            case Channels.Directline:
+                            case Channels.Emulator:
+                            case Channels.Line:
+                            case Channels.Webchat:
+                                EnsureValue();
+                                break;
 
-                        case Channels.Msteams:
-                            EnsureObjectValue();
-                            break;
+                            case Channels.Email:
+                            case Channels.Slack:
+                            case Channels.Telegram:
+                                EnsureText();
+                                break;
+
+                            case Channels.Facebook:
+                                EnsureStringValue();
+                                break;
+
+                            case Channels.Msteams:
+                                EnsureObjectValue();
+                                break;
+                        }
                     }
-                }
 
-                if (type == ActionTypes.ImBack)
-                {
-                    switch (channelId)
+                    // Using if instead of else-if so this block can be executed in addition to the previous one
+                    if (type == ActionTypes.PostBack)
                     {
-                        case Channels.Cortana:
-                        case Channels.Directline:
-                        case Channels.Emulator:
-                        case Channels.Facebook:
-                        case Channels.Msteams:
-                        case Channels.Skype:
-                        case Channels.Slack:
-                        case Channels.Telegram:
-                        case Channels.Webchat:
-                            EnsureStringValue();
-                            break;
+                        switch (channelId)
+                        {
+                            case Channels.Cortana:
+                            case Channels.Facebook:
+                            case Channels.Slack:
+                            case Channels.Telegram:
+                                EnsureStringValue();
+                                break;
 
-                        case Channels.Email:
-                        case Channels.Line:
-                            EnsureValue();
-                            break;
+                            case Channels.Directline:
+                            case Channels.Email:
+                            case Channels.Emulator:
+                            case Channels.Line:
+                            case Channels.Skype:
+                            case Channels.Webchat:
+                                EnsureValue();
+                                break;
+
+                            case Channels.Msteams:
+                                EnsureObjectValue();
+                                break;
+                        }
                     }
-                }
 
-                return Task.CompletedTask;
-            }).Wait();
+                    if (type == ActionTypes.ImBack)
+                    {
+                        switch (channelId)
+                        {
+                            case Channels.Cortana:
+                            case Channels.Directline:
+                            case Channels.Emulator:
+                            case Channels.Facebook:
+                            case Channels.Msteams:
+                            case Channels.Skype:
+                            case Channels.Slack:
+                            case Channels.Telegram:
+                            case Channels.Webchat:
+                                EnsureStringValue();
+                                break;
+
+                            case Channels.Email:
+                            case Channels.Line:
+                                EnsureValue();
+                                break;
+                        }
+                    }
+
+                    return Task.CompletedTask;
+                }).Wait();
+            }
+        }
+
+        public static object GetIncomingValue(this ITurnContext turnContext)
+        {
+            BotAssert.ContextNotNull(turnContext);
+
+            var activity = turnContext.Activity;
+
+            if (activity is null)
+            {
+                return null;
+            }
+
+            var text = activity.Text;
+            var value = activity.Value;
+            var channelData = activity.ChannelData.ToJObject(true);
+            var entities = activity.Entities;
+
+            switch (activity.ChannelId)
+            {
+                case Channels.Cortana:
+
+                    // In Cortana, the only defining characteristic of card action responses
+                    // is that they won't have an "Intent" entity
+                    if (entities?.Any(entity => CardConstants.TypeIntent.Equals(entity.Type)) != true)
+                    {
+                        return text.TryParseJObject();
+                    }
+
+                    break;
+
+                case Channels.Directline:
+                case Channels.Emulator:
+                case Channels.Webchat:
+
+                    // In Direct Line / Web Chat, card action responses can be recognized by a property of channel data
+                    if (channelData?.GetValueCI(CardConstants.KeyPostBack) != null)
+                    {
+                        return value ?? text.TryParseJObject();
+                    }
+
+                    break;
+
+                case Channels.Kik:
+
+                    // In Skype, the only defining characteristic of card action responses
+                    // is that the channel data text does not match the activity text
+                    if (channelData?.GetValueCI()
+                    {
+                        return text.TryParseJObject();
+                    }
+
+                    break;
+
+                case Channels.Skype:
+
+                    // In Skype, the only defining characteristic of card action responses
+                    // is that the channel data text does not match the activity text
+                    if (channelData?.GetValueCI(CardConstants.KeyText)?.ToString().EqualsCI(text) == false)
+                    {
+                        return text.TryParseJObject();
+                    }
+
+                    break;
+            }
+
+            // Teams values don't need to be adapted
+
+            return value;
         }
     }
 }

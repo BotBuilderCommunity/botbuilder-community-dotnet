@@ -9,6 +9,10 @@ namespace Bot.Builder.Community.Cards.Management.Tree
         where TValue : class
         where TChild : class
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TreeNode{TValue, TChild}"/> class.
+        /// </summary>
+        /// <param name="childCaller">A delegate that gets passed a value that's guaranteed to not be null.</param>
         public TreeNode(ChildCallerDelegate<TValue, TChild> childCaller)
         {
             ChildCaller = childCaller;
