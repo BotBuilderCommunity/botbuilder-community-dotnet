@@ -49,9 +49,9 @@ Sample bot, showing examples of Alexa specific functionality using the current p
 * [Wiring up the Alexa adapter in your bot](#wiring-up-the-alexa-adapter-in-your-bot)
 * [Complete configuration of your Alexa skill](#complete-configuration-of-your-alexa-skill)
 * [Test your Alexa skill](#test-your-alexa-skill) - Test your bot in the Alexa skill simulator and Alexa devices
-* [Customising your conversation](#customising-your-conversation) - Learn about controlling end of session and use of basic card, table card, list and carousel
+* [Customising your conversation](#customising-your-conversation) - Learn about controlling end of session and use of cards / display directives etc.
 
-In this article you will learn how to connect a bot to Google Assistant using the Google adapter.  This article will walk you through modifying the EchoBot sample to connect it to a skill.
+In this article you will learn how to connect a bot to an Alexa skill using the Alexa adapter.  This article will walk you through modifying the EchoBot sample to connect it to a skill.
 
 ### Prerequisites
 
