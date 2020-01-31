@@ -6,11 +6,14 @@ This repository is part of the Bot Builder Community Project and contains Bot Bu
 
 To see a list of current extensions available for the Bot Builder .NET SDK, use the links below to jump to a section.
 
-* [C# Middleware](#middleware)
-* [C# Dialogs & Prompts](#dialogs-and-prompts)
-* [C# Adapters](#adapters) - e.g. Alexa, Google and Twitter DMs
-* [C# Recognizers](#recognizers)
-* [C# Storage](#storage) 
+- [Bot Builder Community - .NET Extensions](#bot-builder-community---net-extensions)
+  - [Installation](#installation)
+  - [Contributing and Reporting Issues](#contributing-and-reporting-issues)
+  - [Middleware](#middleware)
+  - [Dialogs and Prompts](#dialogs-and-prompts)
+  - [Adapters](#adapters)
+  - [Recognizers](#recognizers)
+  - [Storage](#storage)
 
 ## Installation
 
@@ -41,7 +44,7 @@ The following dialogs are currently available;
 | [Bot Builder v4 Location Dialog](libraries/Bot.Builder.Community.Dialogs.Location) | An implemention for v4 of the Bot Build .NET SDK of the [Microsoft.Bot.Builder.Location dialog project built for Bot Builder v3](https://github.com/microsoft/botbuilder-location). An open-source location picker control for Microsoft Bot Framework powered by Azure or Bing Maps REST services. This control will allow a user to search for a location, with the ability to specify required fields and also store locations as favorites for the user. | [Sample](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/Location%20Dialog%20Sample) | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.100-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Dialogs.Location/) |
 | [Bot Builder ChoiceFlow](libraries/Bot.Builder.Community.Dialogs.ChoiceFlow) |This dialog allows you to provide the user with a series of guides choice prompts in turn (defined in a JSON file or as a collection of ChoiceFlowItem objects), similar to when calling a telephone line with a series of automated options. The dialog returns the user's last choice as a result from the dialog and optionally provide the user with a simple text response depending on which choice they land on. | [Sample](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/ChoiceFlow%20Dialog%20Sample) | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.0-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Dialogs.ChoiceFlow/) |
 | [Bot Builder v4 FormFlow](libraries/Bot.Builder.Community.Dialogs.FormFlow) | An implemention for v4 of the Bot Build .NET SDK of the [Microsoft.Bot.Builder.FormFlow dialog project built for Bot Builder v3](https://github.com/Microsoft/BotBuilder-V3/tree/master/CSharp/Library/Microsoft.Bot.Builder/FormFlow). FormFlow automatically generates the dialogs that are necessary to manage a guided conversation, based upon guidelines you specify. | [Sample](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/Form%20Flow%20Sample) | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.0-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Dialogs.FormFlow/) |
-| [Bot Builder v4 Prompts](libraries/Bot.Builder.Community.Dialogs.Prompts) | A collection of Prompts for use with Bot Builder v4, providing the ability to prompt for and recognize currencies, age, distances and temperature. | | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.79-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Dialogs.Prompts/) |
+| [Bot Builder v4 Prompts](libraries/Bot.Builder.Community.Dialogs.Prompts) | A collection of Prompts for use with Bot Builder v4, providing the ability to prompt using Adaptive Cards and for recognizing currencies, age, distances and temperature. | | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.79-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Dialogs.Prompts/) |
 | [Bot Builder v4 Luis Dialog](libraries/Bot.Builder.Community.Dialogs.Luis) | An implementation for v4 of the Bot Builder .NET SDK of the [Microsoft.Bot.Builder.Dialogs.LuisDialog built for Bot Builder V3](https://github.com/microsoft/BotBuilder-V3/tree/master/CSharp/Library/Microsoft.Bot.Builder/Luis) A dialog specialized to handle intents and entities from LUIS. | [Sample](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/Luis%20Dialog%20Sample) | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.79-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Dialogs.Luis/) |
 
 ## Adapters
