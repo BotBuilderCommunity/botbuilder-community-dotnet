@@ -36,7 +36,6 @@ namespace Bot.Builder.Community.Adapters.Alexa
 
         private readonly AlexaAdapterOptions _options;
         private readonly ILogger _logger;
-        private Dictionary<string, List<Activity>> _responses;
 
         public AlexaAdapter(AlexaAdapterOptions options = null, ILogger logger = null)
         {
@@ -96,39 +95,6 @@ namespace Bot.Builder.Community.Adapters.Alexa
             await httpResponse.Body.WriteAsync(responseData, 0, responseData.Length, cancellationToken).ConfigureAwait(false);
         }
 
-        public override Task<ResourceResponse[]> SendActivitiesAsync(ITurnContext turnContext, Activity[] activities, CancellationToken cancellationToken)
-        {
-            var resourceResponses = new List<ResourceResponse>();
-
-            foreach (var activity in activities)
-            {
-                switch (activity.Type)
-                {
-                    case ActivityTypes.Message:
-                        var conversation = activity.Conversation ?? new ConversationAccount();
-                        var key = $"{conversation.Id}:{activity.ReplyToId}";
-
-                        if (_responses.ContainsKey(key))
-                        {
-                            _responses[key].Add(activity);
-                        }
-                        else
-                        {
-                            _responses[key] = new List<Activity> { activity };
-                        }
-
-                        break;
-                    default:
-                        _logger.LogTrace($"Unsupported Activity Type: '{activity.Type}'. Only Activities of type 'Message' or 'Event' are supported.");
-                        break;
-                }
-
-                resourceResponses.Add(new ResourceResponse(activity.Id));
-            }
-
-            return Task.FromResult(resourceResponses.ToArray());
-        }
-
         /// <summary>
         /// Sends a proactive message to a conversation.
         /// </summary>
@@ -177,33 +143,19 @@ namespace Bot.Builder.Community.Adapters.Alexa
         private async Task<SkillResponse> ProcessAlexaRequestAsync(SkillRequest alexaRequest, BotCallbackHandler logic)
         {
             var activity = RequestToActivity(alexaRequest);
-            var context = new TurnContext(this, activity);
-
-            _responses = new Dictionary<string, List<Activity>>();
+            var context = new TurnContextEx(this, activity);
 
             await RunPipelineAsync(context, logic, default).ConfigureAwait(false);
 
-            var key = $"{activity.Conversation.Id}:{activity.Id}";
+            var activities = context.SentActivities;
 
-            try
+            if (context.GetAlexaRequestBody().Request.Type == "SessionEndedRequest" || !activities.Any())
             {
-                var activities = _responses.ContainsKey(key) ? _responses[key] : new List<Activity>();
-
-                if (context.GetAlexaRequestBody().Request.Type == "SessionEndedRequest" || !activities.Any())
-                {
-                    return ResponseBuilder.Tell(string.Empty);
-                }
-
-                var response = CreateResponseFromActivities(activities, context);
-                return response;
+                return ResponseBuilder.Tell(string.Empty);
             }
-            finally
-            {
-                if (_responses.ContainsKey(key))
-                {
-                    _responses.Remove(key);
-                }
-            }
+
+            var response = CreateResponseFromActivities(activities, context);
+            return response;
         }
 
         private static Activity RequestToActivity(SkillRequest skillRequest)
@@ -298,12 +250,12 @@ namespace Bot.Builder.Community.Adapters.Alexa
 
         private Activity ProcessOutgoingActivities(List<Activity> activities)
         {
-            if(activities.Count == 0)
+            if (activities.Count == 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(activities));
             }
 
-            if(activities.Count() > 1)
+            if (activities.Count() > 1)
             {
                 switch (_options.MultipleOutgoingActivitiesPolicy)
                 {
@@ -334,6 +286,11 @@ namespace Bot.Builder.Community.Adapters.Alexa
             }
 
             return activities.Last();
+        }
+
+        public override Task<ResourceResponse[]> SendActivitiesAsync(ITurnContext turnContext, Activity[] activities, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(new ResourceResponse[0]);
         }
     }
 }
