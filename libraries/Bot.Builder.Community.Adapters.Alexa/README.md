@@ -327,6 +327,33 @@ If you do set ***ShouldEndSessionByDefault*** to true, then you need to explicit
 await turnContext.SendActivityAsync("Your message text", inputHint: InputHints.IgnoringInput);
 ```
 
+#### Handling multiple outgoing activities
+
+By default, Alexa expects a single response to each request that is sent to your bot. However, it is not uncommon for a bot to send multiple activities back in response to a request.  This can cause issues, especially if you are using Alexa alongside other channels or adapters.
+
+To combat this issue you can set the ***MultipleOutgoingActivitiesPolicy*** to determine how the adapter handles multiple outgoing activites. The availble policies are;
+
+* ConcatenateTextSpeakPropertiesFromAllActivities (default)
+* TakeFirstActivity
+* TakeLastActivity
+
+***Note: by default, the previous version of the adapter took the last version of the activity. If you have previously deployed a bot using the adapter, you may need to switch the policy to use TakeLastActivity or alter some of your conversation logic.***
+
+To specify the policy, set the ***MultipleOutgoingActivitiesPolicy*** property on your adapter class. e.g.
+
+```cs
+    public class AlexaAdapterWithErrorHandler : AlexaAdapter
+    {
+        public AlexaAdapterWithErrorHandler(ILogger<AlexaAdapter> logger)
+            : base(new AlexaAdapterOptions() 
+            { 
+                ShouldEndSessionByDefault = false,
+                MultipleOutgoingActivitiesPolicies.ConcatenateTextSpeakPropertiesFromAllActivities
+            }, logger)
+    {
+    ...
+```
+
 #### Sending an Alexa card as part of your response
 
 You can include an Alexa card in your response, which is shown on devices that have a screen and / or in the activity feed in the Alexa app.  To do this you include an attachment on your outgoing activity.

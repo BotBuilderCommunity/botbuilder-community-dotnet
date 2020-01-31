@@ -8,7 +8,7 @@
 
         public bool ShouldEndSessionByDefault { get; set; } = true;
 
-        public MultipleOutgoingActivitiesPolicies MultipleOutgoingActivitiesPolicy { get; set; } = MultipleOutgoingActivitiesPolicies.TakeLastActivity;
+        public MultipleOutgoingActivitiesPolicies MultipleOutgoingActivitiesPolicy { get; set; } = MultipleOutgoingActivitiesPolicies.ConcatenateTextSpeakPropertiesFromAllActivities;
     }
 
     public enum MultipleOutgoingActivitiesPolicies
