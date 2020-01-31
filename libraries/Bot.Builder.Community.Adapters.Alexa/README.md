@@ -1,439 +1,380 @@
-## Alexa Adapter for Bot Builder v4 .NET SDK
+# Alexa Adapter for Bot Builder v4 .NET SDK - ***PREVIEW***
 
-### Build status
+## Build status
 | Branch | Status | Recommended NuGet package version |
 | ------ | ------ | ------ |
-| master | [![Build status](https://ci.appveyor.com/api/projects/status/b9123gl3kih8x9cb?svg=true)](https://ci.appveyor.com/project/garypretty/botbuilder-community) | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.100-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Adapters.Alexa/) |
+| master | [![Build status](https://ci.appveyor.com/api/projects/status/b9123gl3kih8x9cb?svg=true)](https://ci.appveyor.com/project/garypretty/botbuilder-community) | Preview [available via MyGet (version 4.6.4-beta0036)](https://www.myget.org/feed/botbuilder-community-dotnet/package/nuget/Bot.Builder.Community.Adapters.Alexa/4.6.4-beta0036) |
 
-### Description
+## Description
 
-This is part of the [Bot Builder Community Extensions](https://github.com/garypretty/botbuilder-community) project which contains various pieces of middleware, recognizers and other components for use with the Bot Builder .NET SDK v4.
+This is part of the [Bot Builder Community Extensions](https://github.com/botbuildercommunity) project which contains various pieces of middleware, recognizers and other components for use with the Bot Builder .NET SDK v4.
 
-The Alexa Adapter allows you to add an additional endpoint to your bot for Customer Alexa Skills. The Alexa endpoint can be used
+The Alexa Adapter allows you to add an additional endpoint to your bot for Alexa Skills. The Alexa endpoint can be used
 in conjunction with other channels meaning, for example, you can have a bot exposed on out of the box channels such as Facebook and 
-Teams, but also via an Alexa Skill.
+Teams, but also via an Alexa Skill (as well as side by side with the Google / Twitter Adapters also available from the Bot Builder Community Project).
 
-Incoming Alexa Skill requests are transformed, by the adapter, into Bot Builder Activties and then when your bot responds, the adapter transforms the outgoing Activity into an Alexa response.
+Incoming Alexa Skill requests are transformed, by the adapter, into Bot Builder Activties and then when your bot responds, the adapter transforms the outgoing Activity into an Alexa Skill response.
 
-A basic sample bot is available [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/Alexa%20Adapter%20Sample).
+The adapter currently supports the following scenarios;
 
-The adapter supports a broad range of capabilities for Alexa Skills, including;
-
-* Support for voice based Alexa bots
+* Support for voice based Alexa Skills
 * Support for the available display directives for Echo Show / Spot devices, with support for the new Fire Tablets coming very soon
 * Support for Alexa Cards
 * Support for Audio / Video directives
-* Integration libraries (similar to those for the Bot Framework Adapter), allowing for the bot to also have its own middleware pipeline for Alexa
 * TurnContext extensions allowing the developer to;
     * Send Alexa Progressive Updates
-    * Explicitly define and attach an Alexa Card to the response (alternatively Bot Builder Hero / Signin cards can be automatically converted if attached to the outgoing activity)
     * Specify Alexa RePrompt speech / text
     * Add to / access Alexa Session Attributes (similar to TurnState in Bot Builder SDK)
     * Check if a device supports audio or audio and display
-    * Retrieve the raw Alexa request
-    * A new method to allow the user to call the relevant API and access user details (with skill permission), such as address
+* Full incoming request from Alexa is added to the incoming activity as ChannelData
 * Validation of incoming Alexa requests (required for certification)
-* Middleware to automatically translate incoming Alexa requests into different types of activities
 
+## Installation
 
-### Installation
+The preview of the next version of the Alexa Adapter is [available via MyGet (version 4.6.4-beta0036)](https://www.myget.org/feed/botbuilder-community-dotnet/package/nuget/Bot.Builder.Community.Adapters.Alexa/4.6.4-beta0036).
 
-Available via NuGet package [Bot.Builder.Community.Adapters.Alexa](https://www.nuget.org/packages/Bot.Builder.Community.Adapters.Alexa/)
-
-Install into your project using the following command in the package manager;
+To install into your project use the following command in the package manager.  If you wish to use the Visual Studio package manager, then add https://www.myget.org/F/botbuilder-community-dotnet/api/v3/index.json as an additional package source.
 ```
-    PM> Install-Package Bot.Builder.Community.Adapters.Alexa
+    PM> Install-Package Bot.Builder.Community.Adapters.Alexa -Version 4.6.4-beta0036 -Source https://www.myget.org/F/botbuilder-community-dotnet/api/v3/index.json
 ```
 
-### Sample
+## Sample
 
-Basic sample bot available [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/Alexa%20Adapter%20Sample).
+Sample bot, showing examples of Alexa specific functionality using the current preview is available [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/feature/adopt-alexadotnet/samples/Alexa%20Adapter%20Sample).
 
-### Usage
+## Usage
 
-* [Adding the adapter and skills endpoint to your bot](#adding-the-adapter-and-skills-endpoint-to-your-bot)
-    * [.NET Core MVC](#net-core-mvc)
-	* [.NET Core](#net-core-non-mvc)
-* [Default Alexa Request to Activity mapping](#Default-Alexa-Request-to-Activity-mapping)
-* [Default Activity to Alexa Response mapping](#Default-Activity-to-Alexa-Response-mapping)
-* [Alexa TurnContext Extension Methods](#TurnContext-Extension-Methods)
-    * [Session Attributes](#Session-Attributes)
-	* [Adding an Alexa Card to a response](#Adding-an-Alexa-Card-to-a-response)
-	* [Progressive Responses](#Progressive-Responses)
-	* [Get entire Alexa Request Body](#Get-entire-Alexa-Request-Body)
-	* [Get the user's device address](#Get-the-alexa-device-address)
-	* [Add Directives to response](#Add-Directives-to-response)
-	* [Check if device has Display or Audio Player support](#Check-if-device-has-Display-or-Audio-Player-support)
-* [Alexa Middleware for transforming incoming Intent requests to Message activities](#Alexa-IntentRequest-to-MessageActivity-Middleware)
-* [Alexa Show / Spot Display Support](#Alexa-Show-/-Spot-Display-Support)
-* [Automated Translation of Bot Framework Cards into Alexa Cards](#Automated-Translation-of-Bot-Framework-Cards-into-Alexa-Cards)
+* [Prerequisites](#prerequisites)
+* [Create an Alexa skill](#create-an-alexa-skill)
+* [Wiring up the Alexa adapter in your bot](#wiring-up-the-alexa-adapter-in-your-bot)
+* [Complete configuration of your Alexa skill](#complete-configuration-of-your-alexa-skill)
+* [Test your Alexa skill](#test-your-alexa-skill) - Test your bot in the Alexa skill simulator and Alexa devices
+* [Customising your conversation](#customising-your-conversation) - Learn about controlling end of session and use of basic card, table card, list and carousel
 
+In this article you will learn how to connect a bot to Google Assistant using the Google adapter.  This article will walk you through modifying the EchoBot sample to connect it to a skill.
 
-### Adding the adapter and skills endpoint to your bot
+### Prerequisites
 
-Currently integration is available for .NET Core applications, with or without MVC.
-When using the non-MVC approach, a new endpoint for your Alexa skill is created at '/api/skillrequests'. 
-e.g. http://www.yourbot.com/api/skillrequests.  This is the endpoint that you should configure within the Amazon Alexa
-Skills Developer portal as the endpoint for your skill.
+* The [EchoBot sample code](https://github.com/microsoft/BotBuilder-Samples/tree/master/samples/csharp_dotnetcore/02.echo-bot)
 
-When using MVC, you configure your chosen endpoint when creating your controller which will handle your skill requests. An example of this can be seen [in the .NET Core MVC secton below](#.net-core-mvc).
+* Access to the Alexa Developer Console with sufficient permissions to login to create / manage skills at  [https://developer.amazon.com/alexa/console/ask](https://developer.amazon.com/alexa/console/ask). If you do not have this you can create an account for free.
 
-#### .NET Core MVC
+### Create an Alexa skill
 
-You can use the Alexa adapter with your bot within a .NET Core MVC project by registering the AlexaHttpAdapter.
-When registering the AlexaHttpAdapter, you can add middleware and also set settings, such as if a session should 
-end by default or what happens when an error occurs during a bot's turn.
+1. Log into the [Alexa Developer Console](https://developer.amazon.com/alexa/console/ask) and then click the 'Create Skill' button.
 
-```cs
-	services.AddSingleton<IAlexaHttpAdapter>((sp) =>
-	{
-	    var alexaHttpAdapter = new AlexaHttpAdapter(validateRequests: true)
-	    {
-	        OnTurnError = async (context, exception) =>
-	        {
-	            await context.SendActivityAsync("Sorry, something went wrong");
-	        },
-	        ShouldEndSessionByDefault = true,
-	        ConvertBotBuilderCardsToAlexaCards = false
-	    };
-	
-	    return alexaHttpAdapter;
-	});
-``` 
+2. On the next screen enter a name for your new skill.  On this page you can **Choose a model to add to your skill** (**Custom** selected by default) and **Choose a method to host your skill's backend resources** (**Provision your own** selected by default).  Leave the default options selected and click the **Create Skill** button.
 
-Once you have registered your the AlexaHttpAdapter in Startup.cs, you can then create a normal
-MVC controller to provide an endpoint for your bot and process requests to them using the Alexa adapter.
+![Skill model and hosting](/libraries/Bot.Builder.Community.Adapters.Alexa/media/bot-service-adapter-connect-alexa/create-skill-options.PNG?raw=true)
 
-```cs 
+3. On the next screen you will be asked to **Choose a template**.  **Start from scratch** will be selected by default. Leave **Start from scratch** selected and click the **Choose** button.
 
-    [Route("api/skillrequests")]
-    [ApiController]
-    public class BotController : ControllerBase
-    {
-        private readonly IAlexaHttpAdapter _adapter;
-        private readonly IBot _bot;
+![Skill template](/libraries/Bot.Builder.Community.Adapters.Alexa/media/bot-service-adapter-connect-alexa/create-skill-options2.PNG?raw=true)
 
-        public BotController(IAlexaHttpAdapter adapter, IBot bot)
-        {
-            _adapter = adapter;
-            _bot = bot;
-        }
+4. You will now be presented with your skill dashboard. Navigate to **JSON Editor** within the **Interaction Model** section of the left hand menu.
 
-        [HttpPost]
-        public async Task PostAsync()
-        {
-            await _adapter.ProcessAsync(Request, Response, _bot);
-        }
-    }
+5. Paste the JSON below into the **JSON Editor**, replacing the following values;
 
-```
+* **YOUR SKILL INVOCATION NAME** - This is the name that users will use to invoke your skill on Alexa. For example, if your skill invocation name was 'adapter helper', then a user would could say "Alexa, launch adapter helper" to launch the skill.
 
-#### .NET Core (non-MVC)
+* **EXAMPLE PHRASES** - You should provide 3 example phases that users could use to interact with your skill.  For example, if a user might say "Alexa, ask adapter helper to give me details of the alexa adapter", your example phrase would be "give me details of the alexa adapter".
 
-An example of using the Alexa adapter with a bot built on Asp.Net Core (without MVC). The implementation of the 
-integration layer is based upon the same patterns used for the Bot Framework integration layer. 
-In Startup.cs you can configure your bot to use the Alexa adapter using the following;
-
-```cs
-
-    public void ConfigureServices(IServiceCollection services)
-    {
-        services.AddAlexaBot<EchoBot>(options =>
-        {
-            options.AlexaOptions.ValidateIncomingAlexaRequests = true;
-            options.AlexaOptions.ShouldEndSessionByDefault = false;
-        });
-    }
-
-    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
-    {
-        app.UseDefaultFiles()
-            .UseStaticFiles()
-            .UseAlexa();
-    }
-
-```
-
-
-### Default Alexa Request to Activity mapping
-
-When an incoming request is receieved, the activity sent to your bot is comprised of the following values;
-
-* **Channel ID** : "alexa"
-* **Recipient Channel Account** : Id = Application Id from the Alexa request, Name = "skill"
-* **From Channel Account** : Id = User Id from the Alexa request, Name = "user"
-* **Conversation Account** : Id = "{Alexa request Application Id}:{Alexa Request User Id}"
-* **Type** : Request Type from the Alexa request. e.g. IntentRequest, LaunchRequest or SessionEndedRequest
-* **Id** : Request Id from the Alexa request
-* **Timestamp** : Timestamp from the Alexa request
-* **Locale** : Locale from the Alexa request
-
-For incoming requests of type IntentRequest we also set the following properties on the Activity
-
-* **Value** : DialogState value from the Alexa request
-
-For incoming requests of type SessionEndedRequest we also set the following properties on the Activity
-
-* **Code** : Reason value from the Alexa request
-* **Value** : Error value from the Alexa request
-
-The entire body of the Alexa request is placed into the Activity as Channel Data, of type skillRequest.
-
-
-### Default Activity to Alexa Response mapping
-
-The Alexa adapter will send a response to the Alexa skill request if the outgoing activity is of type MessageActivity or EndOfConversation activity.
-
-If the actvity you send from your bot is of type EndOfConversation then a response is sent indicating that the session should be ended, by setting the the ShouldEndSession flag on the ALexa response to true.
-
-If the activity type you send from your bot is of type MessageActivity the following values are mapped to an Alexa response object;
-
-* **OutputSpeech Type** : Set to 'SSML' if activity.Speak is not null. Set to 'PlainText' if the activity.Text property is populated but the activity.Speak property is not.
-* **OutputSpeech SSML** : Populated using the value of activity.Speak if it is not null.
-* **OutputSpeech Text** : Populated using the value of activity.Text if it is not null.
-
-* **ShouldEndSession** : Defaults to false. However, setting the InputHint property on the activity to InputHint.IgnoringInput will set this value to true and end the session.
-
-
-### TurnContext Extension Methods
-
-
-#### Session Attributes
-
-Alexa Skills use Session Attributes on the request / response objects to allow for values to be persisted accross turns of a conversation.  When an incoming Alexa request is receieved we place the Session Attributes on the request into the Services collection on the TurnContext.  We then provide an extension method on the context to allow you to add / update / remove items on the Session Attributes list. Calling the extension method AlexaSessionAttributes returns an object of type Dictionary<string, string>. If you wanted to add an item to the Session Attributes collection you could do the following;
-
-```cs 
-    context.AlexaSessionAttributes.Add("NewItemKey","New Item Value");
-```
-
-#### Adding an Alexa Card to a response
-
-You can attach a card to your response to be shown in the Alexa app or on a Fire tablet.
-
-```cs
-
-var card = new AlexaCard
+```json
 {
-    Type = AlexaCardType.Simple,
-    Title = "Card title",
-    Content = "This is the content to be shown on the card"
-};
-
-context.AlexaSetCard(
-
-```
-
-The following types of card are supported;
-
-* Simple (populate the title / content properties)
-* Standard (populate the title / text / image properties)
-* LinkAccount
-* AskForPermissionConsent (populate the Permissions property with a list of permission types)
-
-
-#### Progressive Responses
-
-Alexa Skills allow only a single primary response for each request.  However, if your bot will be running some form of long running activity (such as a lookup to a 3rd party API) you are able to send the user a holding response using the Alexa Progressive Responses API, before sending your final response.
-
-To send a Progressive Response we have provided an extension method on the TurnContext called AlexaSendProgressiveResponse, which takes a string parameter which is the text you wish to be spoken back to the user. e.g.
-
-```cs
-    context.AlexaSendProgressiveResponse("Hold on, I will just check that for you.");
-```
-
-The extension method will get the right values from the incoming request to determine the correct API endpoint / access token and send your Progressive response for you.  The extension method will also return a HttpResponseMessage which will provide information as to if the Progressive Response was send successfully or if there was any kind of error.
-
-***Note: Alexa Skills allow you to send up to 5 progressive responses on each turn.  You should manage and check the number of Progressive Responses you are sending as the Bot Builder SDK does not check this.*** 
-
-
-
-#### Get entire Alexa Request Body
-
-We have provided an extension method to allow you to get the original Alexa request body, which we store on the ChannelData property of the Activity sent to your bot, as a strongly typed object of type skillRequest.  To get the request just call the extension method as below;
-
-```cs
-    skillRequest request = context.GetskillRequest();
-```
-
-***Note: If you call this extension method when the incoming Activity is not from an Alexa skill then the extension method will simply return null.*** 
-
-
-
-#### Get the Alexa device address
-
-You can access the address the user has set against their device (or in some cases the address stored against their Amazon account).
-
-You can call the AlexaGetUserAddress TurnContext extension to retrieve an AlexaAddress object.
-
-If the skill doesn't have the permission to access the address, a UnauthorizedAccessException will be thrown.
-In this case you can send a card to the user's Alexa app to prompt them to grant the permissions, as shown below.
-
-```cs
-
-AlexaAddress alexaAddress = null;
-
-try
-{
-    alexaAddress = await context.AlexaGetUserAddress();
-}
-catch (Exception ex)
-{
-    if (ex is UnauthorizedAccessException)
-    {
-        await context.SendActivityAsync("Sorry, Looks like I dont have permission to see your address. "
-		+ " I have sent a card to your Alexa app to ask for the permission");
-
-        context.AlexaSetCard(new AlexaCard()
-        {
-            Type = AlexaCardType.AskForPermissionsConsent,
-            Permissions = new string[] { "read::alexa:device:all:address" }
-        });
-    }
-
-    alexaAddress = null;
-}
-
-```
-
-
-#### Add Directives to response
-
-Add objects of type IAlexaDirective to a collection used when sending outgoing requests to add directives to the response.  This allows you to do things like 
-controlling the display on Echo Show / Spot devices.  Classes are included for Display and Hint Directives.
-
-```cs
-	dialogContext.Context.AlexaResponseDirectives().Add(displayDirective);
-```
-
-
-#### Check if device has Display or Audio Player support
-
-```cs 
-    dialogContext.Context.AlexaDeviceHasDisplay()
-
-	dialogContext.Context.AlexaDeviceHasAudioPlayer()
-```
-
-
-### Alexa IntentRequest to MessageActivity Middleware
-
-By default, incomign requests from Alexa are transformed into Activity objects, where the type of Activity is the same as the incoming Alexa request type. e.g. IntentRequest or LaunchRequest.
-You can use the AlexaIntentRequestToMessageActivityMiddleware middleware to automatically transform Alexa Intent requests into MessageActivities, so that you can more easily build bots that work accross multiple channels, including Alexa.
-
-You can add the middleware to your bot with the following line;
-
-```cs 
-
-options.Middleware.Add(
-	new AlexaIntentRequestToMessageActivityMiddleware(transformPattern: RequestTransformPatterns.MessageActivityTextFromSinglePhraseSlotValue));
-
-```
-
-You can specify one of two transform patterns;
-
-* **MessageActivityTextFromSinglePhraseSlotValue** - This option will look for a single Alexa intent slot called 'Phrase' and set the contents of this slot as the Text property for the generated Activity.
-
-* **MessageActivityTextFromIntentAndAllSlotValues** - This slot will generate MessageActivity text from the name of the Intent and all identified slots. e.g. "Intent='YourIntentName' SlotName1='SlotValue' SlotName2='SlotValue'"
-
-Optionally you can also provide your own function to transform the incoming Alexa request and determine how your generate the MessageActivity yourself.
-
-Note: Any incoming requests with built in Amazon Intents will simply have the name of the Intent set as the Message activity text. e.g.
-
-```cs
-
-if (activity.Text == "AMAZON.CancelIntent")
-{
-	...
-}
-
-```
-
-This middleare will only transform incoming custom IntentRequests, for other types of request such as LaunchRequest or SessionEndedRequest will geneate activities of that type, which you can then check within your code. e.g.
-
-```cs
-
-if (activity.Type == AlexaRequestTypes.LaunchRequest)
-{
-	...
-}
-
-```
-
-
-### Alexa Show / Spot Display Support
-
-Display Directives to support devices with screens, such as the Echo Show and Spot, can be added to your bots response.  A class for each of the currently supported templates 
-exists within the Alexa.Directives namespace.  A context extension method allows you to add directives to the services collection which will then be used by the Alexa Adapter 
-when processing outgoing activities and will add the appropriate JSON to the response.
-
-***Note: You should also use the AlexaDeviceHasDisplay() extension method on the ITurnContext object to check if the Alexa device that has sent the incoming 
-request has a display - this is because if you send a display directive to a device without a display it will cause an error and not simply be ignored.***
-
-``` cs
-
-            var displayDirective = new DisplayDirective()
-            {
-                Template = new DisplayRenderBodyTemplate1()
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "<YOUR SKILL INVOCATION NAME>",
+            "intents": [
                 {
-                    BackButton = BackButtonVisibility.HIDDEN,
-                    Title = "Claim Update",
-                    TextContent = new TextContent()
-                    {
-                        PrimaryText = new InnerTextContent()
+                    "name": "GetUserIntent",
+                    "slots": [
                         {
-                            Text = "<font size=\"7\"><b>Good news!</b></font>",
-                            Type = TextContentType.RichText
-                        },
-                        SecondaryText = new InnerTextContent()
-                        {
-                            Text = "<br/><font size=\"3\">This is your Secondary Text",
-                            Type = TextContentType.RichText
-                        },
-                        TertiaryText = new InnerTextContent()
-                        {
-                            Text = "This is tertiary text - this time it is plain text",
-                            Type = TextContentType.PlainText
+                            "name": "phrase",
+                            "type": "phrase"
                         }
-                    },
-                    Token = "",
-                    BackgroundImage = new Image()
-                    {
-                        ContentDescription = "test",
-                        Sources = new ImageSource[]
-                                {
-                                    new ImageSource()
-                                    {
-                                        Url = "https://www.yourimageurl.com/background.jpg",
-                                        WidthPixels = 1025,
-                                        HeightPixels = 595
-                                    }
-                                }
-                    }
+                    ],
+                    "samples": [
+                        "{phrase}"
+                    ]
+                },
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
                 }
-            };
-
-            if (dialogContext.Context.AlexaDeviceHasDisplay())
-            {
-                dialogContext.Context.AlexaResponseDirectives().Add(displayDirective);
-            }
-
+            ],
+            "types": [
+                {
+                    "name": "phrase",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "<EXAMPLE PHRASE>"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "<EXAMPLE PHRASE>"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "<EXAMPLE PHRASE>"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}
 ```
 
+6. Click the **Save Model** button and then click **Build Model**, which will update the configuration for your skill.
 
-### Automated Translation of Bot Framework Cards into Alexa Cards
+### Wiring up the Alexa adapter in your bot
 
-The Alexa Adapter supports sending Bot Framework cards of type HeroCard, ThumbnailCard and SigninCard as part of your replies to the Alexa skill request.
+Before you can complete the configuration of your Alexa skill, you need to wire up the Alexa adapter into your bot.
 
-The Alexa adapter will use the first card attachment by default, unless you have disabled this using the AlexaBotOptions property ConvertFirstActivityAttachmentToAlexaCard.
+#### Install the Alexa adapter NuGet package
 
-* **HeroCard and ThumbnailCard** : 
+Add  the [Bot.Builder.Community.Adapters.Alexa](https://www.nuget.org/packages/Bot.Builder.Community.Adapters.Alexa/) NuGet package. For more information on using NuGet, see [Install and manage packages in Visual Studio](https://aka.ms/install-manage-packages-vs)
 
- * Alexa Card Small Image URL = The first image in the Images collection on the Hero / Thumbnail card
- * Alexa Card Large Image URL = If a second image exists in the Images collection on the Hero / Thumbnail card this will be used. If no second image exists then this is null.
- * Alexa Card Title = Title property of the Hero / Thumbnail card
- * Alexa Card Content = Text property on the Hero / Thumbnail card
+#### Create an Alexa adapter class
 
-***Note: You should ensure that the images you use on your HeroCard / Thumbnail cards are the correct expected size for Alexa Skills responses.***
+Create a new class that inherits from the ***AlexaAdapter*** class. This class will act as our adapter for the Alexa channel. It includes error handling capabilities (much like the ***BotFrameworkAdapterWithErrorHandler*** class already in the sample, used for handling requests from Azure Bot Service).  We are also adding the ***AlexaRequestToMessageEventActivitiesMiddleware*** class to the middleware pipeline, which will transform incoming Alexa requests into more familiar activity types. 
 
-* **SigninCard** : If a SignInCard is attached to your outgoing activity, this will be mapped as a LinkAccount card in the Alexa response.
+```csharp
+    public class AlexaAdapterWithErrorHandler : AlexaAdapter
+    {
+        public AlexaAdapterWithErrorHandler(ILogger<AlexaAdapter> logger)
+            : base(new AlexaAdapterOptions(), logger)
+    {
+        OnTurnError = async (turnContext, exception) =>
+        {
+            // Log any leaked exception from the application.
+            logger.LogError(exception, $"[OnTurnError] unhandled error : {exception.Message}");
+
+            // Send a message to the user
+            await turnContext.SendActivityAsync("The bot encountered an error or bug.");
+            await turnContext.SendActivityAsync("To continue to run this bot, please fix the bot source code.");
+        };
+
+        Use(new AlexaRequestToMessageEventActivitiesMiddleware());
+    }
+}
+```
+
+You will also need to add the following using statements.
+
+```cs
+using Bot.Builder.Community.Adapters.Alexa;
+using Bot.Builder.Community.Adapters.Alexa.Middleware;
+using Microsoft.Extensions.Logging;
+```
+
+#### Create a new controller for handling Alexa requests
+
+You now need to create a new controller which will handle requests from your Alexa skill, on a new endpoing 'api/alexa' instead of the default 'api/messages' used for requests from Azure Bot Service Channels.  By adding an additional endpoint to your bot, you can accept requests from Bot Service channels (or additional adapters), as well as from Alexa, using the same bot.
+
+```csharp
+[Route("api/alexa")]
+[ApiController]
+public class AlexaController : ControllerBase
+{
+    private readonly AlexaAdapter _adapter;
+    private readonly IBot _bot;
+
+    public AlexaController(AlexaAdapter adapter, IBot bot)
+    {
+        _adapter = adapter;
+        _bot = bot;
+    }
+
+    [HttpPost]
+    public async Task PostAsync()
+    {
+        // Delegate the processing of the HTTP POST to the adapter.
+        // The adapter will invoke the bot.
+        await _adapter.ProcessAsync(Request, Response, _bot);
+    }
+}
+```
+
+You will also need to add the following using statements.
+
+```cs
+using System.Threading.Tasks;
+using Bot.Builder.Community.Adapters.Alexa;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Bot.Builder;
+```
+
+#### Inject Alexa Adapter In Your Bot Startup.cs
+
+Add the following line into the ***ConfigureServices*** method within your Startup.cs file, which will register your Alexa adapter and make it available for your new controller class.  The configuration settings, described in the next step, will be automatically used by the adapter.
+
+```csharp
+services.AddSingleton<AlexaAdapter, AlexaAdapterWithErrorHandler>();
+```
+
+Once added, your ***ConfigureServices*** method shold look like this.
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+    // Create the default Bot Framework Adapter (used for Azure Bot Service channels and emulator).
+    services.AddSingleton<IBotFrameworkHttpAdapter, BotFrameworkAdapterWithErrorHandler>();
+
+    // Create the Slack Adapter
+    services.AddSingleton<AlexaAdapter, AlexaAdapterWithErrorHandler>();
+
+    // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
+    services.AddTransient<IBot, EchoBot>();
+}
+```
+
+You will also need to add the following using statement, in addition to those already present in the startup.cs file.
+
+```cs
+using Bot.Builder.Community.Adapters.Alexa;
+```
+
+### Complete configuration of your Alexa skill
+
+Now that you have created an Alexa skill and wired up the adapter in your bot project, the final steps are to configure the endpoint to which requests will be posted to when your Alexa skill is invoked, pointing it to the correct endpoint on your bot.
+
+1. To complete this step, [deploy your bot to Azure](https://aka.ms/bot-builder-deploy-az-cli) and make a note of the URL to your deployed bot. Your Alexa messaging endpoint is the URL for your bot, which will be the URL of your deployed application (or ngrok endpoint), plus '/api/alexa' (for example, `https://yourbotapp.azurewebsites.net/api/alexa`).
+
+> [!NOTE]
+> If you are not ready to deploy your bot to Azure, or wish to debug your bot when using the Alexa adapter, you can use a tool such as [ngrok](https://www.ngrok.com) (which you will likely already have installed if you have used the Bot Framework emulator previously) to tunnel through to your bot running locally and provide you with a publicly accessible URL for this. 
+> 
+> If you wish create an ngrok tunnel and obtain a URL to your bot, use the following command in a terminal window (this assumes your local bot is running on port 3978, alter the port numbers in the command if your bot is not).
+> 
+> ```
+> ngrok.exe http 3978 -host-header="localhost:3978"
+> ```
+
+2. Back within your Alexa skill dashboard, navigate to the **Endpoint** section on the left hand menu.  Select **HTTPS** as the **Service Endpoint Type** and set the **Default Region** endpoint to your bot's Alexa endpoint, such as https://yourbotapp.azurewebsites.net/api/alexa.
+
+3. In the drop down underneath the text box where you have defined your endpoint, you need to select the type of certificate being used.  For development purposes, you can choose **My development endpoint is a sub-domain of a domain that has a wildcard certificate from a certificate authority**, changing this to **My development endpoint has a certificate from a trusted certificate authority** when you publish your skill into Production.
+
+![Skill template](/libraries/Bot.Builder.Community.Adapters.Alexa/media/bot-service-adapter-connect-alexa/alexa-endpoint.PNG?raw=true)
+
+4. Click the **Save Endpoints** button.
+
+### Test your Alexa skill
+
+You can now test interacting with your Alexa skill using the simulator. 
+
+1. In the skill dashboard navigate to the **Test** tab at the top of the page.
+
+2. You will see a label **Test is disabled for this skill** with a dropdown list next to it with a value of **Off**. Select this dropdown and select **Development**. This will enable testing for your skill.
+
+3. As a basic test enter "ask <SKILL INVOCATION NAME> hello world" into the simulator input box. For example, if your skill invocation name was 'alexa helper', you would type 'ask alexa helper hello world'. This should return an echo of your message.
+
+![Simulator](/libraries/Bot.Builder.Community.Adapters.Alexa/media/bot-service-adapter-connect-alexa/simulator.PNG?raw=true)
+
+Now that you have enabled testing for your skill, you can also test your skill using a physical Echo device or the Alexa app, providing you are logged into the device / app with the same account used to login to the Alexa Developer Console (or an account that you have added as a beta tester for your skill within the console).
+
+### Customising your conversation
+
+#### Controlling the end of a session
+
+By default, the Alexa adapter is configured to close the session following sending a response. You can explicitly indicate that Alexa should wait for the user to say something else, meaning Alexa should leave the microphone open and listen for further input, by sending an input hint of ***ExpectingInput*** on your outgoing activity.
+
+```cs
+await turnContext.SendActivityAsync("Your message text", inputHint: InputHints.ExpectingInput);
+```
+
+You can alter the default behavior to leave the session open and listen for further input by default by setting the ***ShouldEndSessionByDefault*** setting on the ***AlexaAdapterOptions*** class when creating your adapter, as shown below.
+
+```csharp
+    public class AlexaAdapterWithErrorHandler : AlexaAdapter
+    {
+        public AlexaAdapterWithErrorHandler(ILogger<AlexaAdapter> logger)
+            : base(new AlexaAdapterOptions() { ShouldEndSessionByDefault = false }, logger)
+    {
+        OnTurnError = async (turnContext, exception) =>
+        {
+            // Log any leaked exception from the application.
+            logger.LogError(exception, $"[OnTurnError] unhandled error : {exception.Message}");
+
+            // Send a message to the user
+            await turnContext.SendActivityAsync("The bot encountered an error or bug.");
+            await turnContext.SendActivityAsync("To continue to run this bot, please fix the bot source code.");
+        };
+    }
+}
+```
+
+If you do set ***ShouldEndSessionByDefault*** to true, then you need to explicity end the conversation when you are ready, by sending an input hint of ***IgnoringInput*** on your last outgoing activity.
+
+```cs
+await turnContext.SendActivityAsync("Your message text", inputHint: InputHints.IgnoringInput);
+```
+
+#### Sending an Alexa card as part of your response
+
+You can include an Alexa card in your response, which is shown on devices that have a screen and / or in the activity feed in the Alexa app.  To do this you include an attachment on your outgoing activity.
+
+```cs
+var activityWithCard = MessageFactory.Text($"Ok, I included a simple card.");
+                    activityWithCard.Attachments.Add(
+                        new CardAttachment(
+                            new SimpleCard()
+                            {
+                                Title = "This is a simple card",
+                                Content = "This is the simple card content"
+                            }));
+                    await turnContext.SendActivityAsync(activityWithCard, cancellationToken);
+```
+
+#### Sending display directives for devices that support screens
+
+You can send Alexa display directives, which will show structured information on devices with a screen, such as the Echo Show or Echo Spot. If you wish to send display directives, you need to enable the **Display Interface** setting within the **Interfaces** section within the Alexa Skills Console.
+
+To send a display directive, you send a ***DirectiveAttachment*** on your outgoing activity. On the attachment you set the template that you would like to use and populate the required fields.
+
+You can find information about the various display templates available and their required properties at [https://developer.amazon.com/en-US/docs/alexa/custom-skills/display-template-reference.html](https://developer.amazon.com/en-US/docs/alexa/custom-skills/display-template-reference.html).
+
+```cs
+var activityWithDisplayDirective = MessageFactory.Text($"Ok, I included a display directive`.");
+                    activityWithDisplayDirective.Attachments.Add(
+                        new DirectiveAttachment(
+                            new DisplayRenderTemplateDirective()
+                            {
+                                Template = new BodyTemplate1()
+                                {
+                                    BackgroundImage = new TemplateImage()
+                                    {
+                                        ContentDescription = "Test",
+                                        Sources = new List<ImageSource>()
+                                        {
+                                            new ImageSource()
+                                            {
+                                                Url = "https://via.placeholder.com/576.PNG?raw=true/09f/fff",
+                                            }
+                                        }
+                                    },
+                                    Content = new TemplateContent()
+                                    {
+                                        Primary = new TemplateText() { Text = "Test", Type = "PlainText" }
+                                    },
+                                    Title = "Test title",
+                                }
+                            }));
+```

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Alexa.NET.Request;
 using Alexa.NET.Response;
+using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
@@ -59,7 +60,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
         /// <returns>bool</returns>
         internal static bool ShouldSetEndSession(SkillResponse response)
         {
-            if (response.Response.Directives.Any(d => d.Type == "VideoApp.Launch"))
+            if (response.Response.Directives.Any(d => d is IEndSessionDirective))
             {
                 return false;
             }

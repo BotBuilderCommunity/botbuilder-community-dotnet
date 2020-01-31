@@ -183,16 +183,17 @@ namespace Bot.Builder.Community.Adapters.Alexa
 
             await RunPipelineAsync(context, logic, default).ConfigureAwait(false);
 
-            if (context.GetAlexaRequestBody().Request.Type == "SessionEndedRequest")
-            {
-                return ResponseBuilder.Tell(string.Empty);
-            }
-
             var key = $"{activity.Conversation.Id}:{activity.Id}";
 
             try
             {
                 var activities = _responses.ContainsKey(key) ? _responses[key] : new List<Activity>();
+
+                if (context.GetAlexaRequestBody().Request.Type == "SessionEndedRequest" || !activities.Any())
+                {
+                    return ResponseBuilder.Tell(string.Empty);
+                }
+
                 var response = CreateResponseFromActivities(activities, context);
                 return response;
             }
