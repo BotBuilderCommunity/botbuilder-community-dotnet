@@ -331,27 +331,18 @@ await turnContext.SendActivityAsync("Your message text", inputHint: InputHints.I
 
 By default, Alexa expects a single response to each request that is sent to your bot. However, it is not uncommon for a bot to send multiple activities back in response to a request.  This can cause issues, especially if you are using Alexa alongside other channels or adapters.
 
-To combat this issue you can set the ***MultipleOutgoingActivitiesPolicy*** to determine how the adapter handles multiple outgoing activites. The availble policies are;
+To combat this issue the adapter will automatically concatenate multiple activities into a single activity, combining the Speak and Text properties of the activities.
 
-* ConcatenateTextSpeakPropertiesFromAllActivities (default)
-* TakeFirstActivity
-* TakeLastActivity
-
-***Note: by default, the previous version of the adapter took the last version of the activity. If you have previously deployed a bot using the adapter, you may need to switch the policy to use TakeLastActivity or alter some of your conversation logic.***
-
-To specify the policy, set the ***MultipleOutgoingActivitiesPolicy*** property on your adapter class. e.g.
+***Note: by default, the previous version of the adapter took the last version of the activity. If you have previously deployed a bot using the adapter, you may need to consider extending the adapter and overriding the activity processing behavior shown below.***
 
 ```cs
-    public class AlexaAdapterWithErrorHandler : AlexaAdapter
+    public class AlexaAdapterEx : AlexaAdapter
     {
-        public AlexaAdapterWithErrorHandler(ILogger<AlexaAdapter> logger)
-            : base(new AlexaAdapterOptions() 
-            { 
-                ShouldEndSessionByDefault = false,
-                MultipleOutgoingActivitiesPolicies.ConcatenateTextSpeakPropertiesFromAllActivities
-            }, logger)
-    {
-    ...
+        public override Activity ProcessOutgoingActivities(List<Activity> activities)
+        {
+            return activities.Last();
+        }
+    }
 ```
 
 #### Sending an Alexa card as part of your response

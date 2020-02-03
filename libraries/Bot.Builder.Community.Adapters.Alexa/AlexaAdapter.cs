@@ -8,6 +8,7 @@ using System.Security.Authentication;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Alexa.NET;
 using Alexa.NET.Request;
 using Alexa.NET.Response;
@@ -198,7 +199,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
 
         private SkillResponse CreateResponseFromActivities(List<Activity> activities, ITurnContext context)
         {
-            Activity activity = ProcessOutgoingActivities(activities);
+            var activity = ProcessOutgoingActivities(activities);
 
             var response = new SkillResponse()
             {
@@ -214,16 +215,11 @@ namespace Bot.Builder.Community.Adapters.Alexa
 
             if (!string.IsNullOrEmpty(activity.Speak))
             {
-                response.Response.OutputSpeech =
-                    new SsmlOutputSpeech(
-                        activity.Speak.Contains("<speak>")
-                            ? activity.Speak
-                            : $"<speak>{activity.Speak}</speak>");
+                response.Response.OutputSpeech = new SsmlOutputSpeech(activity.Speak);
             }
-            else if (!string.IsNullOrEmpty(activity.Text))
+            else
             {
-                response.Response.OutputSpeech = new SsmlOutputSpeech(
-                    "<speak>" + activity.Text + "</speak>");
+                response.Response.OutputSpeech = new PlainTextOutputSpeech(activity.Text);
             }
 
             ProcessActivityAttachments(activity, response);
@@ -248,44 +244,61 @@ namespace Bot.Builder.Community.Adapters.Alexa
             return response;
         }
 
-        private Activity ProcessOutgoingActivities(List<Activity> activities)
+        /// <summary>
+        /// Concatenates outgoing activities into a single activity. If any of the activities being process
+        /// contain an outer SSML speak tag within the value of the Speak property, these are removed from the individual activities and a <speak>
+        /// tag is wrapped around the resulting concatenated string.  An SSML strong break tag is added between activity
+        /// content. For more infomation about the supported SSML for Alexa see 
+        /// https://developer.amazon.com/en-US/docs/alexa/custom-skills/speech-synthesis-markup-language-ssml-reference.html#break
+        /// </summary>
+        /// <param name="activities">The list of one or more outgoing activities</param>
+        /// <returns></returns>
+        public virtual Activity ProcessOutgoingActivities(List<Activity> activities)
         {
             if (activities.Count == 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(activities));
             }
 
-            if (activities.Count() > 1)
+            var activity = activities.Last();
+
+            if (activities.Any(a => !string.IsNullOrEmpty(a.Speak)))
             {
-                switch (_options.MultipleOutgoingActivitiesPolicy)
+                var speakText = string.Join("<break strength=\"strong\"/>", activities
+                    .Select(a => !string.IsNullOrEmpty(a.Speak) ? StripSpeakTag(a.Speak) : a.Text)
+                    .Where(s => !string.IsNullOrEmpty(s))
+                    .Select(s => s));
+
+                activity.Speak = $"<speak>{speakText}</speak>";
+            }
+
+            activity.Text = string.Join(". ", activities
+                .Select(a => a.Text)
+                .Where(s => !string.IsNullOrEmpty(s))
+                .Select(s => s.Trim(new char[] { ' ', '.' })));
+            
+            return activity;
+        }
+
+        /// <summary>
+        /// Checks a string to see if it is XML and if the outer tag is a speak tag
+        /// indicating it is SSML.  If an outer speak tag is found, the inner XML is
+        /// returned, otherwise the original string is returned
+        /// </summary>
+        /// <param name="speakText">String to be checked for an outer speak XML tag and stripped if found</param>
+        private string StripSpeakTag(string speakText)
+        {
+            var speakSsmlDoc = XDocument.Parse(speakText);
+            if(speakSsmlDoc != null && speakSsmlDoc.Root.Name.ToString().ToLowerInvariant() == "speak")
+            {
+                using (var reader = speakSsmlDoc.Root.CreateReader())
                 {
-                    case MultipleOutgoingActivitiesPolicies.TakeFirstActivity:
-                        return activities.First();
-                    case MultipleOutgoingActivitiesPolicies.TakeLastActivity:
-                        return activities.Last();
-                    case MultipleOutgoingActivitiesPolicies.ConcatenateTextSpeakPropertiesFromAllActivities:
-                        var resultActivity = activities.Last();
-
-                        for (int i = activities.Count - 2; i >= 0; i--)
-                        {
-                            if (!string.IsNullOrEmpty(activities[i].Speak))
-                            {
-                                activities[i].Speak = activities[i].Speak.Trim(new char[] { ' ', '.' });
-                                resultActivity.Text = string.Format("{0}. {1}", activities[i].Speak, resultActivity.Text);
-
-                            }
-                            else if (!string.IsNullOrEmpty(activities[i].Text))
-                            {
-                                activities[i].Text = activities[i].Text.Trim(new char[] { ' ', '.' });
-                                resultActivity.Text = string.Format("{0}. {1}", activities[i].Text, resultActivity.Text);
-                            }
-                        }
-
-                        return resultActivity;
+                    reader.MoveToContent();
+                    return reader.ReadInnerXml();
                 }
             }
 
-            return activities.Last();
+            return speakText;
         }
 
         public override Task<ResourceResponse[]> SendActivitiesAsync(ITurnContext turnContext, Activity[] activities, CancellationToken cancellationToken)

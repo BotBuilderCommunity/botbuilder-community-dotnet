@@ -2,6 +2,7 @@
 using Microsoft.Bot.Schema;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace Bot.Builder.Community.Adapters.Alexa
 {
@@ -13,7 +14,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
             {
                 var responses = await nextSend().ConfigureAwait(false);
 
-                SentActivities = activities.Where(a => a.Type == ActivityTypes.Message).ToList();
+                SentActivities.AddRange(activities);
 
                 return responses;
             });
