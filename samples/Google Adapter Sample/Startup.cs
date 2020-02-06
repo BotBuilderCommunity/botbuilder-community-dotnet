@@ -31,8 +31,8 @@ namespace Bot.Builder.Community.Samples.Google
             {
                 return new GoogleAdapterOptions()
                 {
-                    ActionInvocationName = "adapter helper",
-                    ActionProjectId = "adapter-helper-53294",
+                    ActionInvocationName = "YOUR-INVOCATION-NAME",
+                    ActionProjectId = "YOUR-PROJECT-ID",
                     ShouldEndSessionByDefault = false
                 };
             });
