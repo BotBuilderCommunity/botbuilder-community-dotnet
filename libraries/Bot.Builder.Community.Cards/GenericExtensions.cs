@@ -105,7 +105,7 @@ namespace Bot.Builder.Community.Cards
             {
                 return JObject.Parse(inputString);
             }
-            catch (JsonReaderException)
+            catch
             {
                 return null;
             }

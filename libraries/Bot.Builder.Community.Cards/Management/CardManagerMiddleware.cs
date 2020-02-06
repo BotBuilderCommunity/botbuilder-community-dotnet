@@ -28,7 +28,7 @@ namespace Bot.Builder.Community.Cards.Management
 
         public static CardManagerMiddlewareOptions DefaultUpdatingOptions => new CardManagerMiddlewareOptions
         {
-            AutoAdaptCardActions = true,
+            AutoAdaptOutgoingCardActions = true,
             AutoApplyIds = true,
             AutoClearTrackedOnSend = false,
             AutoDisableOnAction = false,
@@ -41,7 +41,7 @@ namespace Bot.Builder.Community.Cards.Management
 
         public static CardManagerMiddlewareOptions DefaultNonUpdatingOptions => new CardManagerMiddlewareOptions
         {
-            AutoAdaptCardActions = true,
+            AutoAdaptOutgoingCardActions = true,
             AutoApplyIds = true,
             AutoClearTrackedOnSend = true,
             AutoDisableOnAction = true,
@@ -67,7 +67,7 @@ namespace Bot.Builder.Community.Cards.Management
 
             if (options.IdOptions != null
                 && turnContext.Activity?.Type == ActivityTypes.Message
-                && turnContext.Activity.Value is JObject value)
+                && turnContext.GetIncomingButtonPayload() is JObject value)
             {
                 // Whether we should proceed by default depends on the ID-tracking style
                 shouldProceed = !options.TrackEnabledIds;
@@ -132,7 +132,7 @@ namespace Bot.Builder.Community.Cards.Management
                 activities.ApplyIdsToBatch(options.IdOptions);
             }
 
-            if (options.AutoAdaptCardActions)
+            if (options.AutoAdaptOutgoingCardActions)
             {
                 activities.AdaptOutgoingCardActions();
             }

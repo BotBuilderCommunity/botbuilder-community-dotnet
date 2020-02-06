@@ -230,31 +230,46 @@ namespace Bot.Builder.Community.Cards.Management
             }
         }
 
-        public static object GetIncomingValue(this ITurnContext turnContext)
+        /// <summary>
+        /// This will return null if the incoming activity is not from a button.
+        /// The returned value is guaranteed to not be a string.
+        /// </summary>
+        /// <param name="turnContext">The turn context.</param>
+        /// <returns>A button's payload if valid, null otherwise.</returns>
+        public static object GetIncomingButtonPayload(this ITurnContext turnContext)
         {
-            BotAssert.ContextNotNull(turnContext);
-
-            var activity = turnContext.Activity;
-
-            if (activity is null)
+            if (!(turnContext?.Activity is Activity activity))
             {
                 return null;
             }
 
             var text = activity.Text;
-            var value = activity.Value;
-            var channelData = activity.ChannelData.ToJObject(true);
+            var parsedText = text.TryParseJObject();
+            var value = activity.Value.ToJObject(true);
+            var channelData = activity.ChannelData.ToJObject(true); // Channel data will have been serialized into a string in Kik
             var entities = activity.Entities;
+            var result = value;
+
+            // Many channels have button responses that are hard to distinguish from user-entered text.
+            // A common theme is that button responses often have a property in channel data that isn't
+            // present in a typed user-to-bot message, so this local function helps check for that.
+            void CheckForChannelDataProperty(string propName, JObject newResult = null)
+            {
+                if (channelData?.GetValueCI(propName) != null)
+                {
+                    result = newResult ?? parsedText;
+                }
+            }
 
             switch (activity.ChannelId)
             {
                 case Channels.Cortana:
 
-                    // In Cortana, the only defining characteristic of card action responses
-                    // is that they won't have an "Intent" entity
-                    if (entities?.Any(entity => CardConstants.TypeIntent.Equals(entity.Type)) != true)
+                    // In Cortana, the only defining characteristic of button responses
+                    // is that they won't have an "Intent" entity.
+                    if (entities?.Any(entity => entity.Type.EqualsCI(CardConstants.TypeIntent)) != true)
                     {
-                        return text.TryParseJObject();
+                        result = parsedText;
                     }
 
                     break;
@@ -263,40 +278,57 @@ namespace Bot.Builder.Community.Cards.Management
                 case Channels.Emulator:
                 case Channels.Webchat:
 
-                    // In Direct Line / Web Chat, card action responses can be recognized by a property of channel data
-                    if (channelData?.GetValueCI(CardConstants.KeyPostBack) != null)
-                    {
-                        return value ?? text.TryParseJObject();
-                    }
+                    // In Direct Line / Web Chat, button responses can be recognized by a property of channel data.
+                    CheckForChannelDataProperty(CardConstants.KeyPostBack, value);
+                    CheckForChannelDataProperty(CardConstants.KeyMessageBack, value);
 
                     break;
 
                 case Channels.Kik:
 
-                    // In Skype, the only defining characteristic of card action responses
-                    // is that the channel data text does not match the activity text
-                    if (channelData?.GetValueCI()
-                    {
-                        return text.TryParseJObject();
-                    }
+                    // In Kik, button responses can be recognized by a property of channel data.
+                    // Note that this condition will be true because metadata will not be a C# null,
+                    // even though it's a null JValue.
+                    CheckForChannelDataProperty(CardConstants.KeyMetadata);
+
+                    break;
+
+                case Channels.Line:
+
+                    // In LINE, button responses can be recognized by a property of channel data.
+                    CheckForChannelDataProperty(CardConstants.KeyLinePostback);
 
                     break;
 
                 case Channels.Skype:
 
-                    // In Skype, the only defining characteristic of card action responses
-                    // is that the channel data text does not match the activity text
+                    // In Skype, the only defining characteristic of button responses
+                    // is that the channel data text does not match the activity text.
                     if (channelData?.GetValueCI(CardConstants.KeyText)?.ToString().EqualsCI(text) == false)
                     {
-                        return text.TryParseJObject();
+                        result = parsedText;
                     }
+
+                    break;
+
+                case Channels.Slack:
+
+                    // In Slack, button responses can be recognized by a property of channel data.
+                    CheckForChannelDataProperty(CardConstants.KeyPayload);
+
+                    break;
+
+                case Channels.Telegram:
+
+                    // In Telegram, button responses can be recognized by a property of channel data.
+                    CheckForChannelDataProperty(CardConstants.KeyCallbackQuery);
 
                     break;
             }
 
-            // Teams values don't need to be adapted
+            // Teams and Facebook values don't need to be adapted
 
-            return value;
+            return result;
         }
     }
 }

@@ -12,10 +12,15 @@
         public const string KeyValue = "value";
 
         // Channel data property names
-        public const string KeyMessageBack = "postBack";
+        public const string KeyCallbackQuery = "callback_query";
+        public const string KeyMessageBack = "messageBack";
+        public const string KeyMetadata = "metadata";
         public const string KeyPostBack = "postBack";
+        public const string KeyLinePostback = "postback";
+        public const string KeyPayload = "Payload";
         public const string KeyText = "text";
 
+        // Entity types
         public const string TypeIntent = "Intent";
 
         internal const string PackageId = "botBuilderCommunityCards";
