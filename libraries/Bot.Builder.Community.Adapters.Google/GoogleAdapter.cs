@@ -8,6 +8,7 @@ using System.Security.Authentication;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.Linq;
 using Bot.Builder.Community.Adapters.Google.Model;
 using Bot.Builder.Community.Adapters.Google.Model.Attachments;
@@ -30,7 +31,7 @@ namespace Bot.Builder.Community.Adapters.Google
         private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
         {
             ContractResolver = new CamelCasePropertyNamesContractResolver(),
-            Formatting = Formatting.Indented,
+            Formatting = Newtonsoft.Json.Formatting.Indented,
             NullValueHandling = NullValueHandling.Ignore,
         };
 
@@ -515,17 +516,24 @@ namespace Bot.Builder.Community.Adapters.Google
         /// <param name="speakText">String to be checked for an outer speak XML tag and stripped if found</param>
         private string StripSpeakTag(string speakText)
         {
-            var speakSsmlDoc = XDocument.Parse(speakText);
-            if (speakSsmlDoc != null && speakSsmlDoc.Root.Name.ToString().ToLowerInvariant() == "speak")
+            try
             {
-                using (var reader = speakSsmlDoc.Root.CreateReader())
+                var speakSsmlDoc = XDocument.Parse(speakText);
+                if (speakSsmlDoc != null && speakSsmlDoc.Root.Name.ToString().ToLowerInvariant() == "speak")
                 {
-                    reader.MoveToContent();
-                    return reader.ReadInnerXml();
+                    using (var reader = speakSsmlDoc.Root.CreateReader())
+                    {
+                        reader.MoveToContent();
+                        return reader.ReadInnerXml();
+                    }
                 }
-            }
 
-            return speakText;
+                return speakText;
+            }
+            catch (XmlException)
+            {
+                return speakText;
+            }
         }
 
         public override Task<ResourceResponse[]> SendActivitiesAsync(ITurnContext turnContext, Activity[] activities, CancellationToken cancellationToken)
