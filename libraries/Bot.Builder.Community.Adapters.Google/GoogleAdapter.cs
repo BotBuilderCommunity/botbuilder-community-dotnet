@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -9,6 +8,7 @@ using System.Security.Authentication;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Bot.Builder.Community.Adapters.Google.Model;
 using Bot.Builder.Community.Adapters.Google.Model.Attachments;
 using Microsoft.AspNetCore.Http;
@@ -36,7 +36,6 @@ namespace Bot.Builder.Community.Adapters.Google
 
         private readonly GoogleAdapterOptions _options;
         private readonly ILogger _logger;
-        private Dictionary<string, List<Activity>> _responses;
 
         public GoogleAdapter(GoogleAdapterOptions options = null, ILogger logger = null)
         {
@@ -101,41 +100,6 @@ namespace Bot.Builder.Community.Adapters.Google
             await httpResponse.Body.WriteAsync(responseData, 0, responseData.Length, cancellationToken).ConfigureAwait(false);
         }
 
-        public override Task<ResourceResponse[]> SendActivitiesAsync(ITurnContext turnContext, Activity[] activities, CancellationToken CancellationToken)
-        {
-            var resourceResponses = new List<ResourceResponse>();
-
-            foreach (var activity in activities)
-            {
-                switch (activity.Type)
-                {
-                    case ActivityTypes.Message:
-                    case ActivityTypes.EndOfConversation:
-                        var conversation = activity.Conversation ?? new ConversationAccount();
-                        var key = $"{conversation.Id}:{activity.ReplyToId}";
-
-                        if (_responses.ContainsKey(key))
-                        {
-                            _responses[key].Add(activity);
-                        }
-                        else
-                        {
-                            _responses[key] = new List<Activity> { activity };
-                        }
-
-                        break;
-                    default:
-                        Trace.WriteLine(
-                            $"GoogleAdapter.SendActivities(): Activities of type '{activity.Type}' aren't supported.");
-                        break;
-                }
-
-                resourceResponses.Add(new ResourceResponse(activity.Id));
-            }
-
-            return Task.FromResult(resourceResponses.ToArray());
-        }
-
         /// <summary>
         /// Sends a proactive message to a conversation.
         /// </summary>
@@ -182,39 +146,26 @@ namespace Bot.Builder.Community.Adapters.Google
 
         private async Task<object> ProcessActivityAsync(Activity activity, BotCallbackHandler logic, string uniqueRequestId = null)
         {
-            var context = new TurnContext(this, activity);
+            var context = new TurnContextEx(this, activity);
 
             context.TurnState.Add("GoogleUserId", activity.From.Id);
 
-            _responses = new Dictionary<string, List<Activity>>();
-
             await RunPipelineAsync(context, logic, default).ConfigureAwait(false);
 
-            var key = $"{activity.Conversation.Id}:{activity.Id}";
+            object response = null;
 
-            try
+            var activities = context.SentActivities;
+
+            if (_options.WebhookType == GoogleWebhookType.DialogFlow)
             {
-                object response = null;
-                var activities = _responses.ContainsKey(key) ? _responses[key] : new List<Activity>();
-
-                if (_options.WebhookType == GoogleWebhookType.DialogFlow)
-                {
-                    response = CreateDialogFlowResponseFromLastActivity(activities, context);
-                }
-                else
-                {
-                    response = CreateConversationResponseFromLastActivity(activities, context);
-                }
-
-                return response;
+                response = CreateDialogFlowResponseFromLastActivity(activities, context);
             }
-            finally
+            else
             {
-                if (_responses.ContainsKey(key))
-                {
-                    _responses.Remove(key);
-                }
+                response = CreateConversationResponseFromLastActivity(activities, context);
             }
+
+            return response;
         }
 
         private Activity DialogFlowRequestToActivity(DialogFlowRequest request)
@@ -354,9 +305,9 @@ namespace Bot.Builder.Community.Adapters.Google
                             {
                                 RichInitialPrompt = new RichResponse() {
                                     Items = new List<Item>()
-                                        { 
-                                            new SimpleResponse() 
-                                            { 
+                                        {
+                                            new SimpleResponse()
+                                            {
                                                 Content = new SimpleResponseContent
                                                 {
                                                     DisplayText = activity.Text,
@@ -387,7 +338,7 @@ namespace Bot.Builder.Community.Adapters.Google
 
                 var responseItems = new List<Item> { simpleResponse };
 
-                if(activity.Attachments != null && activity.Attachments.Any(a => a.ContentType == "google/card-attachment"))
+                if (activity.Attachments != null && activity.Attachments.Any(a => a.ContentType == "google/card-attachment"))
                 {
                     var cardAttachment = activity.Attachments.First(a => a.ContentType == "google/card-attachment") as BasicCardAttachment;
                     responseItems.Add(cardAttachment.Card);
@@ -520,44 +471,66 @@ namespace Bot.Builder.Community.Adapters.Google
             return response;
         }
 
-        private Activity ProcessOutgoingActivities(List<Activity> activities)
+        /// <summary>
+        /// Concatenates outgoing activities into a single activity. If any of the activities being process
+        /// contain an outer SSML speak tag within the value of the Speak property, these are removed from the individual activities and a <speak>
+        /// tag is wrapped around the resulting concatenated string.  An SSML strong break tag is added between activity
+        /// content. For more infomation about the supported SSML for Google Actions see 
+        /// https://developers.google.com/assistant/actions/reference/ssml
+        /// </summary>
+        /// <param name="activities">The list of one or more outgoing activities</param>
+        /// <returns></returns>
+        public virtual Activity ProcessOutgoingActivities(List<Activity> activities)
         {
             if (activities.Count == 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(activities));
             }
 
-            if (activities.Count() > 1)
+            var activity = activities.Last();
+
+            if (activities.Any(a => !string.IsNullOrEmpty(a.Speak)))
             {
-                switch (_options.MultipleOutgoingActivitiesPolicy)
+                var speakText = string.Join("<break strength=\"strong\"/>", activities
+                    .Select(a => !string.IsNullOrEmpty(a.Speak) ? StripSpeakTag(a.Speak) : a.Text)
+                    .Where(s => !string.IsNullOrEmpty(s))
+                    .Select(s => s));
+
+                activity.Speak = $"<speak>{speakText}</speak>";
+            }
+
+            activity.Text = string.Join(". ", activities
+                .Select(a => a.Text)
+                .Where(s => !string.IsNullOrEmpty(s))
+                .Select(s => s.Trim(new char[] { ' ', '.' })));
+
+            return activity;
+        }
+
+        /// <summary>
+        /// Checks a string to see if it is XML and if the outer tag is a speak tag
+        /// indicating it is SSML.  If an outer speak tag is found, the inner XML is
+        /// returned, otherwise the original string is returned
+        /// </summary>
+        /// <param name="speakText">String to be checked for an outer speak XML tag and stripped if found</param>
+        private string StripSpeakTag(string speakText)
+        {
+            var speakSsmlDoc = XDocument.Parse(speakText);
+            if (speakSsmlDoc != null && speakSsmlDoc.Root.Name.ToString().ToLowerInvariant() == "speak")
+            {
+                using (var reader = speakSsmlDoc.Root.CreateReader())
                 {
-                    case MultipleOutgoingActivitiesPolicies.TakeFirstActivity:
-                        return activities.First();
-                    case MultipleOutgoingActivitiesPolicies.TakeLastActivity:
-                        return activities.Last();
-                    case MultipleOutgoingActivitiesPolicies.ConcatenateTextSpeakPropertiesFromAllActivities:
-                        var resultActivity = activities.Last();
-
-                        for (int i = activities.Count - 2; i >= 0; i--)
-                        {
-                            if (!string.IsNullOrEmpty(activities[i].Speak))
-                            {
-                                activities[i].Speak = activities[i].Speak.Trim(new char[] { ' ', '.' });
-                                resultActivity.Text = string.Format("{0}. {1}", activities[i].Speak, resultActivity.Text);
-
-                            }
-                            else if (!string.IsNullOrEmpty(activities[i].Text))
-                            {
-                                activities[i].Text = activities[i].Text.Trim(new char[] { ' ', '.' });
-                                resultActivity.Text = string.Format("{0}. {1}", activities[i].Text, resultActivity.Text);
-                            }
-                        }
-
-                        return resultActivity;
+                    reader.MoveToContent();
+                    return reader.ReadInnerXml();
                 }
             }
 
-            return activities.Last();
+            return speakText;
+        }
+
+        public override Task<ResourceResponse[]> SendActivitiesAsync(ITurnContext turnContext, Activity[] activities, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(new ResourceResponse[0]);
         }
     }
 }

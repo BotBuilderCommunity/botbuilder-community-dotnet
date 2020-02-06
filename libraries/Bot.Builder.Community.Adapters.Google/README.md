@@ -323,6 +323,24 @@ If you do set ***ShouldEndSessionByDefault*** to false, then you need to explici
 await turnContext.SendActivityAsync("Your message text", inputHint: InputHints.IgnoringInput);
 ```
 
+#### Handling multiple outgoing activities
+
+By default, Google Actions expects a single response to each request that is sent to your bot. However, it is not uncommon for a bot to send multiple activities back in response to a request.  This can cause issues, especially if you are using Google alongside other channels or adapters.
+
+To combat this issue the adapter will automatically concatenate multiple activities into a single activity, combining the Speak and Text properties of the activities.
+
+***Note: by default, the previous version of the adapter took the last version of the activity. If you have previously deployed a bot using the adapter, you may need to consider extending the adapter and overriding the activity processing behavior shown below.***
+
+```cs
+    public class GoogleAdapterEx : GoogleAdapter
+    {
+        public override Activity ProcessOutgoingActivities(List<Activity> activities)
+        {
+            return activities.Last();
+        }
+    }
+```
+
 #### Sending a basic Google card as part of your response
 
 You can include a basic Google card in your response, which is shown on devices that have a screen.  To do this you include an attachment on your outgoing activity.  For more information about basic cards see [https://developers.google.com/assistant/conversational/responses#basic_card](https://developers.google.com/assistant/conversational/responses#basic_card)
