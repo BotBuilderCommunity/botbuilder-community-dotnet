@@ -8,6 +8,7 @@ using System.Security.Authentication;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.Linq;
 using Alexa.NET;
 using Alexa.NET.Request;
@@ -31,7 +32,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
         private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
         {
             ContractResolver = new CamelCasePropertyNamesContractResolver(),
-            Formatting = Formatting.Indented,
+            Formatting = Newtonsoft.Json.Formatting.Indented,
             NullValueHandling = NullValueHandling.Ignore,
         };
 
@@ -276,7 +277,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
                 .Select(a => a.Text)
                 .Where(s => !string.IsNullOrEmpty(s))
                 .Select(s => s.Trim(new char[] { ' ', '.' })));
-            
+
             return activity;
         }
 
@@ -288,17 +289,24 @@ namespace Bot.Builder.Community.Adapters.Alexa
         /// <param name="speakText">String to be checked for an outer speak XML tag and stripped if found</param>
         private string StripSpeakTag(string speakText)
         {
-            var speakSsmlDoc = XDocument.Parse(speakText);
-            if(speakSsmlDoc != null && speakSsmlDoc.Root.Name.ToString().ToLowerInvariant() == "speak")
+            try
             {
-                using (var reader = speakSsmlDoc.Root.CreateReader())
+                var speakSsmlDoc = XDocument.Parse(speakText);
+                if (speakSsmlDoc != null && speakSsmlDoc.Root.Name.ToString().ToLowerInvariant() == "speak")
                 {
-                    reader.MoveToContent();
-                    return reader.ReadInnerXml();
+                    using (var reader = speakSsmlDoc.Root.CreateReader())
+                    {
+                        reader.MoveToContent();
+                        return reader.ReadInnerXml();
+                    }
                 }
-            }
 
-            return speakText;
+                return speakText;
+            }
+            catch (XmlException)
+            {
+                return speakText;
+            }
         }
 
         public override Task<ResourceResponse[]> SendActivitiesAsync(ITurnContext turnContext, Activity[] activities, CancellationToken cancellationToken)
