@@ -1,5 +1,7 @@
 [![Build Status](https://dev.azure.com/BotBuilder-Community/dotnet/_apis/build/status/BotBuilderCommunity.botbuilder-community-dotnet?branchName=master)](https://dev.azure.com/BotBuilder-Community/dotnet/_build/latest?definitionId=1&branchName=master) [![Bot Builder Community NuGet](https://img.shields.io/badge/NuGet-blue.svg)](https://www.nuget.org/profiles/BotBuilderCommunity)
 
+**Latest release: v4.6.5 (07/02/2020) - [Release Notes](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/releases/tag/v4.6.5)**
+
 # Bot Builder Community - .NET Extensions
 
 This repository is part of the Bot Builder Community Project and contains Extensions for the Bot Builder .NET SDK, including adapters, middleware, dialogs, helpers and more. Other repos within the Bot Builder Community Project exist for extensions for [JavaScript](https://github.com/BotBuilderCommunity/botbuilder-community-js), [Python](https://github.com/BotBuilderCommunity/botbuilder-community-python) and [tools](https://github.com/BotBuilderCommunity/botbuilder-community-tools) - you can find our other repos under [our GitHub organisation for the project](https://github.com/BotBuilderCommunity/).  
