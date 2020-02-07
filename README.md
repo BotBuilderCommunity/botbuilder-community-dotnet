@@ -6,7 +6,6 @@ This repository is part of the Bot Builder Community Project and contains Extens
 
 To see a list of current extensions available for the Bot Builder .NET SDK, use the links below to jump to a section.
 
-- [Bot Builder Community - .NET Extensions](#bot-builder-community---net-extensions)
   - [Installation](#installation)
   - [Contributing and Reporting Issues](#contributing-and-reporting-issues)
   - [Adapters](#adapters)
