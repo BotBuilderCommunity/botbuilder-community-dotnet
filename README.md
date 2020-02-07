@@ -1,4 +1,4 @@
-[![Build Status](https://dev.azure.com/BotBuilder-Community/dotnet/_apis/build/status/BotBuilderCommunity.botbuilder-community-dotnet?branchName=master)](https://dev.azure.com/BotBuilder-Community/dotnet/_build/latest?definitionId=1&branchName=master) | [![Bot Builder Community NuGet](https://img.shields.io/badge/NuGet-blue.svg)](https://www.nuget.org/profiles/BotBuilderCommunity)
+[![Build Status](https://dev.azure.com/BotBuilder-Community/dotnet/_apis/build/status/BotBuilderCommunity.botbuilder-community-dotnet?branchName=master)](https://dev.azure.com/BotBuilder-Community/dotnet/_build/latest?definitionId=1&branchName=master) [![Bot Builder Community NuGet](https://img.shields.io/badge/NuGet-blue.svg)](https://www.nuget.org/profiles/BotBuilderCommunity)
 
 # Bot Builder Community - .NET Extensions
 
