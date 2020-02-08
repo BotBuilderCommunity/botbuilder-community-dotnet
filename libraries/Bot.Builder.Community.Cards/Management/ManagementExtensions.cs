@@ -236,9 +236,28 @@ namespace Bot.Builder.Community.Cards.Management
         /// </summary>
         /// <param name="turnContext">The turn context.</param>
         /// <returns>A button's payload if valid, null otherwise.</returns>
-        public static object GetIncomingButtonPayload(this ITurnContext turnContext)
+        public static JObject GetIncomingButtonPayload(this ITurnContext turnContext)
         {
-            if (!(turnContext?.Activity is Activity activity))
+            if (turnContext is null)
+            {
+                return null;
+            }
+
+            var cache = turnContext.TurnState.Get<CardManagerCache>();
+
+            if (cache is null)
+            {
+                turnContext.TurnState.Set(cache = new CardManagerCache());
+            }
+
+            if (cache.HasIncomingButtonPayload)
+            {
+                return cache.IncomingButtonPayload;
+            }
+
+            var activity = turnContext.Activity;
+
+            if (activity is null)
             {
                 return null;
             }
@@ -248,7 +267,9 @@ namespace Bot.Builder.Community.Cards.Management
             var value = activity.Value.ToJObject(true);
             var channelData = activity.ChannelData.ToJObject(true); // Channel data will have been serialized into a string in Kik
             var entities = activity.Entities;
-            var result = value;
+
+            cache.IncomingButtonPayload = value;
+            cache.HasIncomingButtonPayload = true;
 
             // Many channels have button responses that are hard to distinguish from user-entered text.
             // A common theme is that button responses often have a property in channel data that isn't
@@ -257,7 +278,7 @@ namespace Bot.Builder.Community.Cards.Management
             {
                 if (channelData?.GetValueCI(propName) != null)
                 {
-                    result = newResult ?? parsedText;
+                    cache.IncomingButtonPayload = newResult ?? parsedText;
                 }
             }
 
@@ -269,7 +290,7 @@ namespace Bot.Builder.Community.Cards.Management
                     // is that they won't have an "Intent" entity.
                     if (entities?.Any(entity => entity.Type.EqualsCI(CardConstants.TypeIntent)) != true)
                     {
-                        result = parsedText;
+                        cache.IncomingButtonPayload = parsedText;
                     }
 
                     break;
@@ -306,7 +327,7 @@ namespace Bot.Builder.Community.Cards.Management
                     // is that the channel data text does not match the activity text.
                     if (channelData?.GetValueCI(CardConstants.KeyText)?.ToString().EqualsCI(text) == false)
                     {
-                        result = parsedText;
+                        cache.IncomingButtonPayload = parsedText;
                     }
 
                     break;
@@ -328,7 +349,7 @@ namespace Bot.Builder.Community.Cards.Management
 
             // Teams and Facebook values don't need to be adapted
 
-            return result;
+            return cache.IncomingButtonPayload;
         }
     }
 }

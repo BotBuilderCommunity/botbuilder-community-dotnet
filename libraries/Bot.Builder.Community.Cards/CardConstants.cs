@@ -13,10 +13,10 @@
 
         // Channel data property names
         public const string KeyCallbackQuery = "callback_query";
+        public const string KeyLinePostback = "postback";
         public const string KeyMessageBack = "messageBack";
         public const string KeyMetadata = "metadata";
         public const string KeyPostBack = "postBack";
-        public const string KeyLinePostback = "postback";
         public const string KeyPayload = "Payload";
         public const string KeyText = "text";
 

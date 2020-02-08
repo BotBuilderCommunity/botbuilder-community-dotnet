@@ -31,8 +31,9 @@ namespace Bot.Builder.Community.Cards.Management
             AutoAdaptOutgoingCardActions = true,
             AutoApplyIds = true,
             AutoClearTrackedOnSend = false,
+            AutoDeleteOnAction = true,
             AutoDisableOnAction = false,
-            AutoEnableSentIds = false,
+            AutoEnableOnSend = false,
             AutoSaveActivitiesOnSend = true,
             AutoSeparateAttachmentsOnSend = true,
             TrackEnabledIds = false,
@@ -44,8 +45,9 @@ namespace Bot.Builder.Community.Cards.Management
             AutoAdaptOutgoingCardActions = true,
             AutoApplyIds = true,
             AutoClearTrackedOnSend = true,
+            AutoDeleteOnAction = false,
             AutoDisableOnAction = true,
-            AutoEnableSentIds = true,
+            AutoEnableOnSend = true,
             AutoSaveActivitiesOnSend = false,
             AutoSeparateAttachmentsOnSend = false,
             TrackEnabledIds = true,
@@ -65,6 +67,7 @@ namespace Bot.Builder.Community.Cards.Management
             var options = GetOptionsForChannel(turnContext.Activity.ChannelId);
             var shouldProceed = true;
 
+            // Is this activity from a button?
             if (options.IdOptions != null
                 && turnContext.Activity?.Type == ActivityTypes.Message
                 && turnContext.GetIncomingButtonPayload() is JObject value)
@@ -72,9 +75,10 @@ namespace Bot.Builder.Community.Cards.Management
                 // Whether we should proceed by default depends on the ID-tracking style
                 shouldProceed = !options.TrackEnabledIds;
 
+                var idTypes = options.IdOptions.GetIdTypes();
                 var state = await Manager.StateAccessor.GetNotNullAsync(turnContext, () => new CardManagerState(), cancellationToken).ConfigureAwait(false);
 
-                foreach (var type in options.IdOptions.GetIdTypes())
+                foreach (var type in idTypes)
                 {
                     if (value.GetIdFromPayload(type) is string id)
                     {
@@ -99,6 +103,18 @@ namespace Bot.Builder.Community.Cards.Management
                                 options.TrackEnabledIds,
                                 cancellationToken).ConfigureAwait(false);
                         }
+                    }
+                }
+
+                if (options.AutoDeleteOnAction && idTypes.Any())
+                {
+                    // If there are multiple ID types in use,
+                    // just delete the one that represents the largest scope
+                    var type = idTypes.Max();
+
+                    if (value.GetIdFromPayload(type) is string id)
+                    {
+                        await Manager.DeleteAsync(turnContext, new PayloadId(type, id), cancellationToken).ConfigureAwait(false); 
                     }
                 }
             }
@@ -143,7 +159,7 @@ namespace Bot.Builder.Community.Cards.Management
             // The needed activity ID's can be extracted from the activities directly.
             var resourceResponses = await next().ConfigureAwait(false);
 
-            if (options.AutoEnableSentIds && options.TrackEnabledIds)
+            if (options.AutoEnableOnSend && options.TrackEnabledIds)
             {
                 foreach (var kvp in activities.GetIdsFromBatch())
                 {
@@ -158,7 +174,7 @@ namespace Bot.Builder.Community.Cards.Management
 
             if (options.AutoSaveActivitiesOnSend)
             {
-                await Manager.SaveActivities(turnContext, activities).ConfigureAwait(false);
+                await Manager.SaveActivitiesAsync(turnContext, activities).ConfigureAwait(false);
             }
 
             return resourceResponses;

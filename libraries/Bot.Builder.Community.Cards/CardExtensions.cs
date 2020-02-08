@@ -11,38 +11,40 @@ namespace Bot.Builder.Community.Cards
     {
         public static void ApplyIdsToPayload(this JObject payload, PayloadIdOptions options = null)
         {
-            if (payload != null)
+            if (payload is null)
             {
-                if (options is null)
-                {
-                    options = new PayloadIdOptions(PayloadIdType.Action);
-                }
+                return;
+            }
 
-                foreach (var kvp in options.GetIds())
-                {
-                    var type = kvp.Key;
+            if (options is null)
+            {
+                options = new PayloadIdOptions(PayloadIdType.Action);
+            }
 
-                    if (options.Overwrite || payload.GetIdFromPayload(type) is null)
+            foreach (var kvp in options.GetIds())
+            {
+                var type = kvp.Key;
+
+                if (options.Overwrite || payload.GetIdFromPayload(type) is null)
+                {
+                    var id = kvp.Value;
+
+                    if (id is null)
                     {
-                        var id = kvp.Value;
-
-                        if (id is null)
+                        if (type == PayloadIdType.Action)
                         {
-                            if (type == PayloadIdType.Action)
-                            {
-                                // Only generate an ID for the action
-                                id = PayloadIdType.Action.GenerateId();
-                            }
-                            else
-                            {
-                                // If any other ID's are null,
-                                // don't apply them to the payload
-                                continue;
-                            }
+                            // Only generate an ID for the action
+                            id = PayloadIdType.Action.GenerateId();
                         }
-
-                        payload[type.GetKey()] = id;
+                        else
+                        {
+                            // If any other ID's are null,
+                            // don't apply them to the payload
+                            continue;
+                        }
                     }
+
+                    payload[type.GetKey()] = id;
                 }
             }
         }

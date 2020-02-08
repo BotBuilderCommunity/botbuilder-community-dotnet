@@ -19,7 +19,9 @@ namespace Bot.Builder.Community.Cards.Management
         /// </value>
         public bool AutoClearTrackedOnSend { get; set; }
 
-        public bool AutoEnableSentIds { get; set; }
+        public bool AutoDeleteOnAction { get; set; }
+
+        public bool AutoEnableOnSend { get; set; }
 
         public bool AutoSaveActivitiesOnSend { get; set; }
 

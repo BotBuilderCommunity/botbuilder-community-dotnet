@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json;
-using System.Collections.ObjectModel;
 
 namespace Bot.Builder.Community.Cards.Management
 {
@@ -31,13 +29,19 @@ namespace Bot.Builder.Community.Cards.Management
                     _payloadIdsByType = value; 
                 }
             }
-
         }
 
+        /// <summary>
+        /// Gets the dictionary that saves activity ID's.
+        /// </summary>
+        /// <value>
+        /// For any payload ID that's not a batch ID,
+        /// the hash set should only contain one activity ID.
+        /// </value>
         [JsonProperty("activityIdsByPayloadId")]
         public IDictionary<string, ISet<string>> ActivityIdsByPayloadId { get; } = new Dictionary<string, ISet<string>>(StringComparer.OrdinalIgnoreCase);
 
-        [JsonProperty("activitiesById")]
-        public IDictionary<string, Activity> ActivitiesById { get; } = new Dictionary<string, Activity>(StringComparer.OrdinalIgnoreCase);
+        [JsonProperty("activityById")]
+        public IDictionary<string, Activity> ActivityById { get; } = new Dictionary<string, Activity>(StringComparer.OrdinalIgnoreCase);
     }
 }

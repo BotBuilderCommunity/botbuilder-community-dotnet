@@ -31,8 +31,13 @@ namespace Bot.Builder.Community.Cards.Management
 
         internal Attachment FoundAttachment() => GetMatch(AttachmentMatches);
 
+        internal object FoundAction() => GetMatch(ActionMatches);
+
         internal IMessageActivity GetAttachmentParent(Attachment attachment) =>
             ActivitiesByAttachment.TryGetValue(attachment, out var activity) ? activity : null;
+
+        internal Attachment GetActionParent(object action) =>
+            AttachmentsByAction.TryGetValue(action, out var attachment) ? attachment : null;
 
         private T GetMatch<T>(ISet<T> set)
             where T : class
