@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Bot.Builder.Community.Adapters.Twitter.Webhooks.Models;
+using Bot.Builder.Community.Adapters.Twitter.Webhooks.Models.Twitter;
 using Castle.Core.Internal;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
@@ -54,6 +55,17 @@ namespace Bot.Builder.Community.Adapters.Twitter.Tests
         }
 
         [TestMethod]
+        public async Task ProcessActivityShouldReturnNullReferenceException()
+        {
+            var adapter = new TwitterAdapter(_testOptions.Object);
+
+            await Assert.ThrowsExceptionAsync<NullReferenceException>(async () =>
+            {
+                await adapter.ProcessActivity(null, null);
+            });
+        }
+
+        [TestMethod]
         public async Task SendActivitiesAsyncShouldReturnEmptyResponsesWithEmptyActivities()
         {
             var adapter = new TwitterAdapter(_testOptions.Object);
@@ -66,8 +78,30 @@ namespace Bot.Builder.Community.Adapters.Twitter.Tests
             }
         }
 
+        //[TestMethod]
+        //public async Task SendActivitiesAsyncShouldReturnResponse()
+        //{
+        //    var adapter = new TwitterAdapter(_testOptions.Object);
+        //    var activity = new Activity()
+        //    {
+        //        Text = "test",
+        //        Type = ActivityTypes.Message,
+        //        Recipient = new ChannelAccount()
+        //        {
+        //            Id = null
+        //        }
+        //    };
+
+        //    Activity[] activities = { activity };
+
+        //    using (var turnContext = new TurnContext(adapter, activity))
+        //    {
+        //        var result = await adapter.SendActivitiesAsync(turnContext, activities, default);
+        //        Assert.IsTrue(result.IsNullOrEmpty());
+        //    }
+        //}
+
         [TestMethod]
-        [ExpectedException(typeof(NotSupportedException))]
         public async Task UpdateActivityAsyncShouldReturnNotSupportedException()
         {
             var adapter = new TwitterAdapter(_testOptions.Object);
@@ -78,6 +112,22 @@ namespace Bot.Builder.Community.Adapters.Twitter.Tests
                 await Assert.ThrowsExceptionAsync<NotSupportedException>(async () =>
                 {
                    await adapter.UpdateActivityAsync(turnContext, activity, default);
+                });
+            }
+        }
+
+        [TestMethod]
+        public async Task DeleteActivityAsyncShouldReturnNotSupportedException()
+        {
+            var adapter = new TwitterAdapter(_testOptions.Object);
+            var activity = new Activity();
+            var conversationReference = new ConversationReference();
+
+            using (var turnContext = new TurnContext(adapter, activity))
+            {
+                await Assert.ThrowsExceptionAsync<NotSupportedException>(async () =>
+                {
+                    await adapter.DeleteActivityAsync(turnContext, conversationReference, default);
                 });
             }
         }
