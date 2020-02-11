@@ -42,8 +42,8 @@ namespace Bot.Builder.Community.Adapters.Twitter.Tests
             var bot = new Mock<IBot>();
 
             directMessageEvent.MessageText = "test message text";
-            directMessageEvent.Sender = new Webhooks.Models.Twitter.TwitterUser();
-            directMessageEvent.Recipient = new Webhooks.Models.Twitter.TwitterUser();
+            directMessageEvent.Sender = new TwitterUser();
+            directMessageEvent.Recipient = new TwitterUser();
             directMessageEvent.Sender.Id = string.Empty;
             directMessageEvent.Sender.ScreenName = string.Empty;
             directMessageEvent.Recipient.Id = string.Empty;
