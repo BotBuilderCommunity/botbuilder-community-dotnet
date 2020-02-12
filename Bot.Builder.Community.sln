@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29728.190
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.329
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{57D9879A-FC9F-468C-B86F-BE45A1472F88}"
 EndProject
@@ -65,7 +65,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Dialogs.Luis", "libraries\Bot.Builder.Community.Dialogs.Luis\Bot.Builder.Community.Dialogs.Luis.csproj", "{2FE9D83B-59AB-4475-BE6F-4803118B1A81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bot.Builder.Community.Adapters.Twitter.Tests", "tests\Bot.Builder.Community.Adapters.Tests\Bot.Builder.Community.Adapters.Twitter.Tests.csproj", "{873C9B8C-2677-4586-89D3-C80FB1263596}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Twitter.Tests", "tests\Bot.Builder.Community.Adapters.Tests\Bot.Builder.Community.Adapters.Twitter.Tests.csproj", "{873C9B8C-2677-4586-89D3-C80FB1263596}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
