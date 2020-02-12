@@ -5,13 +5,12 @@ using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
-namespace Bot.Builder.Community.Adapters.Twitter.Tests
+namespace Bot.Builder.Community.Adapters.Twitter.Tests.Webhooks.Services
 {
     [TestClass]
     [TestCategory("Twitter")]
     public class SubscriptionsManagerTests
     {
-
         private readonly Mock<IOptions<TwitterOptions>> _testOptions = new Mock<IOptions<TwitterOptions>>();
 
         [TestMethod]

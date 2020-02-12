@@ -10,7 +10,7 @@ using Microsoft.Extensions.Primitives;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
-namespace Bot.Builder.Community.Adapters.Twitter.Tests
+namespace Bot.Builder.Community.Adapters.Twitter.Tests.Webhooks.Services
 {
     [TestClass]
     [TestCategory("Twitter")]

@@ -36,7 +36,6 @@ namespace Bot.Builder.Community.Adapters.Twitter.Tests
                 {
                     await sender.Send("test", new String('a', 141));
                 }, "You can't send more than 140 char using this end point, use SendAsync instead.");
-
         }
     }
 }
