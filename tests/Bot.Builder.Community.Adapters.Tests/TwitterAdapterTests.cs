@@ -13,12 +13,12 @@ using Moq;
 namespace Bot.Builder.Community.Adapters.Twitter.Tests
 {
     [TestClass]
+    [TestCategory("Twitter")]
     public class TwitterAdapterTests
     {
         private readonly Mock<IOptions<TwitterOptions>> _testOptions = new Mock<IOptions<TwitterOptions>>();
 
         [TestMethod]
-        [TestCategory("Twitter")]
         public void ConstructorWithOptionsSucceeds()
         {
             Assert.IsNotNull(new TwitterAdapter(_testOptions.Object));
@@ -77,29 +77,6 @@ namespace Bot.Builder.Community.Adapters.Twitter.Tests
                 Assert.IsTrue(result.IsNullOrEmpty());
             }
         }
-
-        //[TestMethod]
-        //public async Task SendActivitiesAsyncShouldReturnResponse()
-        //{
-        //    var adapter = new TwitterAdapter(_testOptions.Object);
-        //    var activity = new Activity()
-        //    {
-        //        Text = "test",
-        //        Type = ActivityTypes.Message,
-        //        Recipient = new ChannelAccount()
-        //        {
-        //            Id = null
-        //        }
-        //    };
-
-        //    Activity[] activities = { activity };
-
-        //    using (var turnContext = new TurnContext(adapter, activity))
-        //    {
-        //        var result = await adapter.SendActivitiesAsync(turnContext, activities, default);
-        //        Assert.IsTrue(result.IsNullOrEmpty());
-        //    }
-        //}
 
         [TestMethod]
         public async Task UpdateActivityAsyncShouldReturnNotSupportedException()

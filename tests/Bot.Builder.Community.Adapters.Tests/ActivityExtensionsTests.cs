@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Bot.Builder.Community.Adapters.Twitter.Webhooks.Models;
 using Bot.Builder.Community.Adapters.Twitter.Webhooks.Models.Twitter;
-using Bot.Builder.Community.Adapters.Twitter.Webhooks.Services;
-using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
-using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 
 namespace Bot.Builder.Community.Adapters.Twitter.Tests
 {
     [TestClass]
+    [TestCategory("Twitter")]
     public class ActivityExtensionsTests
     {
         [TestMethod]
-        public void ShouldFailWhenMessageEmpty()
+        public void AsTwitterMessageWithEmptyMessageShouldFail()
         {
             var activity = new Activity()
             {
@@ -33,7 +27,7 @@ namespace Bot.Builder.Community.Adapters.Twitter.Tests
         }
 
         [TestMethod]
-        public void ShouldFailWhenMessageTooLong()
+        public void AsTwitterMessageWithLongMessageShouldFail()
         {
             var activity = new Activity()
             {
@@ -49,7 +43,7 @@ namespace Bot.Builder.Community.Adapters.Twitter.Tests
         }
 
         [TestMethod]
-        public void ShouldReturnNewDirectMessage()
+        public void AsTwitterMessageShouldReturnNewDirectMessage()
         {
             var activity = new Activity()
             {
@@ -65,7 +59,7 @@ namespace Bot.Builder.Community.Adapters.Twitter.Tests
         }
 
         [TestMethod]
-        public void ShouldReturnNewDirectMessageWithQuickReply()
+        public void AsTwitterMessageShouldReturnNewDirectMessageWithQuickReply()
         {
             var activity = new Activity()
             {

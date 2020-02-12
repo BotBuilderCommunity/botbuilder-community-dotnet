@@ -1,22 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Bot.Builder.Community.Adapters.Twitter.Webhooks.Models;
-using Bot.Builder.Community.Adapters.Twitter.Webhooks.Models.Twitter;
 using Bot.Builder.Community.Adapters.Twitter.Webhooks.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Moq.Protected;
 
 namespace Bot.Builder.Community.Adapters.Twitter.Tests
 {
     [TestClass]
+    [TestCategory("Twitter")]
     public class DirectMessageSenderTests
     {
         private readonly Mock<IOptions<TwitterOptions>> _testOptions = new Mock<IOptions<TwitterOptions>>();
@@ -29,12 +22,12 @@ namespace Bot.Builder.Community.Adapters.Twitter.Tests
             await Assert.ThrowsExceptionAsync<TwitterException>(
                 async () =>
             {
-                await sender.Send("test", "");
+                await sender.Send("test", string.Empty);
             }, "You can't send an empty message.");
         }
 
         [TestMethod]
-        public async Task SendWithEmptyLongMessageShouldFail()
+        public async Task SendWithLongMessageShouldFail()
         {
             var sender = new DirectMessageSender(_testOptions.Object.Value);
 

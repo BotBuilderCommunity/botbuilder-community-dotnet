@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
+﻿using System.Net.Http;
 using Bot.Builder.Community.Adapters.Twitter.Webhooks.Authentication;
 using Bot.Builder.Community.Adapters.Twitter.Webhooks.Models;
 using Castle.Core.Internal;
@@ -12,6 +9,7 @@ using Moq;
 namespace Bot.Builder.Community.Adapters.Twitter.Tests.Webhooks.Authentication
 {
     [TestClass]
+    [TestCategory("Twitter")]
     public class AuthHeaderBuilderTests
     {
         private readonly Mock<IOptions<TwitterOptions>> _testOptions = new Mock<IOptions<TwitterOptions>>();

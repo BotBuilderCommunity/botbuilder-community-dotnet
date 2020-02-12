@@ -8,6 +8,7 @@ using Moq;
 namespace Bot.Builder.Community.Adapters.Twitter.Tests.Hosting
 {
     [TestClass]
+    [TestCategory("Twitter")]
     public class WebhookHostingServiceTests
     {
         private readonly Mock<ILogger<WebhookHostedService>> _testLogger = new Mock<ILogger<WebhookHostedService>>();

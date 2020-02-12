@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Bot.Builder.Community.Adapters.Twitter.Webhooks.Services;
 using Microsoft.Extensions.Options;
@@ -10,6 +8,7 @@ using Moq;
 namespace Bot.Builder.Community.Adapters.Twitter.Tests
 {
     [TestClass]
+    [TestCategory("Twitter")]
     public class SubscriptionsManagerTests
     {
 
@@ -22,7 +21,7 @@ namespace Bot.Builder.Community.Adapters.Twitter.Tests
 
             await Assert.ThrowsExceptionAsync<ArgumentException>(async () =>
                 {
-                    await subscriptionManager.Subscribe("");
+                    await subscriptionManager.Subscribe(string.Empty);
                 });
         }
 
@@ -33,7 +32,7 @@ namespace Bot.Builder.Community.Adapters.Twitter.Tests
 
             await Assert.ThrowsExceptionAsync<ArgumentException>(async () =>
             {
-                await subscriptionManager.CheckSubscription("");
+                await subscriptionManager.CheckSubscription(string.Empty);
             });
         }
 
@@ -45,7 +44,7 @@ namespace Bot.Builder.Community.Adapters.Twitter.Tests
             await Assert.ThrowsExceptionAsync<ArgumentException>(
                 async () =>
             {
-                await subscriptionManager.Unsubscribe("");
+                await subscriptionManager.Unsubscribe(string.Empty);
             });
         }
     }

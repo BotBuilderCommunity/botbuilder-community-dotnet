@@ -15,6 +15,7 @@ using Moq;
 namespace Bot.Builder.Community.Adapters.Twitter.Tests.Hosting
 {
     [TestClass]
+    [TestCategory("Twitter")]
     public class WebhookMiddlewareTests
     {
         private readonly Mock<ILogger<WebhookMiddleware>> _testLogger = new Mock<ILogger<WebhookMiddleware>>();
