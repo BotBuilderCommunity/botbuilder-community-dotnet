@@ -111,7 +111,7 @@ namespace Bot.Builder.Community.Cards
             }
         }
 
-        internal static JObject ToJObject<T>(this T input, bool shouldParseStrings = false)
+        internal static JObject ToJObject(this object input, bool shouldParseStrings = false)
         {
             JToken jToken = null;
 
@@ -146,7 +146,7 @@ namespace Bot.Builder.Community.Cards
                     ? JsonConvert.SerializeObject(jObject) as T
                     : input is JObject
                         ? jObject as T
-                        : jObject.ToObject<T>();
+                        : jObject.ToObject(input.GetType()) as T;
             }
             else if (returnNullForWrongType)
             {
@@ -167,13 +167,19 @@ namespace Bot.Builder.Community.Cards
         /// <param name="value">The value.</param>
         internal static void SetValueCI(this JObject jObject, string key, JToken value)
         {
+            jObject.RemoveCI(key);
+            jObject[key] = value;
+        }
+        
+        internal static void RemoveCI(this JObject jObject, string key)
+        {
             while (jObject.TryGetValue(key, StringComparison.OrdinalIgnoreCase, out var token))
             {
                 token.Parent.Remove();
             }
-
-            jObject[key] = value;
         }
+
+        internal static bool ContainsKeyCI(this JObject jObject, string key) => jObject.GetValueCI(key) != null;
 
         internal static bool EqualsCI(this string left, string right) => left?.Equals(right, StringComparison.OrdinalIgnoreCase) == true;
 

@@ -111,11 +111,9 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                     return await action.ToJObjectAndBackAsync(
                         async actionJObject =>
                         {
-                            var data = actionJObject.GetValueCI(CardConstants.KeyData);
-
-                            if (data is JObject dataJObject)
+                            if (actionJObject.GetValueCI(CardConstants.KeyData) is JObject data)
                             {
-                                await nextAsync(dataJObject, TreeNodeType.Payload).ConfigureAwait(false); 
+                                await nextAsync(data, TreeNodeType.Payload).ConfigureAwait(false); 
                             }
                         }, true).ConfigureAwait(false);
                 })
@@ -125,11 +123,11 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 {
                     if (action.Type == ActionTypes.MessageBack || action.Type == ActionTypes.PostBack)
                     {
-                        async Task<T> CallNextAsync<T>(T input)
+                        async global::System.Threading.Tasks.Task<T> CallNextAsync<T>(T input)
                             where T : class
                         {
-                            return await input.ToJObjectAndBackAsync(
-                                async jObject => await nextAsync(jObject, TreeNodeType.Payload).ConfigureAwait(false),
+                            return await input.ToJObjectAndBackAsync<T>(
+                                async jObject => await nextAsync(jObject, global::Bot.Builder.Community.Cards.Management.Tree.TreeNodeType.Payload).ConfigureAwait(false),
                                 true,
                                 true).ConfigureAwait(false);
                         }
@@ -175,6 +173,72 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 TreeNodeType.Id, new TreeNode<PayloadId, object>((id, _) => Task.FromResult(id))
             },
         };
+
+        /// <summary>
+        /// Enters and exits the tree at the specified nodes.
+        /// </summary>
+        /// <typeparam name="TEntry">The .NET type of the entry node.</typeparam>
+        /// <typeparam name="TExit">The .NET type of the exit node.</typeparam>
+        /// <param name="entryValue">The entry value.</param>
+        /// <param name="action">A delegate to perform on each exit value.
+        /// Note that exit values are not guaranteed to be non-null.</param>
+        /// <param name="entryType">The explicit position of the entry node in the tree.
+        /// If this is null then the position is inferred from the TEntry type parameter.
+        /// Note that this parameter is required if the type is <see cref="object"/>
+        /// or if the position otherwise cannot be unambiguously inferred from the type.</param>
+        /// <param name="exitType">The explicit position of the exit node in the tree.
+        /// If this is null then the position is inferred from the TExit type parameter.
+        /// Note that this parameter is required if the type is <see cref="object"/>
+        /// or if the position otherwise cannot be unambiguously inferred from the type.</param>
+        /// <returns>The possibly-modified entry value. This is needed if a new object was created
+        /// to modify the value, such as when an Adaptive Card is converted to a JObject.</returns>
+        internal static TEntry Recurse<TEntry, TExit>(
+            TEntry entryValue,
+            Action<TExit> action,
+            TreeNodeType? entryType = null,
+            TreeNodeType? exitType = null)
+            where TEntry : class
+            where TExit : class
+        {
+            ITreeNode entryNode = null;
+            ITreeNode exitNode = null;
+
+            try
+            {
+                entryNode = GetNode<TEntry>(entryType);
+            }
+            catch (Exception ex)
+            {
+                throw GetNodeArgumentException<TEntry>(ex);
+            }
+
+            try
+            {
+                exitNode = GetNode<TExit>(exitType);
+            }
+            catch (Exception ex)
+            {
+                throw GetNodeArgumentException<TExit>(ex, "exit");
+            }
+
+            Task<object> Next(object child, TreeNodeType childType)
+            {
+                var childNode = _tree[childType];
+
+                if (childNode == exitNode)
+                {
+                    action(GetExitValue<TExit>(child));
+
+                    return Task.FromResult(child);
+                }
+                else
+                {
+                    return childNode.CallChild(child, Next);
+                }
+            }
+
+            return entryNode.CallChild(entryValue, Next).Result as TEntry;
+        }
 
         /// <summary>
         /// Enters and exits the tree at the specified nodes.
@@ -229,7 +293,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
 
                 if (childNode == exitNode)
                 {
-                    await funcAsync(child is JToken jToken ? jToken.ToObject<TExit>() : child as TExit).ConfigureAwait(false);
+                    await funcAsync(GetExitValue<TExit>(child)).ConfigureAwait(false);
 
                     return child;
                 }
@@ -256,7 +320,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 throw GetNodeArgumentException<TEntry>(ex);
             }
 
-            Task<object> NextAsync(object child, TreeNodeType childType)
+            Task<object> Next(object child, TreeNodeType childType)
             {
                 if (childType == TreeNodeType.Payload)
                 {
@@ -301,12 +365,15 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                         }
                     }
 
-                    return childNode.CallChild(child, NextAsync);
+                    return childNode.CallChild(child, Next);
                 }
             }
 
-            return entryNode.CallChild(entryValue, NextAsync).Result as TEntry;
+            return entryNode.CallChild(entryValue, Next).Result as TEntry;
         }
+
+        private static TExit GetExitValue<TExit>(object child)
+            where TExit : class => child is JToken jToken && !typeof(JToken).IsAssignableFrom(typeof(TExit)) ? jToken.ToObject<TExit>() : child as TExit;
 
         private static ITreeNode GetNode<T>(TreeNodeType? nodeType)
         {

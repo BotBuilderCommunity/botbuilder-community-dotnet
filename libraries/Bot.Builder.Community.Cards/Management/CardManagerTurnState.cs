@@ -2,7 +2,7 @@
 
 namespace Bot.Builder.Community.Cards.Management
 {
-    internal class CardManagerCache
+    internal class CardManagerTurnState
     {
         public JObject IncomingButtonPayload { get; internal set; }
 

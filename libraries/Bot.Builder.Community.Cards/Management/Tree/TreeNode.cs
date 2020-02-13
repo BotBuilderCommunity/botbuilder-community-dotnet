@@ -38,9 +38,6 @@ namespace Bot.Builder.Community.Cards.Management.Tree
             return value;
         }
 
-        public Type GetTValue()
-        {
-            return typeof(TValue);
-        }
+        public Type GetTValue() => typeof(TValue);
     }
 }

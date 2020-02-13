@@ -31,6 +31,7 @@ namespace Bot.Builder.Community.Cards.Management
             AutoAdaptOutgoingCardActions = true,
             AutoApplyIds = true,
             AutoClearTrackedOnSend = false,
+            AutoConvertAdaptiveCards = true,
             AutoDeleteOnAction = true,
             AutoDisableOnAction = false,
             AutoEnableOnSend = false,
@@ -45,6 +46,7 @@ namespace Bot.Builder.Community.Cards.Management
             AutoAdaptOutgoingCardActions = true,
             AutoApplyIds = true,
             AutoClearTrackedOnSend = true,
+            AutoConvertAdaptiveCards = true,
             AutoDeleteOnAction = false,
             AutoDisableOnAction = true,
             AutoEnableOnSend = true,
@@ -70,7 +72,7 @@ namespace Bot.Builder.Community.Cards.Management
             // Is this activity from a button?
             if (options.IdOptions != null
                 && turnContext.Activity?.Type == ActivityTypes.Message
-                && turnContext.GetIncomingButtonPayload() is JObject value)
+                && turnContext.GetIncomingPayload() is JObject value)
             {
                 // Whether we should proceed by default depends on the ID-tracking style
                 shouldProceed = !options.TrackEnabledIds;
@@ -136,6 +138,11 @@ namespace Bot.Builder.Community.Cards.Management
             if (options.AutoClearTrackedOnSend && options.TrackEnabledIds && activities.Any(activity => activity.Type == ActivityTypes.Message))
             {
                 await Manager.ClearTrackedIdsAsync(turnContext).ConfigureAwait(false);
+            }
+
+            if (options.AutoConvertAdaptiveCards)
+            {
+                activities.ConvertAdaptiveCards();
             }
 
             if (options.AutoSeparateAttachmentsOnSend)

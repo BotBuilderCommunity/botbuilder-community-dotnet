@@ -17,7 +17,7 @@ namespace Bot.Builder.Community.Cards.Management
         {
             if (activities is null)
             {
-                throw new ArgumentNullException(nameof(activities));
+                return;
             }
 
             // We need to iterate backwards because we're potentially changing the length of the list
@@ -57,11 +57,32 @@ namespace Bot.Builder.Community.Cards.Management
             }
         }
 
+        /// <summary>
+        /// This will convert Adaptive Cards to JObject instances to work around this issue:
+        /// https://github.com/microsoft/AdaptiveCards/issues/2148.
+        /// </summary>
+        /// <param name="activities">A batch of activities.</param>
+        public static void ConvertAdaptiveCards(this IEnumerable<Activity> activities)
+        {
+            if (activities is null)
+            {
+                return;
+            }
+
+            CardTree.Recurse(activities, (Attachment attachment) =>
+            {
+                if (attachment.ContentType == CardConstants.AdaptiveCardContentType)
+                {
+                    attachment.Content = attachment.Content.ToJObject();
+                }
+            });
+        }
+
         public static void ApplyIdsToBatch(this IEnumerable<Activity> activities, PayloadIdOptions options = null)
         {
             if (activities is null)
             {
-                throw new ArgumentNullException(nameof(activities));
+                return;
             }
 
             CardTree.ApplyIds(activities, options);
@@ -71,17 +92,15 @@ namespace Bot.Builder.Community.Cards.Management
         {
             if (activities is null)
             {
-                throw new ArgumentNullException(nameof(activities));
+                return null;
             }
 
             var dict = new Dictionary<PayloadIdType, ISet<string>>();
 
-            CardTree.RecurseAsync(activities, (PayloadId payloadId) =>
+            CardTree.Recurse(activities, (PayloadId payloadId) =>
             {
                 dict.InitializeKey(payloadId.Type, new HashSet<string>()).Add(payloadId.Id);
-
-                return Task.CompletedTask;
-            }).Wait();
+            });
 
             return dict;
         }
@@ -90,14 +109,14 @@ namespace Bot.Builder.Community.Cards.Management
         {
             if (activities is null)
             {
-                throw new ArgumentNullException(nameof(activities));
+                return;
             }
 
             foreach (var activity in activities)
             {
                 channelId = channelId ?? activity.ChannelId;
 
-                CardTree.RecurseAsync(activity, (CardAction action) =>
+                CardTree.Recurse(activity, (CardAction action) =>
                 {
                     var text = action.Text;
                     var value = action.Value;
@@ -224,9 +243,7 @@ namespace Bot.Builder.Community.Cards.Management
                                 break;
                         }
                     }
-
-                    return Task.CompletedTask;
-                }).Wait();
+                });
             }
         }
 
@@ -236,18 +253,18 @@ namespace Bot.Builder.Community.Cards.Management
         /// </summary>
         /// <param name="turnContext">The turn context.</param>
         /// <returns>A button's payload if valid, null otherwise.</returns>
-        public static JObject GetIncomingButtonPayload(this ITurnContext turnContext)
+        public static JObject GetIncomingPayload(this ITurnContext turnContext)
         {
             if (turnContext is null)
             {
                 return null;
             }
 
-            var cache = turnContext.TurnState.Get<CardManagerCache>();
+            var cache = turnContext.TurnState.Get<CardManagerTurnState>();
 
             if (cache is null)
             {
-                turnContext.TurnState.Set(cache = new CardManagerCache());
+                turnContext.TurnState.Set(cache = new CardManagerTurnState());
             }
 
             if (cache.HasIncomingButtonPayload)
