@@ -372,6 +372,21 @@ namespace Bot.Builder.Community.Cards.Management.Tree
             return entryNode.CallChild(entryValue, Next).Result as TEntry;
         }
 
+        internal static ISet<PayloadId> GetIds<TEntry>(TEntry entryValue, TreeNodeType? entryType = null)
+            where TEntry : class
+        {
+            var ids = new HashSet<PayloadId>(PayloadIdComparer.Instance);
+
+            Recurse(
+                entryValue,
+                (PayloadId payloadId) =>
+                {
+                    ids.Add(payloadId);
+                }, entryType);
+
+            return ids;
+        }
+
         private static TExit GetExitValue<TExit>(object child)
             where TExit : class => child is JToken jToken && !typeof(JToken).IsAssignableFrom(typeof(TExit)) ? jToken.ToObject<TExit>() : child as TExit;
 

@@ -23,6 +23,12 @@ namespace Bot.Builder.Community.Cards.Management
             StateAccessor = stateAccessor ?? throw new ArgumentNullException(nameof(stateAccessor));
         }
 
+        /// <summary>
+        /// Gets the card manager state accessor.
+        /// </summary>
+        /// <value>
+        /// Because there is only a getter, this is guaranteed to not be null.
+        /// </value>
         public IStatePropertyAccessor<CardManagerState> StateAccessor { get; }
 
         public static CardManager<TState> Create(IStatePropertyAccessor<CardManagerState> stateAccessor)
@@ -136,9 +142,7 @@ namespace Bot.Builder.Community.Cards.Management
 
         public async Task PreserveValuesAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
         {
-            BotAssert.ContextNotNull(turnContext);
-
-            if (turnContext.GetIncomingPayload() is JObject payload)
+            if (turnContext?.GetIncomingPayload() is JObject payload)
             {
                 var matchResult = await GetPayloadMatchAsync(turnContext, cancellationToken).ConfigureAwait(false);
 
@@ -177,6 +181,11 @@ namespace Bot.Builder.Community.Cards.Management
 
         public async Task DeleteAsync(ITurnContext turnContext, PayloadId toDelete, CancellationToken cancellationToken = default)
         {
+            if (turnContext is null || toDelete is null)
+            {
+                return;
+            }
+
             var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
             var type = toDelete.Type;
 
@@ -246,49 +255,59 @@ namespace Bot.Builder.Community.Cards.Management
                                 TreeNodeType.SubmitAction);
 
                             // Check all ID's from the submit action to see if they need to be deleted from state
-                            await CardTree.RecurseAsync(
-                                savedSubmitAction,
-                                async (PayloadId payloadId) =>
+                            foreach (var payloadId in CardTree.GetIds(savedSubmitAction, TreeNodeType.SubmitAction))
+                            {
+                                switch (payloadId.Type)
                                 {
-                                    switch (payloadId.Type)
-                                    {
-                                        case PayloadIdType.Action:
+                                    case PayloadIdType.Action:
 
-                                            // Delete the action ID from the tracked ID set
+                                        // Delete the action ID from the tracked ID set
+                                        await ForgetIdAsync(turnContext, payloadId, cancellationToken).ConfigureAwait(false);
+
+                                        // Delete associations between the action ID and activity ID's
+                                        // (there shouldn't be more than one activity ID associated with an action ID)
+                                        state.ActivityIdsByPayloadId.Remove(payloadId.Id);
+
+                                        break;
+
+                                    case PayloadIdType.Card:
+
+                                        var idHasBeenOrphaned = true;
+
+                                        // The submit action will already have been removed from the Adaptive Card,
+                                        // so we're checking to see if the card has any other submit actions with this card ID
+                                        foreach (var otherId in CardTree.GetIds(savedAttachment))
+                                        {
+                                            if (PayloadIdComparer.Instance.Equals(payloadId, otherId))
+                                            {
+                                                idHasBeenOrphaned = false;
+
+                                                break;
+                                            }
+                                        }
+
+                                        if (idHasBeenOrphaned)
+                                        {
+                                            // Delete the card ID from the tracked ID set
                                             await ForgetIdAsync(turnContext, payloadId, cancellationToken).ConfigureAwait(false);
 
-                                            if (state.ActivityIdsByPayloadId.TryGetValue(payloadId.Id, out var activityIds))
-                                            {
-                                                // Delete associations between the action ID and activity ID's
-                                                state.ActivityIdsByPayloadId.Remove(payloadId.Id);
+                                            // Delete associations between the card ID and activity ID's
+                                            // (there shouldn't be more than one activity ID associated with a card ID)
+                                            state.ActivityIdsByPayloadId.Remove(payloadId.Id);
+                                        }
 
-                                                // Check each activity ID that was until recently associated with the action ID
-                                                // to see if the activity also needs to be deleted from state
-                                                // (there shouldn't be more than one activity ID associated with an action ID
-                                                // but we're looping anyway)
-                                                foreach (var activityId in activityIds)
-                                                {
-                                                    // If the activity ID isn't associated with any other payload ID's
-                                                    // then the activity should be deleted from state
-                                                    if (!state.ActivityIdsByPayloadId.Values.SelectMany(set => set).Contains(activityId))
-                                                    {
-                                                        state.ActivityById.Remove(activityId);
-                                                    }
-                                                }
-                                            }
+                                        break;
 
-                                            break;
-                                        case PayloadIdType.Card:
+                                    case PayloadIdType.Carousel:
 
 
-                                            break;
-                                        case PayloadIdType.Carousel:
-                                            break;
-                                        case PayloadIdType.Batch:
-                                            break;
-                                    }
-                                },
-                                TreeNodeType.SubmitAction).ConfigureAwait(false);
+                                        break;
+                                    case PayloadIdType.Batch:
+
+
+                                        break;
+                                }
+                            }
 
                             // Check if the Adaptive Card is now empty
 
@@ -328,6 +347,23 @@ namespace Bot.Builder.Community.Cards.Management
                 {
                     await DeleteActivityAsync(turnContext, savedActivity.Id, cancellationToken).ConfigureAwait(false);
 
+                }
+            }
+
+            // Check for orphaned payload ID's that are no longer contained in any activities
+
+
+            var activityIdsAssociatedWithPayloads = state.ActivityIdsByPayloadId.Values.SelectMany(set => set).Distinct();
+
+            // Check for orphaned activities that are no longer associated with any payload ID's.
+            // The key set is copied so that the original key set can be modified while iterating.
+            foreach (var activityId in state.ActivityById.Keys.ToList())
+            {
+                // If the activity ID isn't associated with any payload ID's
+                // then the activity should be deleted from state
+                if (!activityIdsAssociatedWithPayloads.Contains(activityId))
+                {
+                    state.ActivityById.Remove(activityId);
                 }
             }
         }

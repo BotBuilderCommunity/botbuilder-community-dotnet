@@ -39,9 +39,9 @@ namespace Bot.Builder.Community.Cards.Management
         /// the hash set should only contain one activity ID.
         /// </value>
         [JsonProperty("activityIdsByPayloadId")]
-        public IDictionary<string, ISet<string>> ActivityIdsByPayloadId { get; } = new Dictionary<string, ISet<string>>(StringComparer.OrdinalIgnoreCase);
+        public IDictionary<string, ISet<string>> ActivityIdsByPayloadId { get; } = new Dictionary<string, ISet<string>>();
 
         [JsonProperty("activityById")]
-        public IDictionary<string, Activity> ActivityById { get; } = new Dictionary<string, Activity>(StringComparer.OrdinalIgnoreCase);
+        public IDictionary<string, Activity> ActivityById { get; } = new Dictionary<string, Activity>();
     }
 }

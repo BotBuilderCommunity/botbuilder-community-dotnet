@@ -34,14 +34,9 @@ namespace Bot.Builder.Community.Cards
             Func<T> defaultValueFactory = null,
             CancellationToken cancellationToken = default)
         {
-            if (statePropertyAccessor is null)
+            if (statePropertyAccessor is null || turnContext is null)
             {
-                throw new ArgumentNullException(nameof(statePropertyAccessor));
-            }
-
-            if (turnContext is null)
-            {
-                throw new ArgumentNullException(nameof(turnContext));
+                return default;
             }
 
             var state = await statePropertyAccessor.GetAsync(turnContext, defaultValueFactory, cancellationToken).ConfigureAwait(false);
