@@ -74,10 +74,8 @@ namespace Bot.Builder.Community.Cards.Management
             }
 
             var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
-            var payloadIdsByType = state.PayloadIdsByType;
 
-            payloadIdsByType.InitializeKey(payloadId.Type, new HashSet<string>()).Add(payloadId.Id);
-            state.PayloadIdsByType = payloadIdsByType;
+            state.PayloadIdsByType.InitializeKey(payloadId.Type, new HashSet<string>()).Add(payloadId.Id);
         }
 
         public async Task ForgetIdAsync(ITurnContext turnContext, PayloadId payloadId, CancellationToken cancellationToken = default)
@@ -105,10 +103,8 @@ namespace Bot.Builder.Community.Cards.Management
             BotAssert.ContextNotNull(turnContext);
 
             var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
-            var payloadIdsByType = state.PayloadIdsByType;
 
-            payloadIdsByType.Clear();
-            state.PayloadIdsByType = payloadIdsByType;
+            state.PayloadIdsByType.Clear();
         }
 
         // ----------------
@@ -118,26 +114,17 @@ namespace Bot.Builder.Community.Cards.Management
         public async Task SaveActivitiesAsync(ITurnContext turnContext, IEnumerable<Activity> activities, CancellationToken cancellationToken = default)
         {
             BotAssert.ContextNotNull(turnContext);
-            BotAssert.ActivityListNotNull(activities);
+
+            if (activities is null)
+            {
+                throw new ArgumentNullException(nameof(activities));
+            }
 
             var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
-            var activityIdsByPayloadId = state.ActivityIdsByPayloadId;
-            var activitiesById = state.ActivityById;
 
-            foreach (var activity in activities)
-            {
-                if (activity != null)
-                {
-                    var activityId = activity.Id;
+            state.SavedActivities.UnionWith(activities);
 
-                    CardTree.Recurse(activity, (PayloadId payloadId) =>
-                    {
-                        activityIdsByPayloadId.InitializeKey(payloadId.Id, new HashSet<string>()).Add(activityId);
-                    });
-
-                    activitiesById[activityId] = activity;
-                }
-            }
+            await CleanSavedActivitiesAsync(turnContext, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task PreserveValuesAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
@@ -146,11 +133,10 @@ namespace Bot.Builder.Community.Cards.Management
             {
                 var matchResult = await GetPayloadMatchAsync(turnContext, cancellationToken).ConfigureAwait(false);
 
-                if (matchResult.FoundAttachment() is Attachment savedAttachment
-                    && matchResult.GetAttachmentParent(savedAttachment) is IMessageActivity savedActivity
-                    && savedAttachment.ContentType.EqualsCI(CardConstants.AdaptiveCardContentType))
+                if (matchResult.SavedActivity != null
+                    && matchResult.SavedAttachment?.ContentType.EqualsCI(CardConstants.AdaptiveCardContentType) == true)
                 {
-                    savedAttachment.Content = savedAttachment.Content?.ToJObjectAndBackAsync(
+                    matchResult.SavedAttachment.Content = matchResult.SavedAttachment.Content?.ToJObjectAndBackAsync(
                         card =>
                         {
                             // Iterate through all inputs in the card
@@ -168,7 +154,7 @@ namespace Bot.Builder.Community.Cards.Management
                     try
                     {
                         // The changes to the attachment will already be reflected in the activity
-                        await turnContext.UpdateActivityAsync(savedActivity).ConfigureAwait(false);
+                        await turnContext.UpdateActivityAsync(matchResult.SavedActivity).ConfigureAwait(false);
                     }
                     catch
                     {
@@ -181,191 +167,160 @@ namespace Bot.Builder.Community.Cards.Management
 
         public async Task DeleteAsync(ITurnContext turnContext, PayloadId toDelete, CancellationToken cancellationToken = default)
         {
-            if (turnContext is null || toDelete is null)
+            BotAssert.ContextNotNull(turnContext);
+
+            if (toDelete is null)
             {
-                return;
+                throw new ArgumentNullException(nameof(toDelete));
             }
 
             var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
             var type = toDelete.Type;
 
-            if (type == PayloadIdType.Batch)
+            if (type == PayloadIdTypes.Batch)
             {
-                if (state.ActivityIdsByPayloadId.TryGetValue(toDelete.Id, out var activityIds))
+                // Iterate over a copy of the set so the original can be modified
+                foreach (var activity in state.SavedActivities.ToList())
                 {
-                    // Iterate over a copy of the set so the original can be modified
-                    foreach (var activityId in activityIds.ToList())
+                    var hasBatchId = false;
+
+                    CardTree.Recurse(activity, (PayloadId payloadId) =>
                     {
-                        //await DeleteActivityAsync(turnContext, activityId, cancellationToken).ConfigureAwait(false);
-                        await turnContext.DeleteActivityAsync(activityId, cancellationToken).ConfigureAwait(false);
-
-                        if (state.ActivityById.TryGetValue(activityId, out var activity))
+                        // Payload ID's are compared by value
+                        if (payloadId == toDelete)
                         {
-                            // Delete all payload ID's found in the batch from the card manager state
-                            await CardTree.RecurseAsync(activity, async (PayloadId payloadId) =>
-                            {
-                                await ForgetIdAsync(turnContext, payloadId, cancellationToken);
-
-                                state.ActivityIdsByPayloadId.Remove(payloadId.Id);
-
-                            }).ConfigureAwait(false);
-
-                            // Delete the activity from the card manager state
-                            state.ActivityById.Remove(activityId);
+                            hasBatchId = true;
                         }
+                    });
 
-                        // Delete the activity ID from the card manager state.
-                        // One activity ID may be associated with many payload ID's.
-                        foreach (var activityIdSet in state.ActivityIdsByPayloadId.Values)
-                        {
-                            activityIdSet.Remove(activityId);
-                        }
+                    // Delete any activity that contains the specified batch ID
+                    if (hasBatchId)
+                    {
+                        await DeleteActivityAsync(turnContext, activity, cancellationToken).ConfigureAwait(false);
                     }
-
-                    // Delete the batch ID from the card manager state
-                    state.ActivityIdsByPayloadId.Remove(toDelete.Id);
                 }
             }
             else
             {
                 var matchResult = await GetPayloadMatchAsync(turnContext, cancellationToken).ConfigureAwait(false);
-                var savedAction = matchResult.FoundAction();
-                var savedAttachment = matchResult.FoundAttachment();
-                var savedActivity = matchResult.FoundActivity();
+                var savedActivity = matchResult.SavedActivity;
+                var savedAttachment = matchResult.SavedAttachment;
+                var savedAction = matchResult.SavedAction;
 
-                if (type == PayloadIdType.Action && savedActivity != null && savedAttachment != null && savedAction != null)
+                if (type == PayloadIdTypes.Action && savedActivity != null && savedAttachment != null && savedAction != null)
                 {
                     if (savedAttachment.ContentType.EqualsCI(CardConstants.AdaptiveCardContentType))
                     {
+                        // For Adaptive Cards
                         if (savedAction is JObject savedSubmitAction)
                         {
-                            // Remove the submit action from the Adaptive Card
-                            CardTree.Recurse(
-                                savedAttachment,
-                                (JObject submitAction) =>
-                                {
-                                    // This should only be true for one submit action in the attachment
-                                    // because if there was more than one match then the found action would be null
-                                    if (JToken.DeepEquals(submitAction, savedSubmitAction))
-                                    {
-                                        submitAction.Remove();
-                                    }
-                                },
-                                TreeNodeType.Attachment,
-                                TreeNodeType.SubmitAction);
-
-                            // Check all ID's from the submit action to see if they need to be deleted from state
-                            foreach (var payloadId in CardTree.GetIds(savedSubmitAction, TreeNodeType.SubmitAction))
-                            {
-                                switch (payloadId.Type)
-                                {
-                                    case PayloadIdType.Action:
-
-                                        // Delete the action ID from the tracked ID set
-                                        await ForgetIdAsync(turnContext, payloadId, cancellationToken).ConfigureAwait(false);
-
-                                        // Delete associations between the action ID and activity ID's
-                                        // (there shouldn't be more than one activity ID associated with an action ID)
-                                        state.ActivityIdsByPayloadId.Remove(payloadId.Id);
-
-                                        break;
-
-                                    case PayloadIdType.Card:
-
-                                        var idHasBeenOrphaned = true;
-
-                                        // The submit action will already have been removed from the Adaptive Card,
-                                        // so we're checking to see if the card has any other submit actions with this card ID
-                                        foreach (var otherId in CardTree.GetIds(savedAttachment))
-                                        {
-                                            if (PayloadIdComparer.Instance.Equals(payloadId, otherId))
-                                            {
-                                                idHasBeenOrphaned = false;
-
-                                                break;
-                                            }
-                                        }
-
-                                        if (idHasBeenOrphaned)
-                                        {
-                                            // Delete the card ID from the tracked ID set
-                                            await ForgetIdAsync(turnContext, payloadId, cancellationToken).ConfigureAwait(false);
-
-                                            // Delete associations between the card ID and activity ID's
-                                            // (there shouldn't be more than one activity ID associated with a card ID)
-                                            state.ActivityIdsByPayloadId.Remove(payloadId.Id);
-                                        }
-
-                                        break;
-
-                                    case PayloadIdType.Carousel:
-
-
-                                        break;
-                                    case PayloadIdType.Batch:
-
-
-                                        break;
-                                }
-                            }
+                            // Remove the submit action from the Adaptive Card.
+                            // Safe remove will work whether the action is in an array
+                            // or is the value of a select action property.
+                            savedSubmitAction.SafeRemove();
 
                             // Check if the Adaptive Card is now empty
-
+                            if (savedAttachment.Content.ToJObject() is JObject adaptiveCard
+                                && adaptiveCard.GetValueCI(CardConstants.KeyBody).IsNullishOrEmpty()
+                                && adaptiveCard.GetValueCI(CardConstants.KeyActions).IsNullishOrEmpty())
+                            {
+                                // If the card is now empty, execute the next if block to delete it
+                                type = PayloadIdTypes.Card;
+                            }
+                            else
+                            {
+                                await turnContext.UpdateActivityAsync(savedActivity, cancellationToken).ConfigureAwait(false);
+                            }
                         }
                     }
                     else
                     {
+                        // For Bot Framework rich cards
+                        if (savedAction is CardAction cardAction)
+                        {
+                            // Remove the card action from the card
+                            CardTree.Recurse(
+                                savedAttachment,
+                                (IList<CardAction> actions) =>
+                                {
+                                    actions.Remove(cardAction);
+                                });
 
+                            // Check if the card is now empty.
+                            // We are assuming that if a developer wants to make a rich card
+                            // with only postBack/messageBack buttons then they will use a hero card
+                            // and any other card would have more content than just postBack/messageBack buttons
+                            // so only a hero card should potentially be empty at this point.
+                            if (savedAttachment.Content is HeroCard heroCard
+                                && !heroCard.Buttons.Any()
+                                && heroCard.Images?.Any() != true
+                                && string.IsNullOrEmpty(heroCard.Title)
+                                && string.IsNullOrEmpty(heroCard.Subtitle)
+                                && string.IsNullOrEmpty(heroCard.Text))
+                            {
+                                // If the card is now empty, execute the next if block to delete it
+                                type = PayloadIdTypes.Card;
+                            }
+                            else
+                            {
+                                await turnContext.UpdateActivityAsync(savedActivity, cancellationToken).ConfigureAwait(false);
+                            }
+                        }
                     }
                 }
 
-                if (type == PayloadIdType.Card && savedActivity != null && savedAttachment != null)
+                if (type == PayloadIdTypes.Card && savedActivity != null && savedAttachment != null)
                 {
                     savedActivity.Attachments.Remove(savedAttachment);
 
-                    if (savedActivity.Attachments.Any() || !string.IsNullOrWhiteSpace(savedActivity.Text))
+                    // Check if the activity is now empty
+                    if (string.IsNullOrWhiteSpace(savedActivity.Text) && !savedActivity.Attachments.Any())
                     {
-                        await turnContext.UpdateActivityAsync(savedActivity, cancellationToken).ConfigureAwait(false);
-
-                        CardTree.Recurse(savedAttachment, (PayloadId payloadId) =>
-                        {
-                            if (payloadId.Type <= PayloadIdType.Card)
-                            {
-                                state.ActivityIdsByPayloadId.Remove(payloadId.Id);
-                            }
-                        });
-
+                        // If the activity is now empty, execute the next if block to delete it
+                        type = PayloadIdTypes.Carousel;
                     }
                     else
                     {
-                        // If the activity is now empty, execute the next if block as well
-                        type = PayloadIdType.Carousel;
+                        await turnContext.UpdateActivityAsync(savedActivity, cancellationToken).ConfigureAwait(false);
                     }
                 }
 
-                if (type == PayloadIdType.Carousel && savedActivity != null)
+                if (type == PayloadIdTypes.Carousel && savedActivity != null)
                 {
-                    await DeleteActivityAsync(turnContext, savedActivity.Id, cancellationToken).ConfigureAwait(false);
-
+                    await DeleteActivityAsync(turnContext, savedActivity, cancellationToken).ConfigureAwait(false);
                 }
             }
 
-            // Check for orphaned payload ID's that are no longer contained in any activities
+            await CleanSavedActivitiesAsync(turnContext, cancellationToken).ConfigureAwait(false);
+        }
 
+        private async Task CleanSavedActivitiesAsync(ITurnContext turnContext, CancellationToken cancellationToken)
+        {
+            var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
 
-            var activityIdsAssociatedWithPayloads = state.ActivityIdsByPayloadId.Values.SelectMany(set => set).Distinct();
-
-            // Check for orphaned activities that are no longer associated with any payload ID's.
-            // The key set is copied so that the original key set can be modified while iterating.
-            foreach (var activityId in state.ActivityById.Keys.ToList())
+            foreach (var savedActivity in state.SavedActivities)
             {
-                // If the activity ID isn't associated with any payload ID's
-                // then the activity should be deleted from state
-                if (!activityIdsAssociatedWithPayloads.Contains(activityId))
+                var hasNoPayloadIds = true;
+
+                CardTree.Recurse(savedActivity, (PayloadId payloadId) =>
                 {
-                    state.ActivityById.Remove(activityId);
+                    hasNoPayloadIds = false;
+                });
+
+                if (hasNoPayloadIds)
+                {
+                    state.SavedActivities.Remove(savedActivity);
                 }
             }
+        }
+
+        private async Task DeleteActivityAsync(ITurnContext turnContext, IMessageActivity activity, CancellationToken cancellationToken)
+        {
+            await turnContext.DeleteActivityAsync(activity.Id, cancellationToken).ConfigureAwait(false);
+
+            var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
+
+            state.SavedActivities.Remove(activity);
         }
 
         private async Task<PayloadMatchResult> GetPayloadMatchAsync(
@@ -383,16 +338,7 @@ namespace Bot.Builder.Community.Cards.Management
             var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
 
             // Iterate over all saved activities that contain any of the payload ID's from the incoming payload
-            foreach (var savedActivity in Helper.GetEnumValues<PayloadIdType>()
-                .SelectMany(type => incomingPayload.GetIdFromPayload(type) is string payloadId
-                    && state.ActivityIdsByPayloadId.TryGetValue(payloadId, out var activityIds)
-                        ? activityIds
-                        : new HashSet<string>())
-                .Distinct()
-                .Select(activityId => activityId != null
-                    && state.ActivityById.TryGetValue(activityId, out var activity)
-                        ? activity
-                        : null)
+            foreach (var savedActivity in state.SavedActivities
                 .Where(activity => activity?.Attachments?.Any() == true))
             {
                 foreach (var savedAttachment in savedActivity.Attachments.WhereNotNull())
@@ -404,14 +350,17 @@ namespace Bot.Builder.Community.Cards.Management
                         var inputsMatch = true;
                         var payloadWithoutInputs = incomingPayload.DeepClone() as JObject;
 
+                        // First, determine what matching submit action data is expected to look like
+                        // by removing the input ID's in the Adaptive Card from the payload
+                        // that would have been added to the data to form the payload
                         foreach (var inputId in savedAdaptiveCard.GetAdaptiveInputs()
                             .Select(CardExtensions.GetAdaptiveInputId))
                         {
                             // If the Adaptive Card is poorly designed,
                             // the same input ID might show up multiple times.
                             // Therefore we're checking if the original payload
-                            // contained the key, because it might still be valid
-                            // even if the input was already removed.
+                            // contained the key, because the inputs might still
+                            // match even if this input was already removed.
                             if (incomingPayload.ContainsKeyCI(inputId))
                             {
                                 // Removing a property that doesn't exist
@@ -426,6 +375,8 @@ namespace Bot.Builder.Community.Cards.Management
                             }
                         }
 
+                        // Second, if all the input ID's found in the card were present in the payload
+                        // then check each submit action in the card to see if the data matches the payload
                         if (inputsMatch)
                         {
                             CardTree.Recurse(
@@ -435,6 +386,7 @@ namespace Bot.Builder.Community.Cards.Management
                                     var submitActionData = savedSubmitAction.GetValueCI(
                                         CardConstants.KeyData)?.DeepClone();
 
+                                    // This will not throw an exception if the submit action data is null
                                     if (JToken.DeepEquals(submitActionData, payloadWithoutInputs))
                                     {
                                         result.Add(savedActivity, savedAttachment, savedSubmitAction);
@@ -451,6 +403,7 @@ namespace Bot.Builder.Community.Cards.Management
                         {
                             var savedPayload = savedCardAction?.Value.ToJObject(true);
 
+                            // This will not throw an exception if the saved payload is null
                             if (JToken.DeepEquals(savedPayload, incomingPayload))
                             {
                                 result.Add(savedActivity, savedAttachment, savedCardAction);
@@ -461,27 +414,6 @@ namespace Bot.Builder.Community.Cards.Management
             }
 
             return result;
-        }
-
-        private async Task DeleteActivityAsync(ITurnContext turnContext, string activityId, CancellationToken cancellationToken)
-        {
-            var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
-
-            await turnContext.DeleteActivityAsync(activityId, cancellationToken).ConfigureAwait(false);
-
-            if (state.ActivityById.TryGetValue(activityId, out var activity))
-            {
-
-
-                state.ActivityById.Remove(activityId);
-            }
-
-
-            // One activity ID may be associated with many payload ID's
-            foreach (var activityIdSet in state.ActivityIdsByPayloadId.Values)
-            {
-                activityIdSet.Remove(activityId);
-            }
         }
 
         private async Task<CardManagerState> GetStateAsync(ITurnContext turnContext, CancellationToken cancellationToken)

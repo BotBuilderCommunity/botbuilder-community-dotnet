@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Bot.Builder.Community.Cards.Management.Tree;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Connector;
@@ -88,14 +86,14 @@ namespace Bot.Builder.Community.Cards.Management
             CardTree.ApplyIds(activities, options);
         }
 
-        public static IDictionary<PayloadIdType, ISet<string>> GetIdsFromBatch(this IEnumerable<Activity> activities)
+        public static IDictionary<string, ISet<string>> GetIdsFromBatch(this IEnumerable<Activity> activities)
         {
             if (activities is null)
             {
                 return null;
             }
 
-            var dict = new Dictionary<PayloadIdType, ISet<string>>();
+            var dict = new Dictionary<string, ISet<string>>();
 
             CardTree.Recurse(activities, (PayloadId payloadId) =>
             {
@@ -104,6 +102,49 @@ namespace Bot.Builder.Community.Cards.Management
 
             return dict;
         }
+
+        public static void ApplyIdsToPayload(this JObject payload, PayloadIdOptions options = null)
+        {
+            if (payload is null)
+            {
+                return;
+            }
+
+            if (options is null)
+            {
+                options = new PayloadIdOptions(PayloadIdTypes.Action);
+            }
+
+            foreach (var kvp in options.GetIds())
+            {
+                var type = kvp.Key;
+
+                if (options.Overwrite || payload.GetIdFromPayload(type) is null)
+                {
+                    var id = kvp.Value;
+
+                    if (id is null)
+                    {
+                        if (type == PayloadIdTypes.Action)
+                        {
+                            // Only generate an ID for the action
+                            id = PayloadIdTypes.GenerateId(PayloadIdTypes.Action);
+                        }
+                        else
+                        {
+                            // If any other ID's are null,
+                            // don't apply them to the payload
+                            continue;
+                        }
+                    }
+
+                    payload[PayloadIdTypes.GetKey(type)] = id;
+                }
+            }
+        }
+
+        public static string GetIdFromPayload(this JObject payload, string type = PayloadIdTypes.Card) =>
+            payload?.GetValueCI(PayloadIdTypes.GetKey(type)) is JToken id ? id.ToString() : null;
 
         public static void AdaptOutgoingCardActions(this List<Activity> activities, string channelId = null)
         {
@@ -260,16 +301,16 @@ namespace Bot.Builder.Community.Cards.Management
                 return null;
             }
 
-            var cache = turnContext.TurnState.Get<CardManagerTurnState>();
+            var turnState = turnContext.TurnState.Get<CardManagerTurnState>();
 
-            if (cache is null)
+            if (turnState is null)
             {
-                turnContext.TurnState.Set(cache = new CardManagerTurnState());
+                turnContext.TurnState.Set(turnState = new CardManagerTurnState());
             }
 
-            if (cache.HasIncomingButtonPayload)
+            if (turnState.CheckedForIncomingButtonPayload)
             {
-                return cache.IncomingButtonPayload;
+                return turnState.IncomingButtonPayload;
             }
 
             var activity = turnContext.Activity;
@@ -285,8 +326,8 @@ namespace Bot.Builder.Community.Cards.Management
             var channelData = activity.ChannelData.ToJObject(true); // Channel data will have been serialized into a string in Kik
             var entities = activity.Entities;
 
-            cache.IncomingButtonPayload = value;
-            cache.HasIncomingButtonPayload = true;
+            turnState.IncomingButtonPayload = value;
+            turnState.CheckedForIncomingButtonPayload = true;
 
             // Many channels have button responses that are hard to distinguish from user-entered text.
             // A common theme is that button responses often have a property in channel data that isn't
@@ -295,7 +336,7 @@ namespace Bot.Builder.Community.Cards.Management
             {
                 if (channelData?.GetValueCI(propName) != null)
                 {
-                    cache.IncomingButtonPayload = newResult ?? parsedText;
+                    turnState.IncomingButtonPayload = newResult ?? parsedText;
                 }
             }
 
@@ -305,9 +346,11 @@ namespace Bot.Builder.Community.Cards.Management
 
                     // In Cortana, the only defining characteristic of button responses
                     // is that they won't have an "Intent" entity.
+                    // This if statement uses `!= true` because we're interpreting a null entities list
+                    // as confirmation of a missing "Intent" entity.
                     if (entities?.Any(entity => entity.Type.EqualsCI(CardConstants.TypeIntent)) != true)
                     {
-                        cache.IncomingButtonPayload = parsedText;
+                        turnState.IncomingButtonPayload = parsedText;
                     }
 
                     break;
@@ -342,9 +385,11 @@ namespace Bot.Builder.Community.Cards.Management
 
                     // In Skype, the only defining characteristic of button responses
                     // is that the channel data text does not match the activity text.
+                    // This if statement uses `== false` because if the channel data is null or has no text property
+                    // then we're interpreting that to mean that this is not a button response.
                     if (channelData?.GetValueCI(CardConstants.KeyText)?.ToString().EqualsCI(text) == false)
                     {
-                        cache.IncomingButtonPayload = parsedText;
+                        turnState.IncomingButtonPayload = parsedText;
                     }
 
                     break;
@@ -366,7 +411,7 @@ namespace Bot.Builder.Community.Cards.Management
 
             // Teams and Facebook values don't need to be adapted
 
-            return cache.IncomingButtonPayload;
+            return turnState.IncomingButtonPayload;
         }
     }
 }

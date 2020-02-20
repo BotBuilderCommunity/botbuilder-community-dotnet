@@ -6,6 +6,6 @@ namespace Bot.Builder.Community.Cards.Management
     {
         public JObject IncomingButtonPayload { get; internal set; }
 
-        public bool HasIncomingButtonPayload { get; internal set; }
+        public bool CheckedForIncomingButtonPayload { get; internal set; }
     }
 }

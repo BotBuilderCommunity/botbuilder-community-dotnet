@@ -27,7 +27,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
         private static readonly Dictionary<TreeNodeType, ITreeNode> _tree = new Dictionary<TreeNodeType, ITreeNode>
         {
             {
-                TreeNodeType.Batch, new ListTreeNode<IMessageActivity>(TreeNodeType.Activity, PayloadIdType.Batch)
+                TreeNodeType.Batch, new ListTreeNode<IMessageActivity>(TreeNodeType.Activity, PayloadIdTypes.Batch)
             },
             {
                 TreeNodeType.Activity, new TreeNode<IMessageActivity, IEnumerable<Attachment>>(async (activity, nextAsync) =>
@@ -39,7 +39,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 })
             },
             {
-                TreeNodeType.Carousel, new ListTreeNode<Attachment>(TreeNodeType.Attachment, PayloadIdType.Carousel)
+                TreeNodeType.Carousel, new ListTreeNode<Attachment>(TreeNodeType.Attachment, PayloadIdTypes.Carousel)
             },
             {
                 TreeNodeType.Attachment, new TreeNode<Attachment, object>(async (attachment, nextAsync) =>
@@ -98,10 +98,10 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 TreeNodeType.VideoCard, new RichCardTreeNode<VideoCard>(card => card.Buttons)
             },
             {
-                TreeNodeType.SubmitActionList, new ListTreeNode<object>(TreeNodeType.SubmitAction, PayloadIdType.Card)
+                TreeNodeType.SubmitActionList, new ListTreeNode<object>(TreeNodeType.SubmitAction, PayloadIdTypes.Card)
             },
             {
-                TreeNodeType.CardActionList, new ListTreeNode<CardAction>(TreeNodeType.CardAction, PayloadIdType.Card)
+                TreeNodeType.CardActionList, new ListTreeNode<CardAction>(TreeNodeType.CardAction, PayloadIdTypes.Card)
             },
             {
                 TreeNodeType.SubmitAction, new TreeNode<object, JObject>(async (action, nextAsync) =>
@@ -157,7 +157,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 {
                     return await payload.ToJObjectAndBackAsync(async payloadJObject =>
                     {
-                        foreach (var type in Helper.GetEnumValues<PayloadIdType>())
+                        foreach (var type in PayloadIdTypes.Collection)
                         {
                             var id = payloadJObject.GetIdFromPayload(type);
 
@@ -353,13 +353,14 @@ namespace Bot.Builder.Community.Cards.Management.Tree
 
                     var childNode = _tree[childType];
 
-                    if (childNode.IdType.HasValue)
+                    if (childNode.IdType != null)
                     {
-                        var idType = childNode.IdType.Value;
+                        var idType = childNode.IdType;
 
-                        idType.ReplaceNullWithId(ref options);
+                        options = (options ?? new PayloadIdOptions()).ReplaceNullWithGeneratedId(idType);
 
-                        foreach (var item in options.GetIdTypes().Where(it => it > idType))
+                        foreach (var item in options.GetIdTypes()
+                            .Where(it => PayloadIdTypes.GetIndex(it) < PayloadIdTypes.GetIndex(idType)))
                         {
                             options.Set(idType);
                         }
@@ -375,7 +376,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
         internal static ISet<PayloadId> GetIds<TEntry>(TEntry entryValue, TreeNodeType? entryType = null)
             where TEntry : class
         {
-            var ids = new HashSet<PayloadId>(PayloadIdComparer.Instance);
+            var ids = new HashSet<PayloadId>();
 
             Recurse(
                 entryValue,

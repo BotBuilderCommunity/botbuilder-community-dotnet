@@ -5,7 +5,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
     internal class ListTreeNode<T> : TreeNode<IEnumerable<T>, T>
         where T : class
     {
-        public ListTreeNode(TreeNodeType childNodeType, PayloadIdType? idType)
+        public ListTreeNode(TreeNodeType childNodeType, string idType)
             : base(async (value, nextAsync) =>
             {
                 foreach (var child in value)

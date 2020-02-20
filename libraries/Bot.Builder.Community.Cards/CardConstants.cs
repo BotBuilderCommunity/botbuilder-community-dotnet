@@ -6,6 +6,8 @@
         public const string ActionSubmit = "Action.Submit";
 
         // Adaptive Card property names
+        public const string KeyActions = "actions";
+        public const string KeyBody = "body";
         public const string KeyData = "data";
         public const string KeyId = "id";
         public const string KeyType = "type";

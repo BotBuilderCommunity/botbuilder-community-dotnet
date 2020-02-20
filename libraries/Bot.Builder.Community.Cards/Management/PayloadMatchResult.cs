@@ -1,50 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Bot.Schema;
-using Newtonsoft.Json.Linq;
+﻿using Microsoft.Bot.Schema;
 
 namespace Bot.Builder.Community.Cards.Management
 {
     internal class PayloadMatchResult
     {
-        private ISet<IMessageActivity> ActivityMatches { get; } = new HashSet<IMessageActivity>();
+        private bool _alreadyFoundMatch;
 
-        private ISet<Attachment> AttachmentMatches { get; } = new HashSet<Attachment>();
+        public IMessageActivity SavedActivity { get; private set; }
 
-        private ISet<object> ActionMatches { get; } = new HashSet<object>();
+        public Attachment SavedAttachment { get; private set; }
 
-        private IDictionary<Attachment, IMessageActivity> ActivitiesByAttachment { get; } = new Dictionary<Attachment, IMessageActivity>();
-
-        private IDictionary<object, Attachment> AttachmentsByAction { get; } = new Dictionary<object, Attachment>();
+        public object SavedAction { get; private set; }
 
         internal void Add(IMessageActivity savedActivity, Attachment savedAttachment, object savedAction)
         {
-            ActivityMatches.Add(savedActivity);
-            AttachmentMatches.Add(savedAttachment);
-            ActionMatches.Add(savedAction);
-            ActivitiesByAttachment.Add(savedAttachment, savedActivity);
-            AttachmentsByAction.Add(savedAction, savedAttachment);
-        }
-
-        internal IMessageActivity FoundActivity() => GetMatch(ActivityMatches);
-
-        internal Attachment FoundAttachment() => GetMatch(AttachmentMatches);
-
-        internal object FoundAction() => GetMatch(ActionMatches);
-
-        internal IMessageActivity GetAttachmentParent(Attachment attachment) =>
-            ActivitiesByAttachment.TryGetValue(attachment, out var activity) ? activity : null;
-
-        internal Attachment GetActionParent(object action) =>
-            AttachmentsByAction.TryGetValue(action, out var attachment) ? attachment : null;
-
-        private T GetMatch<T>(ISet<T> set)
-            where T : class
-        {
+            // In all cases, null is used to indicate that either no match was found or more than one match was found.
             // If there's more than one match then there might as well be zero
-            // because there's no way to tell which is correct
-            return set.Count() == 1 ? set.Single() : null;
+            // because there's no way to determine which one is correct.
+            SavedActivity = _alreadyFoundMatch && savedActivity != SavedActivity ? null : savedActivity;
+            SavedAttachment = _alreadyFoundMatch && savedAttachment != SavedAttachment ? null : savedAttachment;
+            SavedAction = _alreadyFoundMatch && savedAction != SavedAction ? null : savedAction;
+
+            _alreadyFoundMatch = true;
         }
     }
 }

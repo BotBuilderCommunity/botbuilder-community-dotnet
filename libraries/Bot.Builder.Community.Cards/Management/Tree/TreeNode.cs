@@ -18,7 +18,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
             ChildCaller = childCaller;
         }
 
-        public PayloadIdType? IdType { get; set; }
+        public string IdType { get; set; }
 
         private ChildCallerDelegate<TValue, TChild> ChildCaller { get; }
 

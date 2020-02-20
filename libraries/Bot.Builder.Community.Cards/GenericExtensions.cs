@@ -165,7 +165,7 @@ namespace Bot.Builder.Community.Cards
             jObject.RemoveCI(key);
             jObject[key] = value;
         }
-        
+
         internal static void RemoveCI(this JObject jObject, string key)
         {
             while (jObject.TryGetValue(key, StringComparison.OrdinalIgnoreCase, out var token))
@@ -179,5 +179,19 @@ namespace Bot.Builder.Community.Cards
         internal static bool EqualsCI(this string left, string right) => left?.Equals(right, StringComparison.OrdinalIgnoreCase) == true;
 
         internal static bool IsNullish(this JToken jToken) => jToken is null || jToken.Type.IsOneOf(JTokenType.None, JTokenType.Null, JTokenType.Undefined);
+
+        internal static bool IsNullishOrEmpty(this JToken jToken) => jToken.IsNullish() || !jToken.Any();
+
+        internal static void SafeRemove(this JToken jToken)
+        {
+            if (jToken?.Parent is JProperty parent && parent.Parent != null)
+            {
+                parent.Remove();
+            }
+            else if (jToken?.Parent != null)
+            {
+                jToken.Remove();
+            }
+        }
     }
 }

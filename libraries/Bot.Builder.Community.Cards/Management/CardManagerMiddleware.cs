@@ -38,7 +38,7 @@ namespace Bot.Builder.Community.Cards.Management
             AutoSaveActivitiesOnSend = true,
             AutoSeparateAttachmentsOnSend = true,
             TrackEnabledIds = false,
-            IdOptions = new PayloadIdOptions(PayloadIdType.Carousel),
+            IdOptions = new PayloadIdOptions(PayloadIdTypes.Carousel),
         };
 
         public static CardManagerMiddlewareOptions DefaultNonUpdatingOptions => new CardManagerMiddlewareOptions
@@ -53,7 +53,7 @@ namespace Bot.Builder.Community.Cards.Management
             AutoSaveActivitiesOnSend = false,
             AutoSeparateAttachmentsOnSend = false,
             TrackEnabledIds = true,
-            IdOptions = new PayloadIdOptions(PayloadIdType.Batch),
+            IdOptions = new PayloadIdOptions(PayloadIdTypes.Batch),
         };
 
         public CardManagerMiddlewareOptions UpdatingOptions { get; } = DefaultUpdatingOptions;
