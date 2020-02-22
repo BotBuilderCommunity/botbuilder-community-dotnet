@@ -22,7 +22,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
 
         private ChildCallerDelegate<TValue, TChild> ChildCaller { get; }
 
-        public async Task<object> CallChild(object value, Func<object, TreeNodeType, Task<object>> nextAsync)
+        public async Task<object> CallChildAsync(object value, Func<object, TreeNodeType, Task<object>> nextAsync)
         {
             // This check will prevent child callers from needing to check for nulls
             if (value is TValue typedValue)

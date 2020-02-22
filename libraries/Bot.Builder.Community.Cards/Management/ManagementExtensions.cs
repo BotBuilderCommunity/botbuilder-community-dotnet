@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Bot.Builder.Community.Cards.Management.Tree;
 using Microsoft.Bot.Builder;
@@ -13,10 +14,7 @@ namespace Bot.Builder.Community.Cards.Management
     {
         public static void SeparateAttachments(this List<Activity> activities)
         {
-            if (activities is null)
-            {
-                return;
-            }
+            BotAssert.ActivityListNotNull(activities);
 
             // We need to iterate backwards because we're potentially changing the length of the list
             for (int i = activities.Count() - 1; i > -1; i--)
@@ -25,8 +23,8 @@ namespace Bot.Builder.Community.Cards.Management
                 var attachmentCount = activity.Attachments?.Count();
                 var hasText = activity.Text != null;
 
-                if (activity.AttachmentLayout == AttachmentLayoutTypes.List
-                    && ((attachmentCount > 0 && hasText) || attachmentCount > 1))
+                if ((attachmentCount > 0 && hasText)
+                    || (attachmentCount > 1 && activity.AttachmentLayout != AttachmentLayoutTypes.Carousel))
                 {
                     var separateActivities = new List<Activity>();
                     var js = new JsonSerializerSettings();
@@ -40,13 +38,25 @@ namespace Bot.Builder.Community.Cards.Management
                         separateActivities.Add(textActivity);
                     }
 
-                    foreach (var attachment in activity.Attachments)
+                    // AttachmentLayoutTypes.List is the default in the sense that
+                    // ABS interprets any string other that "carousel" as "list"
+                    if (activity.AttachmentLayout == AttachmentLayoutTypes.Carousel)
                     {
-                        var attachmentActivity = JsonConvert.DeserializeObject<Activity>(json, js);
+                        var carouselActivity = JsonConvert.DeserializeObject<Activity>(json, js);
 
-                        attachmentActivity.Text = null;
-                        attachmentActivity.Attachments = new List<Attachment> { attachment };
-                        separateActivities.Add(attachmentActivity);
+                        carouselActivity.Text = null;
+                        separateActivities.Add(carouselActivity);
+                    }
+                    else
+                    {
+                        foreach (var attachment in activity.Attachments)
+                        {
+                            var attachmentActivity = JsonConvert.DeserializeObject<Activity>(json, js);
+
+                            attachmentActivity.Text = null;
+                            attachmentActivity.Attachments = new List<Attachment> { attachment };
+                            separateActivities.Add(attachmentActivity);
+                        }
                     }
 
                     activities.RemoveAt(i);
@@ -60,11 +70,11 @@ namespace Bot.Builder.Community.Cards.Management
         /// https://github.com/microsoft/AdaptiveCards/issues/2148.
         /// </summary>
         /// <param name="activities">A batch of activities.</param>
-        public static void ConvertAdaptiveCards(this IEnumerable<Activity> activities)
+        public static void ConvertAdaptiveCards(this IEnumerable<IMessageActivity> activities)
         {
             if (activities is null)
             {
-                return;
+                throw new ArgumentNullException(nameof(activities));
             }
 
             CardTree.Recurse(activities, (Attachment attachment) =>
@@ -76,86 +86,38 @@ namespace Bot.Builder.Community.Cards.Management
             });
         }
 
-        public static void ApplyIdsToBatch(this IEnumerable<Activity> activities, PayloadIdOptions options = null)
+        public static void ApplyIdsToBatch(this IEnumerable<IMessageActivity> activities, PayloadIdOptions options = null)
         {
             if (activities is null)
             {
-                return;
+                throw new ArgumentNullException(nameof(activities));
             }
 
-            CardTree.ApplyIds(activities, options);
+            CardTree.ApplyIds(activities, options ?? new PayloadIdOptions(PayloadIdTypes.Batch));
         }
 
-        public static IDictionary<string, ISet<string>> GetIdsFromBatch(this IEnumerable<Activity> activities)
+        public static ISet<PayloadId> GetIdsFromBatch(this IEnumerable<IMessageActivity> activities)
         {
             if (activities is null)
             {
-                return null;
+                throw new ArgumentNullException(nameof(activities));
             }
 
-            var dict = new Dictionary<string, ISet<string>>();
-
-            CardTree.Recurse(activities, (PayloadId payloadId) =>
-            {
-                dict.InitializeKey(payloadId.Type, new HashSet<string>()).Add(payloadId.Id);
-            });
-
-            return dict;
+            return CardTree.GetIds(activities);
         }
 
-        public static void ApplyIdsToPayload(this JObject payload, PayloadIdOptions options = null)
-        {
-            if (payload is null)
-            {
-                return;
-            }
-
-            if (options is null)
-            {
-                options = new PayloadIdOptions(PayloadIdTypes.Action);
-            }
-
-            foreach (var kvp in options.GetIds())
-            {
-                var type = kvp.Key;
-
-                if (options.Overwrite || payload.GetIdFromPayload(type) is null)
-                {
-                    var id = kvp.Value;
-
-                    if (id is null)
-                    {
-                        if (type == PayloadIdTypes.Action)
-                        {
-                            // Only generate an ID for the action
-                            id = PayloadIdTypes.GenerateId(PayloadIdTypes.Action);
-                        }
-                        else
-                        {
-                            // If any other ID's are null,
-                            // don't apply them to the payload
-                            continue;
-                        }
-                    }
-
-                    payload[PayloadIdTypes.GetKey(type)] = id;
-                }
-            }
-        }
-
-        public static string GetIdFromPayload(this JObject payload, string type = PayloadIdTypes.Card) =>
-            payload?.GetValueCI(PayloadIdTypes.GetKey(type)) is JToken id ? id.ToString() : null;
-
-        public static void AdaptOutgoingCardActions(this List<Activity> activities, string channelId = null)
+        public static void AdaptOutgoingCardActions(this IEnumerable<IMessageActivity> activities, string channelId = null)
         {
             if (activities is null)
             {
-                return;
+                throw new ArgumentNullException(nameof(activities));
             }
 
             foreach (var activity in activities)
             {
-                channelId = channelId ?? activity.ChannelId;
+                var activityChannelId = channelId ?? activity.ChannelId
+                    ?? throw new ArgumentException("The channel could not be determined for all activities."
+                    + " Make sure each activity has a channel ID or provide a channel ID as an argument");
 
                 CardTree.Recurse(activity, (CardAction action) =>
                 {
@@ -204,7 +166,7 @@ namespace Bot.Builder.Community.Cards.Management
 
                     if (type == ActionTypes.MessageBack)
                     {
-                        switch (channelId)
+                        switch (activityChannelId)
                         {
                             case Channels.Cortana:
                             case Channels.Skype:
@@ -238,7 +200,7 @@ namespace Bot.Builder.Community.Cards.Management
                     // Using if instead of else-if so this block can be executed in addition to the previous one
                     if (type == ActionTypes.PostBack)
                     {
-                        switch (channelId)
+                        switch (activityChannelId)
                         {
                             case Channels.Cortana:
                             case Channels.Facebook:
@@ -264,7 +226,7 @@ namespace Bot.Builder.Community.Cards.Management
 
                     if (type == ActionTypes.ImBack)
                     {
-                        switch (channelId)
+                        switch (activityChannelId)
                         {
                             case Channels.Cortana:
                             case Channels.Directline:
@@ -294,12 +256,9 @@ namespace Bot.Builder.Community.Cards.Management
         /// </summary>
         /// <param name="turnContext">The turn context.</param>
         /// <returns>A button's payload if valid, null otherwise.</returns>
-        public static JObject GetIncomingPayload(this ITurnContext turnContext)
+        public static object GetIncomingPayload(this ITurnContext turnContext)
         {
-            if (turnContext is null)
-            {
-                return null;
-            }
+            BotAssert.ContextNotNull(turnContext);
 
             var turnState = turnContext.TurnState.Get<CardManagerTurnState>();
 
@@ -413,5 +372,48 @@ namespace Bot.Builder.Community.Cards.Management
 
             return turnState.IncomingButtonPayload;
         }
+
+        internal static void ApplyIdsToPayload(this JObject payload, PayloadIdOptions options = null)
+        {
+            if (payload is null)
+            {
+                return;
+            }
+
+            if (options is null)
+            {
+                options = new PayloadIdOptions(PayloadIdTypes.Action);
+            }
+
+            foreach (var kvp in options.GetIds())
+            {
+                var type = kvp.Key;
+
+                if (options.Overwrite || payload.GetIdFromPayload(type) is null)
+                {
+                    var id = kvp.Value;
+
+                    if (id is null)
+                    {
+                        if (type == PayloadIdTypes.Action)
+                        {
+                            // Only generate an ID for the action
+                            id = PayloadIdTypes.GenerateId(PayloadIdTypes.Action);
+                        }
+                        else
+                        {
+                            // If any other ID's are null,
+                            // don't apply them to the payload
+                            continue;
+                        }
+                    }
+
+                    payload[PayloadIdTypes.GetKey(type)] = id;
+                }
+            }
+        }
+
+        internal static string GetIdFromPayload(this JObject payload, string type = PayloadIdTypes.Card) =>
+            payload?.GetValueCI(PayloadIdTypes.GetKey(type)) is JToken id ? id.ToString() : null;
     }
 }

@@ -63,7 +63,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                         async cardJObject =>
                         {
                             await nextAsync(
-                                cardJObject.NonDataDescendants()
+                                AdaptiveCardUtil.NonDataDescendants(cardJObject)
                                     .Select(token => token is JObject element
                                             && element.GetValueCI(CardConstants.KeyType) is JToken type
                                             && type.Type == JTokenType.String
@@ -113,7 +113,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                         {
                             if (actionJObject.GetValueCI(CardConstants.KeyData) is JObject data)
                             {
-                                await nextAsync(data, TreeNodeType.Payload).ConfigureAwait(false); 
+                                await nextAsync(data, TreeNodeType.Payload).ConfigureAwait(false);
                             }
                         }, true).ConfigureAwait(false);
                 })
@@ -123,11 +123,11 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 {
                     if (action.Type == ActionTypes.MessageBack || action.Type == ActionTypes.PostBack)
                     {
-                        async global::System.Threading.Tasks.Task<T> CallNextAsync<T>(T input)
+                        async Task<T> CallNextAsync<T>(T input)
                             where T : class
                         {
                             return await input.ToJObjectAndBackAsync<T>(
-                                async jObject => await nextAsync(jObject, global::Bot.Builder.Community.Cards.Management.Tree.TreeNodeType.Payload).ConfigureAwait(false),
+                                async jObject => await nextAsync(jObject, TreeNodeType.Payload).ConfigureAwait(false),
                                 true,
                                 true).ConfigureAwait(false);
                         }
@@ -233,11 +233,11 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 }
                 else
                 {
-                    return childNode.CallChild(child, Next);
+                    return childNode.CallChildAsync(child, Next);
                 }
             }
 
-            return entryNode.CallChild(entryValue, Next).Result as TEntry;
+            return entryNode.CallChildAsync(entryValue, Next).Result as TEntry;
         }
 
         /// <summary>
@@ -299,11 +299,11 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 }
                 else
                 {
-                    return await childNode.CallChild(child, NextAsync).ConfigureAwait(false);
+                    return await childNode.CallChildAsync(child, NextAsync).ConfigureAwait(false);
                 }
             }
 
-            return await entryNode.CallChild(entryValue, NextAsync).ConfigureAwait(false) as TEntry;
+            return await entryNode.CallChildAsync(entryValue, NextAsync).ConfigureAwait(false) as TEntry;
         }
 
         internal static TEntry ApplyIds<TEntry>(TEntry entryValue, PayloadIdOptions options = null, TreeNodeType? entryType = null)
@@ -318,6 +318,20 @@ namespace Bot.Builder.Community.Cards.Management.Tree
             catch (Exception ex)
             {
                 throw GetNodeArgumentException<TEntry>(ex);
+            }
+
+            void ProcessOptions(ITreeNode node)
+            {
+                if (node.IdType is string idType)
+                {
+                    options = (options ?? new PayloadIdOptions()).ReplaceNullWithGeneratedId(idType);
+
+                    foreach (var item in options.GetIdTypes()
+                        .Where(it => PayloadIdTypes.GetIndex(it) < PayloadIdTypes.GetIndex(idType)))
+                    {
+                        options.Set(item);
+                    }
+                }
             }
 
             Task<object> Next(object child, TreeNodeType childType)
@@ -352,25 +366,22 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                     }
 
                     var childNode = _tree[childType];
+                    var capturedOptions = options;
 
-                    if (childNode.IdType != null)
-                    {
-                        var idType = childNode.IdType;
+                    ProcessOptions(childNode);
 
-                        options = (options ?? new PayloadIdOptions()).ReplaceNullWithGeneratedId(idType);
+                    // CallChild will be executed immediately even though its not awaited
+                    var task = childNode.CallChildAsync(child, Next);
 
-                        foreach (var item in options.GetIdTypes()
-                            .Where(it => PayloadIdTypes.GetIndex(it) < PayloadIdTypes.GetIndex(idType)))
-                        {
-                            options.Set(idType);
-                        }
-                    }
+                    options = capturedOptions;
 
-                    return childNode.CallChild(child, Next);
+                    return task;
                 }
             }
 
-            return entryNode.CallChild(entryValue, Next).Result as TEntry;
+            ProcessOptions(entryNode);
+
+            return entryNode.CallChildAsync(entryValue, Next).Result as TEntry;
         }
 
         internal static ISet<PayloadId> GetIds<TEntry>(TEntry entryValue, TreeNodeType? entryType = null)
@@ -406,7 +417,9 @@ namespace Bot.Builder.Community.Cards.Management.Tree
 
                 foreach (var possibleNode in _tree.Values)
                 {
-                    if (possibleNode.GetTValue().IsAssignableFrom(t))
+                    var possibleNodeTValue = possibleNode.GetTValue();
+
+                    if (possibleNodeTValue.IsAssignableFrom(t) && possibleNodeTValue != typeof(object) && possibleNodeTValue != typeof(IEnumerable<object>))
                     {
                         matchingNodes.Add(possibleNode);
                     }

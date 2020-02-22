@@ -10,10 +10,9 @@ using Newtonsoft.Json.Linq;
 
 namespace Bot.Builder.Community.Cards.Management
 {
-    public class CardManager<TState>
-        where TState : BotState
+    public class CardManager
     {
-        public CardManager(TState botState)
+        public CardManager(BotState botState)
             : this(botState?.CreateProperty<CardManagerState>(nameof(CardManagerState)) ?? throw new ArgumentNullException(nameof(botState)))
         {
         }
@@ -31,9 +30,9 @@ namespace Bot.Builder.Community.Cards.Management
         /// </value>
         public IStatePropertyAccessor<CardManagerState> StateAccessor { get; }
 
-        public static CardManager<TState> Create(IStatePropertyAccessor<CardManagerState> stateAccessor)
+        public static CardManager Create(IStatePropertyAccessor<CardManagerState> stateAccessor)
         {
-            return new CardManager<TState>(stateAccessor ?? throw new ArgumentNullException(nameof(stateAccessor)));
+            return new CardManager(stateAccessor ?? throw new ArgumentNullException(nameof(stateAccessor)));
         }
 
         // --------------------
@@ -75,7 +74,7 @@ namespace Bot.Builder.Community.Cards.Management
 
             var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
 
-            state.PayloadIdsByType.InitializeKey(payloadId.Type, new HashSet<string>()).Add(payloadId.Id);
+            state.PayloadIdsByType.InitializeKey(payloadId.Type, new HashSet<string>()).Add(payloadId.Value);
         }
 
         public async Task ForgetIdAsync(ITurnContext turnContext, PayloadId payloadId, CancellationToken cancellationToken = default)
@@ -94,7 +93,7 @@ namespace Bot.Builder.Community.Cards.Management
                 // Even though the dictionary will be a copy,
                 // the set will be the same as the one in the original dictionary
                 // and so calling Remove will modify the original set
-                ids.Remove(payloadId.Id);
+                ids.Remove(payloadId.Value);
             }
         }
 
@@ -140,9 +139,9 @@ namespace Bot.Builder.Community.Cards.Management
                         card =>
                         {
                             // Iterate through all inputs in the card
-                            foreach (var input in card.GetAdaptiveInputs())
+                            foreach (var input in AdaptiveCardUtil.GetAdaptiveInputs(card))
                             {
-                                var id = input.GetAdaptiveInputId();
+                                var id = AdaptiveCardUtil.GetAdaptiveInputId(input);
                                 var inputValue = payload.GetValueCI(id);
 
                                 input.SetValueCI(CardConstants.KeyValue, inputValue);
@@ -353,8 +352,8 @@ namespace Bot.Builder.Community.Cards.Management
                         // First, determine what matching submit action data is expected to look like
                         // by removing the input ID's in the Adaptive Card from the payload
                         // that would have been added to the data to form the payload
-                        foreach (var inputId in savedAdaptiveCard.GetAdaptiveInputs()
-                            .Select(CardExtensions.GetAdaptiveInputId))
+                        foreach (var inputId in AdaptiveCardUtil.GetAdaptiveInputs(savedAdaptiveCard)
+                            .Select(AdaptiveCardUtil.GetAdaptiveInputId))
                         {
                             // If the Adaptive Card is poorly designed,
                             // the same input ID might show up multiple times.

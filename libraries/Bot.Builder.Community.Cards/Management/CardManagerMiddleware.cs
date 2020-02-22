@@ -11,17 +11,11 @@ using Newtonsoft.Json.Linq;
 
 namespace Bot.Builder.Community.Cards.Management
 {
-    public class CardManagerMiddleware<TState> : IMiddleware
-        where TState : BotState
+    public class CardManagerMiddleware : IMiddleware
     {
         public static readonly IList<string> ChannelsWithMessageUpdates = new List<string> { Channels.Msteams, Channels.Skype, Channels.Slack, Channels.Telegram };
 
-        public CardManagerMiddleware(TState botState)
-            : this(new CardManager<TState>(botState ?? throw new ArgumentNullException(nameof(botState))))
-        {
-        }
-
-        public CardManagerMiddleware(CardManager<TState> manager)
+        public CardManagerMiddleware(CardManager manager)
         {
             Manager = manager ?? throw new ArgumentNullException(nameof(manager));
         }
@@ -60,7 +54,7 @@ namespace Bot.Builder.Community.Cards.Management
 
         public CardManagerMiddlewareOptions NonUpdatingOptions { get; } = DefaultNonUpdatingOptions;
 
-        public CardManager<TState> Manager { get; }
+        public CardManager Manager { get; }
 
         public async Task OnTurnAsync(ITurnContext turnContext, NextDelegate next, CancellationToken cancellationToken = default)
         {
@@ -157,7 +151,7 @@ namespace Bot.Builder.Community.Cards.Management
 
             if (options.AutoAdaptOutgoingCardActions)
             {
-                activities.AdaptOutgoingCardActions();
+                activities.AdaptOutgoingCardActions(turnContext.Activity.ChannelId);
             }
 
             // The resource response ID's will be automatically applied to the activities
@@ -168,14 +162,9 @@ namespace Bot.Builder.Community.Cards.Management
 
             if (options.AutoEnableOnSend && options.TrackEnabledIds)
             {
-                foreach (var kvp in activities.GetIdsFromBatch())
+                foreach (var payloadId in activities.GetIdsFromBatch())
                 {
-                    var type = kvp.Key;
-
-                    foreach (var id in kvp.Value)
-                    {
-                        await Manager.EnableIdAsync(turnContext, new PayloadId(type, id), options.TrackEnabledIds).ConfigureAwait(false);
-                    }
+                    await Manager.EnableIdAsync(turnContext, payloadId, options.TrackEnabledIds).ConfigureAwait(false);
                 }
             }
 

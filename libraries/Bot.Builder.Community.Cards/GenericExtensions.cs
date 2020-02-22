@@ -16,16 +16,10 @@ namespace Bot.Builder.Community.Cards
     /// </summary>
     internal static class GenericExtensions
     {
-        public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T> source)
+        internal static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T> source)
             where T : class
         {
             return source.Where(x => x != null);
-        }
-
-        internal static ConfiguredTaskAwaitable<T> CoalesceAwait<T>(this Task<T> task)
-            where T : class
-        {
-            return (task ?? Task.FromResult<T>(null)).ConfigureAwait(false);
         }
 
         internal static async Task<T> GetNotNullAsync<T>(
@@ -39,7 +33,7 @@ namespace Bot.Builder.Community.Cards
                 return default;
             }
 
-            var state = await statePropertyAccessor.GetAsync(turnContext, defaultValueFactory, cancellationToken).ConfigureAwait(false);
+            var state = await (statePropertyAccessor?.GetAsync(turnContext, defaultValueFactory, cancellationToken)).ConfigureAwait(false);
 
             if (state == null && defaultValueFactory != null)
             {
