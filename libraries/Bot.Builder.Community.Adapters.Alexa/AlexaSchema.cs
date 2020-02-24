@@ -71,6 +71,8 @@ namespace Bot.Builder.Community.Adapters.Alexa
         public AlexaDevice Device { get; set; }
 
         public AlexaUser User { get; set; }
+
+        public AlexaPerson Person { get; set; }
     }
 
     public class AlexaApplication
@@ -94,6 +96,13 @@ namespace Bot.Builder.Community.Adapters.Alexa
     public class AlexaUser
     {
         public string UserId { get; set; }
+
+        public string AccessToken { get; set; }
+    }
+
+    public class AlexaPerson
+    {
+        public string PersonId { get; set; }
 
         public string AccessToken { get; set; }
     }
