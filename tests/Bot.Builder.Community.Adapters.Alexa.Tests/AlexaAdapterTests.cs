@@ -60,10 +60,10 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
         }
 
         [Fact]
-        public void ProcessOutgoingActivitiesFailsWithNoActivities()
+        public void ProcessOutgoingActivitiesReturnsNullWithNoActivities()
         {
             var alexaAdapter = new AlexaAdapter(new Mock<AlexaAdapterOptions>().Object);
-            Assert.Throws<ArgumentOutOfRangeException>(() => { alexaAdapter.ProcessOutgoingActivities(new List<Activity>()); });
+            Assert.Null(alexaAdapter.ProcessOutgoingActivities(new List<Activity>()));
         }
 
         [Fact]
