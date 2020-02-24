@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Bot.Schema;
 
-namespace Bot.Builder.Community.Adapters.Alexa.Attachments
+namespace Bot.Builder.Community.Adapters.Alexa.Core.Attachments
 {
     public class PermissionConsentRequestAttachment : Attachment
     {

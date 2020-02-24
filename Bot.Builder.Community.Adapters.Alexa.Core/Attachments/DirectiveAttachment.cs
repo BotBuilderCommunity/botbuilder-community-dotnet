@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Alexa.NET.Response;
+﻿using Alexa.NET.Response;
 using Microsoft.Bot.Schema;
 
-namespace Bot.Builder.Community.Adapters.Alexa.Attachments
+namespace Bot.Builder.Community.Adapters.Alexa.Core.Attachments
 {
     public class DirectiveAttachment : Attachment
     {

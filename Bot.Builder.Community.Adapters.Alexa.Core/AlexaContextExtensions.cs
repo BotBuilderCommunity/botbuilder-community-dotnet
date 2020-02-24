@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 using Alexa.NET.CustomerProfile;
 using Alexa.NET.Request;
 using Alexa.NET.Response;
-using Bot.Builder.Community.Adapters.Alexa.Attachments;
+using Bot.Builder.Community.Adapters.Alexa.Core.Attachments;
 using Microsoft.Bot.Builder;
 
-namespace Bot.Builder.Community.Adapters.Alexa
+namespace Bot.Builder.Community.Adapters.Alexa.Core
 {
     public static class AlexaContextExtensions
     {
