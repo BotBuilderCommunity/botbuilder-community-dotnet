@@ -103,7 +103,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
         Payload,
 
         /// <summary>
-        /// Corresponds to <see cref="PayloadId"/>.
+        /// Corresponds to <see cref="PayloadItem"/>.
         /// </summary>
         Id,
     }

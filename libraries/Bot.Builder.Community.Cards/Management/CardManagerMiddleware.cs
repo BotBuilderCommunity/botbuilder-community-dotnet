@@ -32,7 +32,7 @@ namespace Bot.Builder.Community.Cards.Management
             AutoSaveActivitiesOnSend = true,
             AutoSeparateAttachmentsOnSend = true,
             TrackEnabledIds = false,
-            IdOptions = new PayloadIdOptions(PayloadIdTypes.Carousel),
+            IdOptions = new PayloadIdOptions(PayloadIdTypes.Action),
         };
 
         public static CardManagerMiddlewareOptions DefaultNonUpdatingOptions => new CardManagerMiddlewareOptions
@@ -47,7 +47,7 @@ namespace Bot.Builder.Community.Cards.Management
             AutoSaveActivitiesOnSend = false,
             AutoSeparateAttachmentsOnSend = false,
             TrackEnabledIds = true,
-            IdOptions = new PayloadIdOptions(PayloadIdTypes.Batch),
+            IdOptions = new PayloadIdOptions(PayloadIdTypes.Action),
         };
 
         public CardManagerMiddlewareOptions UpdatingOptions { get; } = DefaultUpdatingOptions;
@@ -95,7 +95,7 @@ namespace Bot.Builder.Community.Cards.Management
                         {
                             await Manager.DisableIdAsync(
                                 turnContext,
-                                new PayloadId(type, id),
+                                PayloadItem.CreateId(type, id),
                                 options.TrackEnabledIds,
                                 cancellationToken).ConfigureAwait(false);
                         }
@@ -106,11 +106,11 @@ namespace Bot.Builder.Community.Cards.Management
                 {
                     // If there are multiple ID types in use,
                     // just delete the one that represents the largest scope
-                    var type = idTypes.Max();
+                    var type = PayloadIdTypes.Collection.ElementAtOrDefault(idTypes.Max(idType => PayloadIdTypes.GetIndex(idType)));
 
                     if (value.GetIdFromPayload(type) is string id)
                     {
-                        await Manager.DeleteAsync(turnContext, new PayloadId(type, id), cancellationToken).ConfigureAwait(false); 
+                        await Manager.DeleteAsync(turnContext, new PayloadItem(type, id), cancellationToken).ConfigureAwait(false); 
                     }
                 }
             }

@@ -588,14 +588,14 @@ namespace Bot.Builder.Community.Cards.Tests
             var ids = batch.GetIdsFromBatch();
 
             Assert.AreEqual(5, ids.Count);
-            Assert.IsTrue(ids.Contains(new PayloadId(PayloadIdTypes.Action, ACTIONID)));
-            Assert.IsTrue(ids.Contains(new PayloadId(PayloadIdTypes.Action, ACTIONID2)));
-            Assert.IsTrue(ids.Contains(new PayloadId(PayloadIdTypes.Card, CARDID)));
-            Assert.IsFalse(ids.Contains(new PayloadId(PayloadIdTypes.Card, CARDID2)));
-            Assert.IsFalse(ids.Contains(new PayloadId(PayloadIdTypes.Carousel, CAROUSELID)));
-            Assert.IsFalse(ids.Contains(new PayloadId(PayloadIdTypes.Carousel, CAROUSELID2)));
-            Assert.IsTrue(ids.Contains(new PayloadId(PayloadIdTypes.Batch, BATCHID)));
-            Assert.IsTrue(ids.Contains(new PayloadId(PayloadIdTypes.Batch, BATCHID2)));
+            Assert.IsTrue(ids.Contains(new PayloadItem(PayloadIdTypes.Action, ACTIONID)));
+            Assert.IsTrue(ids.Contains(new PayloadItem(PayloadIdTypes.Action, ACTIONID2)));
+            Assert.IsTrue(ids.Contains(new PayloadItem(PayloadIdTypes.Card, CARDID)));
+            Assert.IsFalse(ids.Contains(new PayloadItem(PayloadIdTypes.Card, CARDID2)));
+            Assert.IsFalse(ids.Contains(new PayloadItem(PayloadIdTypes.Carousel, CAROUSELID)));
+            Assert.IsFalse(ids.Contains(new PayloadItem(PayloadIdTypes.Carousel, CAROUSELID2)));
+            Assert.IsTrue(ids.Contains(new PayloadItem(PayloadIdTypes.Batch, BATCHID)));
+            Assert.IsTrue(ids.Contains(new PayloadItem(PayloadIdTypes.Batch, BATCHID2)));
 
             batch = null;
 

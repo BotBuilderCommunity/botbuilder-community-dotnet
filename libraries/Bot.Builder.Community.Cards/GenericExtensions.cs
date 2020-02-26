@@ -149,7 +149,7 @@ namespace Bot.Builder.Community.Cards
 
         /// <summary>
         /// Clears any properties with the same name before setting the value,
-        /// thus performing a "case-insentive" set.
+        /// thus performing a "case-insensitive" set.
         /// </summary>
         /// <param name="jObject">A JObject.</param>
         /// <param name="key">The name of the property to set.</param>

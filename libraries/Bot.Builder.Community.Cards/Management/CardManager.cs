@@ -39,7 +39,7 @@ namespace Bot.Builder.Community.Cards.Management
         // NON-UPDATING METHODS
         // --------------------
 
-        public async Task DisableIdAsync(ITurnContext turnContext, PayloadId payloadId, bool trackEnabledIds = true, CancellationToken cancellationToken = default)
+        public async Task DisableIdAsync(ITurnContext turnContext, PayloadItem payloadId, bool trackEnabledIds = true, CancellationToken cancellationToken = default)
         {
             BotAssert.ContextNotNull(turnContext);
 
@@ -51,7 +51,7 @@ namespace Bot.Builder.Community.Cards.Management
             await (trackEnabledIds ? ForgetIdAsync(turnContext, payloadId, cancellationToken) : TrackIdAsync(turnContext, payloadId, cancellationToken)).ConfigureAwait(false);
         }
 
-        public async Task EnableIdAsync(ITurnContext turnContext, PayloadId payloadId, bool trackEnabledIds = true, CancellationToken cancellationToken = default)
+        public async Task EnableIdAsync(ITurnContext turnContext, PayloadItem payloadId, bool trackEnabledIds = true, CancellationToken cancellationToken = default)
         {
             BotAssert.ContextNotNull(turnContext);
 
@@ -63,7 +63,7 @@ namespace Bot.Builder.Community.Cards.Management
             await (trackEnabledIds ? TrackIdAsync(turnContext, payloadId, cancellationToken) : ForgetIdAsync(turnContext, payloadId, cancellationToken)).ConfigureAwait(false);
         }
 
-        public async Task TrackIdAsync(ITurnContext turnContext, PayloadId payloadId, CancellationToken cancellationToken = default)
+        public async Task TrackIdAsync(ITurnContext turnContext, PayloadItem payloadId, CancellationToken cancellationToken = default)
         {
             BotAssert.ContextNotNull(turnContext);
 
@@ -74,10 +74,10 @@ namespace Bot.Builder.Community.Cards.Management
 
             var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
 
-            state.PayloadIdsByType.InitializeKey(payloadId.Type, new HashSet<string>()).Add(payloadId.Value);
+            state.PayloadIdsByType.InitializeKey(payloadId.Path, new HashSet<string>()).Add(payloadId.Value);
         }
 
-        public async Task ForgetIdAsync(ITurnContext turnContext, PayloadId payloadId, CancellationToken cancellationToken = default)
+        public async Task ForgetIdAsync(ITurnContext turnContext, PayloadItem payloadId, CancellationToken cancellationToken = default)
         {
             BotAssert.ContextNotNull(turnContext);
 
@@ -88,7 +88,7 @@ namespace Bot.Builder.Community.Cards.Management
 
             var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
 
-            if (state.PayloadIdsByType != null && state.PayloadIdsByType.TryGetValue(payloadId.Type, out var ids))
+            if (state.PayloadIdsByType != null && state.PayloadIdsByType.TryGetValue(payloadId.Path, out var ids))
             {
                 // Even though the dictionary will be a copy,
                 // the set will be the same as the one in the original dictionary
@@ -133,7 +133,7 @@ namespace Bot.Builder.Community.Cards.Management
                 var matchResult = await GetPayloadMatchAsync(turnContext, cancellationToken).ConfigureAwait(false);
 
                 if (matchResult.SavedActivity != null
-                    && matchResult.SavedAttachment?.ContentType.EqualsCI(CardConstants.AdaptiveCardContentType) == true)
+                    && matchResult.SavedAttachment?.ContentType.Equals(CardConstants.AdaptiveCardContentType) == true)
                 {
                     matchResult.SavedAttachment.Content = matchResult.SavedAttachment.Content?.ToJObjectAndBackAsync(
                         card =>
@@ -164,7 +164,7 @@ namespace Bot.Builder.Community.Cards.Management
             }
         }
 
-        public async Task DeleteAsync(ITurnContext turnContext, PayloadId toDelete, CancellationToken cancellationToken = default)
+        public async Task DeleteAsync(ITurnContext turnContext, PayloadItem toDelete, CancellationToken cancellationToken = default)
         {
             BotAssert.ContextNotNull(turnContext);
 
@@ -174,7 +174,7 @@ namespace Bot.Builder.Community.Cards.Management
             }
 
             var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
-            var type = toDelete.Type;
+            var type = toDelete.Path;
 
             if (type == PayloadIdTypes.Batch)
             {
@@ -183,7 +183,7 @@ namespace Bot.Builder.Community.Cards.Management
                 {
                     var hasBatchId = false;
 
-                    CardTree.Recurse(activity, (PayloadId payloadId) =>
+                    CardTree.Recurse(activity, (PayloadItem payloadId) =>
                     {
                         // Payload ID's are compared by value
                         if (payloadId == toDelete)
@@ -301,7 +301,7 @@ namespace Bot.Builder.Community.Cards.Management
             {
                 var hasNoPayloadIds = true;
 
-                CardTree.Recurse(savedActivity, (PayloadId payloadId) =>
+                CardTree.Recurse(savedActivity, (PayloadItem payloadId) =>
                 {
                     hasNoPayloadIds = false;
                 });
@@ -327,9 +327,8 @@ namespace Bot.Builder.Community.Cards.Management
             CancellationToken cancellationToken = default)
         {
             var result = new PayloadMatchResult();
-            var incomingPayload = turnContext.GetIncomingPayload();
 
-            if (incomingPayload is null)
+            if (!(turnContext.GetIncomingPayload() is JObject incomingPayload))
             {
                 return result;
             }

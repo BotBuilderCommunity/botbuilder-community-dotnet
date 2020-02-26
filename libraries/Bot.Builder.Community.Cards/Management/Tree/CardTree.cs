@@ -153,7 +153,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 })
             },
             {
-                TreeNodeType.Payload, new TreeNode<object, PayloadId>(async (payload, nextAsync) =>
+                TreeNodeType.Payload, new TreeNode<object, PayloadItem>(async (payload, nextAsync) =>
                 {
                     return await payload.ToJObjectAndBackAsync(async payloadJObject =>
                     {
@@ -163,14 +163,14 @@ namespace Bot.Builder.Community.Cards.Management.Tree
 
                             if (id != null)
                             {
-                                await nextAsync(new PayloadId(type, id), TreeNodeType.Id);
+                                await nextAsync(new PayloadItem(type, id), TreeNodeType.Id);
                             }
                         }
                     }).ConfigureAwait(false);
                 })
             },
             {
-                TreeNodeType.Id, new TreeNode<PayloadId, object>((id, _) => Task.FromResult(id))
+                TreeNodeType.Id, new TreeNode<PayloadItem, object>((id, _) => Task.FromResult(id))
             },
         };
 
@@ -384,14 +384,14 @@ namespace Bot.Builder.Community.Cards.Management.Tree
             return entryNode.CallChildAsync(entryValue, Next).Result as TEntry;
         }
 
-        internal static ISet<PayloadId> GetIds<TEntry>(TEntry entryValue, TreeNodeType? entryType = null)
+        internal static ISet<PayloadItem> GetIds<TEntry>(TEntry entryValue, TreeNodeType? entryType = null)
             where TEntry : class
         {
-            var ids = new HashSet<PayloadId>();
+            var ids = new HashSet<PayloadItem>();
 
             Recurse(
                 entryValue,
-                (PayloadId payloadId) =>
+                (PayloadItem payloadId) =>
                 {
                     ids.Add(payloadId);
                 }, entryType);

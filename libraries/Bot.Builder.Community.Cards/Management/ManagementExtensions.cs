@@ -96,7 +96,7 @@ namespace Bot.Builder.Community.Cards.Management
             CardTree.ApplyIds(activities, options ?? new PayloadIdOptions(PayloadIdTypes.Batch));
         }
 
-        public static ISet<PayloadId> GetIdsFromBatch(this IEnumerable<IMessageActivity> activities)
+        public static ISet<PayloadItem> GetIdsFromBatch(this IEnumerable<IMessageActivity> activities)
         {
             if (activities is null)
             {
@@ -413,7 +413,7 @@ namespace Bot.Builder.Community.Cards.Management
             }
         }
 
-        internal static string GetIdFromPayload(this JObject payload, string type = PayloadIdTypes.Card) =>
-            payload?.GetValueCI(PayloadIdTypes.GetKey(type)) is JToken id ? id.ToString() : null;
+        internal static string GetIdFromPayload(this JObject payload, string type = PayloadIdTypes.Action)
+            => payload.GetValueCI(PayloadIdTypes.GetKey(type)) is JToken id ? id.ToString() : null;
     }
 }
