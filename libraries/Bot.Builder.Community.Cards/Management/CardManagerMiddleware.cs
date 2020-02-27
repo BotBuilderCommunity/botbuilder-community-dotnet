@@ -95,7 +95,7 @@ namespace Bot.Builder.Community.Cards.Management
                         {
                             await Manager.DisableIdAsync(
                                 turnContext,
-                                PayloadItem.CreateId(type, id),
+                                new PayloadItem(type, id),
                                 options.TrackEnabledIds,
                                 cancellationToken).ConfigureAwait(false);
                         }

@@ -39,7 +39,7 @@ namespace Bot.Builder.Community.Cards.Management
 
         internal static int GetIndex(string type) => Collection.IndexOf(type);
 
-        internal static string GetKey(string type) => $"{CardConstants.PrefixPayloadIds}{type}";
+        internal static string GetKey(string type) => $"{CardConstants.PrefixPayloadId}{type}";
 
         internal static string GenerateId(string type) => $"{type}-{Guid.NewGuid()}";
     }

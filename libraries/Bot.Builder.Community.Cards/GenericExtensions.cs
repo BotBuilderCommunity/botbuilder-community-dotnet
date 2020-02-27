@@ -187,5 +187,7 @@ namespace Bot.Builder.Community.Cards
                 jToken.Remove();
             }
         }
+
+        internal static string SerializeIfNeeded(this object obj) => obj is null ? null : obj is string str ? str : JsonConvert.SerializeObject(obj);
     }
 }

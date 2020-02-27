@@ -115,21 +115,18 @@ namespace Bot.Builder.Community.Cards.Management
 
             foreach (var activity in activities)
             {
-                var activityChannelId = channelId ?? activity.ChannelId
-                    ?? throw new ArgumentException("The channel could not be determined for all activities."
-                    + " Make sure each activity has a channel ID or provide a channel ID as an argument");
+                var activityChannelId = channelId ?? activity.ChannelId;
 
                 CardTree.Recurse(activity, (CardAction action) =>
                 {
                     var text = action.Text;
                     var value = action.Value;
-                    var type = action.Type;
 
                     void EnsureText()
                     {
-                        if (text == null && value != null)
+                        if (text == null)
                         {
-                            action.Text = JsonConvert.SerializeObject(value);
+                            action.Text = value.SerializeIfNeeded();
                         }
                     }
 
@@ -145,13 +142,13 @@ namespace Bot.Builder.Community.Cards.Management
                     {
                         if (!(value is string))
                         {
-                            if (value != null)
-                            {
-                                action.Value = JsonConvert.SerializeObject(value);
-                            }
-                            else if (text != null)
+                            if (value == null && text != null)
                             {
                                 action.Value = text;
+                            }
+                            else
+                            {
+                                action.Value = value.SerializeIfNeeded();
                             }
                         }
                     }
@@ -162,9 +159,13 @@ namespace Bot.Builder.Community.Cards.Management
                         {
                             action.Value = parsedValue;
                         }
+                        else if (text.TryParseJObject() is JObject parsedText)
+                        {
+                            action.Value = parsedText;
+                        }
                     }
 
-                    if (type == ActionTypes.MessageBack)
+                    if (action.Type == ActionTypes.MessageBack)
                     {
                         switch (activityChannelId)
                         {
@@ -198,7 +199,7 @@ namespace Bot.Builder.Community.Cards.Management
                     }
 
                     // Using if instead of else-if so this block can be executed in addition to the previous one
-                    if (type == ActionTypes.PostBack)
+                    if (action.Type == ActionTypes.PostBack)
                     {
                         switch (activityChannelId)
                         {
@@ -224,7 +225,7 @@ namespace Bot.Builder.Community.Cards.Management
                         }
                     }
 
-                    if (type == ActionTypes.ImBack)
+                    if (action.Type == ActionTypes.ImBack)
                     {
                         switch (activityChannelId)
                         {
@@ -267,9 +268,9 @@ namespace Bot.Builder.Community.Cards.Management
                 turnContext.TurnState.Set(turnState = new CardManagerTurnState());
             }
 
-            if (turnState.CheckedForIncomingButtonPayload)
+            if (turnState.CheckedForIncomingPayload)
             {
-                return turnState.IncomingButtonPayload;
+                return turnState.IncomingPayload;
             }
 
             var activity = turnContext.Activity;
@@ -285,8 +286,7 @@ namespace Bot.Builder.Community.Cards.Management
             var channelData = activity.ChannelData.ToJObject(true); // Channel data will have been serialized into a string in Kik
             var entities = activity.Entities;
 
-            turnState.IncomingButtonPayload = value;
-            turnState.CheckedForIncomingButtonPayload = true;
+            turnState.IncomingPayload = value;
 
             // Many channels have button responses that are hard to distinguish from user-entered text.
             // A common theme is that button responses often have a property in channel data that isn't
@@ -295,7 +295,7 @@ namespace Bot.Builder.Community.Cards.Management
             {
                 if (channelData?.GetValueCI(propName) != null)
                 {
-                    turnState.IncomingButtonPayload = newResult ?? parsedText;
+                    turnState.IncomingPayload = newResult ?? parsedText;
                 }
             }
 
@@ -309,7 +309,7 @@ namespace Bot.Builder.Community.Cards.Management
                     // as confirmation of a missing "Intent" entity.
                     if (entities?.Any(entity => entity.Type.EqualsCI(CardConstants.TypeIntent)) != true)
                     {
-                        turnState.IncomingButtonPayload = parsedText;
+                        turnState.IncomingPayload = parsedText;
                     }
 
                     break;
@@ -348,7 +348,7 @@ namespace Bot.Builder.Community.Cards.Management
                     // then we're interpreting that to mean that this is not a button response.
                     if (channelData?.GetValueCI(CardConstants.KeyText)?.ToString().EqualsCI(text) == false)
                     {
-                        turnState.IncomingButtonPayload = parsedText;
+                        turnState.IncomingPayload = parsedText;
                     }
 
                     break;
@@ -368,9 +368,11 @@ namespace Bot.Builder.Community.Cards.Management
                     break;
             }
 
-            // Teams and Facebook values don't need to be adapted
+            // Teams and Facebook values don't need to be adapted any further
 
-            return turnState.IncomingButtonPayload;
+            turnState.CheckedForIncomingPayload = true;
+
+            return turnState.IncomingPayload;
         }
 
         internal static void ApplyIdsToPayload(this JObject payload, PayloadIdOptions options = null)

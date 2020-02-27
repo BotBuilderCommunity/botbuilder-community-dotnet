@@ -325,12 +325,13 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 if (node.IdType is string idType)
                 {
                     options = (options ?? new PayloadIdOptions()).ReplaceNullWithGeneratedId(idType);
-
+                    /*
                     foreach (var item in options.GetIdTypes()
                         .Where(it => PayloadIdTypes.GetIndex(it) < PayloadIdTypes.GetIndex(idType)))
                     {
                         options.Set(item);
                     }
+                    */
                 }
             }
 
