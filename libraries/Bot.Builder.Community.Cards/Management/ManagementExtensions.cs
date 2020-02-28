@@ -132,7 +132,7 @@ namespace Bot.Builder.Community.Cards.Management
 
                     void EnsureValue()
                     {
-                        if (value == null && text != null)
+                        if (value == null)
                         {
                             action.Value = text;
                         }
@@ -155,13 +155,17 @@ namespace Bot.Builder.Community.Cards.Management
 
                     void EnsureObjectValue()
                     {
-                        if (value is string stringValue && stringValue.TryParseJObject() is JObject parsedValue)
+                        // Check if value is null or otherwise primitive
+                        if (value.ToJObject() is null)
                         {
-                            action.Value = parsedValue;
-                        }
-                        else if (text.TryParseJObject() is JObject parsedText)
-                        {
-                            action.Value = parsedText;
+                            if (value is string stringValue && stringValue.TryParseJObject() is JObject parsedValue)
+                            {
+                                action.Value = parsedValue;
+                            }
+                            else if (text.TryParseJObject() is JObject parsedText)
+                            {
+                                action.Value = parsedText;
+                            }
                         }
                     }
 

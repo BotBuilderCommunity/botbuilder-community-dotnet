@@ -622,9 +622,11 @@ namespace Bot.Builder.Community.Cards.Tests
         [TestMethod]
         public void TestAdaptOutgoingCardActions()
         {
-            var obj = new object();
             var notJson = "Not JSON";
-            var json = "{}";
+            var json = "{'foo':'bar'}";
+            var parsedJson = JObject.Parse(json);
+            var obj = new object();
+            var serializedObj = JsonConvert.SerializeObject(obj);
 
             var actionTypes = new List<string>
             {
@@ -656,166 +658,178 @@ namespace Bot.Builder.Community.Cards.Tests
                 Channels.Webchat,
             };
 
-            IList<Attachment> GenerateAttachments() => new List<Attachment>
+            var modifiedCardActions = new Dictionary<ActionMod, IEnumerable<CardAction>>
             {
-                new HeroCard(buttons: actionTypes.SelectMany(actionType => new List<CardAction>
                 {
-                    new CardAction(actionType),
-                    new CardAction(actionType, value: obj),
-                    new CardAction(actionType, value: json),
-                    new CardAction(actionType, value: notJson),
-                    new CardAction(actionType, text: json),
-                    new CardAction(actionType, text: notJson),
-                    new CardAction(actionType, value: obj, text: json),
-                    new CardAction(actionType, value: obj, text: notJson),
-                    new CardAction(actionType, value: json, text: json),
-                    new CardAction(actionType, value: json, text: notJson),
-                    new CardAction(actionType, value: notJson, text: json),
-                    new CardAction(actionType, value: notJson, text: notJson),
-                }).ToList()).ToAttachment(),
+                    ActionMod.None,
+                    new List<CardAction>
+                    {
+                        new CardAction(),
+                        new CardAction(value: obj),
+                        new CardAction(value: json),
+                        new CardAction(value: notJson),
+                        new CardAction(text: json),
+                        new CardAction(text: notJson),
+                        new CardAction(value: obj, text: json),
+                        new CardAction(value: obj, text: notJson),
+                        new CardAction(value: json, text: json),
+                        new CardAction(value: json, text: notJson),
+                        new CardAction(value: notJson, text: json),
+                        new CardAction(value: notJson, text: notJson),
+                    }
+                },
+                {
+                    ActionMod.EnsuredText,
+                    new List<CardAction>
+                    {
+                        new CardAction(),
+                        new CardAction(value: obj, text: serializedObj),
+                        new CardAction(value: json, text: json),
+                        new CardAction(value: notJson, text: notJson),
+                        new CardAction(text: json),
+                        new CardAction(text: notJson),
+                        new CardAction(value: obj, text: json),
+                        new CardAction(value: obj, text: notJson),
+                        new CardAction(value: json, text: json),
+                        new CardAction(value: json, text: notJson),
+                        new CardAction(value: notJson, text: json),
+                        new CardAction(value: notJson, text: notJson),
+                    }
+                },
+                {
+                    ActionMod.EnsuredValue,
+                    new List<CardAction>
+                    {
+                        new CardAction(),
+                        new CardAction(value: obj),
+                        new CardAction(value: json),
+                        new CardAction(value: notJson),
+                        new CardAction(text: json, value: json),
+                        new CardAction(text: notJson, value: notJson),
+                        new CardAction(value: obj, text: json),
+                        new CardAction(value: obj, text: notJson),
+                        new CardAction(value: json, text: json),
+                        new CardAction(value: json, text: notJson),
+                        new CardAction(value: notJson, text: json),
+                        new CardAction(value: notJson, text: notJson),
+                    }
+                },
+                {
+                    ActionMod.EnsuredStringValue,
+                    new List<CardAction>
+                    {
+                        new CardAction(),
+                        new CardAction(value: serializedObj),
+                        new CardAction(value: json),
+                        new CardAction(value: notJson),
+                        new CardAction(text: json, value: json),
+                        new CardAction(text: notJson, value: notJson),
+                        new CardAction(value: serializedObj, text: json),
+                        new CardAction(value: serializedObj, text: notJson),
+                        new CardAction(value: json, text: json),
+                        new CardAction(value: json, text: notJson),
+                        new CardAction(value: notJson, text: json),
+                        new CardAction(value: notJson, text: notJson),
+                    }
+                },
+                {
+                    ActionMod.EnsuredObjectValue,
+                    new List<CardAction>
+                    {
+                        new CardAction(),
+                        new CardAction(value: obj),
+                        new CardAction(value: parsedJson),
+                        new CardAction(value: notJson),
+                        new CardAction(text: json, value: parsedJson),
+                        new CardAction(text: notJson),
+                        new CardAction(value: obj, text: json),
+                        new CardAction(value: obj, text: notJson),
+                        new CardAction(value: parsedJson, text: json),
+                        new CardAction(value: parsedJson, text: notJson),
+                        new CardAction(value: parsedJson, text: json),
+                        new CardAction(value: notJson, text: notJson),
+                    }
+                },
             };
 
-            IList<Activity> GenerateBatch()
+            IList<Attachment> GenerateAttachments() => new List<Attachment>
             {
-                return channels.Select(channel =>
-                {
-                    return new Activity(channelId: channel, attachments: GenerateAttachments());
-                }).ToList();
-            }
+                new HeroCard(
+                    buttons: actionTypes
+                        .SelectMany(actionType => modifiedCardActions[ActionMod.None]
+                            .Select(action => new CardAction(
+                                actionType,
+                                value: action.Value,
+                                text: action.Text)))
+                        .ToList())
+                    .ToAttachment(),
+            };
 
-            var originalBatch = GenerateBatch();
-            var modifiedBatch = GenerateBatch();
+            var batch = channels.Select(channel => new Activity(channelId: channel, attachments: GenerateAttachments())).ToList();
 
-            modifiedBatch.AdaptOutgoingCardActions();
+            batch.AdaptOutgoingCardActions();
 
-            Assert.AreEqual(originalBatch.Count, modifiedBatch.Count);
+            Assert.AreEqual(channels.Count, batch.Count);
 
             int activityIndex = 0;
-            int actionsChecked = 0;
 
             void CheckChannelActions(
                 string channelId,
-                ActionMod messageBackAssertion,
-                ActionMod postBackAssertion,
-                ActionMod imBackAssertion)
+                ActionMod messageBackMod,
+                ActionMod postBackMod,
+                ActionMod imBackMod)
             {
-                var assertions = new Dictionary<string, ActionMod>
+                var modifications = new Dictionary<string, ActionMod>
                 {
-                    { ActionTypes.MessageBack, messageBackAssertion },
-                    { ActionTypes.PostBack, postBackAssertion },
-                    { ActionTypes.ImBack, imBackAssertion },
+                    { ActionTypes.MessageBack, messageBackMod },
+                    { ActionTypes.PostBack, postBackMod },
+                    { ActionTypes.ImBack, imBackMod },
                     { ActionTypes.OpenUrl, ActionMod.None },
                 };
 
-                var oldActivity = originalBatch[activityIndex];
-                var newActivity = modifiedBatch[activityIndex];
+                var activity = batch[activityIndex];
 
-                Assert.AreEqual(channelId, oldActivity.ChannelId);
-                Assert.AreEqual(channelId, newActivity.ChannelId);
+                Assert.AreEqual(channelId, activity.ChannelId);
 
-                var oldButtons = ((HeroCard)oldActivity.Attachments.Single().Content).Buttons;
-                var newButtons = ((HeroCard)newActivity.Attachments.Single().Content).Buttons;
+                var buttons = ((HeroCard)activity.Attachments.Single().Content).Buttons;
+                var buttonIndex = 0;
 
-                Assert.AreEqual(oldButtons.Count, newButtons.Count);
+                Assert.AreEqual(48, buttons.Count);
 
-                for (int i = 0; i < newButtons.Count; i++)
+                foreach (var actionType in actionTypes)
                 {
-                    var oldButton = oldButtons[i];
-                    var newButton = newButtons[i];
-                    var oldType = oldButton.Type;
-                    var newType = newButton.Type;
-                    var oldValue = oldButton.Value;
-                    var newValue = newButton.Value;
-                    var oldText = oldButton.Text;
-                    var newText = newButton.Text;
-                    var assertion = assertions[newType];
+                    var expectedType = actionType;
 
-                    void AssertUnchangedValue()
+                    if (modifications[expectedType] == ActionMod.ConvertedToPostBack)
                     {
-                        Assert.AreEqual(oldValue, newValue, $"Valued was changed in {channelId} action #{i}: {{ {oldType}, {oldValue}, {oldText} }}");
+                        expectedType = ActionTypes.PostBack;
                     }
 
-                    void AssertUnchangedText()
+                    var modification = modifications[expectedType];
+                    var expectedActions = modifiedCardActions[modification];
+
+                    Assert.AreEqual(12, expectedActions.Count());
+
+                    foreach (var expectedAction in expectedActions)
                     {
-                        Assert.AreEqual(oldText, newText, $"Text was changed in {channelId} action #{i}: {{ {oldType}, {oldValue}, {oldText} }}");
+                        var actualAction = buttons[buttonIndex];
+                        var expectedValue = expectedAction.Value;
+                        var actualValue = actualAction.Value;
+
+                        Assert.AreEqual(expectedType, actualAction.Type, $"Wrong type for {channelId} action #{buttonIndex}");
+                        Assert.AreEqual(expectedAction.Text, actualAction.Text, $"Wrong text for {channelId} action #{buttonIndex}");
+
+                        if (expectedValue is JObject)
+                        {
+                            Assert.IsTrue(JToken.DeepEquals(parsedJson, (JObject)actualValue), $"Wrong JObject for {channelId} action #{buttonIndex}");
+                        }
+                        else
+                        {
+                            Assert.AreEqual(expectedValue, actualValue, $"Wrong value for {channelId} action #{buttonIndex}");
+                        }
+
+                        buttonIndex++;
                     }
-
-                    if (oldType == ActionTypes.MessageBack && messageBackAssertion == ActionMod.ConvertedToPostBack)
-                    {
-                        Assert.AreEqual(ActionTypes.PostBack, newType);
-                    }
-
-                    switch (assertion)
-                    {
-                        case ActionMod.None:
-                            AssertUnchangedValue();
-                            AssertUnchangedText();
-                            break;
-                        case ActionMod.EnsuredText:
-                            AssertUnchangedValue();
-                            if (oldText == null)
-                            {
-                                Assert.AreEqual(oldValue.SerializeIfNeeded(), newText);
-                            }
-                            else
-                            {
-                                AssertUnchangedText();
-                            }
-
-                            break;
-                        case ActionMod.EnsuredValue:
-                            AssertUnchangedText();
-                            if (oldValue == null && oldText != null)
-                            {
-                                Assert.AreEqual(oldText, newValue);
-                            }
-                            else
-                            {
-                                AssertUnchangedValue();
-                            }
-
-                            break;
-                        case ActionMod.EnsuredStringValue:
-                            AssertUnchangedText();
-                            if (oldValue is string)
-                            {
-                                AssertUnchangedValue();
-                            }
-                            else
-                            {
-                                if (oldValue == null && oldText != null)
-                                {
-                                    Assert.AreEqual(oldText, newValue);
-                                }
-                                else
-                                {
-                                    Assert.AreEqual(oldValue.SerializeIfNeeded(), newValue);
-                                }
-                            }
-
-                            break;
-                        case ActionMod.EnsuredObjectValue:
-                            AssertUnchangedText();
-                            if (oldValue is string stringValue && stringValue.TryParseJObject() is JObject parsedValue)
-                            {
-                                Assert.IsTrue(JToken.DeepEquals(parsedValue, (JObject)newValue));
-                            }
-                            else if (oldText.TryParseJObject() is JObject parsedText)
-                            {
-                                Assert.IsTrue(JToken.DeepEquals(parsedText, (JObject)newValue));
-                            }
-                            else
-                            {
-                                AssertUnchangedValue();
-                            }
-
-                            break;
-                        default:
-                            Assert.Fail($"Unexpected action assertion '{assertion}' for action type {newType} in channel {channelId}");
-                            break;
-                    }
-
-                    actionsChecked++;
                 }
 
                 activityIndex++;
@@ -841,30 +855,25 @@ namespace Bot.Builder.Community.Cards.Tests
             CheckChannelActions(Channels.Webchat, ActionMod.EnsuredValue, ActionMod.EnsuredValue, ActionMod.EnsuredStringValue);
 
             Assert.AreEqual(channels.Count, activityIndex);
-            Assert.AreEqual(channels.Count * 48, actionsChecked);
 
-            IList<Activity> GenerateSmallBatch() => new List<Activity>
+            batch = new List<Activity>
             {
                 new Activity(channelId: Channels.Directline, attachments: GenerateAttachments()),
                 new Activity(channelId: Channels.DirectlineSpeech, attachments: GenerateAttachments()),
             };
 
-            originalBatch = GenerateSmallBatch();
-            modifiedBatch = GenerateSmallBatch();
             activityIndex = 0;
-            actionsChecked = 0;
 
-            modifiedBatch.AdaptOutgoingCardActions(Channels.Msteams);
+            batch.AdaptOutgoingCardActions(Channels.Msteams);
 
             CheckChannelActions(Channels.Directline, ActionMod.EnsuredObjectValue, ActionMod.EnsuredObjectValue, ActionMod.EnsuredStringValue);
             CheckChannelActions(Channels.DirectlineSpeech, ActionMod.EnsuredObjectValue, ActionMod.EnsuredObjectValue, ActionMod.EnsuredStringValue);
 
             Assert.AreEqual(2, activityIndex);
-            Assert.AreEqual(2 * 48, actionsChecked);
 
-            modifiedBatch = null;
+            batch = null;
 
-            Assert.ThrowsException<ArgumentNullException>(() => modifiedBatch.AdaptOutgoingCardActions());
+            Assert.ThrowsException<ArgumentNullException>(() => batch.AdaptOutgoingCardActions());
         }
 
         [TestMethod]

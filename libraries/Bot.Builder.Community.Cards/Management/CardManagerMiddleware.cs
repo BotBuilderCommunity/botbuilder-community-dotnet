@@ -144,14 +144,14 @@ namespace Bot.Builder.Community.Cards.Management
                 activities.SeparateAttachments();
             }
 
-            if (options.AutoApplyIds)
-            {
-                activities.ApplyIdsToBatch(options.IdOptions);
-            }
-
             if (options.AutoAdaptOutgoingCardActions)
             {
                 activities.AdaptOutgoingCardActions(turnContext.Activity.ChannelId);
+            }
+
+            if (options.AutoApplyIds)
+            {
+                activities.ApplyIdsToBatch(options.IdOptions);
             }
 
             // The resource response ID's will be automatically applied to the activities
