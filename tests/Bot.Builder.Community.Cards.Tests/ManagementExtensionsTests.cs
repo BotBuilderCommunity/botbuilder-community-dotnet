@@ -63,6 +63,12 @@ namespace Bot.Builder.Community.Cards.Tests
 
             batch.SeparateAttachments();
 
+            static void AssertIsTextMessage(IMessageActivity activity)
+                => Assert.IsTrue(activity.Attachments?.Any() != true && !string.IsNullOrEmpty(activity.Text));
+
+            static void AssertIsAttachmentMessage(IMessageActivity activity, int count = 1)
+                => Assert.IsTrue(activity.Attachments.Count == count && string.IsNullOrEmpty(activity.Text));
+
             AssertIsTextMessage(batch[0]);
             AssertIsAttachmentMessage(batch[1]);
             AssertIsTextMessage(batch[2]);
@@ -687,7 +693,7 @@ namespace Bot.Builder.Community.Cards.Tests
             int activityIndex = 0;
             int actionsChecked = 0;
 
-            void CheckChannelActivity(
+            void CheckChannelActions(
                 string channelId,
                 ActionMod messageBackAssertion,
                 ActionMod postBackAssertion,
@@ -701,8 +707,14 @@ namespace Bot.Builder.Community.Cards.Tests
                     { ActionTypes.OpenUrl, ActionMod.None },
                 };
 
-                var oldButtons = ((HeroCard)originalBatch[activityIndex].Attachments.Single().Content).Buttons;
-                var newButtons = ((HeroCard)modifiedBatch[activityIndex].Attachments.Single().Content).Buttons;
+                var oldActivity = originalBatch[activityIndex];
+                var newActivity = modifiedBatch[activityIndex];
+
+                Assert.AreEqual(channelId, oldActivity.ChannelId);
+                Assert.AreEqual(channelId, newActivity.ChannelId);
+
+                var oldButtons = ((HeroCard)oldActivity.Attachments.Single().Content).Buttons;
+                var newButtons = ((HeroCard)newActivity.Attachments.Single().Content).Buttons;
 
                 Assert.AreEqual(oldButtons.Count, newButtons.Count);
 
@@ -809,29 +821,30 @@ namespace Bot.Builder.Community.Cards.Tests
                 activityIndex++;
             }
 
-            CheckChannelActivity(Channels.Cortana, ActionMod.ConvertedToPostBack, ActionMod.EnsuredStringValue, ActionMod.EnsuredStringValue);
-            CheckChannelActivity(Channels.Directline, ActionMod.EnsuredValue, ActionMod.EnsuredValue, ActionMod.EnsuredStringValue);
-            CheckChannelActivity(Channels.DirectlineSpeech, ActionMod.None, ActionMod.None, ActionMod.None);
-            CheckChannelActivity(Channels.Email, ActionMod.EnsuredText, ActionMod.EnsuredValue, ActionMod.EnsuredValue);
-            CheckChannelActivity(Channels.Emulator, ActionMod.EnsuredValue, ActionMod.EnsuredValue, ActionMod.EnsuredStringValue);
-            CheckChannelActivity(Channels.Facebook, ActionMod.EnsuredStringValue, ActionMod.EnsuredStringValue, ActionMod.EnsuredStringValue);
-            CheckChannelActivity(Channels.Groupme, ActionMod.None, ActionMod.None, ActionMod.None);
-            CheckChannelActivity(Channels.Kik, ActionMod.None, ActionMod.None, ActionMod.None);
-            CheckChannelActivity(Channels.Line, ActionMod.EnsuredValue, ActionMod.EnsuredValue, ActionMod.EnsuredValue);
-            CheckChannelActivity(Channels.Msteams, ActionMod.EnsuredObjectValue, ActionMod.EnsuredObjectValue, ActionMod.EnsuredStringValue);
-            CheckChannelActivity(Channels.Skype, ActionMod.ConvertedToPostBack, ActionMod.EnsuredValue, ActionMod.EnsuredStringValue);
-            CheckChannelActivity(Channels.Skypeforbusiness, ActionMod.None, ActionMod.None, ActionMod.None);
-            CheckChannelActivity(Channels.Slack, ActionMod.EnsuredText, ActionMod.EnsuredStringValue, ActionMod.EnsuredStringValue);
-            CheckChannelActivity(Channels.Sms, ActionMod.None, ActionMod.None, ActionMod.None);
-            CheckChannelActivity(Channels.Telegram, ActionMod.EnsuredText, ActionMod.EnsuredStringValue, ActionMod.EnsuredStringValue);
-            CheckChannelActivity(Channels.Test, ActionMod.None, ActionMod.None, ActionMod.None);
-            CheckChannelActivity(Channels.Twilio, ActionMod.None, ActionMod.None, ActionMod.None);
-            CheckChannelActivity(Channels.Webchat, ActionMod.EnsuredValue, ActionMod.EnsuredValue, ActionMod.EnsuredStringValue);
+            CheckChannelActions(Channels.Cortana, ActionMod.ConvertedToPostBack, ActionMod.EnsuredStringValue, ActionMod.EnsuredStringValue);
+            CheckChannelActions(Channels.Directline, ActionMod.EnsuredValue, ActionMod.EnsuredValue, ActionMod.EnsuredStringValue);
+            CheckChannelActions(Channels.DirectlineSpeech, ActionMod.None, ActionMod.None, ActionMod.None);
+            CheckChannelActions(Channels.Email, ActionMod.EnsuredText, ActionMod.EnsuredValue, ActionMod.EnsuredValue);
+            CheckChannelActions(Channels.Emulator, ActionMod.EnsuredValue, ActionMod.EnsuredValue, ActionMod.EnsuredStringValue);
+            CheckChannelActions(Channels.Facebook, ActionMod.EnsuredStringValue, ActionMod.EnsuredStringValue, ActionMod.EnsuredStringValue);
+            CheckChannelActions(Channels.Groupme, ActionMod.None, ActionMod.None, ActionMod.None);
+            CheckChannelActions(Channels.Kik, ActionMod.None, ActionMod.None, ActionMod.None);
+            CheckChannelActions(Channels.Line, ActionMod.EnsuredValue, ActionMod.EnsuredValue, ActionMod.EnsuredValue);
+            CheckChannelActions(Channels.Msteams, ActionMod.EnsuredObjectValue, ActionMod.EnsuredObjectValue, ActionMod.EnsuredStringValue);
+            CheckChannelActions(Channels.Skype, ActionMod.ConvertedToPostBack, ActionMod.EnsuredValue, ActionMod.EnsuredStringValue);
+            CheckChannelActions(Channels.Skypeforbusiness, ActionMod.None, ActionMod.None, ActionMod.None);
+            CheckChannelActions(Channels.Slack, ActionMod.EnsuredText, ActionMod.EnsuredStringValue, ActionMod.EnsuredStringValue);
+            CheckChannelActions(Channels.Sms, ActionMod.None, ActionMod.None, ActionMod.None);
+            CheckChannelActions(Channels.Telegram, ActionMod.EnsuredText, ActionMod.EnsuredStringValue, ActionMod.EnsuredStringValue);
+            CheckChannelActions(Channels.Test, ActionMod.None, ActionMod.None, ActionMod.None);
+            CheckChannelActions(Channels.Twilio, ActionMod.None, ActionMod.None, ActionMod.None);
+            CheckChannelActions(Channels.Webchat, ActionMod.EnsuredValue, ActionMod.EnsuredValue, ActionMod.EnsuredStringValue);
 
             Assert.AreEqual(channels.Count, activityIndex);
             Assert.AreEqual(channels.Count * 48, actionsChecked);
 
-            IList<Activity> GenerateSmallBatch() => new List<Activity> {
+            IList<Activity> GenerateSmallBatch() => new List<Activity>
+            {
                 new Activity(channelId: Channels.Directline, attachments: GenerateAttachments()),
                 new Activity(channelId: Channels.DirectlineSpeech, attachments: GenerateAttachments()),
             };
@@ -843,8 +856,8 @@ namespace Bot.Builder.Community.Cards.Tests
 
             modifiedBatch.AdaptOutgoingCardActions(Channels.Msteams);
 
-            CheckChannelActivity(Channels.Msteams, ActionMod.EnsuredObjectValue, ActionMod.EnsuredObjectValue, ActionMod.EnsuredStringValue);
-            CheckChannelActivity(Channels.Msteams, ActionMod.EnsuredObjectValue, ActionMod.EnsuredObjectValue, ActionMod.EnsuredStringValue);
+            CheckChannelActions(Channels.Directline, ActionMod.EnsuredObjectValue, ActionMod.EnsuredObjectValue, ActionMod.EnsuredStringValue);
+            CheckChannelActions(Channels.DirectlineSpeech, ActionMod.EnsuredObjectValue, ActionMod.EnsuredObjectValue, ActionMod.EnsuredStringValue);
 
             Assert.AreEqual(2, activityIndex);
             Assert.AreEqual(2 * 48, actionsChecked);
@@ -857,10 +870,17 @@ namespace Bot.Builder.Community.Cards.Tests
         [TestMethod]
         public void TestGetIncomingPayload()
         {
+            var adapter = new TestAdapter();
             var json = "{'foo':'bar'}";
+            var notJson = "Not JSON";
             var parsedJson = json.TryParseJObject();
 
-            ITurnContext GenerateTurnContext(string channelId, object value, string text, object channelData, string entityType)
+            ITurnContext GenerateTurnContext(
+                string channelId = null,
+                object value = null,
+                string text = null,
+                object channelData = null,
+                string entityType = null)
             {
                 var activity = new Activity
                 {
@@ -868,13 +888,17 @@ namespace Bot.Builder.Community.Cards.Tests
                     Value = value,
                     Text = text,
                     ChannelData = channelData,
-                    Entities = new List<Entity> { new Entity(entityType) },
+                    Entities = entityType is null ? null : new List<Entity> { new Entity(entityType) },
                 };
 
-                return new TurnContext(new TestAdapter(), activity);
+                return new TurnContext(adapter, activity);
             }
 
-            var turnContext = GenerateTurnContext(Channels.Cortana, null, json, null, CardConstants.TypeIntent);
+            static object GenerateChannelData(string key, object value = null) => new Dictionary<string, object> { { key, value } };
+
+            // CORTANA / TURN STATE CACHE
+
+            var turnContext = GenerateTurnContext(Channels.Cortana, null, json, null, "Non-intent");
             var incomingPayload = turnContext.GetIncomingPayload();
 
             Assert.IsTrue(JToken.DeepEquals(parsedJson, (JObject)incomingPayload));
@@ -882,20 +906,125 @@ namespace Bot.Builder.Community.Cards.Tests
             Assert.AreSame(incomingPayload, turnContext.TurnState.Get<CardManagerTurnState>().IncomingPayload);
             Assert.AreSame(incomingPayload, turnContext.GetIncomingPayload(), "Cached payload was not used");
 
-            turnContext = GenerateTurnContext(Channels.Cortana, null, json, null, "Non-intent");
-            incomingPayload = turnContext.GetIncomingPayload();
+            turnContext.TurnState.Get<CardManagerTurnState>().CheckedForIncomingPayload = false;
 
-            Assert.IsNull(incomingPayload);
+            var newIncomingPayload = turnContext.GetIncomingPayload();
+
+            Assert.IsTrue(JToken.DeepEquals((JObject)incomingPayload, (JObject)newIncomingPayload));
+            Assert.AreNotSame(incomingPayload, newIncomingPayload, "Cached payload was used");
+
+            turnContext = GenerateTurnContext(Channels.Cortana, json, json);
+
+            Assert.IsTrue(JToken.DeepEquals(parsedJson, (JObject)turnContext.GetIncomingPayload()));
+
+            turnContext = GenerateTurnContext(Channels.Cortana, json, notJson);
+
+            Assert.IsNull(turnContext.GetIncomingPayload());
+
+            turnContext = GenerateTurnContext(Channels.Cortana, parsedJson, json, null, CardConstants.TypeIntent);
+
+            Assert.AreSame(parsedJson, turnContext.GetIncomingPayload());
+
+            // DIRECTLINE / EMULATOR / WEBCHAT
+
+            turnContext = GenerateTurnContext(Channels.Directline, null, json);
+
+            Assert.IsNull(turnContext.GetIncomingPayload());
+
+            turnContext = GenerateTurnContext(Channels.Directline, parsedJson, json);
+
+            Assert.AreSame(parsedJson, turnContext.GetIncomingPayload());
+
+            turnContext = GenerateTurnContext(Channels.Emulator, null, notJson, GenerateChannelData(CardConstants.KeyPostBack));
+
+            Assert.IsNull(turnContext.GetIncomingPayload());
+
+            turnContext = GenerateTurnContext(Channels.Emulator, parsedJson, notJson, GenerateChannelData(CardConstants.KeyPostBack));
+
+            Assert.AreSame(parsedJson, turnContext.GetIncomingPayload());
+
+            turnContext = GenerateTurnContext(Channels.Directline, json, null, GenerateChannelData(CardConstants.KeyPostBack));
+
+            Assert.IsTrue(JToken.DeepEquals(parsedJson, (JObject)turnContext.GetIncomingPayload()));
+
+            turnContext = GenerateTurnContext(Channels.Webchat, null, json, GenerateChannelData(CardConstants.KeyMessageBack));
+
+            Assert.IsTrue(JToken.DeepEquals(parsedJson, (JObject)turnContext.GetIncomingPayload()));
+
+            turnContext = GenerateTurnContext(Channels.Webchat, null, json, JsonConvert.SerializeObject(GenerateChannelData(CardConstants.KeyMessageBack)));
+
+            Assert.IsTrue(JToken.DeepEquals(parsedJson, (JObject)turnContext.GetIncomingPayload()));
+
+            // KIK
+
+            void AssertBasedOnChannelData(string channelId, string channelDataProperty)
+            {
+                turnContext = GenerateTurnContext(channelId, parsedJson, json);
+
+                Assert.AreSame(parsedJson, turnContext.GetIncomingPayload());
+
+                turnContext = GenerateTurnContext(channelId, null, notJson, GenerateChannelData(channelDataProperty));
+
+                Assert.IsNull(turnContext.GetIncomingPayload());
+
+                turnContext = GenerateTurnContext(channelId, null, json, GenerateChannelData(channelDataProperty));
+
+                Assert.IsTrue(JToken.DeepEquals(parsedJson, (JObject)turnContext.GetIncomingPayload()));
+            }
+
+            AssertBasedOnChannelData(Channels.Kik, CardConstants.KeyMetadata);
+
+            // LINE
+
+            AssertBasedOnChannelData(Channels.Line, CardConstants.KeyLinePostback);
+
+            // SKYPE
+
+            turnContext = GenerateTurnContext(Channels.Skype, parsedJson);
+
+            Assert.AreSame(parsedJson, turnContext.GetIncomingPayload());
+
+            turnContext = GenerateTurnContext(Channels.Skype, null, json, GenerateChannelData(CardConstants.KeyText, json));
+
+            Assert.IsNull(turnContext.GetIncomingPayload());
+
+            turnContext = GenerateTurnContext(Channels.Skype, null, notJson, GenerateChannelData(CardConstants.KeyText, json));
+
+            Assert.IsNull(turnContext.GetIncomingPayload());
+
+            turnContext = GenerateTurnContext(Channels.Skype, null, json, GenerateChannelData(CardConstants.KeyText, notJson));
+
+            Assert.IsTrue(JToken.DeepEquals(parsedJson, (JObject)turnContext.GetIncomingPayload()));
+
+            // SLACK
+
+            AssertBasedOnChannelData(Channels.Slack, CardConstants.KeyPayload);
+
+            // TELEGRAM
+
+            AssertBasedOnChannelData(Channels.Telegram, CardConstants.KeyCallbackQuery);
+
+            // ANY CHANNELS NOT LISTED
+
+            turnContext = GenerateTurnContext(Channels.Test, null, json);
+
+            Assert.IsNull(turnContext.GetIncomingPayload());
+
+            turnContext = GenerateTurnContext(Channels.DirectlineSpeech, notJson);
+
+            Assert.IsNull(turnContext.GetIncomingPayload());
+
+            turnContext = GenerateTurnContext(Channels.Email, json);
+
+            Assert.IsTrue(JToken.DeepEquals(parsedJson, (JObject)turnContext.GetIncomingPayload()));
+
+            turnContext = GenerateTurnContext(Channels.Sms, parsedJson);
+
+            Assert.AreSame(parsedJson, turnContext.GetIncomingPayload());
 
             turnContext = null;
 
             Assert.ThrowsException<ArgumentNullException>(() => turnContext.GetIncomingPayload());
         }
-
-        private static void AssertIsTextMessage(IMessageActivity activity)
-            => Assert.IsTrue(activity.Attachments?.Any() != true && !string.IsNullOrEmpty(activity.Text));
-
-        private static void AssertIsAttachmentMessage(IMessageActivity activity, int count = 1)
-            => Assert.IsTrue(activity.Attachments.Count == count && string.IsNullOrEmpty(activity.Text));
     }
 }

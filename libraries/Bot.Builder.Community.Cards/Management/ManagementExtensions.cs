@@ -328,7 +328,7 @@ namespace Bot.Builder.Community.Cards.Management
 
                     // In Kik, button responses can be recognized by a property of channel data.
                     // Note that this condition will be true because metadata will not be a C# null,
-                    // even though it's a null JValue.
+                    // even though it's a "null" JValue.
                     CheckForChannelDataProperty(CardConstants.KeyMetadata);
 
                     break;
