@@ -297,7 +297,7 @@ namespace Bot.Builder.Community.Cards.Management
             // present in a typed user-to-bot message, so this local function helps check for that.
             void CheckForChannelDataProperty(string propName, JObject newResult = null)
             {
-                if (channelData?.GetValueCI(propName) != null)
+                if (channelData?.GetValue(propName) != null)
                 {
                     turnState.IncomingPayload = newResult ?? parsedText;
                 }
@@ -350,7 +350,7 @@ namespace Bot.Builder.Community.Cards.Management
                     // is that the channel data text does not match the activity text.
                     // This if statement uses `== false` because if the channel data is null or has no text property
                     // then we're interpreting that to mean that this is not a button response.
-                    if (channelData?.GetValueCI(CardConstants.KeyText)?.ToString().EqualsCI(text) == false)
+                    if (channelData?.GetValue(CardConstants.KeyText)?.ToString().Equals(text) == false)
                     {
                         turnState.IncomingPayload = parsedText;
                     }
@@ -420,6 +420,6 @@ namespace Bot.Builder.Community.Cards.Management
         }
 
         internal static string GetIdFromPayload(this JObject payload, string type = PayloadIdTypes.Action)
-            => payload.GetValueCI(PayloadIdTypes.GetKey(type)) is JToken id ? id.ToString() : null;
+            => payload?.GetValue(PayloadIdTypes.GetKey(type)) is JToken id ? id.ToString() : null;
     }
 }

@@ -88,12 +88,9 @@ namespace Bot.Builder.Community.Cards.Management
 
             var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
 
-            if (state.PayloadIdsByType != null && state.PayloadIdsByType.TryGetValue(payloadId.Path, out var ids))
+            if (state.PayloadIdsByType.TryGetValue(payloadId.Path, out var ids))
             {
-                // Even though the dictionary will be a copy,
-                // the set will be the same as the one in the original dictionary
-                // and so calling Remove will modify the original set
-                ids.Remove(payloadId.Value);
+                ids?.Remove(payloadId.Value);
             }
         }
 
@@ -133,7 +130,7 @@ namespace Bot.Builder.Community.Cards.Management
                 var matchResult = await GetPayloadMatchAsync(turnContext, cancellationToken).ConfigureAwait(false);
 
                 if (matchResult.SavedActivity != null
-                    && matchResult.SavedAttachment?.ContentType.Equals(CardConstants.AdaptiveCardContentType) == true)
+                    && matchResult.SavedAttachment?.ContentType.EqualsCI(CardConstants.AdaptiveCardContentType) == true)
                 {
                     matchResult.SavedAttachment.Content = matchResult.SavedAttachment.Content?.ToJObjectAndBackAsync(
                         card =>
@@ -142,9 +139,9 @@ namespace Bot.Builder.Community.Cards.Management
                             foreach (var input in AdaptiveCardUtil.GetAdaptiveInputs(card))
                             {
                                 var id = AdaptiveCardUtil.GetAdaptiveInputId(input);
-                                var inputValue = payload.GetValueCI(id);
+                                var inputValue = payload.GetValue(id);
 
-                                input.SetValueCI(CardConstants.KeyValue, inputValue);
+                                input.SetValue(CardConstants.KeyValue, inputValue);
                             }
 
                             return Task.CompletedTask;
@@ -220,8 +217,8 @@ namespace Bot.Builder.Community.Cards.Management
 
                             // Check if the Adaptive Card is now empty
                             if (savedAttachment.Content.ToJObject() is JObject adaptiveCard
-                                && adaptiveCard.GetValueCI(CardConstants.KeyBody).IsNullishOrEmpty()
-                                && adaptiveCard.GetValueCI(CardConstants.KeyActions).IsNullishOrEmpty())
+                                && adaptiveCard.GetValue(CardConstants.KeyBody).IsNullishOrEmpty()
+                                && adaptiveCard.GetValue(CardConstants.KeyActions).IsNullishOrEmpty())
                             {
                                 // If the card is now empty, execute the next if block to delete it
                                 type = PayloadIdTypes.Card;
@@ -359,11 +356,11 @@ namespace Bot.Builder.Community.Cards.Management
                             // Therefore we're checking if the original payload
                             // contained the key, because the inputs might still
                             // match even if this input was already removed.
-                            if (incomingPayload.ContainsKeyCI(inputId))
+                            if (incomingPayload.ContainsKey(inputId))
                             {
                                 // Removing a property that doesn't exist
                                 // will not throw an exception.
-                                payloadWithoutInputs.RemoveCI(inputId);
+                                payloadWithoutInputs.Remove(inputId);
                             }
                             else
                             {
@@ -381,10 +378,9 @@ namespace Bot.Builder.Community.Cards.Management
                                 savedAdaptiveCard,
                                 (JObject savedSubmitAction) =>
                                 {
-                                    var submitActionData = savedSubmitAction.GetValueCI(
+                                    var submitActionData = savedSubmitAction.GetValue(
                                         CardConstants.KeyData)?.DeepClone();
 
-                                    // This will not throw an exception if the submit action data is null
                                     if (JToken.DeepEquals(submitActionData, payloadWithoutInputs))
                                     {
                                         result.Add(savedActivity, savedAttachment, savedSubmitAction);
@@ -399,7 +395,7 @@ namespace Bot.Builder.Community.Cards.Management
                         // For Bot Framework cards that are not Adaptive Cards
                         CardTree.Recurse(savedAttachment, (CardAction savedCardAction) =>
                         {
-                            var savedPayload = savedCardAction?.Value.ToJObject(true);
+                            var savedPayload = savedCardAction.Value.ToJObject(true);
 
                             // This will not throw an exception if the saved payload is null
                             if (JToken.DeepEquals(savedPayload, incomingPayload))

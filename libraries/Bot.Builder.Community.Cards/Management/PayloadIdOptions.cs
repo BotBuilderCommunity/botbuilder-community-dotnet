@@ -6,7 +6,7 @@ namespace Bot.Builder.Community.Cards.Management
 {
     public class PayloadIdOptions
     {
-        private readonly IDictionary<string, string> _ids = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        private readonly IDictionary<string, string> _ids = new Dictionary<string, string>();
 
         public PayloadIdOptions(bool overwrite = false) => Overwrite = overwrite;
 
@@ -21,14 +21,14 @@ namespace Bot.Builder.Community.Cards.Management
                 throw new ArgumentNullException(nameof(types));
             }
 
-            foreach (var type in types.Distinct(StringComparer.OrdinalIgnoreCase))
+            foreach (var type in types.Distinct())
             {
                 _ids.Add(type, null);
             }
         }
 
         private PayloadIdOptions(IDictionary<string, string> ids, bool overwrite = false)
-            : this(overwrite) => _ids = new Dictionary<string, string>(ids, StringComparer.OrdinalIgnoreCase);
+            : this(overwrite) => _ids = new Dictionary<string, string>(ids);
 
         public bool Overwrite { get; set; }
 

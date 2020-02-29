@@ -83,11 +83,6 @@ namespace Bot.Builder.Community.Cards
             return these.Contains(obj);
         }
 
-        internal static bool IsOneOf<T>(this T obj, IEqualityComparer<T> equalityComparer, params T[] these)
-        {
-            return these.Contains(obj, equalityComparer);
-        }
-
         internal static JObject TryParseJObject(this string inputString)
         {
             try
@@ -120,6 +115,24 @@ namespace Bot.Builder.Community.Cards
             return jToken as JObject;
         }
 
+        /// <summary>
+        /// Converts the input to a <see cref="JObject"/>,
+        /// performs a function on it if the conversion was successful,
+        /// converts the <see cref="JObject"/> back to the original type,
+        /// and returns it asynchronously.
+        /// </summary>
+        /// <typeparam name="T">The type of the input and return value.</typeparam>
+        /// <param name="input">The instance to convert to a <see cref="JObject">JObject</see> and back.</param>
+        /// <param name="funcAsync">The function to perform on the <see cref="JObject">JObject</see>. The argument
+        /// passed to this function is guaranteed to not be null, so no null checking is necessary.</param>
+        /// <param name="shouldParseStrings">True if string input should be deserialized,
+        /// false if a string should count as a wrong type.</param>
+        /// <param name="returnNullForWrongType">True if null should be returned if the input couldn't be
+        /// converted to a <see cref="JObject">JObject</see>, false if the original input should be returned if
+        /// it couldn't be converted to a <see cref="JObject">JObject</see>.</param>
+        /// <returns>The potentially-modified input after being converted back to <typeparamref name="T"/> if the
+        /// conversion to a <see cref="JObject">JObject</see> was successful, or a value determined by
+        /// <paramref name="returnNullForWrongType"/> if the conversion was unsuccessful.</returns>
         internal static async Task<T> ToJObjectAndBackAsync<T>(
             this T input,
             Func<JObject, Task> funcAsync,
@@ -131,46 +144,29 @@ namespace Bot.Builder.Community.Cards
             {
                 await funcAsync(jObject).ConfigureAwait(false);
 
-                return input is string
-                    ? JsonConvert.SerializeObject(jObject) as T
-                    : input is JObject
-                        ? jObject as T
-                        : jObject.ToObject(input.GetType()) as T;
+                return (input is string
+                        ? JsonConvert.SerializeObject(jObject)
+                        : input is JObject
+                            ? jObject
+                            : jObject.ToObject(input.GetType()))
+                    as T;
             }
             else if (returnNullForWrongType)
             {
                 return null;
             }
-
-            return input;
-        }
-
-        internal static JToken GetValueCI(this JObject jObject, string key) => jObject?.GetValue(key, StringComparison.OrdinalIgnoreCase);
-
-        /// <summary>
-        /// Clears any properties with the same name before setting the value,
-        /// thus performing a "case-insensitive" set.
-        /// </summary>
-        /// <param name="jObject">A JObject.</param>
-        /// <param name="key">The name of the property to set.</param>
-        /// <param name="value">The value.</param>
-        internal static void SetValueCI(this JObject jObject, string key, JToken value)
-        {
-            jObject.RemoveCI(key);
-            jObject[key] = value;
-        }
-
-        internal static void RemoveCI(this JObject jObject, string key)
-        {
-            while (jObject.TryGetValue(key, StringComparison.OrdinalIgnoreCase, out var token))
+            else
             {
-                token.Parent.Remove();
+                return input;
             }
         }
 
-        internal static bool ContainsKeyCI(this JObject jObject, string key) => jObject.GetValueCI(key) != null;
+        internal static void SetValue(this JObject jObject, string key, JToken value)
+        {
+            jObject[key] = value;
+        }
 
-        internal static bool EqualsCI(this string left, string right) => left?.Equals(right, StringComparison.OrdinalIgnoreCase) == true;
+        internal static bool EqualsCI(this string left, string right) => left is null ? right is null : left.Equals(right, StringComparison.OrdinalIgnoreCase);
 
         internal static bool IsNullish(this JToken jToken) => jToken is null || jToken.Type.IsOneOf(JTokenType.None, JTokenType.Null, JTokenType.Undefined);
 

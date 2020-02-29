@@ -65,9 +65,9 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                             await nextAsync(
                                 AdaptiveCardUtil.NonDataDescendants(cardJObject)
                                     .Select(token => token is JObject element
-                                            && element.GetValueCI(CardConstants.KeyType) is JToken type
+                                            && element.GetValue(CardConstants.KeyType) is JToken type
                                             && type.Type == JTokenType.String
-                                            && type.ToString().EqualsCI(CardConstants.ActionSubmit)
+                                            && type.ToString().Equals(CardConstants.ActionSubmit)
                                         ? element : null)
                                     .WhereNotNull(), TreeNodeType.SubmitActionList).ConfigureAwait(false);
                         }, true).ConfigureAwait(false);
@@ -111,7 +111,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                     return await action.ToJObjectAndBackAsync(
                         async actionJObject =>
                         {
-                            if (actionJObject.GetValueCI(CardConstants.KeyData) is JObject data)
+                            if (actionJObject.GetValue(CardConstants.KeyData) is JObject data)
                             {
                                 await nextAsync(data, TreeNodeType.Payload).ConfigureAwait(false);
                             }
@@ -181,7 +181,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
         /// <typeparam name="TExit">The .NET type of the exit node.</typeparam>
         /// <param name="entryValue">The entry value.</param>
         /// <param name="action">A delegate to perform on each exit value.
-        /// Note that exit values are not guaranteed to be non-null.</param>
+        /// Note that exit values are guaranteed to be non-null.</param>
         /// <param name="entryType">The explicit position of the entry node in the tree.
         /// If this is null then the position is inferred from the TEntry type parameter.
         /// Note that this parameter is required if the type is <see cref="object"/>
@@ -191,7 +191,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
         /// Note that this parameter is required if the type is <see cref="object"/>
         /// or if the position otherwise cannot be unambiguously inferred from the type.</param>
         /// <returns>The possibly-modified entry value. This is needed if a new object was created
-        /// to modify the value, such as when an Adaptive Card is converted to a JObject.</returns>
+        /// to modify the value, such as when an Adaptive Card is converted to a <see cref="JObject"/>.</returns>
         internal static TEntry Recurse<TEntry, TExit>(
             TEntry entryValue,
             Action<TExit> action,
@@ -227,7 +227,10 @@ namespace Bot.Builder.Community.Cards.Management.Tree
 
                 if (childNode == exitNode)
                 {
-                    action(GetExitValue<TExit>(child));
+                    if (GetExitValue<TExit>(child) is TExit typedChild)
+                    {
+                        action(typedChild);
+                    }
 
                     return Task.FromResult(child);
                 }
@@ -247,7 +250,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
         /// <typeparam name="TExit">The .NET type of the exit node.</typeparam>
         /// <param name="entryValue">The entry value.</param>
         /// <param name="funcAsync">A delegate to perform on each exit value.
-        /// Note that exit values are not guaranteed to be non-null.</param>
+        /// Note that exit values are guaranteed to be non-null.</param>
         /// <param name="entryType">The explicit position of the entry node in the tree.
         /// If this is null then the position is inferred from the TEntry type parameter.
         /// Note that this parameter is required if the type is <see cref="object"/>
@@ -257,7 +260,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
         /// Note that this parameter is required if the type is <see cref="object"/>
         /// or if the position otherwise cannot be unambiguously inferred from the type.</param>
         /// <returns>The possibly-modified entry value. This is needed if a new object was created
-        /// to modify the value, such as when an Adaptive Card is converted to a JObject.</returns>
+        /// to modify the value, such as when an Adaptive Card is converted to a <see cref="JObject"/>.</returns>
         internal static async Task<TEntry> RecurseAsync<TEntry, TExit>(
             TEntry entryValue,
             Func<TExit, Task> funcAsync,
@@ -293,7 +296,10 @@ namespace Bot.Builder.Community.Cards.Management.Tree
 
                 if (childNode == exitNode)
                 {
-                    await funcAsync(GetExitValue<TExit>(child)).ConfigureAwait(false);
+                    if (GetExitValue<TExit>(child) is TExit typedChild)
+                    {
+                        await funcAsync(GetExitValue<TExit>(typedChild)).ConfigureAwait(false);
+                    }
 
                     return child;
                 }
@@ -357,9 +363,9 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                         // if there isn't one already.
                         child = child.ToJObjectAndBackAsync(submitAction =>
                         {
-                            if (submitAction.GetValueCI(CardConstants.KeyData).IsNullish())
+                            if (submitAction.GetValue(CardConstants.KeyData).IsNullish())
                             {
-                                submitAction.SetValueCI(CardConstants.KeyData, new JObject());
+                                submitAction.SetValue(CardConstants.KeyData, new JObject());
                             }
 
                             return Task.CompletedTask;

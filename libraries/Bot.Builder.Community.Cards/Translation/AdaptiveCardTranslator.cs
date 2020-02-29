@@ -225,7 +225,7 @@ namespace Bot.Builder.Community.Cards.Translation
                             var propertyName = (parent as JProperty).Name;
 
                             // container is assumed to be a JObject because it's the parent of a JProperty in this case
-                            if (settings.PropertiesToTranslate.Contains(propertyName)
+                            if (settings.PropertiesToTranslate?.Contains(propertyName) == true
                                 || (propertyName == "value" && settings.IsValueTranslatable(container as JObject)))
                             {
                                 shouldTranslate = true;
