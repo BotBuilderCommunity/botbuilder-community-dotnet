@@ -74,7 +74,7 @@ namespace Bot.Builder.Community.Cards.Management
 
             var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
 
-            state.PayloadIdsByType.InitializeKey(payloadId.Path, new HashSet<string>()).Add(payloadId.Value);
+            state.PayloadIdsByType.InitializeKey(payloadId.Key, new HashSet<string>()).Add(payloadId.Value);
         }
 
         public async Task ForgetIdAsync(ITurnContext turnContext, PayloadItem payloadId, CancellationToken cancellationToken = default)
@@ -88,7 +88,7 @@ namespace Bot.Builder.Community.Cards.Management
 
             var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
 
-            if (state.PayloadIdsByType.TryGetValue(payloadId.Path, out var ids))
+            if (state.PayloadIdsByType.TryGetValue(payloadId.Key, out var ids))
             {
                 ids?.Remove(payloadId.Value);
             }
@@ -171,26 +171,15 @@ namespace Bot.Builder.Community.Cards.Management
             }
 
             var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
-            var type = toDelete.Path;
+            var type = toDelete.Key;
 
             if (type == PayloadIdTypes.Batch)
             {
                 // Iterate over a copy of the set so the original can be modified
                 foreach (var activity in state.SavedActivities.ToList())
                 {
-                    var hasBatchId = false;
-
-                    CardTree.Recurse(activity, (PayloadItem payloadId) =>
-                    {
-                        // Payload ID's are compared by value
-                        if (payloadId == toDelete)
-                        {
-                            hasBatchId = true;
-                        }
-                    });
-
-                    // Delete any activity that contains the specified batch ID
-                    if (hasBatchId)
+                    // Delete any activity that contains the specified batch ID (payload items are compared by value)
+                    if (CardTree.GetIds(activity).Any(toDelete.Equals))
                     {
                         await DeleteActivityAsync(turnContext, activity, cancellationToken).ConfigureAwait(false);
                     }
@@ -247,6 +236,7 @@ namespace Bot.Builder.Community.Cards.Management
                             // with only postBack/messageBack buttons then they will use a hero card
                             // and any other card would have more content than just postBack/messageBack buttons
                             // so only a hero card should potentially be empty at this point.
+                            // We aren't checking if Buttons is null because it can't be at this point.
                             if (savedAttachment.Content is HeroCard heroCard
                                 && !heroCard.Buttons.Any()
                                 && heroCard.Images?.Any() != true
@@ -296,14 +286,7 @@ namespace Bot.Builder.Community.Cards.Management
 
             foreach (var savedActivity in state.SavedActivities)
             {
-                var hasNoPayloadIds = true;
-
-                CardTree.Recurse(savedActivity, (PayloadItem payloadId) =>
-                {
-                    hasNoPayloadIds = false;
-                });
-
-                if (hasNoPayloadIds)
+                if (!CardTree.GetIds(savedActivity).Any())
                 {
                     state.SavedActivities.Remove(savedActivity);
                 }
@@ -387,7 +370,8 @@ namespace Bot.Builder.Community.Cards.Management
                                     }
                                 },
                                 TreeNodeType.AdaptiveCard,
-                                TreeNodeType.SubmitAction);
+                                TreeNodeType.SubmitAction,
+                                true);
                         }
                     }
                     else

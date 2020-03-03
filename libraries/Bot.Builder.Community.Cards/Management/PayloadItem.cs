@@ -6,13 +6,13 @@ namespace Bot.Builder.Community.Cards.Management
 {
     public class PayloadItem : IEquatable<PayloadItem>
     {
-        public PayloadItem(string path, string value)
+        public PayloadItem(string key, string value)
         {
-            Path = string.IsNullOrWhiteSpace(path) ? throw new ArgumentNullException(nameof(path)) : path.Trim();
+            Key = string.IsNullOrWhiteSpace(key) ? throw new ArgumentNullException(nameof(key)) : key.Trim();
             Value = value;
         }
 
-        public string Path { get; }
+        public string Key { get; }
 
         public string Value { get; }
 
@@ -20,10 +20,10 @@ namespace Bot.Builder.Community.Cards.Management
 
         public static bool operator !=(PayloadItem left, PayloadItem right) => !left.Equals(right);
 
-        public override int GetHashCode() => (Path, Value).GetHashCode();
+        public override int GetHashCode() => (Key, Value).GetHashCode();
 
         public override bool Equals(object obj) => Equals(obj as PayloadItem);
 
-        public bool Equals(PayloadItem other) => Path == other?.Path && Value == other?.Value;
+        public bool Equals(PayloadItem other) => Key == other?.Key && Value == other?.Value;
     }
 }

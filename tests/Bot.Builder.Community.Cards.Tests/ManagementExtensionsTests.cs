@@ -183,6 +183,55 @@ namespace Bot.Builder.Community.Cards.Tests
                 new CardAction(ActionTypes.ImBack, value: new JObject(), text: "{}"),
             });
 
+            var adaptiveCard = new AdaptiveCard(new AdaptiveSchemaVersion(1, 2))
+            {
+                SelectAction = new AdaptiveSubmitAction(),
+                Body = new List<AdaptiveElement>
+                {
+                    new AdaptiveActionSet
+                    {
+                        Actions = new List<AdaptiveAction>
+                        {
+                            new AdaptiveSubmitAction
+                            {
+                                Data = new
+                                {
+                                    Foo = EXTRADATA,
+                                },
+                            },
+                        },
+                    },
+                },
+                Actions = new List<AdaptiveAction>
+                {
+                    new AdaptiveSubmitAction
+                    {
+                        Data = new Dictionary<string, object>
+                        {
+                            { PayloadIdTypes.GetKey(PayloadIdTypes.Action), ACTIONID },
+                        },
+                    },
+                    new AdaptiveShowCardAction
+                    {
+                        Card = new AdaptiveCard(new AdaptiveSchemaVersion(1, 0))
+                        {
+                            SelectAction = new AdaptiveOpenUrlAction
+                            {
+                                UrlString = "https://adaptivecards.io/",
+                            },
+                            Actions = new List<AdaptiveAction>
+                            {
+                                new AdaptiveSubmitAction(),
+                                new AdaptiveOpenUrlAction
+                                {
+                                    UrlString = "https://adaptivecards.io/",
+                                },
+                            }
+                        }
+                    }
+                },
+            };
+
             var batch = new List<IMessageActivity>
             {
                 MessageFactory.Attachment(new List<Attachment>
@@ -190,54 +239,7 @@ namespace Bot.Builder.Community.Cards.Tests
                     new Attachment
                     {
                         ContentType = AdaptiveCard.ContentType,
-                        Content = new AdaptiveCard(new AdaptiveSchemaVersion(1, 2))
-                        {
-                            SelectAction = new AdaptiveSubmitAction(),
-                            Body = new List<AdaptiveElement>
-                            {
-                                new AdaptiveActionSet
-                                {
-                                    Actions = new List<AdaptiveAction>
-                                    {
-                                        new AdaptiveSubmitAction
-                                        {
-                                            Data = new
-                                            {
-                                                Foo = EXTRADATA,
-                                            },
-                                        },
-                                    },
-                                },
-                            },
-                            Actions = new List<AdaptiveAction>
-                            {
-                                new AdaptiveSubmitAction
-                                {
-                                    Data = new Dictionary<string, object>
-                                    {
-                                        { PayloadIdTypes.GetKey(PayloadIdTypes.Action), ACTIONID },
-                                    },
-                                },
-                                new AdaptiveShowCardAction
-                                {
-                                    Card = new AdaptiveCard(new AdaptiveSchemaVersion(1, 0))
-                                    {
-                                        SelectAction = new AdaptiveOpenUrlAction
-                                        {
-                                            UrlString = "https://adaptivecards.io/",
-                                        },
-                                        Actions = new List<AdaptiveAction>
-                                        {
-                                            new AdaptiveSubmitAction(),
-                                            new AdaptiveOpenUrlAction
-                                            {
-                                                UrlString = "https://adaptivecards.io/",
-                                            },
-                                        }
-                                    }
-                                }
-                            },
-                        },
+                        Content = adaptiveCard,
                     },
                     animationCard.ToAttachment(),
                 }),
@@ -265,8 +267,8 @@ namespace Bot.Builder.Community.Cards.Tests
             options.Set(PayloadIdTypes.Batch, BATCHID);
             batch.ApplyIdsToBatch(options);
 
-            var adaptiveCard = (AdaptiveCard)batch[0].Attachments[0].Content;
-            var selectAction = (AdaptiveSubmitAction)adaptiveCard.SelectAction;
+            var newAdaptiveCard = (AdaptiveCard)batch[0].Attachments[0].Content;
+            var selectAction = (AdaptiveSubmitAction)newAdaptiveCard.SelectAction;
             var data = (JObject)selectAction.Data;
             var batchId = data.GetIdFromPayload(PayloadIdTypes.Batch);
             var carouselId = data.GetIdFromPayload(PayloadIdTypes.Carousel);
@@ -280,12 +282,13 @@ namespace Bot.Builder.Community.Cards.Tests
             cardIds.Add(cardId);
             actionIds.Add(actionId);
 
+            Assert.AreNotSame(adaptiveCard, newAdaptiveCard, "New Adaptive Card reference was not assigned");
             Assert.IsNotNull(batchId);
             Assert.IsNotNull(carouselId);
             Assert.IsNotNull(cardId);
             Assert.IsNotNull(actionId);
 
-            data = (JObject)((AdaptiveSubmitAction)((AdaptiveActionSet)adaptiveCard.Body.Single()).Actions.Single()).Data;
+            data = (JObject)((AdaptiveSubmitAction)((AdaptiveActionSet)newAdaptiveCard.Body.Single()).Actions.Single()).Data;
             actionId = data.GetIdFromPayload(PayloadIdTypes.Action);
 
             // HashSet.Add returns false if the item was already in the set,
@@ -297,9 +300,9 @@ namespace Bot.Builder.Community.Cards.Tests
             Assert.AreEqual(carouselId, data.GetIdFromPayload(PayloadIdTypes.Carousel));
             Assert.AreEqual(cardId, data.GetIdFromPayload(PayloadIdTypes.Card));
             Assert.IsNotNull(actionId);
-            Assert.IsTrue((string)data["Foo"] == EXTRADATA, "The preexisting 'extra' data was modified");
+            Assert.AreEqual(EXTRADATA, (string)data["Foo"], "The preexisting 'extra' data was modified");
 
-            data = (JObject)((AdaptiveSubmitAction)adaptiveCard.Actions[0]).Data;
+            data = (JObject)((AdaptiveSubmitAction)newAdaptiveCard.Actions[0]).Data;
             actionId = data.GetIdFromPayload(PayloadIdTypes.Action);
 
             Assert.IsTrue(actionIds.Add(actionId));
@@ -308,7 +311,7 @@ namespace Bot.Builder.Community.Cards.Tests
             Assert.AreEqual(cardId, data.GetIdFromPayload(PayloadIdTypes.Card));
             Assert.AreEqual(ACTIONID, actionId, "The preexisting action ID was overwritten");
 
-            data = (JObject)((AdaptiveSubmitAction)((AdaptiveShowCardAction)adaptiveCard.Actions[1]).Card.Actions[0]).Data;
+            data = (JObject)((AdaptiveSubmitAction)((AdaptiveShowCardAction)newAdaptiveCard.Actions[1]).Card.Actions[0]).Data;
             actionId = data.GetIdFromPayload(PayloadIdTypes.Action);
 
             Assert.IsTrue(actionIds.Add(actionId));
@@ -466,11 +469,9 @@ namespace Bot.Builder.Community.Cards.Tests
                 }),
             };
 
-            options = new PayloadIdOptions(true);
+            options = new PayloadIdOptions(PayloadIdTypes.Batch, true);
 
-            options.Set(PayloadIdTypes.Batch);
             options.Set(PayloadIdTypes.Carousel, CAROUSELID);
-
             batch.ApplyIdsToBatch(options);
 
             heroCard = (HeroCard)batch[0].Attachments[0].Content;
@@ -484,7 +485,7 @@ namespace Bot.Builder.Community.Cards.Tests
 
             data = (JObject)jObject["actions"][0]["data"];
 
-            Assert.AreSame(jObject, batch[0].Attachments[1].Content);
+            Assert.AreSame(jObject, batch[0].Attachments[1].Content, "New Adaptive Card JObject reference was assigned");
             Assert.AreNotEqual(BATCHID, data.GetIdFromPayload(PayloadIdTypes.Batch), "Batch ID was not generated");
             Assert.AreEqual(CAROUSELID, data.GetIdFromPayload(PayloadIdTypes.Carousel), "Carousel ID was not applied");
             Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Card), "Card ID was applied");
@@ -532,6 +533,20 @@ namespace Bot.Builder.Community.Cards.Tests
             const string BATCHID = "Batch ID";
             const string BATCHID2 = "Batch ID 2";
 
+            var adaptiveCard = new AdaptiveCard(new AdaptiveSchemaVersion())
+            {
+                Actions = new List<AdaptiveAction>
+                {
+                    new AdaptiveSubmitAction
+                    {
+                        Data = new Dictionary<string, string>
+                        {
+                            { PayloadIdTypes.GetKey(PayloadIdTypes.Action), ACTIONID },
+                        },
+                    },
+                },
+            };
+
             var batch = new List<IMessageActivity>
             {
                 MessageFactory.Carousel(new List<Attachment>
@@ -539,19 +554,7 @@ namespace Bot.Builder.Community.Cards.Tests
                     new Attachment
                     {
                         ContentType = AdaptiveCard.ContentType,
-                        Content = new AdaptiveCard(new AdaptiveSchemaVersion())
-                        {
-                            Actions = new List<AdaptiveAction>
-                            {
-                                new AdaptiveSubmitAction
-                                {
-                                    Data = new Dictionary<string, string>
-                                    {
-                                        { PayloadIdTypes.GetKey(PayloadIdTypes.Action), ACTIONID },
-                                    },
-                                },
-                            },
-                        },
+                        Content = adaptiveCard,
                     },
                     new AnimationCard(buttons: new List<CardAction>
                     {
@@ -573,7 +576,7 @@ namespace Bot.Builder.Community.Cards.Tests
                     },
                     new Attachment
                     {
-                        ContentType = HeroCard.ContentType,
+                        ContentType = HeroCard.ContentType, // Content does not match content type
                         Content = new OAuthCard(buttons: new List<CardAction>
                         {
                             new CardAction(ActionTypes.PostBack, value: new Dictionary<string, string>
@@ -604,6 +607,7 @@ namespace Bot.Builder.Community.Cards.Tests
 
             var ids = batch.GetIdsFromBatch();
 
+            Assert.AreSame(adaptiveCard, batch[0].Attachments[0].Content, "Adaptive Card reference was broken");
             Assert.AreEqual(5, ids.Count);
             Assert.IsTrue(ids.Contains(new PayloadItem(PayloadIdTypes.Action, ACTIONID)));
             Assert.IsTrue(ids.Contains(new PayloadItem(PayloadIdTypes.Action, ACTIONID2)));

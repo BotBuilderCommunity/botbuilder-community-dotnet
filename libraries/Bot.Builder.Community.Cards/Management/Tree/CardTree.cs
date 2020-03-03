@@ -27,7 +27,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
         private static readonly Dictionary<TreeNodeType, ITreeNode> _tree = new Dictionary<TreeNodeType, ITreeNode>
         {
             {
-                TreeNodeType.Batch, new ListTreeNode<IMessageActivity>(TreeNodeType.Activity, PayloadIdTypes.Batch)
+                TreeNodeType.Batch, new EnumerableTreeNode<IMessageActivity>(TreeNodeType.Activity, PayloadIdTypes.Batch)
             },
             {
                 TreeNodeType.Activity, new TreeNode<IMessageActivity, IEnumerable<Attachment>>(async (activity, nextAsync) =>
@@ -39,7 +39,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 })
             },
             {
-                TreeNodeType.Carousel, new ListTreeNode<Attachment>(TreeNodeType.Attachment, PayloadIdTypes.Carousel)
+                TreeNodeType.Carousel, new EnumerableTreeNode<Attachment>(TreeNodeType.Attachment, PayloadIdTypes.Carousel)
             },
             {
                 TreeNodeType.Attachment, new TreeNode<Attachment, object>(async (attachment, nextAsync) =>
@@ -98,10 +98,10 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 TreeNodeType.VideoCard, new RichCardTreeNode<VideoCard>(card => card.Buttons)
             },
             {
-                TreeNodeType.SubmitActionList, new ListTreeNode<object>(TreeNodeType.SubmitAction, PayloadIdTypes.Card)
+                TreeNodeType.SubmitActionList, new EnumerableTreeNode<object>(TreeNodeType.SubmitAction, PayloadIdTypes.Card)
             },
             {
-                TreeNodeType.CardActionList, new ListTreeNode<CardAction>(TreeNodeType.CardAction, PayloadIdTypes.Card)
+                TreeNodeType.CardActionList, new EnumerableTreeNode<CardAction>(TreeNodeType.CardAction, PayloadIdTypes.Card)
             },
             {
                 TreeNodeType.SubmitAction, new TreeNode<object, JObject>(async (action, nextAsync) =>
@@ -190,13 +190,17 @@ namespace Bot.Builder.Community.Cards.Management.Tree
         /// If this is null then the position is inferred from the TExit type parameter.
         /// Note that this parameter is required if the type is <see cref="object"/>
         /// or if the position otherwise cannot be unambiguously inferred from the type.</param>
+        /// <param name="modifiesChildren">True if each child should be reassigned to its parent during recursion
+        /// (which breaks Adaptive Card attachment content references when they get converted to a
+        /// <see cref="JObject"/> and back), false if each original reference should remain.</param>
         /// <returns>The possibly-modified entry value. This is needed if a new object was created
         /// to modify the value, such as when an Adaptive Card is converted to a <see cref="JObject"/>.</returns>
         internal static TEntry Recurse<TEntry, TExit>(
             TEntry entryValue,
             Action<TExit> action,
             TreeNodeType? entryType = null,
-            TreeNodeType? exitType = null)
+            TreeNodeType? exitType = null,
+            bool modifiesChildren = false)
             where TEntry : class
             where TExit : class
         {
@@ -231,85 +235,22 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                     {
                         action(typedChild);
                     }
-
-                    return Task.FromResult(child);
                 }
                 else
                 {
-                    return childNode.CallChildAsync(child, Next);
+                    // CallChildAsync will be executed immediately even though it's not awaited
+                    var task = childNode.CallChildAsync(child, Next);
+
+                    if (modifiesChildren)
+                    {
+                        return task;
+                    }
                 }
+
+                return Task.FromResult(child);
             }
 
             return entryNode.CallChildAsync(entryValue, Next).Result as TEntry;
-        }
-
-        /// <summary>
-        /// Enters and exits the tree at the specified nodes.
-        /// </summary>
-        /// <typeparam name="TEntry">The .NET type of the entry node.</typeparam>
-        /// <typeparam name="TExit">The .NET type of the exit node.</typeparam>
-        /// <param name="entryValue">The entry value.</param>
-        /// <param name="funcAsync">A delegate to perform on each exit value.
-        /// Note that exit values are guaranteed to be non-null.</param>
-        /// <param name="entryType">The explicit position of the entry node in the tree.
-        /// If this is null then the position is inferred from the TEntry type parameter.
-        /// Note that this parameter is required if the type is <see cref="object"/>
-        /// or if the position otherwise cannot be unambiguously inferred from the type.</param>
-        /// <param name="exitType">The explicit position of the exit node in the tree.
-        /// If this is null then the position is inferred from the TExit type parameter.
-        /// Note that this parameter is required if the type is <see cref="object"/>
-        /// or if the position otherwise cannot be unambiguously inferred from the type.</param>
-        /// <returns>The possibly-modified entry value. This is needed if a new object was created
-        /// to modify the value, such as when an Adaptive Card is converted to a <see cref="JObject"/>.</returns>
-        internal static async Task<TEntry> RecurseAsync<TEntry, TExit>(
-            TEntry entryValue,
-            Func<TExit, Task> funcAsync,
-            TreeNodeType? entryType = null,
-            TreeNodeType? exitType = null)
-            where TEntry : class
-            where TExit : class
-        {
-            ITreeNode entryNode = null;
-            ITreeNode exitNode = null;
-
-            try
-            {
-                entryNode = GetNode<TEntry>(entryType);
-            }
-            catch (Exception ex)
-            {
-                throw GetNodeArgumentException<TEntry>(ex);
-            }
-
-            try
-            {
-                exitNode = GetNode<TExit>(exitType);
-            }
-            catch (Exception ex)
-            {
-                throw GetNodeArgumentException<TExit>(ex, "exit");
-            }
-
-            async Task<object> NextAsync(object child, TreeNodeType childType)
-            {
-                var childNode = _tree[childType];
-
-                if (childNode == exitNode)
-                {
-                    if (GetExitValue<TExit>(child) is TExit typedChild)
-                    {
-                        await funcAsync(GetExitValue<TExit>(typedChild)).ConfigureAwait(false);
-                    }
-
-                    return child;
-                }
-                else
-                {
-                    return await childNode.CallChildAsync(child, NextAsync).ConfigureAwait(false);
-                }
-            }
-
-            return await entryNode.CallChildAsync(entryValue, NextAsync).ConfigureAwait(false) as TEntry;
         }
 
         internal static TEntry ApplyIds<TEntry>(TEntry entryValue, PayloadIdOptions options = null, TreeNodeType? entryType = null)
@@ -331,13 +272,6 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 if (node.IdType is string idType)
                 {
                     options = (options ?? new PayloadIdOptions()).ReplaceNullWithGeneratedId(idType);
-                    /*
-                    foreach (var item in options.GetIdTypes()
-                        .Where(it => PayloadIdTypes.GetIndex(it) < PayloadIdTypes.GetIndex(idType)))
-                    {
-                        options.Set(item);
-                    }
-                    */
                 }
             }
 
@@ -360,7 +294,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                     if (childType == TreeNodeType.SubmitAction)
                     {
                         // We need to create a "data" object in the submit action
-                        // if there isn't one already.
+                        // if there isn't one already
                         child = child.ToJObjectAndBackAsync(submitAction =>
                         {
                             if (submitAction.GetValue(CardConstants.KeyData).IsNullish())
@@ -377,7 +311,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
 
                     ProcessOptions(childNode);
 
-                    // CallChild will be executed immediately even though its not awaited
+                    // CallChildAsync will be executed immediately even though it's not awaited
                     var task = childNode.CallChildAsync(child, Next);
 
                     options = capturedOptions;
