@@ -12,82 +12,48 @@ using Microsoft.Bot.Schema;
 
 namespace Bot.Builder.Community.Adapters.Alexa.Core
 {
-    public class AlexaHelper
+    public static class AlexaRequestMapper
     {
-        public static Activity RequestToActivity(SkillRequest skillRequest, string defaultIntentSlotName = "phrase")
+        public static Activity RequestToActivity(SkillRequest skillRequest, AlexaRequestMapperOptions options = null)
         {
-            var system = skillRequest.Context.System;
-
-            var activity = new Activity
+            if(options == null)
             {
-                ChannelId = "alexa",
-                ServiceUrl = $"{system.ApiEndpoint}?token={system.ApiAccessToken}",
-                Recipient = new ChannelAccount(system.Application.ApplicationId, "skill"),
-                From = new ChannelAccount(system.User.UserId, "user"),
-                Conversation = new ConversationAccount(false, "conversation", skillRequest.Session.SessionId),
-                Type = skillRequest.Request.Type,
-                Id = skillRequest.Request.RequestId,
-                Timestamp = skillRequest.Request.Timestamp,
-                Locale = skillRequest.Request.Locale,
-                ChannelData = skillRequest
-            };
-
-            if (skillRequest.Request is IntentRequest intentRequest
-                && intentRequest.Intent.Slots != null
-                && intentRequest.Intent.Slots.ContainsKey(defaultIntentSlotName))
-            {
-                activity.Type = ActivityTypes.Message;
-                activity.Text = intentRequest.Intent.Slots[defaultIntentSlotName].Value;
-                activity.Value = intentRequest;
+                options = new AlexaRequestMapperOptions();
             }
-            else if (skillRequest.Request is LaunchRequest launchRequest)
-            {
-                activity.Type = ActivityTypes.ConversationUpdate;
-                activity.MembersAdded = new List<ChannelAccount>() { new ChannelAccount() { Id = skillRequest.Session.User.UserId } };
-                activity.Value = launchRequest;
-            }
-            else
-            {
-                activity.Type = ActivityTypes.Event;
-                activity.Name = skillRequest.Request.Type;
 
-                switch (skillRequest.Request)
-                {
-                    case IntentRequest skillIntentRequest:
-                        activity.Value = skillIntentRequest;
-                        break;
-                    case AccountLinkSkillEventRequest accountLinkSkillEventRequest:
-                        activity.Value = accountLinkSkillEventRequest;
-                        break;
-                    case AudioPlayerRequest audioPlayerRequest:
-                        activity.Value = audioPlayerRequest;
-                        break;
-                    case DisplayElementSelectedRequest displayElementSelectedRequest:
-                        activity.Value = displayElementSelectedRequest;
-                        break;
-                    case PermissionSkillEventRequest permissionSkillEventRequest:
-                        activity.Value = permissionSkillEventRequest;
-                        break;
-                    case PlaybackControllerRequest playbackControllerRequest:
-                        activity.Value = playbackControllerRequest;
-                        break;
-                    case SessionEndedRequest sessionEndedRequest:
-                        activity.Value = sessionEndedRequest;
-                        break;
-                    case SkillEventRequest skillEventRequest:
-                        activity.Value = skillEventRequest;
-                        break;
-                    case SystemExceptionRequest systemExceptionRequest:
-                        activity.Value = systemExceptionRequest;
-                        break;
-                }
+            Activity activity;
+
+            switch (skillRequest.Request)
+            {
+                case IntentRequest intentRequest:
+                    activity = Activity.CreateMessageActivity() as Activity;
+                    activity = SetGeneralActivityProperties(activity, skillRequest, options.ChannelId);
+                    activity.Text = intentRequest.Intent.Slots[options.DefaultIntentSlotName].Value;
+                    activity.Locale = intentRequest.Locale;
+                    break;
+                case LaunchRequest launchRequest:
+                    activity = Activity.CreateConversationUpdateActivity() as Activity;
+                    activity = SetGeneralActivityProperties(activity, skillRequest, options.ChannelId);
+                    activity.MembersAdded.Add(new ChannelAccount(id: skillRequest.Session.User.UserId));
+                    break;
+                default:
+                    activity = Activity.CreateEventActivity() as Activity;
+                    activity = SetGeneralActivityProperties(activity, skillRequest, options.ChannelId);
+                    activity.Name = skillRequest.Request.Type;
+                    activity = SetEventActivityValueFromSkillRequest(activity, skillRequest);
+                    break;
             }
 
             return activity;
         }
 
-        public static SkillResponse CreateResponseFromActivity(Activity activity, SkillRequest alexaRequest, bool shouldEndSessionByDefault)
+        public static SkillResponse CreateResponseFromActivity(Activity activity, SkillRequest alexaRequest, AlexaRequestMapperOptions options)
         {
+            if (options == null)
+            {
+                options = new AlexaRequestMapperOptions();
+            }
+
             if (alexaRequest.Request.Type == "SessionEndedRequest" || activity == null)
             {
                 return ResponseBuilder.Tell(string.Empty);
@@ -127,7 +93,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
                         response.Response.Reprompt = new Reprompt(activity.Text);
                         break;
                     default:
-                        response.Response.ShouldEndSession = shouldEndSessionByDefault;
+                        response.Response.ShouldEndSession = options.ShouldEndSessionByDefault;
                         break;
                 }
             }
@@ -167,6 +133,63 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
                 .Select(a => a.Text)
                 .Where(s => !string.IsNullOrEmpty(s))
                 .Select(s => s.Trim(new char[] { ' ', '.' })));
+
+            return activity;
+        }
+
+        private static Activity SetEventActivityValueFromSkillRequest(Activity activity, SkillRequest skillRequest)
+        {
+            switch (skillRequest.Request)
+            {
+                case IntentRequest skillIntentRequest:
+                    activity.Value = skillIntentRequest;
+                    break;
+                case AccountLinkSkillEventRequest accountLinkSkillEventRequest:
+                    activity.Value = accountLinkSkillEventRequest;
+                    break;
+                case AudioPlayerRequest audioPlayerRequest:
+                    activity.Value = audioPlayerRequest;
+                    break;
+                case DisplayElementSelectedRequest displayElementSelectedRequest:
+                    activity.Value = displayElementSelectedRequest;
+                    break;
+                case PermissionSkillEventRequest permissionSkillEventRequest:
+                    activity.Value = permissionSkillEventRequest;
+                    break;
+                case PlaybackControllerRequest playbackControllerRequest:
+                    activity.Value = playbackControllerRequest;
+                    break;
+                case SessionEndedRequest sessionEndedRequest:
+                    activity.Value = sessionEndedRequest;       // TODO: Activity.CreateEndOfConversationActivity() instead?
+                    break;
+                case SkillEventRequest skillEventRequest:
+                    activity.Value = skillEventRequest;
+                    break;
+                case SystemExceptionRequest systemExceptionRequest:
+                    activity.Value = systemExceptionRequest;
+                    break;
+            }
+
+            return activity;
+        }
+
+        /// <summary>
+        /// Set the general Activity properties.
+        /// </summary>
+        private static Activity SetGeneralActivityProperties(Activity activity, SkillRequest skillRequest, string channelId)
+        {
+            // SkillRequest.Context provides info about the current state of the Alexa Service and device. https://developer.amazon.com/en-US/docs/alexa/custom-skills/request-and-response-json-reference.html#context-object
+            // SkillRequest.Context.System provides info about the Alexa Service.
+            var alexaSystem = skillRequest.Context.System;
+
+            activity.ChannelId = channelId;
+            activity.Id = skillRequest.Request.RequestId;
+            activity.ServiceUrl = $"{alexaSystem.ApiEndpoint}?token={alexaSystem.ApiAccessToken}";   // TODO: Channel url instead?
+            activity.Recipient = new ChannelAccount(alexaSystem.Application.ApplicationId);
+            activity.From = new ChannelAccount(alexaSystem.User.UserId); // TODO: Should this be the Person - that is the speaker.
+            activity.Conversation = new ConversationAccount(false, "conversation", skillRequest.Session.SessionId);  // TODO: What should Conversation type be? Session is not set for AudioPlayer, VideoApp, and  PlaybackController requests.
+            activity.Timestamp = skillRequest.Request.Timestamp;
+            activity.ChannelData = skillRequest;
 
             return activity;
         }

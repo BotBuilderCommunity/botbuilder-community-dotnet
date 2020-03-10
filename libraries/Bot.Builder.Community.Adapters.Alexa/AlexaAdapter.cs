@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Security.Authentication;
 using System.Text;
 using System.Threading;
@@ -146,19 +147,20 @@ namespace Bot.Builder.Community.Adapters.Alexa
             var activities = context.SentActivities;
 
             var outgoingActivity = ProcessOutgoingActivities(activities);
-            var response = AlexaHelper.CreateResponseFromActivity(outgoingActivity, alexaRequest, _options.ShouldEndSessionByDefault);
+            var response = AlexaRequestMapper.CreateResponseFromActivity(outgoingActivity, alexaRequest, 
+                new AlexaRequestMapperOptions { ShouldEndSessionByDefault = _options.ShouldEndSessionByDefault });
 
             return response;
         }
 
         public virtual Activity ProcessOutgoingActivities(List<Activity> activities)
         {
-            return AlexaHelper.ProcessOutgoingActivities(activities);
+            return AlexaRequestMapper.ProcessOutgoingActivities(activities);
         }
 
         public virtual Activity RequestToActivity(SkillRequest request)
         {
-            return AlexaHelper.RequestToActivity(request);
+            return AlexaRequestMapper.RequestToActivity(request);
         }
 
         public override Task<ResourceResponse[]> SendActivitiesAsync(ITurnContext turnContext, Activity[] activities, CancellationToken cancellationToken)
