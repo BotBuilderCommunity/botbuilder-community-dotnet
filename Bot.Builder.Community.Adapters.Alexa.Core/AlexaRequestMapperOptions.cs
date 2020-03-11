@@ -1,4 +1,6 @@
-﻿namespace Bot.Builder.Community.Adapters.Alexa.Core
+﻿using Microsoft.Extensions.Logging;
+
+namespace Bot.Builder.Community.Adapters.Alexa.Core
 {
     public class AlexaRequestMapperOptions
     {

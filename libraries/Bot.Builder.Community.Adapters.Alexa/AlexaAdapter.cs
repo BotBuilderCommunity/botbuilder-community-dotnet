@@ -34,11 +34,17 @@ namespace Bot.Builder.Community.Adapters.Alexa
 
         private readonly AlexaAdapterOptions _options;
         private readonly ILogger _logger;
+        private readonly AlexaRequestMapper _requestMapper;
 
         public AlexaAdapter(AlexaAdapterOptions options = null, ILogger logger = null)
         {
             _options = options ?? new AlexaAdapterOptions();
             _logger = logger ?? NullLogger.Instance;
+
+            _requestMapper = new AlexaRequestMapper(new AlexaRequestMapperOptions
+            {
+                ShouldEndSessionByDefault = options.ShouldEndSessionByDefault
+            });
         }
 
         public async Task ProcessAsync(HttpRequest httpRequest, HttpResponse httpResponse, IBot bot, CancellationToken cancellationToken = default)
@@ -147,20 +153,20 @@ namespace Bot.Builder.Community.Adapters.Alexa
             var activities = context.SentActivities;
 
             var outgoingActivity = ProcessOutgoingActivities(activities);
-            var response = AlexaRequestMapper.CreateResponseFromActivity(outgoingActivity, alexaRequest, 
-                new AlexaRequestMapperOptions { ShouldEndSessionByDefault = _options.ShouldEndSessionByDefault });
+
+            var response = _requestMapper.CreateResponseFromActivity(outgoingActivity, alexaRequest);
 
             return response;
         }
 
         public virtual Activity ProcessOutgoingActivities(List<Activity> activities)
         {
-            return AlexaRequestMapper.ProcessOutgoingActivities(activities);
+            return _requestMapper.ProcessOutgoingActivities(activities);
         }
 
         public virtual Activity RequestToActivity(SkillRequest request)
         {
-            return AlexaRequestMapper.RequestToActivity(request);
+            return _requestMapper.RequestToActivity(request);
         }
 
         public override Task<ResourceResponse[]> SendActivitiesAsync(ITurnContext turnContext, Activity[] activities, CancellationToken cancellationToken)

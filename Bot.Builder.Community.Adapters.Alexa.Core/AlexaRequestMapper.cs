@@ -9,36 +9,42 @@ using Alexa.NET.Request.Type;
 using Alexa.NET.Response;
 using Bot.Builder.Community.Adapters.Alexa.Core.Attachments;
 using Microsoft.Bot.Schema;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Bot.Builder.Community.Adapters.Alexa.Core
 {
-    public static class AlexaRequestMapper
+    public class AlexaRequestMapper
     {
-        public static Activity RequestToActivity(SkillRequest skillRequest, AlexaRequestMapperOptions options = null)
-        {
-            if(options == null)
-            {
-                options = new AlexaRequestMapperOptions();
-            }
+        private AlexaRequestMapperOptions _options;
+        private ILogger _logger;
 
+        public AlexaRequestMapper(AlexaRequestMapperOptions options = null, ILogger logger = null)
+        {
+            _options = options ?? new AlexaRequestMapperOptions();
+            _logger = logger ?? NullLogger.Instance;
+        }
+
+        public Activity RequestToActivity(SkillRequest skillRequest)
+        {
             Activity activity;
 
             switch (skillRequest.Request)
             {
                 case IntentRequest intentRequest:
                     activity = Activity.CreateMessageActivity() as Activity;
-                    activity = SetGeneralActivityProperties(activity, skillRequest, options.ChannelId);
-                    activity.Text = intentRequest.Intent.Slots[options.DefaultIntentSlotName].Value;
+                    activity = SetGeneralActivityProperties(activity, skillRequest, _options.ChannelId);
+                    activity.Text = intentRequest.Intent.Slots[_options.DefaultIntentSlotName].Value;
                     activity.Locale = intentRequest.Locale;
                     break;
                 case LaunchRequest launchRequest:
                     activity = Activity.CreateConversationUpdateActivity() as Activity;
-                    activity = SetGeneralActivityProperties(activity, skillRequest, options.ChannelId);
+                    activity = SetGeneralActivityProperties(activity, skillRequest, _options.ChannelId);
                     activity.MembersAdded.Add(new ChannelAccount(id: skillRequest.Session.User.UserId));
                     break;
                 default:
                     activity = Activity.CreateEventActivity() as Activity;
-                    activity = SetGeneralActivityProperties(activity, skillRequest, options.ChannelId);
+                    activity = SetGeneralActivityProperties(activity, skillRequest, _options.ChannelId);
                     activity.Name = skillRequest.Request.Type;
                     activity = SetEventActivityValueFromSkillRequest(activity, skillRequest);
                     break;
@@ -47,13 +53,8 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
             return activity;
         }
 
-        public static SkillResponse CreateResponseFromActivity(Activity activity, SkillRequest alexaRequest, AlexaRequestMapperOptions options)
+        public SkillResponse CreateResponseFromActivity(Activity activity, SkillRequest alexaRequest)
         {
-            if (options == null)
-            {
-                options = new AlexaRequestMapperOptions();
-            }
-
             if (alexaRequest.Request.Type == "SessionEndedRequest" || activity == null)
             {
                 return ResponseBuilder.Tell(string.Empty);
@@ -93,7 +94,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
                         response.Response.Reprompt = new Reprompt(activity.Text);
                         break;
                     default:
-                        response.Response.ShouldEndSession = options.ShouldEndSessionByDefault;
+                        response.Response.ShouldEndSession = _options.ShouldEndSessionByDefault;
                         break;
                 }
             }
@@ -110,7 +111,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
         /// </summary>
         /// <param name="activities">The list of one or more outgoing activities</param>
         /// <returns></returns>
-        public static Activity ProcessOutgoingActivities(List<Activity> activities)
+        public Activity ProcessOutgoingActivities(List<Activity> activities)
         {
             if (activities.Count == 0)
             {
@@ -137,7 +138,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
             return activity;
         }
 
-        private static Activity SetEventActivityValueFromSkillRequest(Activity activity, SkillRequest skillRequest)
+        private Activity SetEventActivityValueFromSkillRequest(Activity activity, SkillRequest skillRequest)
         {
             switch (skillRequest.Request)
             {
@@ -176,7 +177,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
         /// <summary>
         /// Set the general Activity properties.
         /// </summary>
-        private static Activity SetGeneralActivityProperties(Activity activity, SkillRequest skillRequest, string channelId)
+        private Activity SetGeneralActivityProperties(Activity activity, SkillRequest skillRequest, string channelId)
         {
             // SkillRequest.Context provides info about the current state of the Alexa Service and device. https://developer.amazon.com/en-US/docs/alexa/custom-skills/request-and-response-json-reference.html#context-object
             // SkillRequest.Context.System provides info about the Alexa Service.
@@ -194,7 +195,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
             return activity;
         }
 
-        private static void ProcessActivityAttachments(Activity activity, SkillResponse response)
+        private void ProcessActivityAttachments(Activity activity, SkillResponse response)
         {
             var cardAttachment = activity.Attachments?.FirstOrDefault(a => a.GetType() == typeof(CardAttachment)) as CardAttachment;
             if (cardAttachment != null)
@@ -217,7 +218,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
         /// returned, otherwise the original string is returned
         /// </summary>
         /// <param name="speakText">String to be checked for an outer speak XML tag and stripped if found</param>
-        private static string StripSpeakTag(string speakText)
+        private string StripSpeakTag(string speakText)
         {
             try
             {
@@ -247,7 +248,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
         /// </summary>
         /// <param name="response">Boolean indicating if the 'ShouldEndSession' property can be populated on the response.'</param>
         /// <returns>bool</returns>
-        private static bool ShouldSetEndSession(SkillResponse response)
+        private bool ShouldSetEndSession(SkillResponse response)
         {
             if (response.Response.Directives.Any(d => d is IEndSessionDirective))
             {
