@@ -67,7 +67,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Dialo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Alexa.Tests", "tests\Bot.Builder.Community.Adapters.Alexa.Tests\Bot.Builder.Community.Adapters.Alexa.Tests.csproj", "{07ECEE15-6D13-439F-8026-E05B70B749F8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bot.Builder.Community.Adapters.Alexa.Core", "Bot.Builder.Community.Adapters.Alexa.Core\Bot.Builder.Community.Adapters.Alexa.Core.csproj", "{11BB1EAE-FCBC-4E29-AF5E-A813C2F1F858}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Alexa.Core", "libraries\Bot.Builder.Community.Adapters.Alexa.Core\Bot.Builder.Community.Adapters.Alexa.Core.csproj", "{11BB1EAE-FCBC-4E29-AF5E-A813C2F1F858}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

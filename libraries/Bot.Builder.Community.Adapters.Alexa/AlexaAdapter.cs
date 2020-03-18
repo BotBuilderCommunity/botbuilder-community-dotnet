@@ -22,8 +22,6 @@ namespace Bot.Builder.Community.Adapters.Alexa
 {
     public class AlexaAdapter : BotAdapter, IBotFrameworkHttpAdapter
     {
-        internal const string BotIdentityKey = "BotIdentity";
-
         private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
         {
             ContractResolver = new CamelCasePropertyNamesContractResolver(),
@@ -42,7 +40,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
 
             _requestMapper = new AlexaRequestMapper(new AlexaRequestMapperOptions
             {
-                ShouldEndSessionByDefault = options.ShouldEndSessionByDefault
+                ShouldEndSessionByDefault = _options.ShouldEndSessionByDefault
             });
         }
 
@@ -159,7 +157,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
 
         public virtual Activity ProcessOutgoingActivities(List<Activity> activities)
         {
-            return _requestMapper.ProcessOutgoingActivities(activities);
+            return _requestMapper.MergeActivities(activities);
         }
 
         public virtual Activity RequestToActivity(SkillRequest request)

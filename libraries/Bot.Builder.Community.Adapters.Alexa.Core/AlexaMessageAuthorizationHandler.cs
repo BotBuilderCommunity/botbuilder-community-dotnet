@@ -8,7 +8,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
     /// <summary>
     /// Alexa Authorization Handler.
     /// </summary>
-    public class AlexaMessageAuthorizationHandler
+    public class AlexaAuthorizationHandler
     {
         /// <summary>
         /// SignatureCertChainUrl header name.
@@ -22,7 +22,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
 
         private readonly ILogger _logger;
 
-        public AlexaMessageAuthorizationHandler(ILogger logger)
+        public AlexaAuthorizationHandler(ILogger logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }

@@ -126,15 +126,16 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
         }
 
         /// <summary>
-        /// Concatenates outgoing activities into a single activity. If any of the activities being process
-        /// contain an outer SSML speak tag within the value of the Speak property, these are removed from the individual activities and a <speak>
-        /// tag is wrapped around the resulting concatenated string.  An SSML strong break tag is added between activity
-        /// content. For more infomation about the supported SSML for Alexa see 
+        /// Concatenates activities into a single activity. Uses the last activity in the list as the base activity.
+        /// If any of the activities being process contain an outer SSML speak tag within the value of the Speak property, 
+        /// these are removed from the individual activities and a <speak> tag is wrapped around the resulting 
+        /// concatenated string.  An SSML strong break tag is added between activity content. For more infomation 
+        /// about the supported SSML for Alexa see 
         /// https://developer.amazon.com/en-US/docs/alexa/custom-skills/speech-synthesis-markup-language-ssml-reference.html#break
         /// </summary>
         /// <param name="activities">The list of one or more outgoing activities</param>
         /// <returns>Activity</returns>
-        public Activity ProcessOutgoingActivities(List<Activity> activities)
+        public Activity MergeActivities(IList<Activity> activities)
         {
             if (activities.Count == 0)
             {
