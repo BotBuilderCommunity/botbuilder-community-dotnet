@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Runtime.CompilerServices;
 using System.Security.Authentication;
 using System.Text;
 using System.Threading;
@@ -94,7 +93,6 @@ namespace Bot.Builder.Community.Adapters.Alexa
             httpResponse.StatusCode = (int)HttpStatusCode.OK;
 
             var responseJson = JsonConvert.SerializeObject(alexaResponse, JsonSerializerSettings);
-
             var responseData = Encoding.UTF8.GetBytes(responseJson);
             await httpResponse.Body.WriteAsync(responseData, 0, responseData.Length, cancellationToken).ConfigureAwait(false);
         }
@@ -154,7 +152,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
 
             var outgoingActivity = ProcessOutgoingActivities(activities);
 
-            var response = _requestMapper.CreateResponseFromActivity(outgoingActivity, alexaRequest);
+            var response = _requestMapper.ActivityToResponse(outgoingActivity, alexaRequest);
 
             return response;
         }
