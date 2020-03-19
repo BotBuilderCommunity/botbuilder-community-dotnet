@@ -1,4 +1,6 @@
+using Alexa.NET.Response;
 using Bot.Builder.Community.Adapters.Alexa.Core;
+using Bot.Builder.Community.Adapters.Alexa.Tests.Utility;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
@@ -96,6 +98,50 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
 
             Assert.Equal("<speak>This is<break strength=\"strong\"/>the first activity SSML<break strength=\"strong\"/>This is the second activity SSML</speak>", 
                 processActivityResult.Speak);
+        }
+
+        [Fact]
+        public void PlainTextMessageActivityConverted()
+        {
+            var skillRequest = SkillRequestUtility.CreateIntentRequest();
+            var connector = new AlexaRequestMapper();
+
+            var activity = Activity.CreateMessageActivity() as Activity;
+            activity.Text = "Hello world";
+            activity.TextFormat = TextFormatTypes.Plain;
+
+            var skillResponse = connector.ActivityToResponse(activity, skillRequest);
+            VerifyPlainTextResponse(skillResponse, activity.Text);
+        }
+
+        [Fact]
+        public void NonMessageActivityConverted()
+        {
+            var skillRequest = SkillRequestUtility.CreateIntentRequest();
+            var connector = new AlexaRequestMapper();
+
+            var activity = Activity.CreateTraceActivity("This is a trace") as Activity;
+
+            var skillResponse = connector.ActivityToResponse(activity, skillRequest);
+            VerifyPlainTextResponse(skillResponse, string.Empty);
+        }
+
+        private static void VerifyPlainTextResponse(SkillResponse skillResponse, string text)
+        {
+            Assert.Equal("1.0", skillResponse.Version);
+            Assert.Null(skillResponse.Response.Card);
+            Assert.NotNull(skillResponse.Response.Directives);
+            Assert.Equal(0, skillResponse.Response.Directives.Count);
+            Assert.NotNull(skillResponse.Response.OutputSpeech);
+            Assert.Null(skillResponse.Response.OutputSpeech.PlayBehavior);
+            Assert.Equal("PlainText", skillResponse.Response.OutputSpeech.Type);
+            var plainTextOutputSpeech = skillResponse.Response.OutputSpeech as PlainTextOutputSpeech;
+            Assert.NotNull(plainTextOutputSpeech);
+            Assert.Equal(text, plainTextOutputSpeech.Text);
+            Assert.Null(plainTextOutputSpeech.PlayBehavior);
+            Assert.Null(skillResponse.Response.Reprompt);
+            Assert.Equal(true as bool?, skillResponse.Response.ShouldEndSession);
+            Assert.Null(skillResponse.SessionAttributes);
         }
     }
 }

@@ -100,7 +100,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
             }
             else
             {
-                response.Response.OutputSpeech = new PlainTextOutputSpeech(activity.Text);
+                response.Response.OutputSpeech = new PlainTextOutputSpeech(activity.Text ?? string.Empty);
             }
 
             ProcessActivityAttachments(activity, response);
