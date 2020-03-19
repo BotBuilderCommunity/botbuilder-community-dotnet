@@ -28,15 +28,37 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
         }
 
         /// <summary>
+        /// Verify the skill request is for the skill with the specified skill id.
+        /// </summary>
+        /// <param name="skillRequest">Incoming SkillRequest from Alexa.</param>
+        /// <param name="alexaSkillId">Alexa Skill Id.</param>
+        /// <returns>True if the SkillRequest is for this skill.</returns>
+        public bool ValidateSkillId(SkillRequest skillRequest, string alexaSkillId)
+        {
+            if (string.IsNullOrWhiteSpace(alexaSkillId))
+            {
+                _logger.LogError("Validation failed. Empty AlexaSkillId.");
+                return false;
+            }
+
+            if (!alexaSkillId.Equals(skillRequest?.Context?.System?.Application?.ApplicationId, StringComparison.OrdinalIgnoreCase))
+            {
+                _logger.LogError($"Validation failed. Skill Ids do not match. Incoming: {skillRequest?.Context?.System?.Application?.ApplicationId ?? "NULL" }, Bot: {alexaSkillId ?? "NULL" }.");
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
         /// Authorize the SkillRequest is coming from Alexa.
         /// </summary>
         /// <param name="skillRequest">Incoming SkillRequest from Alexa.</param>
         /// <param name="requestBody">Full request body from Alexa.</param>
         /// <param name="signatureChainUrl">Signature Chain Url. This is the SignatureCertChainUrl header value.</param>
         /// <param name="signature">Signature. This is the Signature header value.</param>
-        /// <param name="alexaSkillId">Alexa Skill Id.</param>
         /// <returns>True if this is a valid SkillRequest otherwise false.</returns>
-        public async Task<bool> ValidateSkillRequest(SkillRequest skillRequest, string requestBody, string signatureChainUrl, string signature, string alexaSkillId)
+        public async Task<bool> ValidateSkillRequest(SkillRequest skillRequest, string requestBody, string signatureChainUrl, string signature)
         {
             if (skillRequest == null)
             {
@@ -44,20 +66,9 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
                 return false;
             }
 
-            if (string.IsNullOrWhiteSpace(alexaSkillId))
-            {
-                _logger.LogError("Validation failed. Empty AlexaSkillId.");
-                return false;
-            }
-
             if (string.IsNullOrWhiteSpace(signatureChainUrl))
             {
                 _logger.LogError("Validation failed. Empty SignatureCertChainUrl header.");
-                return false;
-            }
-            if (!signatureChainUrl.Equals(skillRequest?.Context?.System?.Application?.ApplicationId, StringComparison.OrdinalIgnoreCase))
-            {
-                _logger.LogError($"Validation failed. Skill Ids do not match. Incoming: {skillRequest?.Context?.System?.Application?.ApplicationId ?? "NULL" }, Bot: {alexaSkillId ?? "NULL" }.");
                 return false;
             }
 
