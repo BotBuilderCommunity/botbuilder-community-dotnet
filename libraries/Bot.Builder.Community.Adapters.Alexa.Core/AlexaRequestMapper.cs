@@ -214,6 +214,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
 
             activity.ChannelId = _options.ChannelId;
             activity.Id = skillRequest.Request.RequestId;
+            activity.DeliveryMode = DeliveryModes.ExpectReplies;
             activity.ServiceUrl = _options.ServiceUrl ?? $"{alexaSystem.ApiEndpoint}?token={alexaSystem.ApiAccessToken}";
             activity.Recipient = new ChannelAccount(alexaSystem.Application.ApplicationId);
             activity.From = new ChannelAccount(alexaSystem.Person?.PersonId ?? alexaSystem.User.UserId);

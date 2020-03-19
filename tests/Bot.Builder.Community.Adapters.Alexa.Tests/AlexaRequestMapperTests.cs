@@ -1,3 +1,5 @@
+using Alexa.NET.Request;
+using Alexa.NET.Request.Type;
 using Alexa.NET.Response;
 using Bot.Builder.Community.Adapters.Alexa.Core;
 using Bot.Builder.Community.Adapters.Alexa.Tests.Utility;
@@ -104,13 +106,13 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
         public void PlainTextMessageActivityConverted()
         {
             var skillRequest = SkillRequestUtility.CreateIntentRequest();
-            var connector = new AlexaRequestMapper();
+            var mapper = new AlexaRequestMapper();
 
             var activity = Activity.CreateMessageActivity() as Activity;
             activity.Text = "Hello world";
             activity.TextFormat = TextFormatTypes.Plain;
 
-            var skillResponse = connector.ActivityToResponse(activity, skillRequest);
+            var skillResponse = mapper.ActivityToResponse(activity, skillRequest);
             VerifyPlainTextResponse(skillResponse, activity.Text);
         }
 
@@ -118,12 +120,62 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
         public void NonMessageActivityConverted()
         {
             var skillRequest = SkillRequestUtility.CreateIntentRequest();
-            var connector = new AlexaRequestMapper();
+            var mapper = new AlexaRequestMapper();
 
             var activity = Activity.CreateTraceActivity("This is a trace") as Activity;
 
-            var skillResponse = connector.ActivityToResponse(activity, skillRequest);
+            var skillResponse = mapper.ActivityToResponse(activity, skillRequest);
             VerifyPlainTextResponse(skillResponse, string.Empty);
+        }
+
+        [Fact]
+        public void SimpleIntentRequest()
+        {
+            var skillRequest = SkillRequestUtility.CreateIntentRequest();
+            var mapperOptions = new AlexaRequestMapperOptions { ServiceUrl = "service url" };
+            var mapper = new AlexaRequestMapper(mapperOptions);
+
+            ((IntentRequest)skillRequest.Request).Intent.Slots[mapperOptions.DefaultIntentSlotName].Value = "hello world";
+
+            var convertedActivity = mapper.RequestToActivity(skillRequest);
+
+            VerifyIntentRequest(skillRequest, convertedActivity, mapperOptions);
+        }
+
+        private static void VerifyIntentRequest(SkillRequest skillRequest, IActivity activity, AlexaRequestMapperOptions mapperOptions)
+        {
+            VerifyRequest(skillRequest, activity, mapperOptions);
+
+            var messageActivity = activity.AsMessageActivity();
+            Assert.NotNull(messageActivity);
+
+            Assert.Equal(DeliveryModes.ExpectReplies, messageActivity.DeliveryMode);
+            Assert.Equal(skillRequest.Request.Locale, messageActivity.Locale);
+            Assert.Equal(((IntentRequest)skillRequest.Request).Intent.Slots[mapperOptions.DefaultIntentSlotName].Value, messageActivity.Text);
+        }
+
+        private static void VerifyRequest(SkillRequest skillRequest, IActivity activity, AlexaRequestMapperOptions mapperOptions)
+        {
+            Assert.NotNull(activity);
+            Assert.Equal(skillRequest, activity.ChannelData);
+            Assert.Equal(mapperOptions.ChannelId, activity.ChannelId);
+
+            Assert.NotNull(activity.Conversation);
+            Assert.Equal("conversation", activity.Conversation.ConversationType);
+            Assert.Equal(skillRequest.Session.SessionId, activity.Conversation.Id);
+            Assert.Equal(false, activity.Conversation.IsGroup);
+
+            Assert.NotNull(activity.From);
+            Assert.Equal(skillRequest.Context.System.Person?.PersonId ?? skillRequest.Context.System.User.UserId, activity.From.Id);
+            Assert.Equal(skillRequest.Request.RequestId, activity.Id);
+
+
+            Assert.NotNull(activity.Recipient);
+            Assert.Equal(skillRequest.Context.System.Application.ApplicationId, activity.Recipient.Id);
+
+            Assert.Equal(mapperOptions.ServiceUrl, activity.ServiceUrl);
+            Assert.Equal(skillRequest.Request.Timestamp, activity.Timestamp);
+            Assert.Equal(ActivityTypes.Message, activity.Type);
         }
 
         private static void VerifyPlainTextResponse(SkillResponse skillResponse, string text)
