@@ -137,7 +137,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
         /// <returns>Activity</returns>
         public Activity MergeActivities(IList<Activity> activities)
         {
-            if (activities.Count == 0)
+            if (activities == null || activities.Count == 0)
             {
                 return null;
             }

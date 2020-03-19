@@ -33,6 +33,13 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
         }
 
         [Fact]
+        public void MergeActivitiesReturnsNullWithNullActivities()
+        {
+            var alexaAdapter = new AlexaRequestMapper();
+            Assert.Null(alexaAdapter.MergeActivities(new List<Activity>()));
+        }
+
+        [Fact]
         public void MergeActivitiesReturnsNullWithNoActivities()
         {
             var alexaAdapter = new AlexaRequestMapper();
@@ -129,7 +136,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
         }
 
         [Fact]
-        public void SimpleIntentRequest()
+        public void SimpleIntentRequestConverted()
         {
             var skillRequest = SkillRequestUtility.CreateIntentRequest();
             var mapperOptions = new AlexaRequestMapperOptions { ServiceUrl = "service url" };
