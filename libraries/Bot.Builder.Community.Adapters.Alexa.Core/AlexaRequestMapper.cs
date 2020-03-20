@@ -100,7 +100,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
             }
             else
             {
-                response.Response.OutputSpeech = new PlainTextOutputSpeech(activity.Text);
+                response.Response.OutputSpeech = new PlainTextOutputSpeech(activity.Text ?? string.Empty);
             }
 
             ProcessActivityAttachments(activity, response);
@@ -137,7 +137,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
         /// <returns>Activity</returns>
         public Activity MergeActivities(IList<Activity> activities)
         {
-            if (activities.Count == 0)
+            if (activities == null || activities.Count == 0)
             {
                 return null;
             }
@@ -214,6 +214,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
 
             activity.ChannelId = _options.ChannelId;
             activity.Id = skillRequest.Request.RequestId;
+            activity.DeliveryMode = DeliveryModes.ExpectReplies;
             activity.ServiceUrl = _options.ServiceUrl ?? $"{alexaSystem.ApiEndpoint}?token={alexaSystem.ApiAccessToken}";
             activity.Recipient = new ChannelAccount(alexaSystem.Application.ApplicationId);
             activity.From = new ChannelAccount(alexaSystem.Person?.PersonId ?? alexaSystem.User.UserId);

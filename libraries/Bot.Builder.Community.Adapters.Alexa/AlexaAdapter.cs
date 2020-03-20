@@ -75,7 +75,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
             }
 
             if (_options.ValidateIncomingAlexaRequests
-                && !await ValidationHelper.ValidateRequest(httpRequest, skillRequest, body, _logger))
+                && !await ValidationHelper.ValidateRequest(httpRequest, skillRequest, body, _options.AlexaSkillId, _logger))
             {
                 throw new AuthenticationException("Failed to validate incoming request.");
             }
