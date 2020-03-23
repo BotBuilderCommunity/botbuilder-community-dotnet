@@ -10,6 +10,7 @@ using Bot.Builder.Community.Adapters.Alexa.Core.Attachments;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Rest;
 using AlexaResponse = Alexa.NET.Response;
 
 namespace Bot.Builder.Community.Adapters.Alexa.Core
@@ -35,6 +36,11 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
         /// <returns>Activity</returns>
         public Activity RequestToActivity(SkillRequest skillRequest)
         {
+            if (skillRequest.Request == null)
+            {
+                throw new ValidationException("Bad Request. Skill request missing Request property.");
+            }
+
             switch (skillRequest.Request)
             {
                 case IntentRequest intentRequest:

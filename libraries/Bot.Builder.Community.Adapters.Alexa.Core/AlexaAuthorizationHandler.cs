@@ -33,7 +33,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
         /// <param name="skillRequest">Incoming SkillRequest from Alexa.</param>
         /// <param name="alexaSkillId">Alexa Skill Id.</param>
         /// <returns>True if the SkillRequest is for this skill.</returns>
-        public bool ValidateSkillId(SkillRequest skillRequest, string alexaSkillId)
+        public virtual bool ValidateSkillId(SkillRequest skillRequest, string alexaSkillId)
         {
             if (string.IsNullOrWhiteSpace(alexaSkillId))
             {
@@ -58,7 +58,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
         /// <param name="signatureChainUrl">Signature Chain Url. This is the SignatureCertChainUrl header value.</param>
         /// <param name="signature">Signature. This is the Signature header value.</param>
         /// <returns>True if this is a valid SkillRequest otherwise false.</returns>
-        public async Task<bool> ValidateSkillRequest(SkillRequest skillRequest, string requestBody, string signatureChainUrl, string signature)
+        public virtual async Task<bool> ValidateSkillRequest(SkillRequest skillRequest, string requestBody, string signatureChainUrl, string signature)
         {
             if (skillRequest == null)
             {
