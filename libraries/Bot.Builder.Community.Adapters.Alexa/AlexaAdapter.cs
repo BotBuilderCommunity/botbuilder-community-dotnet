@@ -86,7 +86,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
             {
                 throw new ArgumentNullException(nameof(alexaResponse));
             }
-
+            
             httpResponse.ContentType = "application/json";
             httpResponse.StatusCode = (int)HttpStatusCode.OK;
 
