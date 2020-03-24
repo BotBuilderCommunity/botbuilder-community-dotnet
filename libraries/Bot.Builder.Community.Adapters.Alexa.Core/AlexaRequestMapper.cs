@@ -36,39 +36,36 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
         /// <returns>Activity</returns>
         public Activity RequestToActivity(SkillRequest skillRequest)
         {
-            Activity activity;
-
             if (skillRequest.Request == null)
+            {
                 throw new ValidationException("Bad Request. Skill request missing Request property.");
+            }
 
             switch (skillRequest.Request)
             {
                 case IntentRequest intentRequest:
-                    activity = Activity.CreateMessageActivity() as Activity;
-                    activity = SetGeneralActivityProperties(activity, skillRequest);
-                    activity.Text = intentRequest.Intent.Slots[_options.DefaultIntentSlotName].Value;
-                    activity.Locale = intentRequest.Locale;
-                    break;
+                    if (intentRequest.Intent.Slots != null && intentRequest.Intent.Slots.ContainsKey(_options.DefaultIntentSlotName))
+                    {
+                        return RequestToMessageActivity(skillRequest, intentRequest);
+                    }
+                    else
+                    {
+                        if (intentRequest.Intent.Name == "AMAZON.StopIntent")
+                        {
+                            return RequestToEndOfConversationActivity(skillRequest);
+                        }
+
+                        return RequestToEventActivity(skillRequest);
+                    }
                 case LaunchRequest launchRequest:
-                    activity = Activity.CreateConversationUpdateActivity() as Activity;
-                    activity = SetGeneralActivityProperties(activity, skillRequest);
-                    activity.MembersAdded.Add(new ChannelAccount(id: skillRequest.Session.User.UserId));
-                    break;
+                    return RequestToConversationUpdateActivity(skillRequest);
                 case SessionEndedRequest sessionEndedRequest:
-                    activity = Activity.CreateEndOfConversationActivity() as Activity;
-                    activity = SetGeneralActivityProperties(activity, skillRequest);
-                    break;
+                    return RequestToEndOfConversationActivity(skillRequest);
                 default:
-                    activity = Activity.CreateEventActivity() as Activity;
-                    activity = SetGeneralActivityProperties(activity, skillRequest);
-                    activity.Name = skillRequest.Request.Type;
-                    activity = SetEventActivityValueFromSkillRequest(activity, skillRequest);
-                    break;
+                    return RequestToEventActivity(skillRequest);
             }
-
-            return activity;
         }
-
+        
         /// <summary>
         /// Creates a SkillResponse based on an Activity and original SkillRequest. 
         /// </summary>
@@ -86,6 +83,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
 
             if (activity == null || alexaRequest.Request is SessionEndedRequest)
             {
+                response.Response.ShouldEndSession = true;
                 response.Response.OutputSpeech = new PlainTextOutputSpeech 
                 {
                     Text = string.Empty
@@ -166,14 +164,36 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
             return activity;
         }
 
-        /// <summary>
-        /// Sets the value of the Activity to be a specific strongly typed Alexa.NET request object.
-        /// </summary>
-        /// <param name="activity">The activity on which to set the value.</param>
-        /// <param name="skillRequest">The incoming Alexa SkillRequest object.</param>
-        /// <returns>Activity</returns>
-        private Activity SetEventActivityValueFromSkillRequest(Activity activity, SkillRequest skillRequest)
+        private Activity RequestToEndOfConversationActivity(SkillRequest skillRequest)
         {
+            var activity = Activity.CreateEndOfConversationActivity() as Activity;
+            activity = SetGeneralActivityProperties(activity, skillRequest);
+            return activity;
+        }
+
+        private Activity RequestToConversationUpdateActivity(SkillRequest skillRequest)
+        {
+            var activity = Activity.CreateConversationUpdateActivity() as Activity;
+            activity = SetGeneralActivityProperties(activity, skillRequest);
+            activity.MembersAdded.Add(new ChannelAccount(id: skillRequest.Session.User.UserId));
+            return activity;
+        }
+
+        private Activity RequestToMessageActivity(SkillRequest skillRequest, IntentRequest intentRequest)
+        {
+            var activity = Activity.CreateMessageActivity() as Activity;
+            activity = SetGeneralActivityProperties(activity, skillRequest);
+            activity.Text = intentRequest.Intent.Slots[_options.DefaultIntentSlotName].Value;
+            activity.Locale = intentRequest.Locale;
+            return activity;
+        }
+
+        private Activity RequestToEventActivity(SkillRequest skillRequest)
+        {
+            var activity = Activity.CreateEventActivity() as Activity;
+            activity = SetGeneralActivityProperties(activity, skillRequest);
+            activity.Name = skillRequest.Request.Type;
+
             switch (skillRequest.Request)
             {
                 case IntentRequest skillIntentRequest:
@@ -199,6 +219,9 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
                     break;
                 case SystemExceptionRequest systemExceptionRequest:
                     activity.Value = systemExceptionRequest;
+                    break;
+                default:
+                    activity.Value = skillRequest.Request;
                     break;
             }
 
