@@ -220,6 +220,9 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
                 case SystemExceptionRequest systemExceptionRequest:
                     activity.Value = systemExceptionRequest;
                     break;
+                default:
+                    activity.Value = skillRequest.Request;
+                    break;
             }
 
             return activity;
