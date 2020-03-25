@@ -83,7 +83,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
                 Response = new ResponseBody()
             };
 
-            if (activity == null || alexaRequest.Request is SessionEndedRequest)
+            if (activity == null || activity.Type != ActivityTypes.Message || alexaRequest.Request is SessionEndedRequest)
             {
                 response.Response.ShouldEndSession = true;
                 response.Response.OutputSpeech = new PlainTextOutputSpeech 
@@ -136,16 +136,18 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
         /// <returns>Activity</returns>
         public Activity MergeActivities(IList<Activity> activities)
         {
-            if (activities == null || activities.Count == 0)
+            if (activities == null || activities.All(a => a.Type != ActivityTypes.Message))
             {
                 return null;
             }
 
-            var activity = activities.Last();
+            var messageActivities = activities.Where(a => a.Type == ActivityTypes.Message).ToList();
 
-            if (activities.Any(a => !string.IsNullOrEmpty(a.Speak)))
+            var activity = messageActivities.Last();
+
+            if (messageActivities.Any(a => !string.IsNullOrEmpty(a.Speak)))
             {
-                var speakText = string.Join("<break strength=\"strong\"/>", activities
+                var speakText = string.Join("<break strength=\"strong\"/>", messageActivities
                     .Select(a => !string.IsNullOrEmpty(a.Speak) ? StripSpeakTag(a.Speak) : NormalizeActivityText(a.TextFormat, a.Text))
                     .Where(s => !string.IsNullOrEmpty(s))
                     .Select(s => s));
@@ -153,7 +155,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
                 activity.Speak = $"<speak>{speakText}</speak>";
             }
 
-            activity.Text = string.Join(". ", activities
+            activity.Text = string.Join(". ", messageActivities
                 .Select(a => NormalizeActivityText(a.TextFormat, a.Text))
                 .Where(s => !string.IsNullOrEmpty(s))
                 .Select(s => s.Trim(new char[] { ' ', '.' })));
@@ -284,10 +286,10 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
                 return string.Empty;
             }
 
-            // Default to plain text if it isn't specified.
+            // Default to markdown if it isn't specified.
             if (textFormat == null)
             {
-                textFormat = TextFormatTypes.Plain;
+                textFormat = TextFormatTypes.Markdown;
             }
 
             string plainText;
