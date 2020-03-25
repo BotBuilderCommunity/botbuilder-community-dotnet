@@ -99,7 +99,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
             }
             else
             {
-                response.Response.OutputSpeech = new PlainTextOutputSpeech(NormalizeActivityText(activity.TextFormat, activity.Text));
+                response.Response.OutputSpeech = new PlainTextOutputSpeech(activity.Text);
             }
 
             ProcessActivityAttachments(activity, response);
@@ -113,7 +113,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
                         break;
                     case InputHints.ExpectingInput:
                         response.Response.ShouldEndSession = false;
-                        response.Response.Reprompt = new Reprompt(NormalizeActivityText(activity.TextFormat, activity.Text));
+                        response.Response.Reprompt = new Reprompt(activity.Text);
                         break;
                     default:
                         response.Response.ShouldEndSession = _options.ShouldEndSessionByDefault;
@@ -146,7 +146,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
             if (activities.Any(a => !string.IsNullOrEmpty(a.Speak)))
             {
                 var speakText = string.Join("<break strength=\"strong\"/>", activities
-                    .Select(a => !string.IsNullOrEmpty(a.Speak) ? StripSpeakTag(a.Speak) : a.Text)
+                    .Select(a => !string.IsNullOrEmpty(a.Speak) ? StripSpeakTag(a.Speak) : NormalizeActivityText(a.TextFormat, a.Text))
                     .Where(s => !string.IsNullOrEmpty(s))
                     .Select(s => s));
 
@@ -154,7 +154,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
             }
 
             activity.Text = string.Join(". ", activities
-                .Select(a => a.Text)
+                .Select(a => NormalizeActivityText(a.TextFormat, a.Text))
                 .Where(s => !string.IsNullOrEmpty(s))
                 .Select(s => s.Trim(new char[] { ' ', '.' })));
 
