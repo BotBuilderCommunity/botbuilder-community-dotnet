@@ -8,6 +8,7 @@ using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System.Collections.Generic;
+using System.Text;
 using Alexa.NET.Response.Directive;
 using Alexa.NET.Response.Directive.Templates;
 using Alexa.NET.Response.Directive.Templates.Types;
@@ -97,6 +98,21 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
         }
 
         [Fact]
+        public void MergeActivitiesIgnoresNonMessageActivities()
+        {
+            var alexaAdapter = new AlexaRequestMapper();
+
+            var firstActivity = MessageFactory.Text("This is the first activity.");
+            var traceActivity = Activity.CreateTraceActivity("This is a trace") as Activity;
+            var secondActivity = MessageFactory.Text("This is the second activity");
+            var typingActivity = Activity.CreateTypingActivity() as Activity;
+
+            var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { firstActivity, traceActivity, secondActivity, typingActivity });
+
+            Assert.Equal("This is the first activity. This is the second activity", processActivityResult.Text);
+        }
+
+        [Fact]
         public void MergeActivitiesReturnsCorrectlyJoinedSpeakWithSsml()
         {
             var alexaAdapter = new AlexaRequestMapper();
@@ -110,6 +126,42 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
             var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { firstActivity, secondActivity });
 
             Assert.Equal("<speak>This is<break strength=\"strong\"/>the first activity SSML<break strength=\"strong\"/>This is the second activity SSML</speak>", 
+                processActivityResult.Speak);
+        }
+
+        [Fact]
+        public void MergeActivitiesCorrectlyConvertsMarkdownToPlainText()
+        {
+            var alexaAdapter = new AlexaRequestMapper();
+
+            // Note: The input activities deliberately have an activity where the speak tag
+            // is included and one activity where it is not, to ensure the stripping / wrapping
+            // of the speak tag is handled correctly.
+
+            var message = new StringBuilder();
+            message.AppendLine("**This** ~~is~~ ***the*** first activity.");
+            message.AppendLine("# Heading 1");
+            message.AppendLine("This is another paragraph.");
+            message.AppendLine("- Item 1");
+            message.AppendLine("- Item 2");
+            message.AppendLine("- Item 3");
+            message.AppendLine("");
+            message.AppendLine("## Heading 2");
+            message.AppendLine("1. Item 1");
+            message.AppendLine("2. Item 2");
+            message.AppendLine("3. Item 3");
+            message.AppendLine("");
+            message.AppendLine("More info [visit our web site](www.microsoft.com)");
+
+            var firstActivity = MessageFactory.Text(message.ToString(), "This is<break strength=\"strong\"/>the first activity SSML");
+            var secondActivity = MessageFactory.Text("This is the second activity.", "<speak>This is the second activity SSML</speak>");
+
+            var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { firstActivity, secondActivity });
+
+            Assert.Equal("This is the first activity. Heading 1. This is another paragraph. Item 1, Item 2, Item 3. Heading 2. 1. Item 1, 2. Item 2, 3. Item 3. More info visit our web site www.microsoft.com. This is the second activity",
+                processActivityResult.Text);
+
+            Assert.Equal("<speak>This is<break strength=\"strong\"/>the first activity SSML<break strength=\"strong\"/>This is the second activity SSML</speak>",
                 processActivityResult.Speak);
         }
 
