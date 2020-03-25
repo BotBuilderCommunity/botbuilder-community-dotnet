@@ -47,7 +47,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
 
         public static async Task AlexaSendPermissionConsentRequestActivity(this ITurnContext context, string message, List<string> permissions)
         {
-            var activity = MessageFactory.Attachment(new PermissionConsentRequestAttachment(permissions), message);
+            var activity = MessageFactory.Attachment(new AskForPermissionsConsentCard() { Permissions = permissions }.ToAttachment(), message);
             await context.SendActivityAsync(activity).ConfigureAwait(false);
         }
 

@@ -9,6 +9,10 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using System.Collections.Generic;
 using System.Text;
+using Alexa.NET.Response.Directive;
+using Alexa.NET.Response.Directive.Templates;
+using Alexa.NET.Response.Directive.Templates.Types;
+using Bot.Builder.Community.Adapters.Alexa.Core.Attachments;
 using Xunit;
 
 namespace Bot.Builder.Community.Adapters.Alexa.Tests
@@ -201,6 +205,55 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
             VerifyIntentRequest(skillRequest, convertedActivity, mapperOptions);
         }
 
+        [Fact]
+        public void MessageActivityWithAlexaCardDirectiveAttachmentsConverted()
+        {
+            var skillRequest = SkillRequestUtility.CreateIntentRequest();
+            var mapper = new AlexaRequestMapper();
+
+            var activity = Activity.CreateMessageActivity() as Activity;
+            activity.Text = "Hello world";
+
+            var hintDirective = new HintDirective("hint text");
+            
+            var displayDirective = new DisplayRenderTemplateDirective()
+            {
+                Template = new BodyTemplate1()
+                {
+                    BackgroundImage = new TemplateImage()
+                    {
+                        ContentDescription = "Test",
+                        Sources = new List<ImageSource>()
+                        {
+                            new ImageSource()
+                            {
+                                Url = "https://via.placeholder.com/576.png/09f/fff",
+                            }
+                        }
+                    },
+                    Content = new TemplateContent()
+                    {
+                        Primary = new TemplateText() { Text = "Test", Type = "PlainText" }
+                    },
+                    Title = "Test title",
+                }
+            };
+
+            var simpleCard = new SimpleCard()
+            {
+                Title = "This is a simple card",
+                Content = "This is the simple card content"
+            };
+
+            activity.Attachments.Add(hintDirective.ToAttachment());
+            activity.Attachments.Add(displayDirective.ToAttachment());
+            activity.Attachments.Add(simpleCard.ToAttachment());
+
+            var skillResponse = mapper.ActivityToResponse(activity, skillRequest);
+
+            VerifyCardAttachmentAndDirectiveResponse(skillResponse, simpleCard, new List<IDirective>() { hintDirective, displayDirective });
+        }
+
         private static void VerifyIntentRequest(SkillRequest skillRequest, IActivity activity, AlexaRequestMapperOptions mapperOptions)
         {
             VerifyRequest(skillRequest, activity, mapperOptions);
@@ -253,6 +306,17 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
             Assert.Null(skillResponse.Response.Reprompt);
             Assert.Equal(true as bool?, skillResponse.Response.ShouldEndSession);
             Assert.Null(skillResponse.SessionAttributes);
+        }
+
+        private static void VerifyCardAttachmentAndDirectiveResponse(SkillResponse skillResponse, ICard card, IList<IDirective> directives)
+        {
+            Assert.Equal(card, skillResponse.Response.Card);
+            Assert.Equal(directives.Count, skillResponse.Response.Directives.Count);
+
+            foreach (var directive in directives)
+            {
+                Assert.True(skillResponse.Response.Directives.Contains(directive));
+            }
         }
     }
 }

@@ -347,32 +347,31 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
         {
             var bfCard = activity.Attachments?.FirstOrDefault(a => a.ContentType == HeroCard.ContentType || a.ContentType == SigninCard.ContentType);
 
-            if (bfCard?.ContentType == SigninCard.ContentType)
+            if (bfCard != null)
             {
-                response.Response.Card = new LinkAccountCard();
-            }
-
-            if (bfCard?.ContentType == HeroCard.ContentType)
-            {
-                response.Response.Card = CreateAlexaCardFromHeroCard(bfCard.Content as HeroCard);
-            }
-
-            if (response.Response.Card == null)
-            {
-                if (activity.Attachments?.FirstOrDefault(a => a.GetType() == typeof(CardAttachment)) is CardAttachment cardAttachment)
+                if (bfCard?.ContentType == SigninCard.ContentType)
                 {
-                    response.Response.Card = cardAttachment.Card;
+                    response.Response.Card = new LinkAccountCard();
+                }
+
+                if (bfCard?.ContentType == HeroCard.ContentType)
+                {
+                    response.Response.Card = CreateAlexaCardFromHeroCard(bfCard.Content as HeroCard);
+                }
+            }
+            else
+            {
+                var cardAttachment = activity.Attachments?.FirstOrDefault(a => a.ContentType == AlexaAttachmentContentTypes.Card);
+                if (cardAttachment != null)
+                {
+                    response.Response.Card = cardAttachment.Content as ICard;
                 }
             }
 
-            var directiveAttachments = activity.Attachments?
-                .Where(a => a.GetType() == typeof(DirectiveAttachment))
-                .Select(d => d as DirectiveAttachment);
-
-            var directives = directiveAttachments?.Select(d => d.Directive).ToList();
-            if (directives != null && directives.Any())
+            var directiveAttachments = activity.Attachments?.Where(a => a.ContentType == AlexaAttachmentContentTypes.Directive).ToList();
+            if (directiveAttachments != null && directiveAttachments.Any())
             {
-                response.Response.Directives = directives;
+                response.Response.Directives = directiveAttachments.Select(d => d.Content as IDirective).ToList();
             }
         }
 
