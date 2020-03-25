@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security;
 using System.Xml;
@@ -7,6 +8,7 @@ using Alexa.NET.Request;
 using Alexa.NET.Request.Type;
 using Alexa.NET.Response;
 using Bot.Builder.Community.Adapters.Alexa.Core.Attachments;
+using Bot.Builder.Community.Adapters.Alexa.Core.Utility;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -91,18 +93,13 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
                 return response;
             }
 
-            if (!SecurityElement.IsValidText(activity.Text))
-            {
-                activity.Text = SecurityElement.Escape(activity.Text);
-            }
-
             if (!string.IsNullOrEmpty(activity.Speak))
             {
                 response.Response.OutputSpeech = new SsmlOutputSpeech(activity.Speak);
             }
             else
             {
-                response.Response.OutputSpeech = new PlainTextOutputSpeech(activity.Text ?? string.Empty);
+                response.Response.OutputSpeech = new PlainTextOutputSpeech(NormalizeActivityText(activity.TextFormat, activity.Text));
             }
 
             ProcessActivityAttachments(activity, response);
@@ -116,7 +113,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
                         break;
                     case InputHints.ExpectingInput:
                         response.Response.ShouldEndSession = false;
-                        response.Response.Reprompt = new Reprompt(activity.Text);
+                        response.Response.Reprompt = new Reprompt(NormalizeActivityText(activity.TextFormat, activity.Text));
                         break;
                     default:
                         response.Response.ShouldEndSession = _options.ShouldEndSessionByDefault;
@@ -278,6 +275,40 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
             {
                 return speakText;
             }
+        }
+
+        private string NormalizeActivityText(string textFormat, string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return string.Empty;
+            }
+
+            // Default to plain text if it isn't specified.
+            if (textFormat == null)
+            {
+                textFormat = TextFormatTypes.Plain;
+            }
+
+            string plainText;
+            if (textFormat.Equals(TextFormatTypes.Plain, StringComparison.Ordinal))
+            {
+                plainText = text;
+            }
+            else if (textFormat.Equals(TextFormatTypes.Markdown, StringComparison.Ordinal))
+            {
+                plainText = AlexaMarkdownToPlaintextRenderer.Render(text);
+            }
+            else // xml format or other unknown and unsupported format.
+            {
+                plainText = string.Empty;
+            }
+
+            if (!SecurityElement.IsValidText(plainText))
+            {
+                plainText = SecurityElement.Escape(plainText);
+            }
+            return plainText;
         }
 
         /// <summary>
