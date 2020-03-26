@@ -8,7 +8,7 @@ using Alexa.NET.Request;
 using Alexa.NET.Request.Type;
 using Alexa.NET.Response;
 using Bot.Builder.Community.Adapters.Alexa.Core.Attachments;
-using Bot.Builder.Community.Adapters.Alexa.Core.Utility;
+using Bot.Builder.Community.Adapters.Alexa.Core.Helpers;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;

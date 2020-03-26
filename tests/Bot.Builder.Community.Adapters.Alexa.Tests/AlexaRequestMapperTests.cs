@@ -2,7 +2,6 @@ using Alexa.NET.Request;
 using Alexa.NET.Request.Type;
 using Alexa.NET.Response;
 using Bot.Builder.Community.Adapters.Alexa.Core;
-using Bot.Builder.Community.Adapters.Alexa.Tests.Utility;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
@@ -13,6 +12,7 @@ using Alexa.NET.Response.Directive;
 using Alexa.NET.Response.Directive.Templates;
 using Alexa.NET.Response.Directive.Templates.Types;
 using Bot.Builder.Community.Adapters.Alexa.Core.Attachments;
+using Bot.Builder.Community.Adapters.Alexa.Tests.Helpers;
 using Xunit;
 
 namespace Bot.Builder.Community.Adapters.Alexa.Tests
@@ -168,7 +168,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
         [Fact]
         public void PlainTextMessageActivityConverted()
         {
-            var skillRequest = SkillRequestUtility.CreateIntentRequest();
+            var skillRequest = SkillRequestHelper.CreateIntentRequest();
             var mapper = new AlexaRequestMapper();
 
             var activity = Activity.CreateMessageActivity() as Activity;
@@ -182,7 +182,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
         [Fact]
         public void NonMessageActivityConverted()
         {
-            var skillRequest = SkillRequestUtility.CreateIntentRequest();
+            var skillRequest = SkillRequestHelper.CreateIntentRequest();
             var mapper = new AlexaRequestMapper();
 
             var activity = Activity.CreateTraceActivity("This is a trace") as Activity;
@@ -194,7 +194,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
         [Fact]
         public void SimpleIntentRequestConverted()
         {
-            var skillRequest = SkillRequestUtility.CreateIntentRequest();
+            var skillRequest = SkillRequestHelper.CreateIntentRequest();
             var mapperOptions = new AlexaRequestMapperOptions { ServiceUrl = "service url" };
             var mapper = new AlexaRequestMapper(mapperOptions);
 
@@ -208,7 +208,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
         [Fact]
         public void MessageActivityWithAlexaCardDirectiveAttachmentsConverted()
         {
-            var skillRequest = SkillRequestUtility.CreateIntentRequest();
+            var skillRequest = SkillRequestHelper.CreateIntentRequest();
             var mapper = new AlexaRequestMapper();
 
             var activity = Activity.CreateMessageActivity() as Activity;
