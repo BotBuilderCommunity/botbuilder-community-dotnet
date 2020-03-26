@@ -345,6 +345,8 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
         /// <param name="response">The SkillResponse to be modified based on the attachments on the Activity object.</param>
         private void ProcessActivityAttachments(Activity activity, SkillResponse response)
         {
+            activity.ConvertAlexaAttachmentContent();
+
             var bfCard = activity.Attachments?.FirstOrDefault(a => a.ContentType == HeroCard.ContentType || a.ContentType == SigninCard.ContentType);
 
             if (bfCard != null)
