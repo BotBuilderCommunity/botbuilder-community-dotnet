@@ -31,17 +31,23 @@ The adapter supports a broad range of capabilities for RingCentral, including;
   * Bi-directional communication between the RingCentral operator and the bot user
 * Middleware to automatically log all bot conversations (transcripts) to the RingCentral platform
 
+### Configuration
 
-# [TODO]
+Depending on which features of this adapter you want to leverage, you'll need to configure your RingCentral Engage environment with the relevant Source, Source SDK and webhooks.  As a result of this configuration, you will need to use some of the RingCentral settings within your bot.  To make this easier to follow, the RingCentral Engage Digital  documentation has been split out into the following:
+
+- [RingCentral Engage chatbot setup](./Docs/RingCentral/EngageChatbot.md)
+- [RingCentral Engage WhatsApp configuration](./Docs/RingCentral/EngageWhatsApp.md)
+
 ### Installation
 
-Available via NuGet package [Bot.Builder.Community.Adapters.Alexa](https://www.nuget.org/packages/Bot.Builder.Community.Adapters.Alexa/)
+Available via NuGet package [Bot.Builder.Community.Adapters.RingCentral](https://www.nuget.org/packages/Bot.Builder.Community.Adapters.RingCentral/)
 
 Install into your project using the following command in the package manager;
 ```
-    PM> Install-Package Bot.Builder.Community.Adapters.Alexa
+    PM> Install-Package Bot.Builder.Community.Adapters.RingCentral
 ```
 
+# [TODO]
 ### Sample
 
 Basic sample bot available [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/Alexa%20Adapter%20Sample).
@@ -434,3 +440,27 @@ The Alexa adapter will use the first card attachment by default, unless you have
 ***Note: You should ensure that the images you use on your HeroCard / Thumbnail cards are the correct expected size for Alexa Skills responses.***
 
 * **SigninCard** : If a SignInCard is attached to your outgoing activity, this will be mapped as a LinkAccount card in the Alexa response.
+
+### Credits
+
+This community project is the result of two targetted projects around RingCentral integration with the Bot Framework.  This code base has used many learnings, effort and contributions from the following engineers:
+
+- [João Almeida](https://github.com/joalmeid)
+- [Remi Bauby]()
+- [Michael Brunner](https://github.com/michaelbrunner)
+- [Jamie Dalton](https://github.com/daltskin)
+- [Sven Frei](https://github.com/loubahnhof)
+- [Cyrille Gourdin](https://github.com/Bacdol)
+- [Artur Laksberg](https://github.com/arturl)
+- [Luis Alves Martins](https://github.com/luisalvesmartins)
+- [Shobhit Mishra]()
+- [Egor Nikitin]()
+- [Vishesh Oberoi](https://github.com/ovishesh)
+- [Martin Oss](ossmartin@gmail.com)
+- [Martin Schray](https://github.com/mschray/)
+- [Autumn Wyborny]()
+
+
+
+
+
