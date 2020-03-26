@@ -10,13 +10,19 @@ namespace Bot.Builder.Community.Adapters.RingCentral
     public class RingCentralChannelData
     {
         /// <summary>
-        /// Id of the RingCentral source.
+        /// Gets or sets id of the RingCentral source.
         /// </summary>
+        /// <value>
+        /// The Id of the RingCentral source.
+        /// </value>
         public string SourceId { get; set; }
 
         /// <summary>
-        /// Id of the RingCentral thread.
+        /// Gets or sets id of the RingCentral thread.
         /// </summary>
+        /// <value>
+        /// The Id of the RingCentral thread.
+        /// </value>
         public string ThreadId { get; set; }
     }
 }

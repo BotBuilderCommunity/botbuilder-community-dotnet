@@ -136,7 +136,8 @@ namespace Bot.Builder.Community.Adapters.RingCentral
         /// Messages can also be posted to the adapter from a RingCentral Custom Source - which can be configured to be the bot endpoint.  This is used in the scenario
         /// of human handoff when a Intervention.Opened is when a human operator takes over a conversation (eg. "Engages").
         /// </summary>
-        /// <param name="botAdapter">RingCentral adapter.</param>
+        /// <param name="adapter">RingCentral adapter.</param>
+        /// <param name="botAdapter">Bot adapter.</param>
         /// <param name="request">HttpRequest from caller.</param>
         /// <param name="response">HttpResponse for caller.</param>
         /// <returns>Task.</returns>
@@ -224,21 +225,12 @@ namespace Bot.Builder.Community.Adapters.RingCentral
                             case RingCentralEventDescription.PrivateMessagesList:
                             case RingCentralEventDescription.ThreadsList:
                                 {
-                                    var res = new string[] { };
                                     response.StatusCode = (int)HttpStatusCode.OK;
                                     return new Tuple<RingCentralHandledEvent, Activity>(RingCentralHandledEvent.Action, null);
                                 }
                             case RingCentralEventDescription.PrivateMessagesShow:
                             case RingCentralEventDescription.ThreadsShow:
                                 {
-                                    var res = new
-                                    {
-                                        @params = new
-                                        {
-                                            id = ringCentralAction.Params.InReplyToId,
-                                            body = "some content"
-                                        }
-                                    };
                                     response.StatusCode = (int)HttpStatusCode.OK;
                                     return new Tuple<RingCentralHandledEvent, Activity>(RingCentralHandledEvent.Action, null);
                                 }
@@ -262,7 +254,7 @@ namespace Bot.Builder.Community.Adapters.RingCentral
         /// Here we only deal with Activity.Text - additional DownRenderingMiddleware is applied to the pipleline before this 
         /// method should be invoke, therefore converting any adaptive cards, herocards, buttons etc. to clear text in the text field.
         /// </remarks>
-        /// <returns></returns>
+        /// <returns>Task.</returns>
         public async Task SendActivityToRingCentralAsync(Activity activity)
         {
             _ = activity ?? throw new ArgumentNullException(nameof(activity));
@@ -305,7 +297,7 @@ namespace Bot.Builder.Community.Adapters.RingCentral
                 },
                 InReplyToId = activity.Recipient.Id,
 
-                // TODO: Review which actions required Human Handoff capability
+                // CONSIDER: Which actions required Human Handoff capability
                 Actions = new List<rcSourceSdk.Models.Action>()
                 {
                     rcSourceSdk.Models.Action.Create,
@@ -345,7 +337,6 @@ namespace Bot.Builder.Community.Adapters.RingCentral
                         body: activity.Text,
                         sourceId: sourceId,
                         _private: 1,
-                        //authorId: activity.Recipient.Id,
                         inReplyToId: activity.From.Id);
 
                     return content.Id;
@@ -415,8 +406,10 @@ namespace Bot.Builder.Community.Adapters.RingCentral
             var thread = await threadsApi.GetThreadAsync(threadId);
 
             if (thread == null)
+            {
                 _logger.LogWarning(
                     $"GetThreadByIdAsync: No thread could be found using thread id: {threadId}");
+            }
 
             return thread;
         }
@@ -555,7 +548,8 @@ namespace Bot.Builder.Community.Adapters.RingCentral
             throw new ArgumentNullException(nameof(payload));
         }
 
-        private T GetRingCentralPayloadDataAs<T>(byte[] payload) where T : RingCentralPayload
+        private T GetRingCentralPayloadDataAs<T>(byte[] payload) 
+            where T : RingCentralPayload
         {
             _ = payload ?? throw new ArgumentNullException(nameof(payload));
 

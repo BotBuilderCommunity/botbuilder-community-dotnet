@@ -79,6 +79,7 @@ namespace Bot.Builder.Community.Adapters.RingCentral.Helpers
         /// Adds the IsHuman response metadata to the activity, so we can check this
         /// with the bot logic.
         /// </summary>
+        /// <param name="message">The message text from the RingCentral operator.</param>
         /// <returns>Activity instance with message text.</returns>
         public static Activity RingCentralAgentResponseActivity(string message)
         {
@@ -102,6 +103,9 @@ namespace Bot.Builder.Community.Adapters.RingCentral.Helpers
         /// Determine if the activity is from a RingCentral operator/agent (human).  When an agent intervenes
         /// into a bot conversation (takes over control) - RingCentral fires a webhook messages with the 
         /// content into the RingCentral adapter - we don't want to echo these back out to RingCentral.
+        /// </summary>
+        /// <param name="activity">The Bot Framework Activity.</param>
+        /// <returns>Flag to determine if activity is from RingCentral agent.</returns>
         public static bool IsActivityFromRingCentralOperator(Activity activity)
         {
             _ = activity ?? throw new ArgumentNullException(nameof(activity));
@@ -123,7 +127,9 @@ namespace Bot.Builder.Community.Adapters.RingCentral.Helpers
                         retVal = meta.IsHumanResponse;
                     }
                 }
-                catch { }
+                catch 
+                { 
+                }
             }
 
             return retVal;
@@ -150,7 +156,7 @@ namespace Bot.Builder.Community.Adapters.RingCentral.Helpers
         /// <summary>
         /// Remove HTML tags from RingCentral agent responses.
         /// </summary>
-        /// <param name="input">String input text containing html tags</param>
+        /// <param name="input">String input text containing html tags.</param>
         /// <returns>String raw text output.</returns>
         public static string StripHTML(string input)
         {

@@ -11,5 +11,4 @@ namespace Bot.Builder.Community.Adapters.RingCentral.Schema
         [JsonPropertyName("options")]
         public List<string> Options { get; set; }
     }
-
 }

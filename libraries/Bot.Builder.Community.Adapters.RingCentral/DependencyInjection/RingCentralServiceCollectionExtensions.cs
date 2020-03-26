@@ -22,8 +22,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
             var builder = new RingCentralBuilder(services);
 
+            // CONSIDER removing this extension and add them directly to services.
             builder
-                // CONSIDER removing this extension and add them directly to services.
                 .AddDownrenderingMiddleware() 
                 .AddConversationPublishMiddleware();
 

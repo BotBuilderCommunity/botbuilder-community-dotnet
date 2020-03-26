@@ -95,7 +95,8 @@ namespace Bot.Builder.Community.Adapters.RingCentral.Middleware
         private string RenderAttachments(Activity activity)
         {
             // Find a channel specifc renderer. Use the default renderer, if no custom renderer is found.
-            IRenderer renderer = _renderers.Find(r => r.ChannelId.Equals(activity.ChannelId, StringComparison.InvariantCultureIgnoreCase) || r.ChannelId.Equals(PlainTextRenderer.DefaultChannelRendererId));
+            IRenderer renderer = _renderers.Find(r => r.ChannelId.Equals(activity.ChannelId, StringComparison.InvariantCultureIgnoreCase) 
+                                                || r.ChannelId.Equals(PlainTextRenderer.DefaultChannelRendererId, StringComparison.InvariantCultureIgnoreCase));
 
             var attachmentsText = new StringBuilder();
 
@@ -117,7 +118,8 @@ namespace Bot.Builder.Community.Adapters.RingCentral.Middleware
                             var richMediaCard = (MediaCard)attachment.Content;
                             attachmentsText.AppendLine(renderer.RenderMediaCard(richMediaCard));
                             break;
-                        //case "application/vnd.microsoft.card.adaptive":
+                        
+                        // case "application/vnd.microsoft.card.adaptive":
                         //    break;
                         default:
                             break;

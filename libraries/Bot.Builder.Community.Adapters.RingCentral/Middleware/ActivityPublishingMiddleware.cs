@@ -93,7 +93,7 @@ namespace Bot.Builder.Community.Adapters.RingCentral.Middleware
         /// <summary>
         /// Gets called, when the bot is sending activities back to the user.
         /// </summary>
-        /// <param name="turnContext">The context object for the turn./param>
+        /// <param name="turnContext">The context object for the turn.</param>
         /// <param name="activities">The activities to send.</param>
         /// <param name="next">The delegate to call to continue event processing.</param>
         /// <returns>A task that represents the work queued to execute.</returns>
@@ -134,6 +134,7 @@ namespace Bot.Builder.Community.Adapters.RingCentral.Middleware
                 }
                 catch 
                 { 
+                    // eat
                 }
             }
 

@@ -67,7 +67,7 @@ namespace Bot.Builder.Community.Adapters.RingCentral.Renderer
         /// <summary>
         /// Renders Buttons as simple Text, using MarkDown Formatting.
         /// </summary>
-        /// <param name="buttons"></param>
+        /// <param name="buttons">The collection of buttons.</param>
         /// <returns>String of button text.</returns>
         private string ButtonsToText(IList<CardAction> buttons)
         {

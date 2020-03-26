@@ -8,8 +8,11 @@ namespace Bot.Builder.Community.Adapters.RingCentral.Renderer
     public interface IRenderer
     {
         /// <summary>
-        /// The ID of the channel, for which a concrete renderer is responsible eg. WhatsApp
+        /// Gets the ID of the channel, for which a concrete renderer is responsible eg. WhatsApp.
         /// </summary>
+        /// <value>
+        /// The ID of the channel.
+        /// </value>
         string ChannelId { get; }
 
         /// <summary>

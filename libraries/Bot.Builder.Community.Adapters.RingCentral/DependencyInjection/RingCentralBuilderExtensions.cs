@@ -8,7 +8,7 @@ namespace Microsoft.Extensions.DependencyInjection
     /// <summary>
     /// Extensions for configuring RingCentral using an <see cref="IRingCentralBuilder"/>.
     /// </summary>
-    public static class IRingCentralBuilderExtensions
+    public static class RingCentralBuilderExtensions
     {
         /// <summary>
         /// Registers a default downrendering middleware.

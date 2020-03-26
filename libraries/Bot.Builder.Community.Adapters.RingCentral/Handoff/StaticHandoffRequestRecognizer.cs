@@ -19,7 +19,7 @@ namespace Bot.Builder.Community.Adapters.RingCentral.Handoff
         {
             _ = activity ?? throw new ArgumentNullException(nameof(activity));
 
-            var activityText = activity.Text ?? "";
+            var activityText = activity.Text ?? string.Empty;
 
             var botRequested = activityText.Contains("bot", StringComparison.InvariantCultureIgnoreCase);
             var agentRequested = activityText.Contains("human", StringComparison.InvariantCultureIgnoreCase);

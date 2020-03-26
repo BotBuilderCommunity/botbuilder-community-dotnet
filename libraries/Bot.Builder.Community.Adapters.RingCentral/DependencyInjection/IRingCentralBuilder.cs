@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Microsoft.Extensions.DependencyInjection
+﻿namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
     /// An interface for configuring RingCentral services.
@@ -12,6 +8,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>
         /// Gets the <see cref="IServiceCollection"/> where RingCentral services are configured.
         /// </summary>
+        /// <value>
+        /// The Services Collection.
+        /// </value>
         IServiceCollection Services { get; }
     }
 }

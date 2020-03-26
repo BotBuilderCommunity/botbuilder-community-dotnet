@@ -21,6 +21,7 @@ namespace Bot.Builder.Community.Adapters.RingCentral
         /// Gets the adapter's channel id based on the RingCentral message/resource type.
         /// </summary>
         /// <param name="resourceType">RingCentrla resource type.</param>
+        /// <returns>String name of the channel.</returns>
         public static string GetFromResourceType(string resourceType)
         {
             string channel;
