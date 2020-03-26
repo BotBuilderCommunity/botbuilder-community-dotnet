@@ -98,6 +98,25 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
         }
 
         [Fact]
+        public void MergeActivitiesMergesAttachments()
+        {
+            var alexaAdapter = new AlexaRequestMapper();
+
+            var firstActivity = MessageFactory.Text("This is the first activity.");
+            var secondActivity = MessageFactory.Text("This is the second activity");
+
+            firstActivity.Attachments.Add(new SimpleCard { Title = "Simple card title" }.ToAttachment());
+            secondActivity.Attachments = null;
+
+            var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { firstActivity, secondActivity });
+
+            Assert.Equal("This is the first activity. This is the second activity", processActivityResult.Text);
+            Assert.NotNull(processActivityResult.Attachments);
+            Assert.Equal(1, processActivityResult.Attachments.Count);
+            Assert.Equal(AlexaAttachmentContentTypes.Card, processActivityResult.Attachments[0].ContentType);
+        }
+
+        [Fact]
         public void MergeActivitiesIgnoresNonMessageActivities()
         {
             var alexaAdapter = new AlexaRequestMapper();
