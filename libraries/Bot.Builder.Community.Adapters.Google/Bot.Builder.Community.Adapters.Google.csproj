@@ -10,6 +10,8 @@
     <Version>1.0.0</Version>
     <FileVersion>1.0.0</FileVersion>
     <AssemblyVersion>1.0.0</AssemblyVersion>
+    <RepositoryUrl>http://www.github.com/botbuildercommunity/botbuildercommunity-dotnet
+</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>

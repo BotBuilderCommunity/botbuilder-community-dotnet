@@ -8,6 +8,8 @@
     <Authors>Tomislav Markovski</Authors>
     <Company>Bot Builder Community</Company>
     <Product />
+    <RepositoryUrl>http://www.github.com/botbuildercommunity/botbuildercommunity-dotnet
+</RepositoryUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">

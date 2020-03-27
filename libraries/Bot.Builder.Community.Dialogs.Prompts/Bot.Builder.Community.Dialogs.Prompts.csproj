@@ -2,13 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Description>A collection of Prompts for Bot Builder SDK v4. Including prompts for currency, age and temperature.</Description>
+    <Description>A collection of Prompts for Bot Builder SDK v4. Including prompts for adaptive cards, currency, age and temperature.</Description>
     <Authors>Bot Builder Community</Authors>
     <Company>Bot Builder Community</Company>
     <PackageLicenseUrl>https://github.com/botbuildercommunity/botbuilder-community-dotnet/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/botbuildercommunity/botbuilder-community-dotnet</PackageProjectUrl>
     <RepositoryUrl>https://github.com/botbuildercommunity/botbuilder-community-dotnet</RepositoryUrl>
-    <PackageTags>bot framework, bot builder, azure bot service, prompts</PackageTags>
+    <PackageTags>bot framework;bot builder;azure bot service;prompts;adaptive cards</PackageTags>
     <Version>1.0.0</Version>
     <FileVersion>1.0.0</FileVersion>
     <AssemblyVersion>1.0.0</AssemblyVersion>

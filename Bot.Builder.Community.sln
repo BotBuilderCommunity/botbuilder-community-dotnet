@@ -69,6 +69,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Alexa.Core", "libraries\Bot.Builder.Community.Adapters.Alexa.Core\Bot.Builder.Community.Adapters.Alexa.Core.csproj", "{ACEAA5FA-1DE3-4E3A-B435-A988A4276231}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Twitter.Tests", "tests\Bot.Builder.Community.Adapters.Tests\Bot.Builder.Community.Adapters.Twitter.Tests.csproj", "{873C9B8C-2677-4586-89D3-C80FB1263596}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug - NuGet Packages|Any CPU = Debug - NuGet Packages|Any CPU
@@ -259,6 +261,14 @@ Global
 		{ACEAA5FA-1DE3-4E3A-B435-A988A4276231}.Documentation|Any CPU.Build.0 = Debug|Any CPU
 		{ACEAA5FA-1DE3-4E3A-B435-A988A4276231}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ACEAA5FA-1DE3-4E3A-B435-A988A4276231}.Release|Any CPU.Build.0 = Release|Any CPU
+		{873C9B8C-2677-4586-89D3-C80FB1263596}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{873C9B8C-2677-4586-89D3-C80FB1263596}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{873C9B8C-2677-4586-89D3-C80FB1263596}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{873C9B8C-2677-4586-89D3-C80FB1263596}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{873C9B8C-2677-4586-89D3-C80FB1263596}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{873C9B8C-2677-4586-89D3-C80FB1263596}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{873C9B8C-2677-4586-89D3-C80FB1263596}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{873C9B8C-2677-4586-89D3-C80FB1263596}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -292,6 +302,7 @@ Global
 		{07ECEE15-6D13-439F-8026-E05B70B749F8} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
 		{0311DB07-D853-4649-9DA1-F1CA2C20B406} = {BF310E8A-8DA1-441F-90E9-DE0E66553048}
 		{ACEAA5FA-1DE3-4E3A-B435-A988A4276231} = {BF310E8A-8DA1-441F-90E9-DE0E66553048}
+		{873C9B8C-2677-4586-89D3-C80FB1263596} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FE3B75E-BA2B-45BC-BBF0-DDA8BA10C4F0}

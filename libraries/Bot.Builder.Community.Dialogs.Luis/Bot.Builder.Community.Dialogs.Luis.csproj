@@ -8,7 +8,7 @@
     <Copyright>Microsoft Corporation. All rights reserved.</Copyright>
     <PackageLicenseUrl>https://github.com/botbuildercommunity/botbuilder-community-dotnet/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/botbuildercommunity/botbuilder-community-dotnet</PackageProjectUrl>
-    <PackageTags>bot framework, bot builder, azure bot service, luis dialog, dialogs, luis</PackageTags>
+    <PackageTags>bot framework;bot builder;azure bot service;luis dialog;dialogs;luis</PackageTags>
     <RepositoryUrl>https://github.com/botbuildercommunity/botbuilder-community-dotnet</RepositoryUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
