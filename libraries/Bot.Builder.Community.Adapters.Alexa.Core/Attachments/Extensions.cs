@@ -1,5 +1,6 @@
 ﻿using Alexa.NET.Response;
 using Microsoft.Bot.Schema;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Bot.Builder.Community.Adapters.Alexa.Core.Attachments
@@ -20,7 +21,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core.Attachments
         {
             return new Attachment
             {
-                Content = JObject.FromObject(card),
+                Content = JObject.FromObject(card, new JsonSerializer() { NullValueHandling = NullValueHandling.Ignore }),
                 ContentType = contentType,
             };
         }
