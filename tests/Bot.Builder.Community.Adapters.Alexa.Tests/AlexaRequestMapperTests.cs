@@ -13,6 +13,9 @@ using Alexa.NET.Response.Directive.Templates;
 using Alexa.NET.Response.Directive.Templates.Types;
 using Bot.Builder.Community.Adapters.Alexa.Core.Attachments;
 using Bot.Builder.Community.Adapters.Alexa.Tests.Helpers;
+using FluentAssertions.Common;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Bot.Builder.Community.Adapters.Alexa.Tests
@@ -329,13 +332,9 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
 
         private static void VerifyCardAttachmentAndDirectiveResponse(SkillResponse skillResponse, ICard card, IList<IDirective> directives)
         {
-            Assert.Equal(card, skillResponse.Response.Card);
+            card.IsSameOrEqualTo(skillResponse.Response.Card);
             Assert.Equal(directives.Count, skillResponse.Response.Directives.Count);
-
-            foreach (var directive in directives)
-            {
-                Assert.True(skillResponse.Response.Directives.Contains(directive));
-            }
+            directives.IsSameOrEqualTo(skillResponse.Response.Directives);
         }
     }
 }
