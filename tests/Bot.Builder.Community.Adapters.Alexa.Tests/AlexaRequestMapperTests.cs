@@ -105,7 +105,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
             var firstActivity = MessageFactory.Text("This is the first activity.");
             var secondActivity = MessageFactory.Text("This is the second activity");
 
-            firstActivity.Attachments.Add(new SimpleCard { Title = "Simple card title" }.ToAttachment());
+            firstActivity.Attachments.Add(new SimpleCard { Title = "Simple card title", Content = "Test content"}.ToAttachment());
             secondActivity.Attachments = null;
 
             var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { firstActivity, secondActivity });
