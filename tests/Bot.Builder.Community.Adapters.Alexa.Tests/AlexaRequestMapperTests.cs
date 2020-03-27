@@ -13,6 +13,9 @@ using Alexa.NET.Response.Directive.Templates;
 using Alexa.NET.Response.Directive.Templates.Types;
 using Bot.Builder.Community.Adapters.Alexa.Core.Attachments;
 using Bot.Builder.Community.Adapters.Alexa.Tests.Helpers;
+using FluentAssertions.Common;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Bot.Builder.Community.Adapters.Alexa.Tests
@@ -95,6 +98,25 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
             var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { firstActivity, secondActivity });
 
             Assert.Equal("This is the first activity. This is the second activity", processActivityResult.Text);
+        }
+
+        [Fact]
+        public void MergeActivitiesMergesAttachments()
+        {
+            var alexaAdapter = new AlexaRequestMapper();
+
+            var firstActivity = MessageFactory.Text("This is the first activity.");
+            var secondActivity = MessageFactory.Text("This is the second activity");
+
+            firstActivity.Attachments.Add(new SimpleCard { Title = "Simple card title", Content = "Test content"}.ToAttachment());
+            secondActivity.Attachments = null;
+
+            var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { firstActivity, secondActivity });
+
+            Assert.Equal("This is the first activity. This is the second activity", processActivityResult.Text);
+            Assert.NotNull(processActivityResult.Attachments);
+            Assert.Equal(1, processActivityResult.Attachments.Count);
+            Assert.Equal(AlexaAttachmentContentTypes.Card, processActivityResult.Attachments[0].ContentType);
         }
 
         [Fact]
@@ -310,13 +332,9 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
 
         private static void VerifyCardAttachmentAndDirectiveResponse(SkillResponse skillResponse, ICard card, IList<IDirective> directives)
         {
-            Assert.Equal(card, skillResponse.Response.Card);
+            card.IsSameOrEqualTo(skillResponse.Response.Card);
             Assert.Equal(directives.Count, skillResponse.Response.Directives.Count);
-
-            foreach (var directive in directives)
-            {
-                Assert.True(skillResponse.Response.Directives.Contains(directive));
-            }
+            directives.IsSameOrEqualTo(skillResponse.Response.Directives);
         }
     }
 }

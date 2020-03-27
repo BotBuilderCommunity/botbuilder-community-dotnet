@@ -6,6 +6,7 @@ using Alexa.NET.Response.Directive;
 using Alexa.NET.Response.Directive.Templates.Types;
 using Bot.Builder.Community.Adapters.Alexa.Core.Attachments;
 using Bot.Builder.Community.Adapters.Alexa.Core.Helpers;
+using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Schema;
 using Microsoft.Rest;
 using Newtonsoft.Json;
@@ -170,14 +171,6 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
                 UpdateBehavior = UpdateBehavior.Replace
             }.ToAttachment());
 
-        [Fact]
-        public void ConvertAttachmentDirectiveMissingProperties() =>
-            Assert.Throws<ValidationException>(() => VerifyAttachmentContentConversion<StartConnectionDirective>(new StartConnectionDirective
-            {
-                Token = "123",
-                Uri = "https://somewhere/somewhere"
-            }.ToAttachment()));
-
         private void VerifyAttachmentContentConversion<T>(Attachment attachment, bool supportedType = true)
         {
             var activity = new Activity
@@ -186,9 +179,9 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
             };
 
             // Prior to serialization type is as expected.
-            Assert.Equal(typeof(T), activity.Attachments[0].Content.GetType());
+            Assert.Equal(typeof(JObject), activity.Attachments[0].Content.GetType());
 
-            var clonedActivity = JsonConvert.DeserializeObject<Activity>(JsonConvert.SerializeObject(activity));
+            var clonedActivity = JsonConvert.DeserializeObject<Activity>(JsonConvert.SerializeObject(activity, HttpHelper.BotMessageSerializerSettings), HttpHelper.BotMessageSerializerSettings);
 
             // After conversion the type information is lost.
             Assert.Equal(typeof(JObject), clonedActivity.Attachments[0].Content.GetType());
