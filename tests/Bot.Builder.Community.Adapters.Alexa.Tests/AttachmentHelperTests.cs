@@ -171,14 +171,6 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
                 UpdateBehavior = UpdateBehavior.Replace
             }.ToAttachment());
 
-        [Fact]
-        public void ConvertAttachmentDirectiveMissingProperties() =>
-            Assert.Throws<ValidationException>(() => VerifyAttachmentContentConversion<StartConnectionDirective>(new StartConnectionDirective
-            {
-                Token = "123",
-                Uri = "https://somewhere/somewhere"
-            }.ToAttachment()));
-
         private void VerifyAttachmentContentConversion<T>(Attachment attachment, bool supportedType = true)
         {
             var activity = new Activity
