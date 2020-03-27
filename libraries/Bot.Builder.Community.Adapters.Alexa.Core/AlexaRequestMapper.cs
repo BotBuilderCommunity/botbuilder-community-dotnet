@@ -8,7 +8,7 @@ using Alexa.NET.Request;
 using Alexa.NET.Request.Type;
 using Alexa.NET.Response;
 using Bot.Builder.Community.Adapters.Alexa.Core.Attachments;
-using Bot.Builder.Community.Adapters.Alexa.Core.Utility;
+using Bot.Builder.Community.Adapters.Alexa.Core.Helpers;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -136,12 +136,12 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
         /// <returns>Activity</returns>
         public Activity MergeActivities(IList<Activity> activities)
         {
-            if (activities == null || activities.All(a => a.Type != ActivityTypes.Message))
+            var messageActivities = activities?.Where(a => a.Type == ActivityTypes.Message).ToList();
+
+            if (messageActivities == null || messageActivities.Count == 0)
             {
                 return null;
             }
-
-            var messageActivities = activities.Where(a => a.Type == ActivityTypes.Message).ToList();
 
             var activity = messageActivities.Last();
 
@@ -159,6 +159,8 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
                 .Select(a => NormalizeActivityText(a.TextFormat, a.Text))
                 .Where(s => !string.IsNullOrEmpty(s))
                 .Select(s => s.Trim(new char[] { ' ', '.' })));
+
+            activity.Attachments = messageActivities.Where(x => x.Attachments != null).SelectMany(x => x.Attachments).ToList();
 
             return activity;
         }
