@@ -52,9 +52,8 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core.Helpers
             {
                 throw new ValidationException($"Failed to convert Alexa Attachment with ContentType {attachment?.ContentType} to {typeof(T).Name}", ex);
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine(ex);
             }
         }
 
