@@ -16,16 +16,6 @@ namespace Bot.Builder.Community.Cards.Management
         [JsonProperty("payloadIdsByType")]
         public IDictionary<string, ISet<string>> PayloadIdsByType { get; } = new Dictionary<string, ISet<string>>();
 
-        /// <summary>
-        /// Gets the dictionary that saves activity ID's.
-        /// </summary>
-        /// <value>
-        /// For any payload ID that's not a batch ID,
-        /// the hash set should only contain one activity ID.
-        /// </value>
-        [JsonProperty("activityIdsByPayloadId")]
-        public IDictionary<string, ISet<string>> ActivityIdsByPayloadId { get; } = new Dictionary<string, ISet<string>>();
-
         [JsonProperty("activityById")]
         public ISet<IMessageActivity> SavedActivities { get; } = new HashSet<IMessageActivity>();
     }

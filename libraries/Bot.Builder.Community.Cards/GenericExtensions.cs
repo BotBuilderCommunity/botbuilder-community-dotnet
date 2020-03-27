@@ -25,7 +25,7 @@ namespace Bot.Builder.Community.Cards
         internal static async Task<T> GetNotNullAsync<T>(
             this IStatePropertyAccessor<T> statePropertyAccessor,
             ITurnContext turnContext,
-            Func<T> defaultValueFactory = null,
+            Func<T> defaultValueFactory,
             CancellationToken cancellationToken = default)
         {
             if (statePropertyAccessor is null || turnContext is null)
@@ -85,34 +85,55 @@ namespace Bot.Builder.Community.Cards
 
         internal static JObject TryParseJObject(this string inputString)
         {
-            try
+            // Do a little manual checking first to avoid throwing too many exceptions
+            if (inputString?.TrimStart().StartsWith("{") == true)
             {
-                return JObject.Parse(inputString);
+                try
+                {
+                    return JObject.Parse(inputString);
+                }
+                catch
+                {
+                }
             }
-            catch
-            {
-                return null;
-            }
+
+            return null;
         }
 
         internal static JObject ToJObject(this object input, bool shouldParseStrings = false)
         {
-            JToken jToken = null;
-
-            if (shouldParseStrings && input is string inputString)
+            if (input is string inputString)
             {
-                jToken = TryParseJObject(inputString);
+                if (shouldParseStrings)
+                {
+                    return TryParseJObject(inputString);
+                }
             }
             else if (input is JObject inputJObject)
             {
-                jToken = inputJObject;
+                return inputJObject;
             }
             else if (input != null)
             {
-                jToken = JToken.FromObject(input);
+                // The input's type may have a custom JSON converter that throws exceptions.
+                // For example, Adaptive Cards use their JSON converter to validate the schema.
+                // Since the exception would be caused by bad bot design,
+                // we are not currently handling any such exceptions here.
+                return JToken.FromObject(input) as JObject;
             }
 
-            return jToken as JObject;
+            return null;
+        }
+
+        internal static T FromJObject<T>(this T input, JObject jObject)
+            where T : class
+        {
+            return (input is string
+                    ? JsonConvert.SerializeObject(jObject)
+                    : input is JObject
+                        ? jObject
+                        : jObject.ToObject(input.GetType()))
+                as T;
         }
 
         /// <summary>
@@ -144,12 +165,7 @@ namespace Bot.Builder.Community.Cards
             {
                 await funcAsync(jObject).ConfigureAwait(false);
 
-                return (input is string
-                        ? JsonConvert.SerializeObject(jObject)
-                        : input is JObject
-                            ? jObject
-                            : jObject.ToObject(input.GetType()))
-                    as T;
+                return input.FromJObject(jObject);
             }
             else if (returnNullForWrongType)
             {
@@ -161,10 +177,7 @@ namespace Bot.Builder.Community.Cards
             }
         }
 
-        internal static void SetValue(this JObject jObject, string key, JToken value)
-        {
-            jObject[key] = value;
-        }
+        internal static void SetValue(this JObject jObject, string key, JToken value) => jObject[key] = value;
 
         internal static bool EqualsCI(this string left, string right) => left is null ? right is null : left.Equals(right, StringComparison.OrdinalIgnoreCase);
 

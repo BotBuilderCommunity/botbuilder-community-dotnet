@@ -20,21 +20,39 @@ namespace Bot.Builder.Community.Cards.Management
             for (int i = activities.Count() - 1; i > -1; i--)
             {
                 var activity = activities[i];
-                var attachmentCount = activity.Attachments?.Count();
+                var attachments = activity.Attachments;
+                var attachmentCount = attachments?.Count();
                 var hasText = activity.Text != null;
 
+                // Should the activity be split into multiple activities?
                 if ((attachmentCount > 0 && hasText)
                     || (attachmentCount > 1 && activity.AttachmentLayout != AttachmentLayoutTypes.Carousel))
                 {
                     var separateActivities = new List<Activity>();
-                    var js = new JsonSerializerSettings();
-                    var json = JsonConvert.SerializeObject(activity, js);
+
+                    // Prepare the activity for serialization by removing its attachments
+                    activity.Attachments = null;
+
+                    // If an activity ID is present then it should be removed
+                    // because two activities shouldn't have the same ID
+                    activity.Id = null;
+
+                    var jss = new JsonSerializerSettings
+                    {
+                        NullValueHandling = NullValueHandling.Ignore,
+                        TypeNameHandling = TypeNameHandling.All,
+                    };
+
+                    // Serialize the activity to JSON so it can be cloned
+                    var json = JsonConvert.SerializeObject(activity, jss);
+
+                    // Leave the original activity intact just in case it's needed later
+                    activity.Attachments = attachments;
 
                     if (hasText)
                     {
-                        var textActivity = JsonConvert.DeserializeObject<Activity>(json, js);
+                        var textActivity = JsonConvert.DeserializeObject<Activity>(json, jss);
 
-                        textActivity.Attachments = null;
                         separateActivities.Add(textActivity);
                     }
 
@@ -42,16 +60,17 @@ namespace Bot.Builder.Community.Cards.Management
                     // ABS interprets any string other that "carousel" as "list"
                     if (activity.AttachmentLayout == AttachmentLayoutTypes.Carousel)
                     {
-                        var carouselActivity = JsonConvert.DeserializeObject<Activity>(json, js);
+                        var carouselActivity = JsonConvert.DeserializeObject<Activity>(json, jss);
 
                         carouselActivity.Text = null;
+                        carouselActivity.Attachments = attachments;
                         separateActivities.Add(carouselActivity);
                     }
                     else
                     {
-                        foreach (var attachment in activity.Attachments)
+                        foreach (var attachment in attachments)
                         {
-                            var attachmentActivity = JsonConvert.DeserializeObject<Activity>(json, js);
+                            var attachmentActivity = JsonConvert.DeserializeObject<Activity>(json, jss);
 
                             attachmentActivity.Text = null;
                             attachmentActivity.Attachments = new List<Attachment> { attachment };
@@ -86,14 +105,19 @@ namespace Bot.Builder.Community.Cards.Management
             });
         }
 
-        public static void ApplyIdsToBatch(this IEnumerable<IMessageActivity> activities, PayloadIdOptions options = null)
+        public static void ApplyIdsToBatch(this IEnumerable<IMessageActivity> activities, PayloadIdOptions options)
         {
             if (activities is null)
             {
                 throw new ArgumentNullException(nameof(activities));
             }
 
-            CardTree.ApplyIds(activities, options ?? new PayloadIdOptions(PayloadIdTypes.Batch));
+            if (options is null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
+            CardTree.ApplyIds(activities, options);
         }
 
         public static ISet<PayloadItem> GetIdsFromBatch(this IEnumerable<IMessageActivity> activities)
@@ -265,18 +289,6 @@ namespace Bot.Builder.Community.Cards.Management
         {
             BotAssert.ContextNotNull(turnContext);
 
-            var turnState = turnContext.TurnState.Get<CardManagerTurnState>();
-
-            if (turnState is null)
-            {
-                turnContext.TurnState.Set(turnState = new CardManagerTurnState());
-            }
-
-            if (turnState.CheckedForIncomingPayload)
-            {
-                return turnState.IncomingPayload;
-            }
-
             var activity = turnContext.Activity;
 
             if (activity is null)
@@ -289,8 +301,7 @@ namespace Bot.Builder.Community.Cards.Management
             var value = activity.Value.ToJObject(true);
             var channelData = activity.ChannelData.ToJObject(true); // Channel data will have been serialized into a string in Kik
             var entities = activity.Entities;
-
-            turnState.IncomingPayload = value;
+            var incomingPayload = value;
 
             // Many channels have button responses that are hard to distinguish from user-entered text.
             // A common theme is that button responses often have a property in channel data that isn't
@@ -299,7 +310,7 @@ namespace Bot.Builder.Community.Cards.Management
             {
                 if (channelData?.GetValue(propName) != null)
                 {
-                    turnState.IncomingPayload = newResult ?? parsedText;
+                    incomingPayload = newResult ?? parsedText;
                 }
             }
 
@@ -313,7 +324,7 @@ namespace Bot.Builder.Community.Cards.Management
                     // as confirmation of a missing "Intent" entity.
                     if (entities?.Any(entity => entity.Type.EqualsCI(CardConstants.TypeIntent)) != true)
                     {
-                        turnState.IncomingPayload = parsedText;
+                        incomingPayload = parsedText;
                     }
 
                     break;
@@ -352,7 +363,7 @@ namespace Bot.Builder.Community.Cards.Management
                     // then we're interpreting that to mean that this is not a button response.
                     if (channelData?.GetValue(CardConstants.KeyText)?.ToString().Equals(text) == false)
                     {
-                        turnState.IncomingPayload = parsedText;
+                        incomingPayload = parsedText;
                     }
 
                     break;
@@ -374,23 +385,11 @@ namespace Bot.Builder.Community.Cards.Management
 
             // Teams and Facebook values don't need to be adapted any further
 
-            turnState.CheckedForIncomingPayload = true;
-
-            return turnState.IncomingPayload;
+            return incomingPayload;
         }
 
-        internal static void ApplyIdsToPayload(this JObject payload, PayloadIdOptions options = null)
+        internal static void ApplyIdsToPayload(this JObject payload, PayloadIdOptions options)
         {
-            if (payload is null)
-            {
-                return;
-            }
-
-            if (options is null)
-            {
-                options = new PayloadIdOptions(PayloadIdTypes.Action);
-            }
-
             foreach (var kvp in options.GetIds())
             {
                 var type = kvp.Key;

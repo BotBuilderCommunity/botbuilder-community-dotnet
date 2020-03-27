@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using AdaptiveCards;
 using Bot.Builder.Community.Cards.Management;
-using Bot.Builder.Community.Cards.Management.Tree;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Adapters;
 using Microsoft.Bot.Connector;
@@ -30,17 +29,22 @@ namespace Bot.Builder.Community.Cards.Tests
         [TestMethod]
         public void TestSeparateAttachments()
         {
+            var textActivity = MessageFactory.Text("text activity text");
+            var heroCardAttachment = new HeroCard(buttons: new List<CardAction> { new CardAction(value: new Entity()) }).ToAttachment();
+
             var batch = new List<IMessageActivity>
             {
-                MessageFactory.Text("text activity text"),
+                textActivity,
                 MessageFactory.Attachment(new Attachment()),
                 MessageFactory.Attachment(new Attachment(), "attachment activity text"),
-                MessageFactory.Attachment(
-                    new List<Attachment>
+                new Activity(
+                    attachments: new List<Attachment>
                     {
                         new Attachment(),
                         new Attachment(),
-                    }),
+                    },
+                    channelData: new Dictionary<string, object>(),
+                    id: "Activity ID"),
                 MessageFactory.Attachment(
                     new List<Attachment>
                     {
@@ -57,7 +61,7 @@ namespace Bot.Builder.Community.Cards.Tests
                     new List<Attachment>
                     {
                         new Attachment(),
-                        new Attachment(),
+                        heroCardAttachment,
                     }, "carousel activity text"),
             }.Cast<Activity>().ToList();
 
@@ -81,6 +85,19 @@ namespace Bot.Builder.Community.Cards.Tests
             AssertIsAttachmentMessage(batch[9], 2);
             AssertIsTextMessage(batch[10]);
             AssertIsAttachmentMessage(batch[11], 2);
+
+            Assert.AreSame(textActivity, batch[0]);
+            Assert.IsNull(batch[3].ChannelData);
+            Assert.IsInstanceOfType(batch[4].ChannelData, typeof(Dictionary<string, object>), "The channel data's type was changed");
+            Assert.IsInstanceOfType(batch[5].ChannelData, typeof(Dictionary<string, object>), "The channel data's type was changed");
+            Assert.IsNull(batch[4].Id);
+            Assert.IsNull(batch[5].Id);
+            Assert.IsNull(batch[6].ChannelData);
+
+            var lastAttachment = batch[11].Attachments[1];
+
+            Assert.IsInstanceOfType(((HeroCard)lastAttachment.Content).Buttons.Single().Value, typeof(Entity), "The value's type was changed");
+            Assert.AreSame(heroCardAttachment, lastAttachment, "Hero card reference was broken");
 
             batch = null;
 
@@ -499,26 +516,11 @@ namespace Bot.Builder.Community.Cards.Tests
             Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Carousel));
             Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Card));
             Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Action));
-
-            batch = new List<IMessageActivity>
-            {
-                MessageFactory.Attachment(heroCard.ToAttachment()),
-            };
-
-            batch.ApplyIdsToBatch();
-
-            data = (JObject)heroCard.Buttons.Single().Value;
-
-            Assert.AreSame(heroCard, batch.Single().Attachments.Single().Content);
-            Assert.AreEqual("{}", heroCard.Buttons.Single().Text);
-            Assert.IsNotNull(data.GetIdFromPayload(PayloadIdTypes.Batch), "Batch ID was not generated/applied");
-            Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Carousel));
-            Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Card));
-            Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Action));
+            Assert.ThrowsException<ArgumentNullException>(() => batch.ApplyIdsToBatch(null));
 
             batch = null;
 
-            Assert.ThrowsException<ArgumentNullException>(() => batch.ApplyIdsToBatch());
+            Assert.ThrowsException<ArgumentNullException>(() => batch.ApplyIdsToBatch(options));
         }
 
         [TestMethod]
@@ -915,11 +917,6 @@ namespace Bot.Builder.Community.Cards.Tests
             var incomingPayload = turnContext.GetIncomingPayload();
 
             Assert.IsTrue(JToken.DeepEquals(parsedJson, (JObject)incomingPayload));
-            Assert.IsTrue(turnContext.TurnState.Get<CardManagerTurnState>().CheckedForIncomingPayload);
-            Assert.AreSame(incomingPayload, turnContext.TurnState.Get<CardManagerTurnState>().IncomingPayload);
-            Assert.AreSame(incomingPayload, turnContext.GetIncomingPayload(), "Cached payload was not used");
-
-            turnContext.TurnState.Get<CardManagerTurnState>().CheckedForIncomingPayload = false;
 
             var newIncomingPayload = turnContext.GetIncomingPayload();
 
