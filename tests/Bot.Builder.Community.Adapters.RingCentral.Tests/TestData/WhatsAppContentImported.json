@@ -1,0 +1,38 @@
+{
+  "id": "26j21abcec1e26878ba20814",
+  "domain_id": "633ff7f899992631cc843c42",
+  "events": [
+    {
+      "type": "content.imported",
+      "id": "1h5d6b2d71336866557d5fe2",
+      "issued_at": "2020-03-02T20:23:09.250Z",
+      "resource": {
+        "type": "whats_app/message",
+        "id": "1z5d6b2c5256c128c349f0f0",
+        "metadata": {
+          "approval_required": false,
+          "author_id": "5a2e81595256c1531b7dd449",
+          "body": "hi",
+          "body_input_format": "text",
+          "category_ids": [ "botcontrolled" ],
+          "creator_id": null,
+          "date": "2020-03-02",
+          "first_in_thread": false,
+          "foreign_categories": [],
+          "foreign_id": "ABCDEFGBFTd0Ago-sNfxsL6tCAA1",
+          "has_attachment": false,
+          "intervention_id": null,
+          "in_reply_to_author_id": null,
+          "in_reply_to_id": null,
+          "language": "en",
+          "source_id": "9f4bba850e69dc636a707fd6",
+          "status": "new",
+          "thread_id": "2e4e81595256c1531b7dd448",
+          "thread_title": "This is a test",
+          "created_from": "synchronizer",
+          "private": false
+        }
+      }
+    }
+  ]
+}
