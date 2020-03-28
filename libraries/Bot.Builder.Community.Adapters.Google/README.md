@@ -118,7 +118,7 @@ In this article you will learn how to connect a bot to Google Assistant using th
         }
 ```
 
-10. Save your new Action package file.  We will update your Actions SDK project later, using the **gactions** cli tool you previously downloaded, but you still need to update the URL to your bot's endpoint. To obtain the correct endpoint, you need to wire up the Google Adapter into your bot and deploy it.
+10. Save your new Action package (.json) file.  We will update your Actions SDK project later, using the **gactions** cli tool you previously downloaded, but you still need to update the URL to your bot's endpoint. To obtain the correct endpoint, you need to wire up the Google Adapter into your bot and deploy it.
 
 ### Wiring up the Google adapter in your bot
 
@@ -193,7 +193,7 @@ using Microsoft.Bot.Builder;
 
 #### Inject Google Adapter and Google Adapter Options In Your Bot Startup.cs
 
-1. Add the following code into the ***ConfigureServices*** method within your Startup.cs file, which will register your Google adapter and make it available for your new controller class. We will also create and register a ***AlexaAdapterOptions*** class, which will contain necessary information for your adapter to function correctly.  You need to replace "YOUR-ACTION-DISPLAY-NAME" with the display name you gave to your action, which you also specified in your action package in the earlier step. You also need to replace "YOUR-PROJECT-ID" with the ID of your **Actions on Google** project - you can find this at the end of the **gactions** cli command you made a note of in an earlier step.
+1. Add the following code into the ***ConfigureServices*** method within your Startup.cs file, which will register your Google adapter and make it available for your new controller class. We will also create and register a ***GoogleAdapterOptions*** class, which will contain necessary information for your adapter to function correctly.  You need to replace "YOUR-ACTION-DISPLAY-NAME" with the display name you gave to your action, which you also specified in your action package in the earlier step. You also need to replace "YOUR-PROJECT-ID" with the ID of your **Actions on Google** project - you can find this at the end of the **gactions** cli command you made a note of in an earlier step.
 
 ```csharp
     // Create the Google Adapter
