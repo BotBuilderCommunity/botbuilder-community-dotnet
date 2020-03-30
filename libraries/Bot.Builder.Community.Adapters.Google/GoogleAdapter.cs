@@ -10,6 +10,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
+using Bot.Builder.Community.Adapters.Google.Core;
+using Bot.Builder.Community.Adapters.Google.Core.Helpers;
+using Bot.Builder.Community.Adapters.Google.Core.Model;
+using Bot.Builder.Community.Adapters.Google.Core.Model.Attachments;
 using Bot.Builder.Community.Adapters.Google.Model;
 using Bot.Builder.Community.Adapters.Google.Model.Attachments;
 using Microsoft.AspNetCore.Http;
@@ -35,11 +39,15 @@ namespace Bot.Builder.Community.Adapters.Google
 
         private readonly GoogleAdapterOptions _options;
         private readonly ILogger _logger;
+        private readonly GoogleRequestMapper _requestMapper;
 
         public GoogleAdapter(GoogleAdapterOptions options = null, ILogger logger = null)
         {
             _options = options ?? new GoogleAdapterOptions();
             _logger = logger ?? NullLogger.Instance;
+
+            _requestMapper = new GoogleRequestMapper(new GoogleRequestMapperOptions()
+                { ActionInvocationName = _options.ActionInvocationName, WebhookType = _options.WebhookType });
         }
 
         public async Task ProcessAsync(HttpRequest httpRequest, HttpResponse httpResponse, IBot bot, CancellationToken cancellationToken = default)
@@ -64,55 +72,47 @@ namespace Bot.Builder.Community.Adapters.Google
             {
                 body = await sr.ReadToEndAsync();
             }
+            
+            Activity activity = _requestMapper.RequestToActivity(body);
 
-            Activity activity = null;
+            //if (_options.ValidateIncomingRequests && !GoogleHelper.ValidateRequest(httpRequest, _options.ActionProjectId))
+            //{
+            //    throw new AuthenticationException("Failed to validate incoming request. Project ID in authentication header did not match project ID in AlexaAdapterOptions");
+            //}
+
+            var context = new TurnContextEx(this, activity);
+
+            context.TurnState.Add("GoogleUserId", activity.From.Id);
+
+            await RunPipelineAsync(context, bot.OnTurnAsync, cancellationToken).ConfigureAwait(false);
+
+            object response = null;
+
+            var outgoingActivity = ProcessOutgoingActivities(context.SentActivities);
 
             if (_options.WebhookType == GoogleWebhookType.DialogFlow)
             {
-                var dialogFlowRequest = JsonConvert.DeserializeObject<DialogFlowRequest>(body);
-                activity = DialogFlowRequestToActivity(dialogFlowRequest);
+                response = _requestMapper.CreateDialogFlowResponseFromActivity(outgoingActivity);
             }
             else
             {
-                if (_options.ValidateIncomingRequests && !GoogleHelper.ValidateRequest(httpRequest, _options.ActionProjectId))
-                {
-                    throw new AuthenticationException("Failed to validate incoming request. Project ID in authentication header did not match project ID in AlexaAdapterOptions");
-                }
-
-                var actionPayload = JsonConvert.DeserializeObject<ActionsPayload>(body);
-                activity = PayloadToActivity(actionPayload);
+                response = _requestMapper.CreateConversationResponseFromLastActivity(outgoingActivity);
             }
 
-            var googleResponse = await ProcessActivityAsync(activity, bot.OnTurnAsync);
-
-            if (googleResponse == null)
+            if (response == null)
             {
-                throw new ArgumentNullException(nameof(googleResponse));
+                throw new ArgumentNullException(nameof(response));
             }
 
             httpResponse.ContentType = "application/json;charset=utf-8";
             httpResponse.StatusCode = (int)HttpStatusCode.OK;
 
-            var responseJson = JsonConvert.SerializeObject(googleResponse, JsonSerializerSettings);
+            var responseJson = JsonConvert.SerializeObject(response, JsonSerializerSettings);
 
             var responseData = Encoding.UTF8.GetBytes(responseJson);
             await httpResponse.Body.WriteAsync(responseData, 0, responseData.Length, cancellationToken).ConfigureAwait(false);
         }
 
-        /// <summary>
-        /// Sends a proactive message to a conversation.
-        /// </summary>
-        /// <param name="reference">A reference to the conversation to continue.</param>
-        /// <param name="logic">The method to call for the resulting bot turn.</param>
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects
-        /// or threads to receive notice of cancellation.</param>
-        /// <returns>A task that represents the work queued to execute.</returns>
-        /// <remarks>Call this method to proactively send a message to a conversation.
-        /// Most channels require a user to initiate a conversation with a bot
-        /// before the bot can send activities to the user.</remarks>
-        /// <seealso cref="BotAdapter.RunPipelineAsync(ITurnContext, BotCallbackHandler, CancellationToken)"/>
-        /// <exception cref="ArgumentNullException"><paramref name="reference"/> or
-        /// <paramref name="logic"/> is <c>null</c>.</exception>
         public async Task ContinueConversationAsync(ConversationReference reference, BotCallbackHandler logic, CancellationToken cancellationToken)
         {
             if (reference == null)
@@ -143,170 +143,11 @@ namespace Bot.Builder.Community.Adapters.Google
             throw new NotImplementedException();
         }
 
-        private async Task<object> ProcessActivityAsync(Activity activity, BotCallbackHandler logic, string uniqueRequestId = null)
-        {
-            var context = new TurnContextEx(this, activity);
-
-            context.TurnState.Add("GoogleUserId", activity.From.Id);
-
-            await RunPipelineAsync(context, logic, default).ConfigureAwait(false);
-
-            object response = null;
-
-            var activities = context.SentActivities;
-
-            if (_options.WebhookType == GoogleWebhookType.DialogFlow)
-            {
-                response = CreateDialogFlowResponseFromLastActivity(activities, context);
-            }
-            else
-            {
-                response = CreateConversationResponseFromLastActivity(activities, context);
-            }
-
-            return response;
-        }
-
-        private Activity DialogFlowRequestToActivity(DialogFlowRequest request)
-        {
-            var activity = PayloadToActivity(request.OriginalDetectIntentRequest.Payload);
-            activity.ChannelData = request;
-            return activity;
-        }
-
-        private DialogFlowResponse CreateDialogFlowResponseFromLastActivity(List<Activity> activities, ITurnContext context)
-        {
-            var activity = ProcessOutgoingActivities(activities);
-
-            var response = new DialogFlowResponse()
-            {
-                Payload = new ResponsePayload()
-                {
-                    Google = new PayloadContent()
-                    {
-                        RichResponse = new RichResponse(),
-                        ExpectUserResponse = !_options.ShouldEndSessionByDefault
-                    }
-                }
-            };
-
-            if (activity.Attachments.Any(a => a.GetType() == typeof(ListAttachment)))
-            {
-                var listAttachment = activity.Attachments?.FirstOrDefault(a => a.GetType() == typeof(ListAttachment)) as ListAttachment;
-                var optionIntentData = GoogleHelper.GetOptionIntentDataFromListAttachment(listAttachment);
-                response.Payload.Google.SystemIntent = new DialogFlowOptionSystemIntent() { Data = optionIntentData };
-            }
-
-            if (!string.IsNullOrEmpty(activity?.Text))
-            {
-                var simpleResponse = new SimpleResponse
-                {
-                    Content = new SimpleResponseContent
-                    {
-                        DisplayText = activity.Text,
-                        Ssml = activity.Speak,
-                        TextToSpeech = activity.Text
-                    }
-                };
-
-                var responseItems = new List<Item> { simpleResponse };
-
-                response.Payload.Google.RichResponse.Items = responseItems.ToArray();
-
-                // If suggested actions have been added to outgoing activity
-                // add these to the response as Google Suggestion Chips
-                var suggestionChips = GoogleHelper.GetSuggestionChipsFromActivity(activity, context);
-                if (suggestionChips.Any())
-                {
-                    response.Payload.Google.RichResponse.Suggestions = suggestionChips.ToArray();
-                }
-
-                // check if we should be listening for more input from the user
-                switch (activity.InputHint)
-                {
-                    case InputHints.IgnoringInput:
-                        response.Payload.Google.ExpectUserResponse = false;
-                        break;
-                    case InputHints.ExpectingInput:
-                        response.Payload.Google.ExpectUserResponse = true;
-                        break;
-                    case InputHints.AcceptingInput:
-                    default:
-                        break;
-                }
-            }
-            else
-            {
-                response.Payload.Google.ExpectUserResponse = false;
-            }
-
-            return response;
-        }
-
-        /// <summary>
-        /// Concatenates outgoing activities into a single activity. If any of the activities being process
-        /// contain an outer SSML speak tag within the value of the Speak property, these are removed from the individual activities and a <speak>
-        /// tag is wrapped around the resulting concatenated string.  An SSML strong break tag is added between activity
-        /// content. For more infomation about the supported SSML for Google Actions see 
-        /// https://developers.google.com/assistant/actions/reference/ssml
-        /// </summary>
-        /// <param name="activities">The list of one or more outgoing activities</param>
-        /// <returns></returns>
         public virtual Activity ProcessOutgoingActivities(List<Activity> activities)
         {
-            if (activities.Count == 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(activities));
-            }
-
-            var activity = activities.Last();
-
-            if (activities.Any(a => !string.IsNullOrEmpty(a.Speak)))
-            {
-                var speakText = string.Join("<break strength=\"strong\"/>", activities
-                    .Select(a => !string.IsNullOrEmpty(a.Speak) ? StripSpeakTag(a.Speak) : a.Text)
-                    .Where(s => !string.IsNullOrEmpty(s))
-                    .Select(s => s));
-
-                activity.Speak = $"<speak>{speakText}</speak>";
-            }
-
-            activity.Text = string.Join(". ", activities
-                .Select(a => a.Text)
-                .Where(s => !string.IsNullOrEmpty(s))
-                .Select(s => s.Trim(new char[] { ' ', '.' })));
-
-            return activity;
+            return _requestMapper.MergeActivities(activities);
         }
-
-        /// <summary>
-        /// Checks a string to see if it is XML and if the outer tag is a speak tag
-        /// indicating it is SSML.  If an outer speak tag is found, the inner XML is
-        /// returned, otherwise the original string is returned
-        /// </summary>
-        /// <param name="speakText">String to be checked for an outer speak XML tag and stripped if found</param>
-        private string StripSpeakTag(string speakText)
-        {
-            try
-            {
-                var speakSsmlDoc = XDocument.Parse(speakText);
-                if (speakSsmlDoc != null && speakSsmlDoc.Root.Name.ToString().ToLowerInvariant() == "speak")
-                {
-                    using (var reader = speakSsmlDoc.Root.CreateReader())
-                    {
-                        reader.MoveToContent();
-                        return reader.ReadInnerXml();
-                    }
-                }
-
-                return speakText;
-            }
-            catch (XmlException)
-            {
-                return speakText;
-            }
-        }
-
+        
         public override Task<ResourceResponse[]> SendActivitiesAsync(ITurnContext turnContext, Activity[] activities, CancellationToken cancellationToken)
         {
             return Task.FromResult(new ResourceResponse[0]);
