@@ -1,7 +1,8 @@
-﻿using Microsoft.Bot.Schema;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Bot.Builder.Community.Adapters.Google.Model;
+using Microsoft.Bot.Schema;
 
-namespace Bot.Builder.Community.Adapters.Google.Model.Attachments
+namespace Bot.Builder.Community.Adapters.Google.Core.Model.Attachments
 {
     public class ListAttachment : Attachment
     {

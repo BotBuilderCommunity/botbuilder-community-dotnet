@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace Bot.Builder.Community.Adapters.Google.Model
+namespace Bot.Builder.Community.Adapters.Google.Core.Model
 {
     public class GoogleOptionItem
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Bot.Builder.Community.Adapters.Google
+namespace Bot.Builder.Community.Adapters.Google.Core.Model
 {
     public class DialogFlowRequest
     {
