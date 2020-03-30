@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Location Dialog Sample", "s
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Form Flow Sample", "samples\Form Flow Sample\Form Flow Sample.csproj", "{B982923B-163B-49FD-960B-0DF5BB6E6562}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChoiceFlow Dialog Sample", "samples\ChoiceFlow Dialog Sample\ChoiceFlow Dialog Sample.csproj", "{7EA0CA57-3D7E-4561-B457-13A1B57879BD}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cortana Assistant Alexa Sample", "samples\Cortana Assistant Alexa Sample\Cortana Assistant Alexa Sample.csproj", "{2FD06287-25A1-47A6-BB85-2E508E543E66}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Twitter Adapter Sample", "samples\Twitter Adapter Sample\Twitter Adapter Sample.csproj", "{036E2C3A-6894-4237-99B7-591D16326602}"
@@ -19,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Luis Dialog Sample", "sampl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sentiment Middleware Sample", "samples\Sentiment Middleware Sample\Sentiment Middleware Sample.csproj", "{55F863F1-9EC8-420C-9099-BD8378D72F18}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alexa Adapter Sample", "samples\Alexa Adapter Sample\Alexa Adapter Sample.csproj", "{37ED6FBD-12B5-40CF-837F-6F75ACC65484}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChoiceFlow Dialog Sample", "samples\ChoiceFlow Dialog Sample\ChoiceFlow Dialog Sample.csproj", "{D1C3490D-477A-4D79-A41C-4D15CA9DC183}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google Adapter Sample", "samples\Google Adapter Sample\Google Adapter Sample.csproj", "{89A6903F-2911-4A27-B178-EA28D697D46B}"
 EndProject
@@ -41,10 +39,6 @@ Global
 		{B982923B-163B-49FD-960B-0DF5BB6E6562}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B982923B-163B-49FD-960B-0DF5BB6E6562}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B982923B-163B-49FD-960B-0DF5BB6E6562}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7EA0CA57-3D7E-4561-B457-13A1B57879BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7EA0CA57-3D7E-4561-B457-13A1B57879BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7EA0CA57-3D7E-4561-B457-13A1B57879BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7EA0CA57-3D7E-4561-B457-13A1B57879BD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2FD06287-25A1-47A6-BB85-2E508E543E66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2FD06287-25A1-47A6-BB85-2E508E543E66}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2FD06287-25A1-47A6-BB85-2E508E543E66}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -69,6 +63,10 @@ Global
 		{89A6903F-2911-4A27-B178-EA28D697D46B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89A6903F-2911-4A27-B178-EA28D697D46B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89A6903F-2911-4A27-B178-EA28D697D46B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1C3490D-477A-4D79-A41C-4D15CA9DC183}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1C3490D-477A-4D79-A41C-4D15CA9DC183}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1C3490D-477A-4D79-A41C-4D15CA9DC183}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1C3490D-477A-4D79-A41C-4D15CA9DC183}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

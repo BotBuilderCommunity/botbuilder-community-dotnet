@@ -29,7 +29,7 @@ branches:
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
   pull-request:
-    mode: ContinuousDelivery
+    mode: ContinuousDeployment
     tag: PullRequest
     increment: Inherit
     prevent-increment-of-merged-branch-version: false

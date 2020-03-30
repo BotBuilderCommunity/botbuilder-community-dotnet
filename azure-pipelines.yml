@@ -17,10 +17,12 @@ variables:
 
 steps:
 
-- task: gittools.gitversion.gitversion-task.GitVersion@4
+- task: UseGitVersion@5
+  name: gv
   displayName: GitVersion
   inputs:
-    preferBundledVersion: false
+    versionSpec: '5.x'
+    additionalArguments: '/output BuildServer'
 
 - task: DotNetCoreCLI@2
   displayName: Restore
@@ -34,7 +36,7 @@ steps:
     command: build
     projects: 'Bot.Builder.Community.sln'
     versioningScheme: byEnvVar
-    versionEnvVar: GitVersion.NuGetVersion
+    versionEnvVar: gv.GitVersion.NuGetVersion
     arguments: "--configuration $(buildConfiguration)"
 
 - task: DotNetCoreCLI@2
@@ -54,8 +56,9 @@ steps:
     packDirectory: '$(Build.ArtifactStagingDirectory)/packages'
     configuration: '$(buildConfiguration)'
     versioningScheme: byEnvVar
-    versionEnvVar: GitVersion.NuGetVersion
+    versionEnvVar: gv.GitVersion.NuGetVersion
     nobuild: true
+    arguments: "-IncludeReferencedProjects"
   condition: succeeded()
 
 - task: PublishBuildArtifacts@1

@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Security;
 using System.Security.Authentication;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Alexa.NET;
 using Alexa.NET.Request;
 using Alexa.NET.Response;
-using Bot.Builder.Community.Adapters.Alexa.Attachments;
+using Bot.Builder.Community.Adapters.Alexa.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
@@ -25,8 +22,6 @@ namespace Bot.Builder.Community.Adapters.Alexa
 {
     public class AlexaAdapter : BotAdapter, IBotFrameworkHttpAdapter
     {
-        internal const string BotIdentityKey = "BotIdentity";
-
         private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
         {
             ContractResolver = new CamelCasePropertyNamesContractResolver(),
@@ -36,15 +31,20 @@ namespace Bot.Builder.Community.Adapters.Alexa
 
         private readonly AlexaAdapterOptions _options;
         private readonly ILogger _logger;
-        private Dictionary<string, List<Activity>> _responses;
+        private readonly AlexaRequestMapper _requestMapper;
 
         public AlexaAdapter(AlexaAdapterOptions options = null, ILogger logger = null)
         {
             _options = options ?? new AlexaAdapterOptions();
             _logger = logger ?? NullLogger.Instance;
+
+            _requestMapper = new AlexaRequestMapper(new AlexaRequestMapperOptions
+            {
+                ShouldEndSessionByDefault = _options.ShouldEndSessionByDefault
+            });
         }
 
-        public async Task ProcessAsync(HttpRequest httpRequest, HttpResponse httpResponse, IBot bot, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task ProcessAsync(HttpRequest httpRequest, HttpResponse httpResponse, IBot bot, CancellationToken cancellationToken = default)
         {
             if (httpRequest == null)
             {
@@ -75,7 +75,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
             }
 
             if (_options.ValidateIncomingAlexaRequests
-                && !await AlexaHelper.ValidateRequest(httpRequest, skillRequest, body, _logger))
+                && !await ValidationHelper.ValidateRequest(httpRequest, skillRequest, body, _options.AlexaSkillId, _logger))
             {
                 throw new AuthenticationException("Failed to validate incoming request.");
             }
@@ -86,47 +86,13 @@ namespace Bot.Builder.Community.Adapters.Alexa
             {
                 throw new ArgumentNullException(nameof(alexaResponse));
             }
-
+            
             httpResponse.ContentType = "application/json";
             httpResponse.StatusCode = (int)HttpStatusCode.OK;
 
             var responseJson = JsonConvert.SerializeObject(alexaResponse, JsonSerializerSettings);
-
             var responseData = Encoding.UTF8.GetBytes(responseJson);
             await httpResponse.Body.WriteAsync(responseData, 0, responseData.Length, cancellationToken).ConfigureAwait(false);
-        }
-
-        public override Task<ResourceResponse[]> SendActivitiesAsync(ITurnContext turnContext, Activity[] activities, CancellationToken cancellationToken)
-        {
-            var resourceResponses = new List<ResourceResponse>();
-
-            foreach (var activity in activities)
-            {
-                switch (activity.Type)
-                {
-                    case ActivityTypes.Message:
-                        var conversation = activity.Conversation ?? new ConversationAccount();
-                        var key = $"{conversation.Id}:{activity.ReplyToId}";
-
-                        if (_responses.ContainsKey(key))
-                        {
-                            _responses[key].Add(activity);
-                        }
-                        else
-                        {
-                            _responses[key] = new List<Activity> { activity };
-                        }
-
-                        break;
-                    default:
-                        _logger.LogTrace($"Unsupported Activity Type: '{activity.Type}'. Only Activities of type 'Message' or 'Event' are supported.");
-                        break;
-                }
-
-                resourceResponses.Add(new ResourceResponse(activity.Id));
-            }
-
-            return Task.FromResult(resourceResponses.ToArray());
         }
 
         /// <summary>
@@ -163,7 +129,6 @@ namespace Bot.Builder.Community.Adapters.Alexa
             }
         }
 
-
         public override Task<ResourceResponse> UpdateActivityAsync(ITurnContext turnContext, Activity activity, CancellationToken cancellationToken)
         {
             return Task.FromException<ResourceResponse>(new NotImplementedException("Alexa adapter does not support updateActivity."));
@@ -177,162 +142,32 @@ namespace Bot.Builder.Community.Adapters.Alexa
         private async Task<SkillResponse> ProcessAlexaRequestAsync(SkillRequest alexaRequest, BotCallbackHandler logic)
         {
             var activity = RequestToActivity(alexaRequest);
-            var context = new TurnContext(this, activity);
-
-            _responses = new Dictionary<string, List<Activity>>();
+            var context = new TurnContextEx(this, activity);
 
             await RunPipelineAsync(context, logic, default).ConfigureAwait(false);
 
-            if (context.GetAlexaRequestBody().Request.Type == "SessionEndedRequest")
-            {
-                return ResponseBuilder.Tell(string.Empty);
-            }
+            var activities = context.SentActivities;
 
-            var key = $"{activity.Conversation.Id}:{activity.Id}";
+            var outgoingActivity = ProcessOutgoingActivities(activities);
 
-            try
-            {
-                var activities = _responses.ContainsKey(key) ? _responses[key] : new List<Activity>();
-                var response = CreateResponseFromActivities(activities, context);
-                return response;
-            }
-            finally
-            {
-                if (_responses.ContainsKey(key))
-                {
-                    _responses.Remove(key);
-                }
-            }
-        }
-
-        private static Activity RequestToActivity(SkillRequest skillRequest)
-        {
-            var system = skillRequest.Context.System;
-
-            var activity = new Activity
-            {
-                ChannelId = "alexa",
-                ServiceUrl = $"{system.ApiEndpoint}?token ={system.ApiAccessToken}",
-                Recipient = new ChannelAccount(system.Application.ApplicationId, "skill"),
-                From = new ChannelAccount(system.User.UserId, "user"),
-                Conversation = new ConversationAccount(false, "conversation", skillRequest.Session.SessionId),
-                Type = skillRequest.Request.Type,
-                Id = skillRequest.Request.RequestId,
-                Timestamp = skillRequest.Request.Timestamp,
-                Locale = skillRequest.Request.Locale,
-                ChannelData = skillRequest
-            };
-
-            return activity;
-        }
-
-        private static void ProcessActivityAttachments(Activity activity, SkillResponse response)
-        {
-            var cardAttachment = activity.Attachments?.FirstOrDefault(a => a.GetType() == typeof(CardAttachment)) as CardAttachment;
-            if (cardAttachment != null)
-            {
-                response.Response.Card = cardAttachment.Card;
-            }
-
-            var directiveAttachments = activity.Attachments?.Where(a => a.GetType() == typeof(DirectiveAttachment))
-                .Select(d => d as DirectiveAttachment);
-            var directives = directiveAttachments?.Select(d => d.Directive).ToList();
-            if (directives != null && directives.Any())
-            {
-                response.Response.Directives = directives;
-            }
-        }
-
-        private SkillResponse CreateResponseFromActivities(List<Activity> activities, ITurnContext context)
-        {
-            Activity activity = ProcessOutgoingActivities(activities);
-
-            var response = new SkillResponse()
-            {
-                Version = "1.0",
-                Response = new ResponseBody(),
-                SessionAttributes = context.AlexaSessionAttributes()
-            };
-
-            if (!SecurityElement.IsValidText(activity.Text))
-            {
-                activity.Text = SecurityElement.Escape(activity.Text);
-            }
-
-            if (!string.IsNullOrEmpty(activity.Speak))
-            {
-                response.Response.OutputSpeech =
-                    new SsmlOutputSpeech(
-                        activity.Speak.Contains("<speak>")
-                            ? activity.Speak
-                            : $"<speak>{activity.Speak}</speak>");
-            }
-            else if (!string.IsNullOrEmpty(activity.Text))
-            {
-                response.Response.OutputSpeech = new SsmlOutputSpeech(
-                    "<speak>" + activity.Text + "</speak>");
-            }
-
-            ProcessActivityAttachments(activity, response);
-
-            if (AlexaHelper.ShouldSetEndSession(response))
-            {
-                switch (activity.InputHint)
-                {
-                    case InputHints.IgnoringInput:
-                        response.Response.ShouldEndSession = true;
-                        break;
-                    case InputHints.ExpectingInput:
-                        response.Response.ShouldEndSession = false;
-                        response.Response.Reprompt = new Reprompt(activity.Text);
-                        break;
-                    default:
-                        response.Response.ShouldEndSession = _options.ShouldEndSessionByDefault;
-                        break;
-                }
-            }
+            var response = _requestMapper.ActivityToResponse(outgoingActivity, alexaRequest);
 
             return response;
         }
 
-        private Activity ProcessOutgoingActivities(List<Activity> activities)
+        public virtual Activity ProcessOutgoingActivities(List<Activity> activities)
         {
-            if(activities.Count == 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(activities));
-            }
+            return _requestMapper.MergeActivities(activities);
+        }
 
-            if(activities.Count() > 1)
-            {
-                switch (_options.MultipleOutgoingActivitiesPolicy)
-                {
-                    case MultipleOutgoingActivitiesPolicies.TakeFirstActivity:
-                        return activities.First();
-                    case MultipleOutgoingActivitiesPolicies.TakeLastActivity:
-                        return activities.Last();
-                    case MultipleOutgoingActivitiesPolicies.ConcatenateTextSpeakPropertiesFromAllActivities:
-                        var resultActivity = activities.Last();
+        public virtual Activity RequestToActivity(SkillRequest request)
+        {
+            return _requestMapper.RequestToActivity(request);
+        }
 
-                        for (int i = activities.Count - 2; i >= 0; i--)
-                        {
-                            if (!string.IsNullOrEmpty(activities[i].Speak))
-                            {
-                                activities[i].Speak = activities[i].Speak.Trim(new char[] { ' ', '.' });
-                                resultActivity.Text = string.Format("{0}. {1}", activities[i].Speak, resultActivity.Text);
-
-                            }
-                            else if (!string.IsNullOrEmpty(activities[i].Text))
-                            {
-                                activities[i].Text = activities[i].Text.Trim(new char[] { ' ', '.' });
-                                resultActivity.Text = string.Format("{0}. {1}", activities[i].Text, resultActivity.Text);
-                            }
-                        }
-
-                        return resultActivity;
-                }
-            }
-
-            return activities.Last();
+        public override Task<ResourceResponse[]> SendActivitiesAsync(ITurnContext turnContext, Activity[] activities, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(new ResourceResponse[0]);
         }
     }
 }

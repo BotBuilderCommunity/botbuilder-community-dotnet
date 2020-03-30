@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 using Alexa.NET.CustomerProfile;
 using Alexa.NET.Request;
 using Alexa.NET.Response;
-using Bot.Builder.Community.Adapters.Alexa.Attachments;
+using Bot.Builder.Community.Adapters.Alexa.Core.Attachments;
 using Microsoft.Bot.Builder;
 
-namespace Bot.Builder.Community.Adapters.Alexa
+namespace Bot.Builder.Community.Adapters.Alexa.Core
 {
     public static class AlexaContextExtensions
     {
@@ -47,7 +47,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
 
         public static async Task AlexaSendPermissionConsentRequestActivity(this ITurnContext context, string message, List<string> permissions)
         {
-            var activity = MessageFactory.Attachment(new PermissionConsentRequestAttachment(permissions), message);
+            var activity = MessageFactory.Attachment(new AskForPermissionsConsentCard() { Permissions = permissions }.ToAttachment(), message);
             await context.SendActivityAsync(activity).ConfigureAwait(false);
         }
 
