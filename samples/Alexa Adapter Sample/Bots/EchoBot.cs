@@ -5,7 +5,7 @@ using Alexa.NET.Response;
 using Alexa.NET.Response.Directive;
 using Alexa.NET.Response.Directive.Templates;
 using Alexa.NET.Response.Directive.Templates.Types;
-using Bot.Builder.Community.Adapters.Alexa.Attachments;
+using Bot.Builder.Community.Adapters.Alexa.Core.Attachments;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 
@@ -24,19 +24,17 @@ namespace Bot.Builder.Community.Samples.Alexa.Bots
                 case "card":
                     var activityWithCard = MessageFactory.Text($"Ok, I included a simple card.");
                     activityWithCard.Attachments.Add(
-                        new CardAttachment(
-                            new SimpleCard()
+                        new SimpleCard()
                             {
                                 Title = "This is a simple card",
                                 Content = "This is the simple card content"
-                            }));
+                            }.ToAttachment());
                     await turnContext.SendActivityAsync(activityWithCard, cancellationToken);
                     break;
 
                 case "display":
-                    var activityWithDisplayDirective = MessageFactory.Text($"Ok, I included a display directive`.");
+                    var activityWithDisplayDirective = MessageFactory.Text($"Ok, I included a display directive.");
                     activityWithDisplayDirective.Attachments.Add(
-                        new DirectiveAttachment(
                             new DisplayRenderTemplateDirective()
                             {
                                 Template = new BodyTemplate1()
@@ -58,18 +56,17 @@ namespace Bot.Builder.Community.Samples.Alexa.Bots
                                     },
                                     Title = "Test title",
                                 }
-                            }));
+                            }.ToAttachment());
                     await turnContext.SendActivityAsync(activityWithDisplayDirective, cancellationToken);
                     break;
 
                 case "hint":
                     var activityWithHintDirective = MessageFactory.Text($"Ok, I included a hint directive`.");
                     activityWithHintDirective.Attachments.Add(
-                        new DirectiveAttachment(
-                            new HintDirective()
+                        new HintDirective()
                             {
                                 Hint = new Hint("This is a hint")
-                            }));
+                            }.ToAttachment());
                     await turnContext.SendActivityAsync(activityWithHintDirective, cancellationToken);
                     break;
 
