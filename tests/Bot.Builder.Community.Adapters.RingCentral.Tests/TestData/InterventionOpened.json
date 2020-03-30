@@ -1,0 +1,26 @@
+{
+  "id": "9z158cd37e0c1a3f5b1c3a75",
+  "domain_id": "2ebafdcedbddbb93c20fe1zd",
+  "events": [
+    {
+      "type": "intervention.opened",
+      "id": "2e5d7340dbddbb9543d84be7",
+      "issued_at": "2020-03-02T20:57:36.628Z",
+      "user_id": "2dbb4cb50e69dc31b0dddea9",
+      "resource": {
+        "type": "intervention",
+        "id": "2e5d7340dbddbb9543d84be6",
+        "metadata": {
+          "custom_field_values": {},
+          "category_ids": [ "2dc373750e69dc46c639ac73" ],
+          "closed_at": null,
+          "deferred_at": null,
+          "identity_id": "2dc4703b7133681b8be42b21",
+          "source_id": "2dc206a10e69dc66c5b55f22",
+          "thread_id": "2e5d72f65256c1344e825782",
+          "user_id": "2dbb4cb50e69dc31b0dddea5"
+        }
+      }
+    }
+  ]
+}

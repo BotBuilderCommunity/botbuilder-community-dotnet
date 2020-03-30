@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.329
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29905.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{57D9879A-FC9F-468C-B86F-BE45A1472F88}"
 EndProject
@@ -64,6 +64,12 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Twitter", "libraries\Bot.Builder.Community.Adapters.Twitter\Bot.Builder.Community.Adapters.Twitter.csproj", "{06CECA83-4578-467E-80DD-66C4D0526B9D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Dialogs.Luis", "libraries\Bot.Builder.Community.Dialogs.Luis\Bot.Builder.Community.Dialogs.Luis.csproj", "{2FE9D83B-59AB-4475-BE6F-4803118B1A81}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Twitter.Tests", "tests\Bot.Builder.Community.Adapters.Tests\Bot.Builder.Community.Adapters.Twitter.Tests.csproj", "{873C9B8C-2677-4586-89D3-C80FB1263596}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.RingCentral", "libraries\Bot.Builder.Community.Adapters.RingCentral\Bot.Builder.Community.Adapters.RingCentral.csproj", "{F0C1BE0F-D1F1-4104-8617-4E87291C1416}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.RingCentral.Tests", "tests\Bot.Builder.Community.Adapters.RingCentral.Tests\Bot.Builder.Community.Adapters.RingCentral.Tests.csproj", "{441E05D3-43A9-4C4B-AB5B-06AF27742885}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -223,14 +229,6 @@ Global
 		{1EF09D96-D5EB-4445-8369-E87A7A59FA93}.Documentation|Any CPU.Build.0 = Debug|Any CPU
 		{1EF09D96-D5EB-4445-8369-E87A7A59FA93}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1EF09D96-D5EB-4445-8369-E87A7A59FA93}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2FE9D83B-59AB-4475-BE6F-4803118B1A81}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
-		{2FE9D83B-59AB-4475-BE6F-4803118B1A81}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
-		{2FE9D83B-59AB-4475-BE6F-4803118B1A81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2FE9D83B-59AB-4475-BE6F-4803118B1A81}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2FE9D83B-59AB-4475-BE6F-4803118B1A81}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
-		{2FE9D83B-59AB-4475-BE6F-4803118B1A81}.Documentation|Any CPU.Build.0 = Debug|Any CPU
-		{2FE9D83B-59AB-4475-BE6F-4803118B1A81}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2FE9D83B-59AB-4475-BE6F-4803118B1A81}.Release|Any CPU.Build.0 = Release|Any CPU
 		{06CECA83-4578-467E-80DD-66C4D0526B9D}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
 		{06CECA83-4578-467E-80DD-66C4D0526B9D}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
 		{06CECA83-4578-467E-80DD-66C4D0526B9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -239,6 +237,38 @@ Global
 		{06CECA83-4578-467E-80DD-66C4D0526B9D}.Documentation|Any CPU.Build.0 = Debug|Any CPU
 		{06CECA83-4578-467E-80DD-66C4D0526B9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06CECA83-4578-467E-80DD-66C4D0526B9D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2FE9D83B-59AB-4475-BE6F-4803118B1A81}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FE9D83B-59AB-4475-BE6F-4803118B1A81}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{2FE9D83B-59AB-4475-BE6F-4803118B1A81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FE9D83B-59AB-4475-BE6F-4803118B1A81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FE9D83B-59AB-4475-BE6F-4803118B1A81}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FE9D83B-59AB-4475-BE6F-4803118B1A81}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{2FE9D83B-59AB-4475-BE6F-4803118B1A81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FE9D83B-59AB-4475-BE6F-4803118B1A81}.Release|Any CPU.Build.0 = Release|Any CPU
+		{873C9B8C-2677-4586-89D3-C80FB1263596}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{873C9B8C-2677-4586-89D3-C80FB1263596}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{873C9B8C-2677-4586-89D3-C80FB1263596}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{873C9B8C-2677-4586-89D3-C80FB1263596}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{873C9B8C-2677-4586-89D3-C80FB1263596}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{873C9B8C-2677-4586-89D3-C80FB1263596}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{873C9B8C-2677-4586-89D3-C80FB1263596}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{873C9B8C-2677-4586-89D3-C80FB1263596}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0C1BE0F-D1F1-4104-8617-4E87291C1416}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0C1BE0F-D1F1-4104-8617-4E87291C1416}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{F0C1BE0F-D1F1-4104-8617-4E87291C1416}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0C1BE0F-D1F1-4104-8617-4E87291C1416}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0C1BE0F-D1F1-4104-8617-4E87291C1416}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0C1BE0F-D1F1-4104-8617-4E87291C1416}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{F0C1BE0F-D1F1-4104-8617-4E87291C1416}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0C1BE0F-D1F1-4104-8617-4E87291C1416}.Release|Any CPU.Build.0 = Release|Any CPU
+		{441E05D3-43A9-4C4B-AB5B-06AF27742885}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{441E05D3-43A9-4C4B-AB5B-06AF27742885}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{441E05D3-43A9-4C4B-AB5B-06AF27742885}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{441E05D3-43A9-4C4B-AB5B-06AF27742885}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{441E05D3-43A9-4C4B-AB5B-06AF27742885}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{441E05D3-43A9-4C4B-AB5B-06AF27742885}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{441E05D3-43A9-4C4B-AB5B-06AF27742885}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{441E05D3-43A9-4C4B-AB5B-06AF27742885}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -270,6 +300,9 @@ Global
 		{1EF09D96-D5EB-4445-8369-E87A7A59FA93} = {DC62D60A-2EA2-4DB1-B1BA-C8F38D3940B3}
 		{06CECA83-4578-467E-80DD-66C4D0526B9D} = {BF310E8A-8DA1-441F-90E9-DE0E66553048}
 		{2FE9D83B-59AB-4475-BE6F-4803118B1A81} = {08759E28-8592-4EBA-9A07-19A5BED3FB0C}
+		{873C9B8C-2677-4586-89D3-C80FB1263596} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
+		{F0C1BE0F-D1F1-4104-8617-4E87291C1416} = {BF310E8A-8DA1-441F-90E9-DE0E66553048}
+		{441E05D3-43A9-4C4B-AB5B-06AF27742885} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FE3B75E-BA2B-45BC-BBF0-DDA8BA10C4F0}
