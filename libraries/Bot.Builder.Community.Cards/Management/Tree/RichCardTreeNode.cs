@@ -13,7 +13,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
             : base(async (card, nextAsync) =>
             {
                 // The nextAsync return value is not needed here because the Buttons property reference will remain unchanged
-                await nextAsync(buttonFactory(card), TreeNodes.CardActionList).ConfigureAwait(false);
+                await nextAsync(buttonFactory(card), TreeNodeType.CardActionList).ConfigureAwait(false);
 
                 return card;
             })

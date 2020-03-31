@@ -22,16 +22,16 @@ namespace Bot.Builder.Community.Cards.Management.Tree
 
         private ChildCallerDelegate<TValue, TChild> ChildCaller { get; }
 
-        public async Task<object> CallChildAsync(object value, Func<object, ITreeNode, Task<object>> nextAsync)
+        public async Task<object> CallChildAsync(object value, Func<object, TreeNodeType, Task<object>> nextAsync)
         {
             // This check will prevent child callers from needing to check for nulls
             if (value is TValue typedValue)
             {
                 return await ChildCaller(
                     typedValue,
-                    async (childValue, childNode) =>
+                    async (child, childType) =>
                     {
-                        return await nextAsync(childValue, childNode).ConfigureAwait(false) as TChild;
+                        return await nextAsync(child, childType).ConfigureAwait(false) as TChild;
                     }).ConfigureAwait(false);
             }
 

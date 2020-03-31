@@ -394,8 +394,8 @@ namespace Bot.Builder.Community.Cards.Management
                                             result.Add(savedActivity, savedAttachment, savedSubmitAction);
                                         }
                                     },
-                                    TreeNodes.AdaptiveCard,
-                                    TreeNodes.SubmitAction,
+                                    TreeNodeType.AdaptiveCard,
+                                    TreeNodeType.SubmitAction,
                                     true);
                             } 
                         }
