@@ -66,7 +66,7 @@
         /// <value>
         /// The RingCentral Engage Webhook Validation Token.
         /// </value>
-        public string RingCentralEngageInterventionWebhookValidationToken { get; set; }
+        public string RingCentralEngageWebhookValidationToken { get; set; }
 
         /// <summary>
         /// Gets or sets ringCentral category that is being set on threads, where the bot is 
