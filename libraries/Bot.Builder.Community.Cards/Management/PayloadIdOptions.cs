@@ -55,22 +55,5 @@ namespace Bot.Builder.Community.Cards.Management
         public string Set(string type, string id = null) => _ids[type] = id;
 
         public IDictionary<string, string> GetIds() => new Dictionary<string, string>(_ids);
-
-        internal PayloadIdOptions ReplaceNullWithGeneratedId(string type)
-        {
-            var options = Clone();
-
-            if (HasIdType(type))
-            {
-                var id = Get(type);
-
-                if (id is null)
-                {
-                    options.Set(type, PayloadIdTypes.GenerateId(type));
-                }
-            }
-
-            return options;
-        }
     }
 }

@@ -157,7 +157,7 @@ namespace Bot.Builder.Community.Cards.Tests
 
             var jObject = new JObject();
 
-            string json = $"{{'{PayloadIdTypes.GetKey(PayloadIdTypes.Card)}': '{CARDID}',"
+            var json = $"{{'{PayloadIdTypes.GetKey(PayloadIdTypes.Card)}': '{CARDID}',"
                          + $" '{PayloadIdTypes.GetKey(PayloadIdTypes.Carousel)}': '{CAROUSELID}'}}";
 
             var animationCard = new AnimationCard();
