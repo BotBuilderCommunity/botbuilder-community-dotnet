@@ -1,5 +1,8 @@
 ﻿using System;
+using JWT.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 
 namespace Bot.Builder.Community.Adapters.Google.Core
 {
@@ -15,14 +18,12 @@ namespace Bot.Builder.Community.Adapters.Google.Core
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        /// <summary>
-        /// Verify the action request is from the designated actionId.
-        /// </summary>
-        /// <param name="actionId">Alexa Skill Id.</param>
-        /// <returns>True if the request is for this skill.</returns>
-        public virtual bool ValidateActionId(string actionId)
+        public static bool ValidateActionProjectId(string authorizationHeader, string actionProjectId)
         {
-            throw new NotImplementedException();
+            var payload = new JwtBuilder().Decode(authorizationHeader);
+            var payloadJObj = JObject.Parse(payload);
+            var aud = (string)payloadJObj["aud"];
+            return aud.ToLowerInvariant() == actionProjectId.ToLowerInvariant();
         }
     }
 }

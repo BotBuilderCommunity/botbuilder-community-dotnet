@@ -12,21 +12,10 @@ namespace Bot.Builder.Community.Adapters.Google
 
         public bool ShouldEndSessionByDefault { get; set; } = true;
 
-        public bool TryConvertFirstActivityAttachmentToGoogleCard { get; set; }
-
         public string ActionInvocationName { get; set; }
 
         public string ActionProjectId { get; set; }
 
-        public MultipleOutgoingActivitiesPolicies MultipleOutgoingActivitiesPolicy { get; set; } = MultipleOutgoingActivitiesPolicies.TakeLastActivity;
-
-        public bool ValidateIncomingRequests { get; internal set; }
-    }
-
-    public enum MultipleOutgoingActivitiesPolicies
-    {
-        TakeFirstActivity,
-        TakeLastActivity,
-        ConcatenateTextSpeakPropertiesFromAllActivities
+        public bool ValidateIncomingRequests { get; set; }
     }
 }

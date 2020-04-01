@@ -1,21 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Security;
 using System.Security.Authentication;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Linq;
 using Bot.Builder.Community.Adapters.Google.Core;
 using Bot.Builder.Community.Adapters.Google.Core.Helpers;
 using Bot.Builder.Community.Adapters.Google.Core.Model;
-using Bot.Builder.Community.Adapters.Google.Core.Model.Attachments;
-using Bot.Builder.Community.Adapters.Google.Model;
-using Bot.Builder.Community.Adapters.Google.Model.Attachments;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
@@ -23,7 +16,6 @@ using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
 namespace Bot.Builder.Community.Adapters.Google
@@ -33,21 +25,23 @@ namespace Bot.Builder.Community.Adapters.Google
         private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
         {
             ContractResolver = new CamelCasePropertyNamesContractResolver(),
-            Formatting = Newtonsoft.Json.Formatting.Indented,
+            Formatting = Formatting.Indented,
             NullValueHandling = NullValueHandling.Ignore,
         };
 
         private readonly GoogleAdapterOptions _options;
         private readonly ILogger _logger;
-        private readonly GoogleRequestMapper _requestMapper;
+        private readonly GoogleRequestMapperOptions _requestMapperOptions;
 
         public GoogleAdapter(GoogleAdapterOptions options = null, ILogger logger = null)
         {
             _options = options ?? new GoogleAdapterOptions();
             _logger = logger ?? NullLogger.Instance;
-
-            _requestMapper = new GoogleRequestMapper(new GoogleRequestMapperOptions()
-                { ActionInvocationName = _options.ActionInvocationName, WebhookType = _options.WebhookType });
+            _requestMapperOptions = new GoogleRequestMapperOptions()
+            {
+                ActionInvocationName = _options.ActionInvocationName,
+                ShouldEndSessionByDefault = _options.ShouldEndSessionByDefault
+            };
         }
 
         public async Task ProcessAsync(HttpRequest httpRequest, HttpResponse httpResponse, IBot bot, CancellationToken cancellationToken = default)
@@ -67,47 +61,43 @@ namespace Bot.Builder.Community.Adapters.Google
                 throw new ArgumentNullException(nameof(bot));
             }
 
+            if (_options.ValidateIncomingRequests && !GoogleAuthorizationHandler.ValidateActionProjectId(httpRequest.Headers["Authorization"], _options.ActionProjectId))
+            {
+                throw new AuthenticationException("Failed to validate incoming request. Project ID in authentication header did not match project ID in AlexaAdapterOptions");
+            }
+
             string body;
             using (var sr = new StreamReader(httpRequest.Body))
             {
                 body = await sr.ReadToEndAsync();
             }
-            
-            Activity activity = _requestMapper.RequestToActivity(body);
 
-            //if (_options.ValidateIncomingRequests && !GoogleHelper.ValidateRequest(httpRequest, _options.ActionProjectId))
-            //{
-            //    throw new AuthenticationException("Failed to validate incoming request. Project ID in authentication header did not match project ID in AlexaAdapterOptions");
-            //}
-
-            var context = new TurnContextEx(this, activity);
-
-            context.TurnState.Add("GoogleUserId", activity.From.Id);
-
-            await RunPipelineAsync(context, bot.OnTurnAsync, cancellationToken).ConfigureAwait(false);
-
-            object response = null;
-
-            var outgoingActivity = ProcessOutgoingActivities(context.SentActivities);
+            Activity activity;
+            string responseJson;
 
             if (_options.WebhookType == GoogleWebhookType.DialogFlow)
             {
-                response = _requestMapper.CreateDialogFlowResponseFromActivity(outgoingActivity);
+                var dialogFlowRequest = JsonConvert.DeserializeObject<DialogFlowRequest>(body);
+                var requestMapper = new DialogFlowRequestMapper(_requestMapperOptions, _logger);
+                dialogFlowRequest.OriginalDetectIntentRequest.Payload.EnsureUniqueUserIdInUserStorage();
+                activity = requestMapper.RequestToActivity(dialogFlowRequest);
+                var context = await CreateContextAndRunPipelineAsync(bot, cancellationToken, activity);
+                var response = requestMapper.ActivityToResponse(ProcessOutgoingActivities(context.SentActivities), dialogFlowRequest);
+                responseJson = JsonConvert.SerializeObject(response, JsonSerializerSettings);
             }
             else
             {
-                response = _requestMapper.CreateConversationResponseFromLastActivity(outgoingActivity);
+                var conversationRequest = JsonConvert.DeserializeObject<ConversationRequest>(body);
+                var requestMapper = new ConversationRequestMapper(_requestMapperOptions, _logger);
+                conversationRequest.EnsureUniqueUserIdInUserStorage();
+                activity = requestMapper.RequestToActivity(conversationRequest);
+                var context = await CreateContextAndRunPipelineAsync(bot, cancellationToken, activity);
+                var response = requestMapper.ActivityToResponse(ProcessOutgoingActivities(context.SentActivities), conversationRequest);
+                responseJson = JsonConvert.SerializeObject(response, JsonSerializerSettings);
             }
-
-            if (response == null)
-            {
-                throw new ArgumentNullException(nameof(response));
-            }
-
+            
             httpResponse.ContentType = "application/json;charset=utf-8";
             httpResponse.StatusCode = (int)HttpStatusCode.OK;
-
-            var responseJson = JsonConvert.SerializeObject(response, JsonSerializerSettings);
 
             var responseData = Encoding.UTF8.GetBytes(responseJson);
             await httpResponse.Body.WriteAsync(responseData, 0, responseData.Length, cancellationToken).ConfigureAwait(false);
@@ -145,12 +135,20 @@ namespace Bot.Builder.Community.Adapters.Google
 
         public virtual Activity ProcessOutgoingActivities(List<Activity> activities)
         {
-            return _requestMapper.MergeActivities(activities);
+            return MappingHelper.MergeActivities(activities);
         }
         
         public override Task<ResourceResponse[]> SendActivitiesAsync(ITurnContext turnContext, Activity[] activities, CancellationToken cancellationToken)
         {
             return Task.FromResult(new ResourceResponse[0]);
+        }
+
+        private async Task<TurnContextEx> CreateContextAndRunPipelineAsync(IBot bot, CancellationToken cancellationToken, Activity activity)
+        {
+            var context = new TurnContextEx(this, activity);
+            context.TurnState.Add("GoogleUserId", activity.From.Id);
+            await RunPipelineAsync(context, bot.OnTurnAsync, cancellationToken).ConfigureAwait(false);
+            return context;
         }
     }
 }

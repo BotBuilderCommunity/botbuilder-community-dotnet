@@ -54,6 +54,7 @@ namespace Bot.Builder.Community.Adapters.Google
         public bool ExpectUserResponse { get; set; }
         public RichResponse RichResponse { get; set; }
         public ISystemIntent SystemIntent { get; set; }
+        public string UserStorage { get; set; }
     }
 
     public class ISystemIntent

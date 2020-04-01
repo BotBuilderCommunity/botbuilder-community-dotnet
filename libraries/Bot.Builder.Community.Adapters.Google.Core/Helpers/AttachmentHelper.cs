@@ -1,12 +1,12 @@
 ﻿using System;
-using Alexa.NET.Response;
-using Bot.Builder.Community.Adapters.Alexa.Core.Attachments;
+using Bot.Builder.Community.Adapters.Google.Core.Model.Attachments;
+using Bot.Builder.Community.Adapters.Google.Model;
 using Microsoft.Bot.Schema;
 using Microsoft.Rest;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Bot.Builder.Community.Adapters.Alexa.Core.Helpers
+namespace Bot.Builder.Community.Adapters.Google.Core.Helpers
 {
     public static class AttachmentHelper
     {
@@ -16,22 +16,22 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core.Helpers
         /// <param name="activity"></param>
         public static void ConvertAlexaAttachmentContent(this Activity activity)
         {
-            if (activity == null || activity.Attachments == null)
-            {
-                return;
-            }
+            //if (activity == null || activity.Attachments == null)
+            //{
+            //    return;
+            //}
 
-            foreach (var attachment in activity.Attachments)
-            {
-                if (attachment.ContentType == AlexaAttachmentContentTypes.Card)
-                {
-                    Convert<ICard>(attachment);
-                }
-                else if (attachment.ContentType == AlexaAttachmentContentTypes.Directive)
-                {
-                    Convert<IDirective>(attachment);
-                }
-            }
+            //foreach (var attachment in activity.Attachments)
+            //{
+            //    if (attachment.ContentType == AlexaAttachmentContentTypes.Card)
+            //    {
+            //        Convert<ICard>(attachment);
+            //    }
+            //    else if (attachment.ContentType == AlexaAttachmentContentTypes.Directive)
+            //    {
+            //        Convert<IDirective>(attachment);
+            //    }
+            //}
         }
 
         private static void Convert<T>(Attachment attachment)
@@ -86,6 +86,33 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core.Helpers
                 return JsonConvert.DeserializeObject<T>((string)attachment.Content);
             }
             return (T)((JObject)attachment.Content).ToObject<T>();
+        }
+
+        internal static OptionIntentData GetOptionIntentDataFromListAttachment(ListAttachment listAttachment)
+        {
+            switch (listAttachment.ListStyle)
+            {
+                case ListAttachmentStyle.Carousel:
+                    return new CarouselOptionIntentData
+                    {
+                        CarouselSelect = new OptionIntentSelect()
+                        {
+                            Items = listAttachment.Items,
+                            Title = listAttachment.Title
+                        }
+                    };
+                case ListAttachmentStyle.List:
+                    return new ListOptionIntentData
+                    {
+                        ListSelect = new OptionIntentSelect()
+                        {
+                            Items = listAttachment.Items,
+                            Title = listAttachment.Title
+                        }
+                    };
+                default:
+                    return null;
+            }
         }
     }
 }
