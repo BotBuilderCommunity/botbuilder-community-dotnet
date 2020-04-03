@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="JWT" Version="5.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.1.1" />
     <PackageReference Include="Microsoft.Bot.Schema" Version="4.8.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.1.0" />
     <PackageReference Include="Microsoft.MarkedNet" Version="1.0.13" />

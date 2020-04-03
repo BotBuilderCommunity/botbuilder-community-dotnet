@@ -17,5 +17,19 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Helpers
                 }
             }
         }
+
+        public static string GetUserIdFromUserStorage(this ConversationRequest payload)
+        {
+            if (!string.IsNullOrEmpty(payload.User.UserStorage))
+            {
+                var values = JObject.Parse(payload.User.UserStorage);
+                if (values.ContainsKey("UserId"))
+                {
+                    return values.GetValue("UserId").ToString();
+                }
+            }
+
+            return null;
+        }
     }
 }

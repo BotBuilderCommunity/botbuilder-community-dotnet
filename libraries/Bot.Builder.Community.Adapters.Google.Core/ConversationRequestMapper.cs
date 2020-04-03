@@ -7,6 +7,7 @@ using Bot.Builder.Community.Adapters.Google.Model;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Newtonsoft.Json.Linq;
 
 namespace Bot.Builder.Community.Adapters.Google.Core
 {
@@ -25,14 +26,15 @@ namespace Bot.Builder.Community.Adapters.Google.Core
         {
             var activity = new Activity
             {
+                DeliveryMode = DeliveryModes.ExpectReplies,
                 ChannelId = _options.ChannelId,
                 ServiceUrl = _options.ServiceUrl,
                 Recipient = new ChannelAccount("", "action"),
                 Conversation = new ConversationAccount(false, "conversation", $"{payload.Conversation.ConversationId}"),
+                From = new ChannelAccount(payload.GetUserIdFromUserStorage()),
                 Id = Guid.NewGuid().ToString(),
                 Timestamp = DateTime.UtcNow,
                 Locale = payload.User.Locale,
-                Value = payload.Inputs[0]?.Intent,
                 ChannelData = payload,
                 Text = MappingHelper.StripInvocation(payload.Inputs[0]?.RawInputs[0]?.Query,
                     _options.ActionInvocationName)
