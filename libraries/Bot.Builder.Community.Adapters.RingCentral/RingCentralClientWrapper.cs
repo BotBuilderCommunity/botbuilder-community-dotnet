@@ -118,7 +118,7 @@ namespace Bot.Builder.Community.Adapters.RingCentral
             }
 
             // Validate token with that from RingCentral webhook configuration
-            if (token == _options.CurrentValue.RingCentralEngageInterventionWebhookValidationToken)
+            if (token == _options.CurrentValue.RingCentralEngageWebhookValidationToken)
             {
                 // Return the challenge
                 httpResponse.StatusCode = (int)HttpStatusCode.OK;
@@ -403,6 +403,7 @@ namespace Bot.Builder.Community.Adapters.RingCentral
             _ = threadId ?? throw new ArgumentNullException(nameof(threadId));
 
             var threadsApi = GetThreadsApi();
+            
             var thread = await threadsApi.GetThreadAsync(threadId);
 
             if (thread == null)

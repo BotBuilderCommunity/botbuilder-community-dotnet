@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29920.165
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RingCentral Adapter Sample", "RingCentral Adapter Sample.csproj", "{51503FB9-707D-4CDB-8246-02A9DD48A77F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.RingCentral", "..\..\libraries\Bot.Builder.Community.Adapters.RingCentral\Bot.Builder.Community.Adapters.RingCentral.csproj", "{2FBC1191-8278-48C2-AF17-F1608DA3F13A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{51503FB9-707D-4CDB-8246-02A9DD48A77F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51503FB9-707D-4CDB-8246-02A9DD48A77F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51503FB9-707D-4CDB-8246-02A9DD48A77F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51503FB9-707D-4CDB-8246-02A9DD48A77F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2FBC1191-8278-48C2-AF17-F1608DA3F13A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FBC1191-8278-48C2-AF17-F1608DA3F13A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FBC1191-8278-48C2-AF17-F1608DA3F13A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FBC1191-8278-48C2-AF17-F1608DA3F13A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {53584908-94A2-4F26-8606-0621D91E69F5}
+	EndGlobalSection
+EndGlobal
