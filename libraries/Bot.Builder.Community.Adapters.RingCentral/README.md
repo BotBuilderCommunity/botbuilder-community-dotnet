@@ -263,7 +263,7 @@ This community project is the result of two targetted projects around RingCentra
 - [Shobhit Mishra]()
 - [Egor Nikitin]()
 - [Vishesh Oberoi](https://github.com/ovishesh)
-- [Martin Oss]()
+- [Martin Oss](https://github.com/martinoss)
 - [Martin Schray](https://github.com/mschray/)
 - [Autumn Wyborny]()
 
