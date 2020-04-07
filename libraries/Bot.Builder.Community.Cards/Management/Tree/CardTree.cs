@@ -172,7 +172,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
         /// <typeparam name="TEntry">The .NET type of the entry node.</typeparam>
         /// <typeparam name="TExit">The .NET type of the exit node.</typeparam>
         /// <param name="entryValue">The entry value.</param>
-        /// <param name="func">A delegate to execute on each exit value
+        /// <param name="action">A delegate to execute on each exit value
         /// that is expected to return that value or a new object.
         /// Note that the argument is guaranteed to be non-null.</param>
         /// <param name="entryType">The explicit position of the entry node in the tree.
@@ -191,7 +191,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
         /// to modify the value, such as when an Adaptive Card is converted to a <see cref="JObject"/>.</returns>
         internal static TEntry Recurse<TEntry, TExit>(
                 TEntry entryValue,
-                Func<TExit, TExit> func,
+                Action<TExit> action,
                 TreeNodeType? entryType = null,
                 TreeNodeType? exitType = null,
                 bool reassignChildren = false,
@@ -230,7 +230,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 {
                     if (GetExitValue<TExit>(child) is TExit typedChild)
                     {
-                        modifiedTask = Task.FromResult<object>(func(typedChild));
+                        action(typedChild);
                     }
                 }
                 else
@@ -248,28 +248,6 @@ namespace Bot.Builder.Community.Cards.Management.Tree
 
             return entryNode.CallChildAsync(entryValue, Next, reassignChildren).Result as TEntry;
         }
-
-        internal static TEntry Recurse<TEntry, TExit>(
-                    TEntry entryValue,
-                    Action<TExit> action,
-                    TreeNodeType? entryType = null,
-                    TreeNodeType? exitType = null,
-                    bool reassignChildren = false,
-                    Action<object, ITreeNode> processIntermediateValue = null)
-                where TEntry : class
-                where TExit : class
-            => Recurse(
-                    entryValue,
-                    (TExit exitValue) =>
-                    {
-                        action(exitValue);
-
-                        return exitValue;
-                    },
-                    entryType,
-                    exitType,
-                    reassignChildren,
-                    processIntermediateValue);
 
         internal static void ApplyIds<TEntry>(TEntry entryValue, PayloadIdOptions options = null, TreeNodeType? entryType = null)
             where TEntry : class

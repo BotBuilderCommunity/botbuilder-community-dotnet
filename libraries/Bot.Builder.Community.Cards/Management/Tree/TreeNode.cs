@@ -20,7 +20,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
 
         public TreeNode(Func<TValue, Func<TChild, TreeNodeType, Task<TChild>>, Task<TValue>> childCaller)
         {
-            ChildCaller = (value, nextAsync, reassignChildren) => childCaller(value, nextAsync);
+            ChildCaller = async (value, nextAsync, reassignChildren) => await childCaller(value, nextAsync);
         }
 
         public string IdType { get; set; }
