@@ -32,7 +32,7 @@ namespace Bot.Builder.Community.Adapters.RingCentral.Tests
             string webhookToken = "abc123";
             request.Setup(x => x.QueryString).Returns(QueryString.FromUriComponent($"?hub.challenge={webhookChallengeCode}&hub.mode=subscribe&hub.verify_token={webhookToken}"));
 
-            var mockOptions = new RingCentralOptions() { RingCentralEngageApiAccessToken = "abc", RingCentralEngageApiUrl = "http://localhost", BotId = "testbot", RingCentralEngageInterventionWebhookValidationToken = webhookToken };
+            var mockOptions = new RingCentralOptions() { RingCentralEngageApiAccessToken = "abc", RingCentralEngageApiUrl = "http://localhost", BotId = "testbot", RingCentralEngageWebhookValidationToken = webhookToken };
             var sut = new RingCentralClientWrapper(OptionsHelper.GetOptionsMonitor(mockOptions), new StaticHandoffRequestRecognizer());
 
             // Act
@@ -58,7 +58,7 @@ namespace Bot.Builder.Community.Adapters.RingCentral.Tests
             request.Setup(x => x.QueryString).Returns(QueryString.FromUriComponent($"?hub.challenge={webhookChallengeCode}&hub.mode=subscribe&hub.verify_token={webhookToken}"));
             response.Setup(x => x.Body).Returns(new MemoryStream());
 
-            var mockOptions = new RingCentralOptions() { RingCentralEngageApiAccessToken = "abc", RingCentralEngageApiUrl = "http://localhost", BotId = "testbot", RingCentralEngageInterventionWebhookValidationToken = "incorrect_token" };
+            var mockOptions = new RingCentralOptions() { RingCentralEngageApiAccessToken = "abc", RingCentralEngageApiUrl = "http://localhost", BotId = "testbot", RingCentralEngageWebhookValidationToken = "incorrect_token" };
             var sut = new RingCentralClientWrapper(OptionsHelper.GetOptionsMonitor(mockOptions), new StaticHandoffRequestRecognizer());
 
             // Act
@@ -84,7 +84,7 @@ namespace Bot.Builder.Community.Adapters.RingCentral.Tests
             request.Setup(x => x.QueryString).Returns(QueryString.FromUriComponent($"?hub.mode=subscribe&hub.verify_token={webhookToken}"));
             response.Setup(x => x.Body).Returns(new MemoryStream());
 
-            var mockOptions = new RingCentralOptions() { RingCentralEngageApiAccessToken = "abc", RingCentralEngageApiUrl = "http://localhost", BotId = "testbot", RingCentralEngageInterventionWebhookValidationToken = "incorrect_token" };
+            var mockOptions = new RingCentralOptions() { RingCentralEngageApiAccessToken = "abc", RingCentralEngageApiUrl = "http://localhost", BotId = "testbot", RingCentralEngageWebhookValidationToken = "incorrect_token" };
             var sut = new RingCentralClientWrapper(OptionsHelper.GetOptionsMonitor(mockOptions), new StaticHandoffRequestRecognizer());
 
             // Act
