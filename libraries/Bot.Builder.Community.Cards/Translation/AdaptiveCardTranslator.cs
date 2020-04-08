@@ -59,14 +59,14 @@ namespace Bot.Builder.Community.Cards.Translation
         /// </value>
         public string TranslatorKey { internal get; set; }
 
-        public static async Task<object> TranslateAsync(
-            object card,
+        public static async Task<T> TranslateAsync<T>(
+            T card,
             string targetLocale,
             string translatorKey,
             AdaptiveCardTranslatorSettings settings = null,
             CancellationToken cancellationToken = default)
         {
-            if (card is null)
+            if (card == null)
             {
                 throw new ArgumentNullException(nameof(card));
             }
@@ -111,13 +111,13 @@ namespace Bot.Builder.Community.Cards.Translation
                 cancellationToken).ConfigureAwait(false);
         }
 
-        public static async Task<object> TranslateAsync(
-            object card,
+        public static async Task<T> TranslateAsync<T>(
+            T card,
             TranslateOneDelegate translateOneAsync,
             AdaptiveCardTranslatorSettings settings = null,
             CancellationToken cancellationToken = default)
         {
-            if (card is null)
+            if (card == null)
             {
                 throw new ArgumentNullException(nameof(card));
             }
@@ -138,13 +138,13 @@ namespace Bot.Builder.Community.Cards.Translation
                 cancellationToken).ConfigureAwait(false);
         }
 
-        public static async Task<object> TranslateAsync(
-            object card,
+        public static async Task<T> TranslateAsync<T>(
+            T card,
             TranslateManyDelegate translateManyAsync,
             AdaptiveCardTranslatorSettings settings = null,
             CancellationToken cancellationToken = default)
         {
-            if (card is null)
+            if (card == null)
             {
                 throw new ArgumentNullException(nameof(card));
             }
@@ -154,38 +154,36 @@ namespace Bot.Builder.Community.Cards.Translation
                 throw new ArgumentNullException(nameof(translateManyAsync));
             }
 
-            return await card.ToJObjectAndBackAsync(
-                async cardJObject =>
-                {
-                    var tokens = GetTokensToTranslate(cardJObject, settings ?? DefaultSettings);
-                    var translations = await translateManyAsync(
-                        tokens.Select(Convert.ToString).ToList(),
-                        cancellationToken).ConfigureAwait(false);
-
-                    if (translations != null)
-                    {
-                        for (int i = 0; i < tokens.Count && i < translations.Count; i++)
-                        {
-                            var item = tokens[i];
-                            var translatedText = translations[i];
-
-                            if (!string.IsNullOrWhiteSpace(translatedText))
-                            {
-                                // Modify each stored JToken with the translated text
-                                item.Replace(translatedText);
-                            }
-                        }
-                    }
-                },
-                true,
-                true).ConfigureAwait(false) ?? throw new ArgumentException(
+            var cardJObject = card.ToJObject(true) ?? throw new ArgumentException(
                     "The Adaptive Card must be convertible to a JObject.",
                     nameof(card));
+
+            var tokens = GetTokensToTranslate(cardJObject, settings ?? DefaultSettings);
+            var translations = await translateManyAsync(
+                tokens.Select(Convert.ToString).ToList(),
+                cancellationToken).ConfigureAwait(false);
+
+            if (translations != null)
+            {
+                for (int i = 0; i < tokens.Count && i < translations.Count; i++)
+                {
+                    var item = tokens[i];
+                    var translatedText = translations[i];
+
+                    if (!string.IsNullOrWhiteSpace(translatedText))
+                    {
+                        // Modify each stored JToken with the translated text
+                        item.Replace(translatedText);
+                    }
+                }
+            }
+
+            return card.FromJObject(cardJObject);
         }
 
-        public async Task<object> TranslateAsync(object card, CancellationToken cancellationToken = default)
+        public async Task<T> TranslateAsync<T>(T card, CancellationToken cancellationToken = default)
         {
-            if (card is null)
+            if (card == null)
             {
                 throw new ArgumentNullException(nameof(card));
             }
@@ -193,9 +191,9 @@ namespace Bot.Builder.Community.Cards.Translation
             return await TranslateAsync(card, TargetLocale, TranslatorKey, Settings, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<object> TranslateAsync(object card, string targetLocale, CancellationToken cancellationToken = default)
+        public async Task<T> TranslateAsync<T>(T card, string targetLocale, CancellationToken cancellationToken = default)
         {
-            if (card is null)
+            if (card == null)
             {
                 throw new ArgumentNullException(nameof(card));
             }
