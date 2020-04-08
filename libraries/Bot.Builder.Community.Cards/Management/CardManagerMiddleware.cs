@@ -65,7 +65,6 @@ namespace Bot.Builder.Community.Cards.Management
 
             // Is this activity from a button?
             if (options.IdOptions != null
-                && turnContext.Activity?.Type == ActivityTypes.Message
                 && turnContext.GetIncomingPayload() is JObject value)
             {
                 // Whether we should proceed by default depends on the ID-tracking style
@@ -149,7 +148,7 @@ namespace Bot.Builder.Community.Cards.Management
                     activities.AdaptOutgoingCardActions(turnContext.Activity.ChannelId);
                 }
 
-                if (options.AutoApplyIds)
+                if (options.AutoApplyIds && options.IdOptions != null)
                 {
                     activities.ApplyIdsToBatch(options.IdOptions);
                 }

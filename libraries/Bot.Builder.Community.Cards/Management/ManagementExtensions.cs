@@ -286,7 +286,7 @@ namespace Bot.Builder.Community.Cards.Management
 
             var activity = turnContext.Activity;
 
-            if (activity is null)
+            if (activity is null || activity.Type != ActivityTypes.Message)
             {
                 return null;
             }

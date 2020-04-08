@@ -936,7 +936,8 @@ namespace Bot.Builder.Community.Cards.Tests
                 object value = null,
                 string text = null,
                 object channelData = null,
-                string entityType = null)
+                string entityType = null,
+                string type = ActivityTypes.Message)
             {
                 var activity = new Activity
                 {
@@ -945,6 +946,7 @@ namespace Bot.Builder.Community.Cards.Tests
                     Text = text,
                     ChannelData = channelData,
                     Entities = entityType is null ? null : new List<Entity> { new Entity(entityType) },
+                    Type = type,
                 };
 
                 return new TurnContext(adapter, activity);
@@ -952,7 +954,7 @@ namespace Bot.Builder.Community.Cards.Tests
 
             static object GenerateChannelData(string key, object value = null) => new Dictionary<string, object> { { key, value } };
 
-            // CORTANA / TURN STATE CACHE
+            // CORTANA / TURN STATE CACHE (note that the payload is no longer cached)
 
             var turnContext = GenerateTurnContext(Channels.Cortana, null, json, null, "Non-intent");
             var incomingPayload = turnContext.GetIncomingPayload();
@@ -1072,6 +1074,10 @@ namespace Bot.Builder.Community.Cards.Tests
             turnContext = GenerateTurnContext(Channels.Sms, parsedJson);
 
             Assert.AreSame(parsedJson, turnContext.GetIncomingPayload());
+
+            turnContext = GenerateTurnContext(Channels.Console, parsedJson, type: ActivityTypes.Event);
+
+            Assert.IsNull(turnContext.GetIncomingPayload(), "A payload was returned for a non-message activity");
 
             turnContext = null;
 
