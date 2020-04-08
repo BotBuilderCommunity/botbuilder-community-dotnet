@@ -51,7 +51,7 @@ steps:
 - task: DotNetCoreCLI@2
   displayName: dotnet pack
   inputs:
-    projects: 'Bot.Builder.Community.sln'
+    packagesToPack: 'libraries/*/*.csproj'
     command: pack
     packDirectory: '$(Build.ArtifactStagingDirectory)/packages'
     configuration: '$(buildConfiguration)'
