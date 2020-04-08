@@ -149,7 +149,7 @@ namespace Bot.Builder.Community.Cards.Management
                     activities.AdaptOutgoingCardActions(turnContext.Activity.ChannelId);
                 }
 
-                if (options.AutoApplyIds && options.IdOptions != null)
+                if (options.AutoApplyIds)
                 {
                     activities.ApplyIdsToBatch(options.IdOptions);
                 }

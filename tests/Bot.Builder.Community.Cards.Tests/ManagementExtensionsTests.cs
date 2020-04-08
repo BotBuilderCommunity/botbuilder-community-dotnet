@@ -516,7 +516,48 @@ namespace Bot.Builder.Community.Cards.Tests
             Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Carousel));
             Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Card));
             Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Action));
-            Assert.ThrowsException<ArgumentNullException>(() => batch.ApplyIdsToBatch(null));
+
+            // Empty options shouldn't apply any ID's
+
+            batch = new List<IMessageActivity>
+            {
+                MessageFactory.Attachment(new HeroCard(buttons: new List<CardAction>
+                {
+                    new CardAction(ActionTypes.PostBack, value: new JObject()),
+                }).ToAttachment()),
+            };
+
+            batch.ApplyIdsToBatch(new PayloadIdOptions());
+
+            heroCard = (HeroCard)batch.Single().Attachments.Single().Content;
+            data = (JObject)heroCard.Buttons.Single().Value;
+
+            Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Batch));
+            Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Carousel));
+            Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Card));
+            Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Action));
+
+            // Null options should default to applying an action ID
+
+            batch = new List<IMessageActivity>
+            {
+                MessageFactory.Attachment(new HeroCard(buttons: new List<CardAction>
+                {
+                    new CardAction(ActionTypes.MessageBack, value: new JObject()),
+                }).ToAttachment()),
+            };
+
+            batch.ApplyIdsToBatch();
+
+            heroCard = (HeroCard)batch.Single().Attachments.Single().Content;
+            data = (JObject)heroCard.Buttons.Single().Value;
+
+            Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Batch));
+            Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Carousel));
+            Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Card));
+            Assert.IsNotNull(data.GetIdFromPayload(PayloadIdTypes.Action));
+
+            // Null batch should throw an exception
 
             batch = null;
 

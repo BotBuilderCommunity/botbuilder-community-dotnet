@@ -105,16 +105,11 @@ namespace Bot.Builder.Community.Cards.Management
             });
         }
 
-        public static void ApplyIdsToBatch(this IEnumerable<IMessageActivity> activities, PayloadIdOptions options)
+        public static void ApplyIdsToBatch(this IEnumerable<IMessageActivity> activities, PayloadIdOptions options = null)
         {
             if (activities is null)
             {
                 throw new ArgumentNullException(nameof(activities));
-            }
-
-            if (options is null)
-            {
-                throw new ArgumentNullException(nameof(options));
             }
 
             CardTree.ApplyIds(activities, options);

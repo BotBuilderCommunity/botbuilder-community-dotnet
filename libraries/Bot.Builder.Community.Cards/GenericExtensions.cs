@@ -138,7 +138,7 @@ namespace Bot.Builder.Community.Cards
         /// Converts the input to a <see cref="JObject"/>,
         /// performs a function on it if the conversion was successful,
         /// converts the <see cref="JObject"/> back to the original type,
-        /// and returns it asynchronously.
+        /// and returns it.
         /// </summary>
         /// <typeparam name="T">The type of the input and return value.</typeparam>
         /// <param name="input">The instance to convert to a <see cref="JObject">JObject</see> and back.</param>
