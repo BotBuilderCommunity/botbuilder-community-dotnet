@@ -137,7 +137,7 @@ namespace Bot.Builder.Community.Cards.Management
                     var changed = false;
 
                     // The content must be non-null or else the attachment couldn't have been a match
-                    matchResult.SavedAttachment.Content = matchResult.SavedAttachment.Content.ToJObjectAndBackAsync(
+                    matchResult.SavedAttachment.Content = matchResult.SavedAttachment.Content.ToJObjectAndBack(
                         card =>
                         {
                             // Iterate through all inputs in the card
@@ -150,9 +150,7 @@ namespace Bot.Builder.Community.Cards.Management
 
                                 changed = true;
                             }
-
-                            return Task.CompletedTask;
-                        }).Result;
+                        });
 
                     if (changed)
                     {

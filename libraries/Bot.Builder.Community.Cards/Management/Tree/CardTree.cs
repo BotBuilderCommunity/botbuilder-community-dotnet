@@ -61,7 +61,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 {
                     // Return the new object after it's been converted to a JObject and back
                     // so that the attachment node can assign it back to the Content property
-                    return card.ToJObjectAndBackAsync(
+                    return card.ToJObjectAndBack(
                         cardJObject =>
                         {
                             next(
@@ -72,9 +72,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                                             && type.ToString().Equals(CardConstants.ActionSubmit)
                                         ? element : null)
                                     .WhereNotNull(), TreeNodeType.SubmitActionList);
-
-                            return Task.CompletedTask;
-                        }, true).Result;
+                        }, true);
                 })
             },
             {
@@ -112,16 +110,14 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 {
                     // If the entry point was the Adaptive Card or higher
                     // then the action will already be a JObject
-                    return action.ToJObjectAndBackAsync(
+                    return action.ToJObjectAndBack(
                         actionJObject =>
                         {
                             if (actionJObject.GetValue(CardConstants.KeyData) is JObject data)
                             {
                                 next(data, TreeNodeType.Payload);
                             }
-
-                            return Task.CompletedTask;
-                        }, true).Result;
+                        }, true);
                 })
             },
             {
@@ -140,14 +136,12 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                         }
                         else
                         {
-                            action.Text = action.Text.ToJObjectAndBackAsync(
+                            action.Text = action.Text.ToJObjectAndBack(
                                 jObject =>
                                 {
                                     next(jObject, TreeNodeType.Payload);
-
-                                    return Task.CompletedTask;
                                 },
-                                true).Result;
+                                true);
                         }
                     }
 
@@ -279,15 +273,13 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                     {
                         // We need to create a "data" object in the submit action
                         // if there isn't one already
-                        value = value.ToJObjectAndBackAsync(submitAction =>
+                        value = value.ToJObjectAndBack(submitAction =>
                         {
                             if (submitAction.GetValue(CardConstants.KeyData).IsNullish())
                             {
                                 submitAction.SetValue(CardConstants.KeyData, new JObject());
                             }
-
-                            return Task.CompletedTask;
-                        }).Result;
+                        });
                     }
 
                     if (node.IdType is string idType)

@@ -126,14 +126,12 @@ namespace Bot.Builder.Community.Cards
         }
 
         internal static T FromJObject<T>(this T input, JObject jObject)
-            where T : class
         {
-            return (input is string
-                    ? JsonConvert.SerializeObject(jObject)
-                    : input is JObject
-                        ? jObject
-                        : jObject.ToObject(input.GetType()))
-                as T;
+            return (T)(input is string
+                ? JsonConvert.SerializeObject(jObject)
+                : input is JObject
+                    ? jObject
+                    : jObject.ToObject(input.GetType()));
         }
 
         /// <summary>
@@ -144,32 +142,31 @@ namespace Bot.Builder.Community.Cards
         /// </summary>
         /// <typeparam name="T">The type of the input and return value.</typeparam>
         /// <param name="input">The instance to convert to a <see cref="JObject">JObject</see> and back.</param>
-        /// <param name="funcAsync">The function to perform on the <see cref="JObject">JObject</see>. The argument
+        /// <param name="action">The function to perform on the <see cref="JObject">JObject</see>. The argument
         /// passed to this function is guaranteed to not be null, so no null checking is necessary.</param>
         /// <param name="shouldParseStrings">True if string input should be deserialized,
         /// false if a string should count as a wrong type.</param>
-        /// <param name="returnNullForWrongType">True if null should be returned if the input couldn't be
+        /// <param name="returnDefaultForWrongType">True if null should be returned if the input couldn't be
         /// converted to a <see cref="JObject">JObject</see>, false if the original input should be returned if
         /// it couldn't be converted to a <see cref="JObject">JObject</see>.</param>
         /// <returns>The potentially-modified input after being converted back to <typeparamref name="T"/> if the
         /// conversion to a <see cref="JObject">JObject</see> was successful, or a value determined by
-        /// <paramref name="returnNullForWrongType"/> if the conversion was unsuccessful.</returns>
-        internal static async Task<T> ToJObjectAndBackAsync<T>(
+        /// <paramref name="returnDefaultForWrongType"/> if the conversion was unsuccessful.</returns>
+        internal static T ToJObjectAndBack<T>(
             this T input,
-            Func<JObject, Task> funcAsync,
+            Action<JObject> action,
             bool shouldParseStrings = false,
-            bool returnNullForWrongType = false)
-            where T : class
+            bool returnDefaultForWrongType = false)
         {
             if (input.ToJObject(shouldParseStrings) is JObject jObject)
             {
-                await funcAsync(jObject).ConfigureAwait(false);
+                action(jObject);
 
                 return input.FromJObject(jObject);
             }
-            else if (returnNullForWrongType)
+            else if (returnDefaultForWrongType)
             {
-                return null;
+                return default;
             }
             else
             {
