@@ -7,7 +7,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
     {
         string IdType { get; set; }
 
-        Task<object> CallChildAsync(object value, Func<object, TreeNodeType, Task<object>> nextAsync, bool reassignChildren);
+        object CallChild(object value, Func<object, TreeNodeType, object> next, bool reassignChildren);
 
         Type GetTValue();
     }

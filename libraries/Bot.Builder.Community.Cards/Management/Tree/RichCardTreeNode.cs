@@ -10,10 +10,10 @@ namespace Bot.Builder.Community.Cards.Management.Tree
         where T : class
     {
         public RichCardTreeNode(Func<T, IEnumerable<CardAction>> buttonFactory)
-            : base(async (card, nextAsync) =>
+            : base((card, next) =>
             {
                 // The nextAsync return value is not needed here because the Buttons property reference will remain unchanged
-                await nextAsync(buttonFactory(card), TreeNodeType.CardActionList).ConfigureAwait(false);
+                next(buttonFactory(card), TreeNodeType.CardActionList);
 
                 return card;
             })
