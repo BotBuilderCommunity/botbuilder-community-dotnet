@@ -39,7 +39,11 @@ namespace Bot.Builder.Community.Cards.Management
         // NON-UPDATING METHODS
         // --------------------
 
-        public async Task EnableIdAsync(ITurnContext turnContext, PayloadItem payloadId, bool trackEnabledIds = true, CancellationToken cancellationToken = default)
+        public async Task EnableIdAsync(
+            ITurnContext turnContext,
+            PayloadItem payloadId,
+            TrackingStyle style = TrackingStyle.TrackEnabled,
+            CancellationToken cancellationToken = default)
         {
             BotAssert.ContextNotNull(turnContext);
 
@@ -48,10 +52,22 @@ namespace Bot.Builder.Community.Cards.Management
                 throw new ArgumentNullException(nameof(payloadId));
             }
 
-            await (trackEnabledIds ? TrackIdAsync(turnContext, payloadId, cancellationToken) : ForgetIdAsync(turnContext, payloadId, cancellationToken)).ConfigureAwait(false);
+            switch (style)
+            {
+                case TrackingStyle.TrackEnabled:
+                    await TrackIdAsync(turnContext, payloadId, cancellationToken).ConfigureAwait(false);
+                    break;
+                case TrackingStyle.TrackDisabled:
+                    await ForgetIdAsync(turnContext, payloadId, cancellationToken).ConfigureAwait(false);
+                    break;
+            }
         }
 
-        public async Task DisableIdAsync(ITurnContext turnContext, PayloadItem payloadId, bool trackEnabledIds = true, CancellationToken cancellationToken = default)
+        public async Task DisableIdAsync(
+            ITurnContext turnContext,
+            PayloadItem payloadId,
+            TrackingStyle style = TrackingStyle.TrackEnabled,
+            CancellationToken cancellationToken = default)
         {
             BotAssert.ContextNotNull(turnContext);
 
@@ -60,7 +76,15 @@ namespace Bot.Builder.Community.Cards.Management
                 throw new ArgumentNullException(nameof(payloadId));
             }
 
-            await (trackEnabledIds ? ForgetIdAsync(turnContext, payloadId, cancellationToken) : TrackIdAsync(turnContext, payloadId, cancellationToken)).ConfigureAwait(false);
+            switch (style)
+            {
+                case TrackingStyle.TrackEnabled:
+                    await ForgetIdAsync(turnContext, payloadId, cancellationToken).ConfigureAwait(false);
+                    break;
+                case TrackingStyle.TrackDisabled:
+                    await TrackIdAsync(turnContext, payloadId, cancellationToken).ConfigureAwait(false);
+                    break;
+            }
         }
 
         public async Task TrackIdAsync(ITurnContext turnContext, PayloadItem payloadId, CancellationToken cancellationToken = default)

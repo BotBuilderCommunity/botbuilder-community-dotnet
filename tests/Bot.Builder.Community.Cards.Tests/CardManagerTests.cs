@@ -46,11 +46,11 @@ namespace Bot.Builder.Community.Cards.Tests
 
             Assert.AreEqual(payloadId.Value, actionIds.Single());
 
-            await manager.EnableIdAsync(turnContext, new PayloadItem(PayloadIdTypes.Action, "different action ID"), false);
+            await manager.EnableIdAsync(turnContext, new PayloadItem(PayloadIdTypes.Action, "different action ID"), TrackingStyle.TrackDisabled);
 
             Assert.AreEqual(payloadId.Value, actionIds.Single());
 
-            await manager.EnableIdAsync(turnContext, payloadId, false);
+            await manager.EnableIdAsync(turnContext, payloadId, TrackingStyle.TrackDisabled);
 
             Assert.AreEqual(0, actionIds.Count);
 
@@ -67,7 +67,7 @@ namespace Bot.Builder.Community.Cards.Tests
 
             Assert.IsNull(await manager.StateAccessor.GetAsync(turnContext));
 
-            await manager.DisableIdAsync(turnContext, payloadId, false);
+            await manager.DisableIdAsync(turnContext, payloadId, TrackingStyle.TrackDisabled);
 
             var state = await manager.StateAccessor.GetAsync(turnContext);
             var actionIds = state.PayloadIdsByType[PayloadIdTypes.Card];
@@ -1254,6 +1254,6 @@ namespace Bot.Builder.Community.Cards.Tests
 
         private ITurnContext CreateTurnContext() => new TurnContext(
             new TestAdapter(),
-            new Activity(from: new ChannelAccount("CardManagerTests"), channelId: Channels.Test));
+            new Activity(ActivityTypes.Message, from: new ChannelAccount("CardManagerTests"), channelId: Channels.Test));
     }
 }

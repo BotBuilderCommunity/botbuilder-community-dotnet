@@ -36,18 +36,7 @@ namespace Bot.Builder.Community.Cards.Management
 
         public bool AutoSeparateAttachmentsOnSend { get; set; }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether enabled or disabled ID's are tracked.
-        /// This effectively toggles the ID-tracking "style."
-        /// Setting this to false will not prevent ID's from being tracked, it will only change
-        /// the way ID's are tracked. If you don't want to track ID's then you should modify
-        /// <see cref="AutoApplyIds"/>, <see cref="AutoDisableOnAction"/>, <see cref="AutoEnableOnSend"/>,
-        /// and/or <see cref="IdOptions"/>.
-        /// </summary>
-        /// <value>
-        /// If true, enabled ID's will be tracked. If false, disabled ID's will be tracked.
-        /// </value>
-        public bool TrackEnabledIds { get; set; }
+        public TrackingStyle IdTrackingStyle { get; set; }
 
         public PayloadIdOptions IdOptions { get; set; }
     }
