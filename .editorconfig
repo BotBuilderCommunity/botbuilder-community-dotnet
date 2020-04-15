@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CS1701: Assuming assembly reference matches identity
+dotnet_diagnostic.CS1701.severity = none

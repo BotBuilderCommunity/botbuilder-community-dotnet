@@ -1,0 +1,58 @@
+﻿{
+    "$schema": "../../../../schemas/app.schema",
+    "$kind": "Microsoft.Test.Script",
+    "enableTrace": true,
+    "dialog": {
+        "$kind": "Microsoft.AdaptiveDialog",
+        "id": "planningTest",
+        "triggers": [
+            {
+                "$kind": "Microsoft.OnUnknownIntent",
+                "actions": [
+                    {
+                        "$kind": "Sql.InsertRow",
+                        "providerName": "SQLite",
+                        "connection": "Data Source=InMemorySample;Mode=Memory;Cache=Shared",
+                        "table": "ActionTable",
+                        "values": {
+                            "TextValue": "titi",
+                            "ExpressionValue": "toto"
+                        } 
+                    },
+                    {
+                        "$kind": "Sql.GetRow",
+                        "providerName": "SQLite",
+                        "connection": "Data Source=InMemorySample;Mode=Memory;Cache=Shared",
+                        "table": "ActionTable",
+                        "keys" : {
+                            "TextValue": "titi"
+                        },
+                        "resultProperty": "turn.sqlResult"
+                    },
+                    {
+                        "$kind": "Microsoft.TraceActivity",
+                        "name": "test",
+                        "valueType": "result",
+                        "value": "=turn.sqlResult"
+                    }
+                ]
+            }
+        ],
+        "autoEndDialog": true,
+        "defaultResultProperty": "dialog.result"
+    },
+    "script": [
+        {
+            "$kind": "Microsoft.Test.UserSays",
+            "text": "hi"
+        },
+        {
+            "$kind": "Microsoft.Test.AssertReplyActivity",
+            "assertions": [
+                "type == 'trace'",
+                "valueType == 'result'",
+                "value.row.TextValue == 'titi'"
+            ]
+        },
+    ]
+}

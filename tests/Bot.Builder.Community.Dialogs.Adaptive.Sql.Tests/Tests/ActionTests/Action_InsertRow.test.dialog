@@ -1,0 +1,53 @@
+﻿{
+    "$schema": "../../../../schemas/app.schema",
+    "$kind": "Microsoft.Test.Script",
+    "enableTrace": true,
+    "dialog": {
+        "$kind": "Microsoft.AdaptiveDialog",
+        "id": "planningTest",
+        "triggers": [
+            {
+                "$kind": "Microsoft.OnUnknownIntent",
+                "actions": [
+                    {
+                        "$kind": "Sql.InsertRow",
+                        "providerName": "SQLite",
+                        "connection": "Data Source=InMemorySample;Mode=Memory;Cache=Shared",
+                        "table": "ActionTable",
+                        "values": {
+                            "TextValue": "titi",
+                            "ExpressionValue": "toto"
+                        } 
+                    },
+                     {
+                        "$kind": "Microsoft.SetProperty",
+                        "property": "turn.sqlResultInserted",
+                        "value": "=turn.lastresult"
+                    },
+                    {
+                        "$kind": "Microsoft.TraceActivity",
+                        "name": "test",
+                        "valueType": "result",
+                        "value": "=turn.sqlResultInserted"
+                    }  
+                ]
+            }
+        ],
+        "autoEndDialog": true,
+        "defaultResultProperty": "dialog.result"
+    },
+    "script": [
+        {
+            "$kind": "Microsoft.Test.UserSays",
+            "text": "hi"
+        },
+        {
+            "$kind": "Microsoft.Test.AssertReplyActivity",
+            "assertions": [
+                "type == 'trace'",
+                "valueType == 'result'",
+                "value.insertedRows == 1"
+            ]
+        },
+    ]
+}
