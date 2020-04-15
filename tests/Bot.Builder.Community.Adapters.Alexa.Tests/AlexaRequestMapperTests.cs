@@ -295,7 +295,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
             Assert.Equal(mapperOptions.ChannelId, activity.ChannelId);
 
             Assert.NotNull(activity.Conversation);
-            Assert.Equal("conversation", activity.Conversation.ConversationType);
+            Assert.Null(activity.Conversation.ConversationType);
             Assert.Equal(skillRequest.Session.SessionId, activity.Conversation.Id);
             Assert.Equal(false, activity.Conversation.IsGroup);
 
