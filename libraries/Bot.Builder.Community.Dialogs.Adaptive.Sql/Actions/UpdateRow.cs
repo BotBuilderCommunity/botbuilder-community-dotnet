@@ -14,7 +14,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Bot.Builder.Community.Dialogs.Adaptive.Sql.Actions
 {
-    public class UpdateRow : BaseSqlAction
+    public class UpdateRow : SqlAction
     {
         [JsonProperty("$kind")]
         public const string DeclarativeType = "Sql.UpdateRow";
@@ -60,12 +60,14 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Sql.Actions
                 throw new ArgumentException($"{nameof(options)} cannot be a cancellation token");
             }
 
-            if (this.Disabled != null && this.Disabled.GetValue(dc.State) == true)
+            var dcState = dc.GetState();
+
+            if (this.Disabled != null && this.Disabled.GetValue(dcState) == true)
             {
                 return await dc.EndDialogAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
             }
 
-            var (instanceTable, instanceTableError) = this.Table.TryGetValue(dc.State);
+            var (instanceTable, instanceTableError) = this.Table.TryGetValue(dcState);
             if (instanceTableError != null)
             {
                 throw new ArgumentException(instanceTableError);
@@ -73,11 +75,11 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Sql.Actions
 
             //binding values
             string valueList = string.Join(" AND ", this.Values.Select(p => $"{p.Key} =  @v_{p.Key}"));
-            var valueParamList = this.Values.Select(v => new KeyValuePair<string, object>($"@v_{v.Key}", v.Value.GetValue(dc.State)));
+            var valueParamList = this.Values.Select(v => new KeyValuePair<string, object>($"@v_{v.Key}", v.Value.GetValue(dcState)));
 
             //binding keys
             string keyList = string.Join(" AND ", this.Keys.Select(p => $"{p.Key} = @k_{p.Key}"));
-            var keyParamList = this.Keys.Select(k => new KeyValuePair<string, object>($"@k_{k.Key}", k.Value.GetValue(dc.State)));
+            var keyParamList = this.Keys.Select(k => new KeyValuePair<string, object>($"@k_{k.Key}", k.Value.GetValue(dcState)));
 
             //merge params
             var paramList = valueParamList.Union(keyParamList).ToList();
@@ -88,7 +90,7 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Sql.Actions
 
             try
             {
-                using DbConnection connection = GetConnection(dc.State);
+                using DbConnection connection = GetConnection(dcState);
                 sqlResult.UpdatedRows = connection.Execute(sql, new DynamicParameters(paramList));
             }
             catch (Exception ex)

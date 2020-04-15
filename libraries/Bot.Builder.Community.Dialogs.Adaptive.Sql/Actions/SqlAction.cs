@@ -27,17 +27,16 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Sql.Actions
     /// <summary>
     /// Action for performing a sql action.
     /// </summary>
-    public abstract class BaseSqlAction : Dialog
+    public abstract class SqlAction : Dialog
     {
-
-        public BaseSqlAction(string connection, [CallerFilePath] string callerPath = "", [CallerLineNumber] int callerLine = 0)
+        public SqlAction(string connection, [CallerFilePath] string callerPath = "", [CallerLineNumber] int callerLine = 0)
         {
             this.RegisterSourceLocation(callerPath, callerLine);
             this.Connection = connection;
         }
 
         [JsonConstructor]
-        public BaseSqlAction([CallerFilePath] string callerPath = "", [CallerLineNumber] int callerLine = 0)
+        public SqlAction([CallerFilePath] string callerPath = "", [CallerLineNumber] int callerLine = 0)
             : base()
         {
             this.RegisterSourceLocation(callerPath, callerLine);

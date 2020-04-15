@@ -70,7 +70,6 @@ namespace Microsoft.Bot.Builder.Dialogs.Adaptive.Testing.TestActions
 
             if (replyActivity != null)
             {
-
                 var (result, error) = new ObjectExpression<object>(Text).TryGetValue(replyActivity);
                 if (!string.IsNullOrEmpty(error))
                 {

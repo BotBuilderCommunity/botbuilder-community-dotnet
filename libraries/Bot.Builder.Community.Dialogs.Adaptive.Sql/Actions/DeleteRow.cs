@@ -14,7 +14,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Bot.Builder.Community.Dialogs.Adaptive.Sql.Actions
 {
-    public class DeleteRow : BaseSqlAction
+    public class DeleteRow : SqlAction
     {
         [JsonProperty("$kind")]
         public const string DeclarativeType = "Sql.DeleteRow";
@@ -52,12 +52,14 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Sql.Actions
                 throw new ArgumentException($"{nameof(options)} cannot be a cancellation token");
             }
 
-            if (this.Disabled != null && this.Disabled.GetValue(dc.State) == true)
+            var dcState = dc.GetState();
+
+            if (this.Disabled != null && this.Disabled.GetValue(dcState) == true)
             {
                 return await dc.EndDialogAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
             }
 
-            var (instanceTable, instanceTableError) = this.Table.TryGetValue(dc.State);
+            var (instanceTable, instanceTableError) = this.Table.TryGetValue(dcState);
             if (instanceTableError != null)
             {
                 throw new ArgumentException(instanceTableError);
@@ -65,7 +67,7 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Sql.Actions
 
             //binding keys
             string keyList = string.Join(" AND ", this.Keys.Select(p => $"{p.Key} = @k_{p.Key}"));
-            var keyParamList = this.Keys.Select(k => new KeyValuePair<string, object>($"@k_{k.Key}", k.Value.GetValue(dc.State)));
+            var keyParamList = this.Keys.Select(k => new KeyValuePair<string, object>($"@k_{k.Key}", k.Value.GetValue(dcState)));
 
             string sql = $"DELETE FROM [{instanceTable}] WHERE {keyList};";
 
@@ -73,7 +75,7 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Sql.Actions
 
             try
             {
-                using DbConnection connection = GetConnection(dc.State);
+                using DbConnection connection = GetConnection(dcState);
                 sqlResult.DeletedRows = connection.Execute(sql, new DynamicParameters(keyParamList));
             }
             catch (Exception ex)

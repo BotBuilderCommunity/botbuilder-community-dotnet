@@ -1,16 +1,16 @@
-using System;
+﻿using System;
 using System.Data.Common;
 using System.Data.SQLite;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Bot.Builder.Community.Dialogs.Adaptive.Sql.Actions;
+using Dapper;
 using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Dialogs.Adaptive.Testing.TestActions;
 using Microsoft.Bot.Builder.Dialogs.Declarative;
 using Microsoft.Bot.Builder.Dialogs.Declarative.Resources;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Dapper;
-using Microsoft.Bot.Builder.Dialogs.Adaptive.Testing.TestActions;
 
 namespace Bot.Builder.Community.Dialogs.Adaptive.Sql.Tests
 {
