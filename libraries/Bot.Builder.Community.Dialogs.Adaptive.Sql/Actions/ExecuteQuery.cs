@@ -14,35 +14,35 @@ using Newtonsoft.Json.Linq;
 
 namespace Bot.Builder.Community.Dialogs.Adaptive.Sql.Actions
 {
-    public class GetRows : SqlAction
+    public class ExecuteQuery : SqlAction
     {
         [JsonProperty("$kind")]
-        public const string DeclarativeType = "Sql.GetRows";
+        public const string DeclarativeType = "Sql.ExecuteQuery";
 
-        public GetRows(string connection, string table, [CallerFilePath] string callerPath = "", [CallerLineNumber] int callerLine = 0)
+        public ExecuteQuery(string connection, string query, [CallerFilePath] string callerPath = "", [CallerLineNumber] int callerLine = 0)
         {
-            this.Table = table ?? throw new ArgumentNullException(nameof(table));
+            this.Query = query ?? throw new ArgumentNullException(nameof(query));
         }
 
         [JsonConstructor]
-        public GetRows([CallerFilePath] string callerPath = "", [CallerLineNumber] int callerLine = 0)
+        public ExecuteQuery([CallerFilePath] string callerPath = "", [CallerLineNumber] int callerLine = 0)
             : base(callerPath, callerLine)
         {
         }
 
         /// <summary>
-        /// Gets or sets the table to insert the row.
+        /// Gets or sets the query.
         /// </summary>
         /// <value>Table name.</value>
-        [JsonProperty("table")]
-        public StringExpression Table { get; set; }
+        [JsonProperty("query")]
+        public StringExpression Query { get; set; }
 
         /// <summary>
         /// Gets or sets the property expression to store the query response. 
         /// </summary>
         /// <remarks>
         /// The result will have 3 properties from the sql query: 
-        /// [hasError|errorMessage|rows]
+        /// [hasError|errorMessage|rows].
         /// </remarks>
         /// <value>
         /// The property expression to store the query response in. 
@@ -64,28 +64,24 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Sql.Actions
                 return await dc.EndDialogAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
             }
 
-            var (instanceTable, instanceTableError) = this.Table.TryGetValue(dcState);
-            if (instanceTableError != null)
+            var (instanceQuery, instanceQueryError) = this.Query.TryGetValue(dcState);
+            if (instanceQueryError != null)
             {
-                throw new ArgumentException(instanceTableError);
+                throw new ArgumentException(instanceQueryError);
             }
-
-            string sql = $"SELECT * FROM [{instanceTable}];";
 
             Result sqlResult = new Result();
 
             try
             {
                 using DbConnection connection = GetConnection(dcState);
-                sqlResult.Rows = connection.Query(sql);
+                sqlResult.Data = connection.Query(instanceQuery);
             }
             catch (Exception ex)
             {
                 sqlResult.HasError = true;
                 sqlResult.ErrorMessage = ex.Message;
             }
-
-            Trace.TraceInformation(this.ResultProperty.ToString());
 
             if (this.ResultProperty != null)
             {
@@ -98,7 +94,7 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Sql.Actions
 
         protected override string OnComputeId()
         {
-            return $"{this.GetType().Name}[{Connection} {Table}]";
+            return $"{this.GetType().Name}[{Connection} {Query}]";
         }
 
         /// <summary>
@@ -128,8 +124,8 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Sql.Actions
             /// Gets or sets the number of rows inserted.
             /// </summary>
             /// <value>Number of row inserted.</value>
-            [JsonProperty("rows")]
-            public IEnumerable<object> Rows { get; set; }
+            [JsonProperty("data")]
+            public IEnumerable<object> Data { get; set; }
         }
     }
 }

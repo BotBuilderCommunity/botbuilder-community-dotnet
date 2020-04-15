@@ -58,6 +58,15 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Sql.Tests
         }
 
         [TestMethod]
+        public async Task Action_ExecuteQuery()
+        {
+            //ensure lib is loaded
+            var t = new InsertRow();
+
+            await TestUtils.RunTestScript(ResourceExplorer);
+        }
+
+        [TestMethod]
         public async Task Action_GetRow()
         {
             //ensure lib is loaded

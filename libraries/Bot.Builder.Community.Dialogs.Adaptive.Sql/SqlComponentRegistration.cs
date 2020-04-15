@@ -19,6 +19,7 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Sql
         public IEnumerable<DeclarativeType> GetDeclarativeTypes()
         {
             yield return new DeclarativeType<DeleteRow>(DeleteRow.DeclarativeType);
+            yield return new DeclarativeType<ExecuteQuery>(ExecuteQuery.DeclarativeType);
             yield return new DeclarativeType<GetRow>(GetRow.DeclarativeType);
             yield return new DeclarativeType<GetRows>(GetRows.DeclarativeType);
             yield return new DeclarativeType<InsertRow>(InsertRow.DeclarativeType);

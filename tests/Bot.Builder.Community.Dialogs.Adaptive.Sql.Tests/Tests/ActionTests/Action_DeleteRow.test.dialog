@@ -25,7 +25,7 @@
                         "connection": "Data Source=InMemorySample;Mode=Memory;Cache=Shared",
                         "table": "ActionTable",
                         "keys" : {
-                            "TextValue": "titi"
+                            "id": "1"
                         }
                     },
                     {

@@ -20,13 +20,10 @@
                         } 
                     },
                     {
-                        "$kind": "Sql.GetRow",
+                        "$kind": "Sql.ExecuteQuery",
                         "providerName": "SQLite",
                         "connection": "Data Source=InMemorySample;Mode=Memory;Cache=Shared",
-                        "table": "ActionTable",
-                        "keys" : {
-                            "id": "1"
-                        },
+                        "query": "SELECT * FROM [ActionTable]",
                         "resultProperty": "turn.sqlResult"
                     },
                     {
@@ -34,7 +31,7 @@
                         "name": "test",
                         "valueType": "result",
                         "value": "=turn.sqlResult"
-                    }
+                    }                   
                 ]
             }
         ],
@@ -51,8 +48,9 @@
             "assertions": [
                 "type == 'trace'",
                 "valueType == 'result'",
-                "value.row.TextValue == 'titi'"
+                "value.data[0].TextValue == 'titi'"
             ]
         },
+        
     ]
 }
