@@ -44,16 +44,16 @@ namespace Google_Adapter_Sample
                 // Determine if we should end a session after each turn
                 // If set to true, you can choose to keep the session open
                 // by using the ExpectingInput InputHint in your outgoing activity
-                options.googleOptions.ShouldEndSessionByDefault = false;
+                options.GoogleOptions.ShouldEndSessionByDefault = false;
 
                 // Specify your Actions invocation name here so that it can be stripped
                 // out of incoming requests.
-                options.googleOptions.ActionInvocationName = "My Google Action Name";
+                options.GoogleOptions.ActionInvocationName = "My Google Action Name";
 
                 ILogger logger = _loggerFactory.CreateLogger<GoogleAdapterSampleBot>();
 
                 // Catches any errors that occur during a conversation turn and logs them.
-                options.googleOptions.OnTurnError = async (context, exception) =>
+                options.GoogleOptions.OnTurnError = async (context, exception) =>
                 {
                     logger.LogError($"Exception caught : {exception}");
                     await context.SendActivityAsync("Sorry, it looks like something went wrong.");
@@ -94,7 +94,7 @@ namespace Google_Adapter_Sample
             app.UseDefaultFiles()
                 .UseStaticFiles()
                 .UseBotFramework()
-                .Usegoogle();
+                .UseGoogle();
         }
     }
 }

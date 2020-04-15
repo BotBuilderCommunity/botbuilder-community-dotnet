@@ -11,15 +11,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Bot.Builder.Community.Adapters.Alexa" Version="4.3.10" />
-    <PackageReference Include="Bot.Builder.Community.Adapters.Google" Version="4.3.26" />
+    <PackageReference Include="Bot.Builder.Community.Adapters.Alexa" Version="4.8.2" />
+    <PackageReference Include="Bot.Builder.Community.Adapters.Google" Version="4.8.2" />
     <PackageReference Include="HtmlAgilityPack" Version="1.9.2" />
     <PackageReference Include="Microsoft.AspNetCore.All" />
-    <PackageReference Include="Microsoft.Bot.Builder" Version="4.3.2" />
-    <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.3.2" />
-    <PackageReference Include="Microsoft.Bot.Configuration" Version="4.3.2" />
-    <PackageReference Include="Microsoft.Bot.Connector" Version="4.3.2" />
-    <PackageReference Include="Microsoft.Bot.Schema" Version="4.3.2" />
-    <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Bot.Builder" Version="4.8.0" />
+    <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.8.0" />
+    <PackageReference Include="Microsoft.Bot.Configuration" Version="4.8.0" />
+    <PackageReference Include="Microsoft.Bot.Connector" Version="4.8.0" />
+    <PackageReference Include="Microsoft.Bot.Schema" Version="4.8.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="2.1.1" />
   </ItemGroup>
 </Project>
