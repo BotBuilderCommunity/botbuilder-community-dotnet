@@ -89,7 +89,7 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Sql.Actions
         }
 
         /// <summary>
-        /// Result data of the the http operation.
+        /// Result data of the the sql operation.
         /// </summary>
         public class Result
         {
@@ -100,21 +100,21 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Sql.Actions
             /// <summary>
             /// Gets or sets a value indicating whether an error occured.
             /// </summary>
-            /// <value>Response content body.</value>
+            /// <value>Boolean.</value>
             [JsonProperty("hasError")]
             public bool HasError { get; set; }
 
             /// <summary>
             /// Gets or sets the error message.
             /// </summary>
-            /// <value>Response content body.</value>
+            /// <value>Error Message.</value>
             [JsonProperty("errorMessage")]
             public string ErrorMessage { get; set; }
 
             /// <summary>
-            /// Gets or sets the number of rows inserted.
+            /// Gets or sets the number of rows deleted.
             /// </summary>
-            /// <value>Number of row inserted.</value>
+            /// <value>Number of row deleted.</value>
             [JsonProperty("deletedRows")]
             public int DeletedRows { get; set; }
         }

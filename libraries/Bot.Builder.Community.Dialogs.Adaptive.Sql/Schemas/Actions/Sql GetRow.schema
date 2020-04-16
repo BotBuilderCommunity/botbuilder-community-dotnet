@@ -6,7 +6,8 @@
     "description": "Get row from database.",
     "required": [
         "table",
-        "row"
+        "providerName",
+        "keys"
     ],
     "properties": {
         "id": {
@@ -45,26 +46,29 @@
             "$role": "expression",
             "type": "string",
             "title": "Table Name",
-            "description": "Gets or sets the table to insert the row.",
+            "description": "Gets or sets the table to get the row.",
             "examples": [
                 "Customer"
             ]
         },
-        "row": {
+        "keys": {
             "type": "object",
-            "title": "Row",
-            "description": "Gets or sets the row to insert.",
-            "additionalProperties": {
-                "$role": "expression",
-                "type": "string"
-            },
+            "title": "Keys",
+            "description": "Gets or sets the row id.",
             "examples": [
                 {
-                    "id" : "1",
-                    "Name": "Doe",
-                    "FirtName": "John"
+                    "id" : "1"
                 }
             ]
-        }
+        },
+        "resultProperty": {
+            "$role": "expression",
+            "type": "string",
+            "title": "Result property",
+            "description": "Property to store the result of this action.",
+            "examples": [
+                "dialog.contosodata"
+            ]
+        },
     }
 }

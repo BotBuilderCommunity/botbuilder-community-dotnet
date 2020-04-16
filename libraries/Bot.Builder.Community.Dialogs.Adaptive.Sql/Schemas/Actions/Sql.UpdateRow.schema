@@ -2,11 +2,13 @@
     "$schema": "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/master/schemas/component.schema",
     "$role": "implements(Microsoft.IDialog)",
     "type": "object",
-    "title": "Sql Insert Row",
-    "description": "Insert row in database.",
+    "title": "Sql Update Row",
+    "description": "Update row in database.",
     "required": [
         "table",
-        "row"
+        "providerName",
+        "keys",
+        "values"
     ],
     "properties": {
         "id": {
@@ -45,14 +47,24 @@
             "$role": "expression",
             "type": "string",
             "title": "Table Name",
-            "description": "Gets or sets the table to insert the row.",
+            "description": "Gets or sets the table to update  the row.",
             "examples": [
                 "Customer"
             ]
         },
-        "row": {
+        "keys": {
             "type": "object",
-            "title": "Row",
+            "title": "Keys",
+            "description": "Gets or sets the row id.",
+            "examples": [
+                {
+                    "id" : "1"
+                }
+            ]
+        },
+        "values": {
+            "type": "object",
+            "title": "Value",
             "description": "Gets or sets the row to insert.",
             "additionalProperties": {
                 "$role": "expression",

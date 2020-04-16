@@ -109,14 +109,14 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Sql.Actions
             /// <summary>
             /// Gets or sets a value indicating whether an error occured.
             /// </summary>
-            /// <value>Response content body.</value>
+            /// <value>Boolean.</value>
             [JsonProperty("hasError")]
             public bool HasError { get; set; }
 
             /// <summary>
             /// Gets or sets the error message.
             /// </summary>
-            /// <value>Response content body.</value>
+            /// <value>Error Message.</value>
             [JsonProperty("errorMessage")]
             public string ErrorMessage { get; set; }
 

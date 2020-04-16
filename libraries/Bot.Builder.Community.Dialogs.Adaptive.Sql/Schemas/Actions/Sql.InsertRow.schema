@@ -6,7 +6,8 @@
     "description": "Insert row in database.",
     "required": [
         "table",
-        "row"
+        "providerName",
+        "values"
     ],
     "properties": {
         "id": {
@@ -50,9 +51,9 @@
                 "Customer"
             ]
         },
-        "row": {
+        "values": {
             "type": "object",
-            "title": "Row",
+            "title": "Value",
             "description": "Gets or sets the row to insert.",
             "additionalProperties": {
                 "$role": "expression",

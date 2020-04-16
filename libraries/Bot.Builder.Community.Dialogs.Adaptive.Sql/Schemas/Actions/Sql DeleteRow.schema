@@ -6,7 +6,8 @@
     "description": "Delete row in database.",
     "required": [
         "table",
-        "row"
+        "providerName",
+        "keys"
     ],
     "properties": {
         "id": {
@@ -45,7 +46,7 @@
             "$role": "expression",
             "type": "string",
             "title": "Table Name",
-            "description": "Gets or sets the table to insert the row.",
+            "description": "Gets or sets the table to delete the row.",
             "examples": [
                 "Customer"
             ]
