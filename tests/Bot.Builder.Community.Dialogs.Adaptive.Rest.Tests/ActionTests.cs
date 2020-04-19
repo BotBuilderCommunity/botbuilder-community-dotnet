@@ -1,15 +1,11 @@
-// <copyright file="ActionTests.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
+using System.IO;
+using System.Threading.Tasks;
+using Bot.Builder.Community.Dialogs.Adaptive.Rest.Tests.Fakes;
+using Microsoft.Bot.Builder.Dialogs.Declarative.Resources;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bot.Builder.Community.Dialogs.Adaptive.Rest.Tests
 {
-    using System.IO;
-    using System.Threading.Tasks;
-    using Bot.Builder.Community.Dialogs.Adaptive.Rest.Tests.Fakes;
-    using Microsoft.Bot.Builder.Dialogs.Declarative.Resources;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-
     [TestClass]
     public class ActionTests
     {
