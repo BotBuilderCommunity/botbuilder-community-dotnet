@@ -27,12 +27,8 @@ namespace Bot.Builder.Community.Samples.Alexa
             // Create the Bot Framework Adapter with error handling enabled.
             services.AddSingleton<IBotFrameworkHttpAdapter, AdapterWithErrorHandler>();
 
+            // Add Alexa Adapter with error handler
             services.AddSingleton<AlexaAdapter, AlexaAdapterWithErrorHandler>();
-
-            //services.AddSingleton<AlexaAdapter>(sp =>
-            //{
-            //    return new AlexaAdapter(new AlexaAdapterOptions() { ValidateIncomingAlexaRequests = false });
-            //});
 
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
             services.AddTransient<IBot, EchoBot>();

@@ -6,7 +6,7 @@ namespace Bot.Builder.Community.Samples.Alexa
     public class AlexaAdapterWithErrorHandler : AlexaAdapter
     {
         public AlexaAdapterWithErrorHandler(ILogger<AlexaAdapter> logger)
-            : base(new AlexaAdapterOptions(), logger)
+            : base(new AlexaAdapterOptions() { ShouldEndSessionByDefault = false, ValidateIncomingAlexaRequests = false, AlexaSkillId = "XXXX" }, logger)
         {
             //Adapter.Use(new AlexaIntentRequestToMessageActivityMiddleware());
 
