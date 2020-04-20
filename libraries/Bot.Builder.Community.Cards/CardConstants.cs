@@ -25,6 +25,6 @@
         // Entity types
         public const string TypeIntent = "Intent";
 
-        internal const string PrefixPayloadId = "botBuilderCommunityCards_";
+        internal const string PrefixDataId = "botBuilderCommunityCards_";
     }
 }

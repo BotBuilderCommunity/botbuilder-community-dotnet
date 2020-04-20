@@ -98,12 +98,12 @@ namespace Bot.Builder.Community.Cards.Management.Tree
         CardAction,
 
         /// <summary>
-        /// Corresponds to <see cref="object"/>, because a payload can be deserialized as a <see cref="JObject"/> or a custom type.
+        /// Corresponds to <see cref="object"/>, because action data can be deserialized as a <see cref="JObject"/> or a custom type.
         /// </summary>
-        Payload,
+        ActionData,
 
         /// <summary>
-        /// Corresponds to <see cref="PayloadItem"/>.
+        /// Corresponds to <see cref="DataItem"/>.
         /// </summary>
         Id,
     }

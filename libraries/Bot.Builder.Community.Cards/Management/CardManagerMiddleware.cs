@@ -32,7 +32,7 @@ namespace Bot.Builder.Community.Cards.Management
             AutoSaveActivitiesOnSend = true,
             AutoSeparateAttachmentsOnSend = true,
             IdTrackingStyle = TrackingStyle.None,
-            IdOptions = new PayloadIdOptions(PayloadIdTypes.Action),
+            IdOptions = new DataIdOptions(DataIdTypes.Action),
         };
 
         public static CardManagerMiddlewareOptions DefaultNonUpdatingOptions => new CardManagerMiddlewareOptions
@@ -47,7 +47,7 @@ namespace Bot.Builder.Community.Cards.Management
             AutoSaveActivitiesOnSend = false,
             AutoSeparateAttachmentsOnSend = false,
             IdTrackingStyle = TrackingStyle.TrackEnabled,
-            IdOptions = new PayloadIdOptions(PayloadIdTypes.Action),
+            IdOptions = new DataIdOptions(DataIdTypes.Action),
         };
 
         public CardManagerMiddlewareOptions UpdatingOptions { get; } = DefaultUpdatingOptions;
@@ -66,13 +66,13 @@ namespace Bot.Builder.Community.Cards.Management
             }
 
             var options = GetOptionsForChannel(turnContext.Activity.ChannelId);
-            var idTypes = options.IdOptions is null ? new List<string> { PayloadIdTypes.Action } : options.IdOptions.GetIdTypes();
+            var idTypes = options.IdOptions is null ? new List<string> { DataIdTypes.Action } : options.IdOptions.GetIdTypes();
             var isTracking = options.IdTrackingStyle != TrackingStyle.None;
             var shouldDelete = options.AutoDeleteOnAction && idTypes.Any();
             var shouldProceed = true;
 
             // Is this activity from a button?
-            if ((isTracking || shouldDelete) && turnContext.GetIncomingPayload() is JObject payload)
+            if ((isTracking || shouldDelete) && turnContext.GetIncomingActionData() is JObject data)
             {
                 if (isTracking)
                 {
@@ -83,9 +83,9 @@ namespace Bot.Builder.Community.Cards.Management
 
                     foreach (var type in idTypes)
                     {
-                        if (payload.GetIdFromPayload(type) is string id)
+                        if (data.GetIdFromActionData(type) is string id)
                         {
-                            state.PayloadIdsByType.TryGetValue(type, out var trackedSet);
+                            state.DataIdsByType.TryGetValue(type, out var trackedSet);
 
                             var setContainsId = trackedSet?.Contains(id) == true;
 
@@ -101,7 +101,7 @@ namespace Bot.Builder.Community.Cards.Management
                                 // This might disable an already-disabled ID but that's okay
                                 await Manager.DisableIdAsync(
                                     turnContext,
-                                    new PayloadItem(type, id),
+                                    new DataItem(type, id),
                                     options.IdTrackingStyle,
                                     cancellationToken).ConfigureAwait(false);
                             }
@@ -113,7 +113,7 @@ namespace Bot.Builder.Community.Cards.Management
                 {
                     // If there are multiple ID types in use,
                     // just delete the one that represents the largest scope
-                    var type = PayloadIdTypes.Collection.ElementAtOrDefault(idTypes.Max(idType => PayloadIdTypes.GetIndex(idType)));
+                    var type = DataIdTypes.Collection.ElementAtOrDefault(idTypes.Max(idType => DataIdTypes.GetIndex(idType)));
 
                     await Manager.DeleteAsync(turnContext, type, cancellationToken).ConfigureAwait(false);
                 }
@@ -169,9 +169,9 @@ namespace Bot.Builder.Community.Cards.Management
 
                 if (options.AutoEnableOnSend && options.IdTrackingStyle == TrackingStyle.TrackEnabled)
                 {
-                    foreach (var payloadId in activities.GetIdsFromBatch())
+                    foreach (var dataId in activities.GetIdsFromBatch())
                     {
-                        await Manager.EnableIdAsync(turnContext, payloadId, options.IdTrackingStyle).ConfigureAwait(false);
+                        await Manager.EnableIdAsync(turnContext, dataId, options.IdTrackingStyle).ConfigureAwait(false);
                     }
                 }
 

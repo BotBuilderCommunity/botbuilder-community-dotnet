@@ -157,8 +157,8 @@ namespace Bot.Builder.Community.Cards.Tests
 
             var jObject = new JObject();
 
-            var json = $"{{'{PayloadIdTypes.GetKey(PayloadIdTypes.Card)}': '{CARDID}',"
-                         + $" '{PayloadIdTypes.GetKey(PayloadIdTypes.Carousel)}': '{CAROUSELID}'}}";
+            var json = $"{{'{DataIdTypes.GetKey(DataIdTypes.Card)}': '{CARDID}',"
+                         + $" '{DataIdTypes.GetKey(DataIdTypes.Carousel)}': '{CAROUSELID}'}}";
 
             var animationCard = new AnimationCard();
 
@@ -225,7 +225,7 @@ namespace Bot.Builder.Community.Cards.Tests
                     {
                         Data = new Dictionary<string, object>
                         {
-                            { PayloadIdTypes.GetKey(PayloadIdTypes.Action), ACTIONID },
+                            { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID },
                         },
                     },
                     new AdaptiveShowCardAction
@@ -279,18 +279,18 @@ namespace Bot.Builder.Community.Cards.Tests
                 }),
             };
 
-            var options = new PayloadIdOptions(PayloadIdTypes.Collection);
+            var options = new DataIdOptions(DataIdTypes.Collection);
 
-            options.Set(PayloadIdTypes.Batch, BATCHID);
+            options.Set(DataIdTypes.Batch, BATCHID);
             batch.ApplyIdsToBatch(options);
 
             var newAdaptiveCard = (AdaptiveCard)batch[0].Attachments[0].Content;
             var selectAction = (AdaptiveSubmitAction)newAdaptiveCard.SelectAction;
             var data = (JObject)selectAction.Data;
-            var batchId = data.GetIdFromPayload(PayloadIdTypes.Batch);
-            var carouselId = data.GetIdFromPayload(PayloadIdTypes.Carousel);
-            var cardId = data.GetIdFromPayload(PayloadIdTypes.Card);
-            var actionId = data.GetIdFromPayload(PayloadIdTypes.Action);
+            var batchId = data.GetIdFromActionData(DataIdTypes.Batch);
+            var carouselId = data.GetIdFromActionData(DataIdTypes.Carousel);
+            var cardId = data.GetIdFromActionData(DataIdTypes.Card);
+            var actionId = data.GetIdFromActionData(DataIdTypes.Action);
             var carouselIds = new HashSet<string>();
             var cardIds = new HashSet<string>();
             var actionIds = new HashSet<string>();
@@ -306,35 +306,35 @@ namespace Bot.Builder.Community.Cards.Tests
             Assert.IsNotNull(actionId);
 
             data = (JObject)((AdaptiveSubmitAction)((AdaptiveActionSet)newAdaptiveCard.Body.Single()).Actions.Single()).Data;
-            actionId = data.GetIdFromPayload(PayloadIdTypes.Action);
+            actionId = data.GetIdFromActionData(DataIdTypes.Action);
 
             // HashSet.Add returns false if the item was already in the set,
             // so these IsTrue(HashSet.Add) calls are to test for uniqueness of an ID
             Assert.IsTrue(
                 actionIds.Add(actionId),
                 "The action ID in the action set's submit action is the same as the action ID in the Adaptive Card's select action");
-            Assert.AreEqual(batchId, data.GetIdFromPayload(PayloadIdTypes.Batch));
-            Assert.AreEqual(carouselId, data.GetIdFromPayload(PayloadIdTypes.Carousel));
-            Assert.AreEqual(cardId, data.GetIdFromPayload(PayloadIdTypes.Card));
+            Assert.AreEqual(batchId, data.GetIdFromActionData(DataIdTypes.Batch));
+            Assert.AreEqual(carouselId, data.GetIdFromActionData(DataIdTypes.Carousel));
+            Assert.AreEqual(cardId, data.GetIdFromActionData(DataIdTypes.Card));
             Assert.IsNotNull(actionId);
             Assert.AreEqual(EXTRADATA, (string)data["Foo"], "The preexisting 'extra' data was modified");
 
             data = (JObject)((AdaptiveSubmitAction)newAdaptiveCard.Actions[0]).Data;
-            actionId = data.GetIdFromPayload(PayloadIdTypes.Action);
+            actionId = data.GetIdFromActionData(DataIdTypes.Action);
 
             Assert.IsTrue(actionIds.Add(actionId));
-            Assert.AreEqual(batchId, data.GetIdFromPayload(PayloadIdTypes.Batch));
-            Assert.AreEqual(carouselId, data.GetIdFromPayload(PayloadIdTypes.Carousel));
-            Assert.AreEqual(cardId, data.GetIdFromPayload(PayloadIdTypes.Card));
+            Assert.AreEqual(batchId, data.GetIdFromActionData(DataIdTypes.Batch));
+            Assert.AreEqual(carouselId, data.GetIdFromActionData(DataIdTypes.Carousel));
+            Assert.AreEqual(cardId, data.GetIdFromActionData(DataIdTypes.Card));
             Assert.AreEqual(ACTIONID, actionId, "The preexisting action ID was overwritten");
 
             data = (JObject)((AdaptiveSubmitAction)((AdaptiveShowCardAction)newAdaptiveCard.Actions[1]).Card.Actions[0]).Data;
-            actionId = data.GetIdFromPayload(PayloadIdTypes.Action);
+            actionId = data.GetIdFromActionData(DataIdTypes.Action);
 
             Assert.IsTrue(actionIds.Add(actionId));
-            Assert.AreEqual(batchId, data.GetIdFromPayload(PayloadIdTypes.Batch));
-            Assert.AreEqual(carouselId, data.GetIdFromPayload(PayloadIdTypes.Carousel));
-            Assert.AreEqual(cardId, data.GetIdFromPayload(PayloadIdTypes.Card));
+            Assert.AreEqual(batchId, data.GetIdFromActionData(DataIdTypes.Batch));
+            Assert.AreEqual(carouselId, data.GetIdFromActionData(DataIdTypes.Carousel));
+            Assert.AreEqual(cardId, data.GetIdFromActionData(DataIdTypes.Card));
             Assert.IsNotNull(actionId);
 
             Assert.AreSame(animationCard, batch[0].Attachments[1].Content);
@@ -349,31 +349,31 @@ namespace Bot.Builder.Community.Cards.Tests
             Assert.IsNull(heroCard.Buttons.Single().Text);
 
             data = (JObject)oAuthCard.Buttons.Single().Value;
-            carouselId = data.GetIdFromPayload(PayloadIdTypes.Carousel);
-            cardId = data.GetIdFromPayload(PayloadIdTypes.Card);
-            actionId = data.GetIdFromPayload(PayloadIdTypes.Action);
+            carouselId = data.GetIdFromActionData(DataIdTypes.Carousel);
+            cardId = data.GetIdFromActionData(DataIdTypes.Card);
+            actionId = data.GetIdFromActionData(DataIdTypes.Action);
 
             Assert.AreSame(oAuthCard, batch[1].Attachments[2].Content);
             Assert.IsNull(oAuthCard.Buttons.Single().Text);
             Assert.IsTrue(carouselIds.Add(carouselId));
             Assert.IsTrue(cardIds.Add(cardId));
             Assert.IsTrue(actionIds.Add(actionId));
-            Assert.AreEqual(batchId, data.GetIdFromPayload(PayloadIdTypes.Batch));
+            Assert.AreEqual(batchId, data.GetIdFromActionData(DataIdTypes.Batch));
             Assert.IsNotNull(carouselId);
             Assert.IsNotNull(cardId);
             Assert.IsNotNull(actionId);
 
             data = receiptCard.Buttons.Single().Text.ToJObject(true);
-            carouselId = data.GetIdFromPayload(PayloadIdTypes.Carousel);
-            cardId = data.GetIdFromPayload(PayloadIdTypes.Card);
-            actionId = data.GetIdFromPayload(PayloadIdTypes.Action);
+            carouselId = data.GetIdFromActionData(DataIdTypes.Carousel);
+            cardId = data.GetIdFromActionData(DataIdTypes.Card);
+            actionId = data.GetIdFromActionData(DataIdTypes.Action);
 
             Assert.AreSame(receiptCard, batch[2].Attachments[0].Content);
             Assert.IsNull(receiptCard.Buttons.Single().Value);
             Assert.IsTrue(carouselIds.Add(carouselId));
             Assert.IsTrue(cardIds.Add(cardId));
             Assert.IsTrue(actionIds.Add(actionId));
-            Assert.AreEqual(batchId, data.GetIdFromPayload(PayloadIdTypes.Batch));
+            Assert.AreEqual(batchId, data.GetIdFromActionData(DataIdTypes.Batch));
             Assert.IsNotNull(carouselId);
             Assert.IsNotNull(cardId);
             Assert.IsNotNull(actionId);
@@ -381,14 +381,14 @@ namespace Bot.Builder.Community.Cards.Tests
             var valueString = (string)signinCard.Buttons.Single().Value;
 
             data = valueString.ToJObject(true);
-            actionId = data.GetIdFromPayload(PayloadIdTypes.Action);
+            actionId = data.GetIdFromActionData(DataIdTypes.Action);
 
             Assert.AreSame(signinCard, batch[2].Attachments[1].Content);
             Assert.IsNull(signinCard.Buttons.Single().Text);
             Assert.IsTrue(actionIds.Add(actionId));
-            Assert.AreEqual(batchId, data.GetIdFromPayload(PayloadIdTypes.Batch));
-            Assert.AreEqual(CAROUSELID, data.GetIdFromPayload(PayloadIdTypes.Carousel));
-            Assert.AreEqual(CARDID, data.GetIdFromPayload(PayloadIdTypes.Card));
+            Assert.AreEqual(batchId, data.GetIdFromActionData(DataIdTypes.Batch));
+            Assert.AreEqual(CAROUSELID, data.GetIdFromActionData(DataIdTypes.Carousel));
+            Assert.AreEqual(CARDID, data.GetIdFromActionData(DataIdTypes.Card));
             Assert.IsNotNull(actionId);
 
             valueString = (string)thumbnailCard.Buttons.Single().Value;
@@ -412,36 +412,36 @@ namespace Bot.Builder.Community.Cards.Tests
 
             valueString = (string)videoCard.Buttons[1].Value;
             data = videoCard.Buttons[1].Text.ToJObject(true);
-            cardId = data.GetIdFromPayload(PayloadIdTypes.Card);
-            actionId = data.GetIdFromPayload(PayloadIdTypes.Action);
+            cardId = data.GetIdFromActionData(DataIdTypes.Card);
+            actionId = data.GetIdFromActionData(DataIdTypes.Action);
 
             Assert.IsNotNull(valueString);
             Assert.IsNull(valueString.ToJObject(true));
             Assert.IsTrue(cardIds.Add(cardId));
             Assert.IsTrue(actionIds.Add(actionId));
-            Assert.AreEqual(batchId, data.GetIdFromPayload(PayloadIdTypes.Batch));
-            Assert.AreEqual(carouselId, data.GetIdFromPayload(PayloadIdTypes.Carousel));
+            Assert.AreEqual(batchId, data.GetIdFromActionData(DataIdTypes.Batch));
+            Assert.AreEqual(carouselId, data.GetIdFromActionData(DataIdTypes.Carousel));
             Assert.IsNotNull(cardId);
             Assert.IsNotNull(actionId);
 
             data = (JObject)videoCard.Buttons[2].Value;
-            actionId = data.GetIdFromPayload(PayloadIdTypes.Action);
+            actionId = data.GetIdFromActionData(DataIdTypes.Action);
 
             Assert.AreSame(jObject, data);
             Assert.AreEqual("{}", videoCard.Buttons[2].Text);
             Assert.IsTrue(actionIds.Add(actionId));
-            Assert.AreEqual(batchId, data.GetIdFromPayload(PayloadIdTypes.Batch));
-            Assert.AreEqual(carouselId, data.GetIdFromPayload(PayloadIdTypes.Carousel));
-            Assert.AreEqual(cardId, data.GetIdFromPayload(PayloadIdTypes.Card));
+            Assert.AreEqual(batchId, data.GetIdFromActionData(DataIdTypes.Batch));
+            Assert.AreEqual(carouselId, data.GetIdFromActionData(DataIdTypes.Carousel));
+            Assert.AreEqual(cardId, data.GetIdFromActionData(DataIdTypes.Card));
             Assert.IsNotNull(actionId);
 
             data = (JObject)videoCard.Buttons[3].Value;
 
             Assert.AreEqual("{}", videoCard.Buttons[3].Text);
-            Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Batch));
-            Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Carousel));
-            Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Card));
-            Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Action));
+            Assert.IsNull(data.GetIdFromActionData(DataIdTypes.Batch));
+            Assert.IsNull(data.GetIdFromActionData(DataIdTypes.Carousel));
+            Assert.IsNull(data.GetIdFromActionData(DataIdTypes.Card));
+            Assert.IsNull(data.GetIdFromActionData(DataIdTypes.Action));
 
             jObject = new AdaptiveCard("1.0")
             {
@@ -451,8 +451,8 @@ namespace Bot.Builder.Community.Cards.Tests
                     {
                         Data = new Dictionary<string, object>
                         {
-                            { PayloadIdTypes.GetKey(PayloadIdTypes.Batch), BATCHID },
-                            { PayloadIdTypes.GetKey(PayloadIdTypes.Action), ACTIONID },
+                            { DataIdTypes.GetKey(DataIdTypes.Batch), BATCHID },
+                            { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID },
                         }
                     }
                 }
@@ -486,36 +486,36 @@ namespace Bot.Builder.Community.Cards.Tests
                 }),
             };
 
-            options = new PayloadIdOptions(PayloadIdTypes.Batch, true);
+            options = new DataIdOptions(DataIdTypes.Batch, true);
 
-            options.Set(PayloadIdTypes.Carousel, CAROUSELID);
+            options.Set(DataIdTypes.Carousel, CAROUSELID);
             batch.ApplyIdsToBatch(options);
 
             heroCard = (HeroCard)batch[0].Attachments[0].Content;
             data = (JObject)heroCard.Buttons.Single().Value;
 
             Assert.AreEqual("{}", heroCard.Buttons.Single().Text);
-            Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Batch));
-            Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Carousel));
-            Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Card));
-            Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Action));
+            Assert.IsNull(data.GetIdFromActionData(DataIdTypes.Batch));
+            Assert.IsNull(data.GetIdFromActionData(DataIdTypes.Carousel));
+            Assert.IsNull(data.GetIdFromActionData(DataIdTypes.Card));
+            Assert.IsNull(data.GetIdFromActionData(DataIdTypes.Action));
 
             data = (JObject)jObject["actions"][0]["data"];
 
             Assert.AreSame(jObject, batch[0].Attachments[1].Content, "New Adaptive Card JObject reference was assigned");
-            Assert.AreNotEqual(BATCHID, data.GetIdFromPayload(PayloadIdTypes.Batch), "Batch ID was not generated");
-            Assert.AreEqual(CAROUSELID, data.GetIdFromPayload(PayloadIdTypes.Carousel), "Carousel ID was not applied");
-            Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Card), "Card ID was applied");
-            Assert.AreEqual(ACTIONID, data.GetIdFromPayload(PayloadIdTypes.Action), "Action ID was generated/applied");
+            Assert.AreNotEqual(BATCHID, data.GetIdFromActionData(DataIdTypes.Batch), "Batch ID was not generated");
+            Assert.AreEqual(CAROUSELID, data.GetIdFromActionData(DataIdTypes.Carousel), "Carousel ID was not applied");
+            Assert.IsNull(data.GetIdFromActionData(DataIdTypes.Card), "Card ID was applied");
+            Assert.AreEqual(ACTIONID, data.GetIdFromActionData(DataIdTypes.Action), "Action ID was generated/applied");
 
             heroCard = (HeroCard)batch[1].Attachments.Single().Content;
             data = (JObject)heroCard.Buttons.Single().Value;
 
             Assert.AreEqual("{}", heroCard.Buttons.Single().Text);
-            Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Batch));
-            Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Carousel));
-            Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Card));
-            Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Action));
+            Assert.IsNull(data.GetIdFromActionData(DataIdTypes.Batch));
+            Assert.IsNull(data.GetIdFromActionData(DataIdTypes.Carousel));
+            Assert.IsNull(data.GetIdFromActionData(DataIdTypes.Card));
+            Assert.IsNull(data.GetIdFromActionData(DataIdTypes.Action));
 
             // Empty options shouldn't apply any ID's
 
@@ -527,15 +527,15 @@ namespace Bot.Builder.Community.Cards.Tests
                 }).ToAttachment()),
             };
 
-            batch.ApplyIdsToBatch(new PayloadIdOptions());
+            batch.ApplyIdsToBatch(new DataIdOptions());
 
             heroCard = (HeroCard)batch.Single().Attachments.Single().Content;
             data = (JObject)heroCard.Buttons.Single().Value;
 
-            Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Batch));
-            Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Carousel));
-            Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Card));
-            Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Action));
+            Assert.IsNull(data.GetIdFromActionData(DataIdTypes.Batch));
+            Assert.IsNull(data.GetIdFromActionData(DataIdTypes.Carousel));
+            Assert.IsNull(data.GetIdFromActionData(DataIdTypes.Card));
+            Assert.IsNull(data.GetIdFromActionData(DataIdTypes.Action));
 
             // Null options should default to applying an action ID
 
@@ -552,10 +552,10 @@ namespace Bot.Builder.Community.Cards.Tests
             heroCard = (HeroCard)batch.Single().Attachments.Single().Content;
             data = (JObject)heroCard.Buttons.Single().Value;
 
-            Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Batch));
-            Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Carousel));
-            Assert.IsNull(data.GetIdFromPayload(PayloadIdTypes.Card));
-            Assert.IsNotNull(data.GetIdFromPayload(PayloadIdTypes.Action));
+            Assert.IsNull(data.GetIdFromActionData(DataIdTypes.Batch));
+            Assert.IsNull(data.GetIdFromActionData(DataIdTypes.Carousel));
+            Assert.IsNull(data.GetIdFromActionData(DataIdTypes.Card));
+            Assert.IsNotNull(data.GetIdFromActionData(DataIdTypes.Action));
 
             // Null batch should throw an exception
 
@@ -584,7 +584,7 @@ namespace Bot.Builder.Community.Cards.Tests
                     {
                         Data = new Dictionary<string, string>
                         {
-                            { PayloadIdTypes.GetKey(PayloadIdTypes.Action), ACTIONID },
+                            { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID },
                         },
                     },
                 },
@@ -603,7 +603,7 @@ namespace Bot.Builder.Community.Cards.Tests
                     {
                         new CardAction(ActionTypes.PostBack, value: new Dictionary<string, string>
                         {
-                            { PayloadIdTypes.GetKey(PayloadIdTypes.Card), CARDID },
+                            { DataIdTypes.GetKey(DataIdTypes.Card), CARDID },
                         }),
                     }).ToAttachment(),
                     new Attachment
@@ -613,7 +613,7 @@ namespace Bot.Builder.Community.Cards.Tests
                         {
                             new CardAction(ActionTypes.PostBack, value: new Dictionary<string, string>
                             {
-                                { PayloadIdTypes.GetKey(PayloadIdTypes.Card), CARDID2 },
+                                { DataIdTypes.GetKey(DataIdTypes.Card), CARDID2 },
                             }),
                         }),
                     },
@@ -624,7 +624,7 @@ namespace Bot.Builder.Community.Cards.Tests
                         {
                             new CardAction(ActionTypes.PostBack, value: new Dictionary<string, string>
                             {
-                                { PayloadIdTypes.GetKey(PayloadIdTypes.Card), CAROUSELID },
+                                { DataIdTypes.GetKey(DataIdTypes.Card), CAROUSELID },
                             }),
                         }),
                     },
@@ -633,17 +633,17 @@ namespace Bot.Builder.Community.Cards.Tests
                 {
                     new CardAction(ActionTypes.ImBack, value: new Dictionary<string, string>
                     {
-                        { PayloadIdTypes.GetKey(PayloadIdTypes.Carousel), CAROUSELID2 },
+                        { DataIdTypes.GetKey(DataIdTypes.Carousel), CAROUSELID2 },
                     }),
                     new CardAction(ActionTypes.PostBack, value: new Dictionary<string, string>
                     {
-                        { PayloadIdTypes.GetKey(PayloadIdTypes.Action), ACTIONID2 },
-                        { PayloadIdTypes.GetKey(PayloadIdTypes.Batch), BATCHID },
+                        { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID2 },
+                        { DataIdTypes.GetKey(DataIdTypes.Batch), BATCHID },
                     }),
                     new CardAction(ActionTypes.MessageBack, value: new Dictionary<string, string>
                     {
-                        { PayloadIdTypes.GetKey(PayloadIdTypes.Action), ACTIONID },
-                        { PayloadIdTypes.GetKey(PayloadIdTypes.Batch), BATCHID2 },
+                        { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID },
+                        { DataIdTypes.GetKey(DataIdTypes.Batch), BATCHID2 },
                     }),
                 }).ToAttachment()),
             };
@@ -652,14 +652,14 @@ namespace Bot.Builder.Community.Cards.Tests
 
             Assert.AreSame(adaptiveCard, batch[0].Attachments[0].Content, "Adaptive Card reference was broken");
             Assert.AreEqual(5, ids.Count);
-            Assert.IsTrue(ids.Contains(new PayloadItem(PayloadIdTypes.Action, ACTIONID)));
-            Assert.IsTrue(ids.Contains(new PayloadItem(PayloadIdTypes.Action, ACTIONID2)));
-            Assert.IsTrue(ids.Contains(new PayloadItem(PayloadIdTypes.Card, CARDID)));
-            Assert.IsFalse(ids.Contains(new PayloadItem(PayloadIdTypes.Card, CARDID2)));
-            Assert.IsFalse(ids.Contains(new PayloadItem(PayloadIdTypes.Carousel, CAROUSELID)));
-            Assert.IsFalse(ids.Contains(new PayloadItem(PayloadIdTypes.Carousel, CAROUSELID2)));
-            Assert.IsTrue(ids.Contains(new PayloadItem(PayloadIdTypes.Batch, BATCHID)));
-            Assert.IsTrue(ids.Contains(new PayloadItem(PayloadIdTypes.Batch, BATCHID2)));
+            Assert.IsTrue(ids.Contains(new DataItem(DataIdTypes.Action, ACTIONID)));
+            Assert.IsTrue(ids.Contains(new DataItem(DataIdTypes.Action, ACTIONID2)));
+            Assert.IsTrue(ids.Contains(new DataItem(DataIdTypes.Card, CARDID)));
+            Assert.IsFalse(ids.Contains(new DataItem(DataIdTypes.Card, CARDID2)));
+            Assert.IsFalse(ids.Contains(new DataItem(DataIdTypes.Carousel, CAROUSELID)));
+            Assert.IsFalse(ids.Contains(new DataItem(DataIdTypes.Carousel, CAROUSELID2)));
+            Assert.IsTrue(ids.Contains(new DataItem(DataIdTypes.Batch, BATCHID)));
+            Assert.IsTrue(ids.Contains(new DataItem(DataIdTypes.Batch, BATCHID2)));
 
             batch = null;
 
@@ -924,7 +924,7 @@ namespace Bot.Builder.Community.Cards.Tests
         }
 
         [TestMethod]
-        public void TestGetIncomingPayload()
+        public void TestGetIncomingActionData()
         {
             var adapter = new TestAdapter();
             var json = "{'foo':'bar'}";
@@ -954,59 +954,59 @@ namespace Bot.Builder.Community.Cards.Tests
 
             static object GenerateChannelData(string key, object value = null) => new Dictionary<string, object> { { key, value } };
 
-            // CORTANA / TURN STATE CACHE (note that the payload is no longer cached)
+            // CORTANA / TURN STATE CACHE (note that the data is no longer cached)
 
             var turnContext = GenerateTurnContext(Channels.Cortana, null, json, null, "Non-intent");
-            var incomingPayload = turnContext.GetIncomingPayload();
+            var incomingData = turnContext.GetIncomingActionData();
 
-            Assert.IsTrue(JToken.DeepEquals(parsedJson, (JObject)incomingPayload));
+            Assert.IsTrue(JToken.DeepEquals(parsedJson, (JObject)incomingData));
 
-            var newIncomingPayload = turnContext.GetIncomingPayload();
+            var newIncomingData = turnContext.GetIncomingActionData();
 
-            Assert.IsTrue(JToken.DeepEquals((JObject)incomingPayload, (JObject)newIncomingPayload));
-            Assert.AreNotSame(incomingPayload, newIncomingPayload, "Cached payload was used");
+            Assert.IsTrue(JToken.DeepEquals((JObject)incomingData, (JObject)newIncomingData));
+            Assert.AreNotSame(incomingData, newIncomingData, "Cached data was used");
 
             turnContext = GenerateTurnContext(Channels.Cortana, json, json);
 
-            Assert.IsTrue(JToken.DeepEquals(parsedJson, (JObject)turnContext.GetIncomingPayload()));
+            Assert.IsTrue(JToken.DeepEquals(parsedJson, (JObject)turnContext.GetIncomingActionData()));
 
             turnContext = GenerateTurnContext(Channels.Cortana, json, notJson);
 
-            Assert.IsNull(turnContext.GetIncomingPayload());
+            Assert.IsNull(turnContext.GetIncomingActionData());
 
             turnContext = GenerateTurnContext(Channels.Cortana, parsedJson, json, null, CardConstants.TypeIntent);
 
-            Assert.AreSame(parsedJson, turnContext.GetIncomingPayload());
+            Assert.AreSame(parsedJson, turnContext.GetIncomingActionData());
 
             // DIRECTLINE / EMULATOR / WEBCHAT
 
             turnContext = GenerateTurnContext(Channels.Directline, null, json);
 
-            Assert.IsNull(turnContext.GetIncomingPayload());
+            Assert.IsNull(turnContext.GetIncomingActionData());
 
             turnContext = GenerateTurnContext(Channels.Directline, parsedJson, json);
 
-            Assert.AreSame(parsedJson, turnContext.GetIncomingPayload());
+            Assert.AreSame(parsedJson, turnContext.GetIncomingActionData());
 
             turnContext = GenerateTurnContext(Channels.Emulator, null, notJson, GenerateChannelData(CardConstants.KeyPostBack));
 
-            Assert.IsNull(turnContext.GetIncomingPayload());
+            Assert.IsNull(turnContext.GetIncomingActionData());
 
             turnContext = GenerateTurnContext(Channels.Emulator, parsedJson, notJson, GenerateChannelData(CardConstants.KeyPostBack));
 
-            Assert.AreSame(parsedJson, turnContext.GetIncomingPayload());
+            Assert.AreSame(parsedJson, turnContext.GetIncomingActionData());
 
             turnContext = GenerateTurnContext(Channels.Directline, json, null, GenerateChannelData(CardConstants.KeyPostBack));
 
-            Assert.IsTrue(JToken.DeepEquals(parsedJson, (JObject)turnContext.GetIncomingPayload()));
+            Assert.IsTrue(JToken.DeepEquals(parsedJson, (JObject)turnContext.GetIncomingActionData()));
 
             turnContext = GenerateTurnContext(Channels.Webchat, null, json, GenerateChannelData(CardConstants.KeyMessageBack));
 
-            Assert.IsTrue(JToken.DeepEquals(parsedJson, (JObject)turnContext.GetIncomingPayload()));
+            Assert.IsTrue(JToken.DeepEquals(parsedJson, (JObject)turnContext.GetIncomingActionData()));
 
             turnContext = GenerateTurnContext(Channels.Webchat, null, json, JsonConvert.SerializeObject(GenerateChannelData(CardConstants.KeyMessageBack)));
 
-            Assert.IsTrue(JToken.DeepEquals(parsedJson, (JObject)turnContext.GetIncomingPayload()));
+            Assert.IsTrue(JToken.DeepEquals(parsedJson, (JObject)turnContext.GetIncomingActionData()));
 
             // KIK
 
@@ -1014,15 +1014,15 @@ namespace Bot.Builder.Community.Cards.Tests
             {
                 turnContext = GenerateTurnContext(channelId, parsedJson, json);
 
-                Assert.AreSame(parsedJson, turnContext.GetIncomingPayload());
+                Assert.AreSame(parsedJson, turnContext.GetIncomingActionData());
 
                 turnContext = GenerateTurnContext(channelId, null, notJson, GenerateChannelData(channelDataProperty));
 
-                Assert.IsNull(turnContext.GetIncomingPayload());
+                Assert.IsNull(turnContext.GetIncomingActionData());
 
                 turnContext = GenerateTurnContext(channelId, null, json, GenerateChannelData(channelDataProperty));
 
-                Assert.IsTrue(JToken.DeepEquals(parsedJson, (JObject)turnContext.GetIncomingPayload()));
+                Assert.IsTrue(JToken.DeepEquals(parsedJson, (JObject)turnContext.GetIncomingActionData()));
             }
 
             AssertBasedOnChannelData(Channels.Kik, CardConstants.KeyMetadata);
@@ -1035,19 +1035,19 @@ namespace Bot.Builder.Community.Cards.Tests
 
             turnContext = GenerateTurnContext(Channels.Skype, parsedJson);
 
-            Assert.AreSame(parsedJson, turnContext.GetIncomingPayload());
+            Assert.AreSame(parsedJson, turnContext.GetIncomingActionData());
 
             turnContext = GenerateTurnContext(Channels.Skype, null, json, GenerateChannelData(CardConstants.KeyText, json));
 
-            Assert.IsNull(turnContext.GetIncomingPayload());
+            Assert.IsNull(turnContext.GetIncomingActionData());
 
             turnContext = GenerateTurnContext(Channels.Skype, null, notJson, GenerateChannelData(CardConstants.KeyText, json));
 
-            Assert.IsNull(turnContext.GetIncomingPayload());
+            Assert.IsNull(turnContext.GetIncomingActionData());
 
             turnContext = GenerateTurnContext(Channels.Skype, null, json, GenerateChannelData(CardConstants.KeyText, notJson));
 
-            Assert.IsTrue(JToken.DeepEquals(parsedJson, (JObject)turnContext.GetIncomingPayload()));
+            Assert.IsTrue(JToken.DeepEquals(parsedJson, (JObject)turnContext.GetIncomingActionData()));
 
             // SLACK
 
@@ -1061,27 +1061,27 @@ namespace Bot.Builder.Community.Cards.Tests
 
             turnContext = GenerateTurnContext(Channels.Test, null, json);
 
-            Assert.IsNull(turnContext.GetIncomingPayload());
+            Assert.IsNull(turnContext.GetIncomingActionData());
 
             turnContext = GenerateTurnContext(Channels.DirectlineSpeech, notJson);
 
-            Assert.IsNull(turnContext.GetIncomingPayload());
+            Assert.IsNull(turnContext.GetIncomingActionData());
 
             turnContext = GenerateTurnContext(Channels.Email, json);
 
-            Assert.IsTrue(JToken.DeepEquals(parsedJson, (JObject)turnContext.GetIncomingPayload()));
+            Assert.IsTrue(JToken.DeepEquals(parsedJson, (JObject)turnContext.GetIncomingActionData()));
 
             turnContext = GenerateTurnContext(Channels.Sms, parsedJson);
 
-            Assert.AreSame(parsedJson, turnContext.GetIncomingPayload());
+            Assert.AreSame(parsedJson, turnContext.GetIncomingActionData());
 
             turnContext = GenerateTurnContext(Channels.Console, parsedJson, type: ActivityTypes.Event);
 
-            Assert.IsNull(turnContext.GetIncomingPayload(), "A payload was returned for a non-message activity");
+            Assert.IsNull(turnContext.GetIncomingActionData(), "Action data was returned for a non-message activity");
 
             turnContext = null;
 
-            Assert.ThrowsException<ArgumentNullException>(() => turnContext.GetIncomingPayload());
+            Assert.ThrowsException<ArgumentNullException>(() => turnContext.GetIncomingActionData());
         }
     }
 }

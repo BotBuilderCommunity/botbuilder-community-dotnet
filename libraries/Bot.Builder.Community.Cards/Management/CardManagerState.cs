@@ -8,15 +8,15 @@ namespace Bot.Builder.Community.Cards.Management
     public class CardManagerState
     {
         /// <summary>
-        /// Gets the dictionary that tracks payload ID's.
+        /// Gets the dictionary that tracks data ID's.
         /// </summary>
         /// <value>
-        /// The keys are payload ID types and the values are the ID values.
+        /// The keys are data ID types and the values are the ID values.
         /// </value>
-        [JsonProperty("payloadIdsByType")]
-        public IDictionary<string, ISet<string>> PayloadIdsByType { get; } = new Dictionary<string, ISet<string>>();
+        [JsonProperty("dataIdsByType")]
+        public IDictionary<string, ISet<string>> DataIdsByType { get; } = new Dictionary<string, ISet<string>>();
 
-        [JsonProperty("activityById")]
+        [JsonProperty("savedActivities")]
         public ISet<IMessageActivity> SavedActivities { get; } = new HashSet<IMessageActivity>();
     }
 }

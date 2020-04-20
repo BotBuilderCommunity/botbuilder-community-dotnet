@@ -38,6 +38,6 @@ namespace Bot.Builder.Community.Cards.Management
 
         public TrackingStyle IdTrackingStyle { get; set; }
 
-        public PayloadIdOptions IdOptions { get; set; }
+        public DataIdOptions IdOptions { get; set; }
     }
 }

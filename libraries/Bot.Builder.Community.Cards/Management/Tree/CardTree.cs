@@ -27,7 +27,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
         private static readonly Dictionary<TreeNodeType, ITreeNode> _tree = new Dictionary<TreeNodeType, ITreeNode>
         {
             {
-                TreeNodeType.Batch, new EnumerableTreeNode<IMessageActivity>(TreeNodeType.Activity, PayloadIdTypes.Batch)
+                TreeNodeType.Batch, new EnumerableTreeNode<IMessageActivity>(TreeNodeType.Activity, DataIdTypes.Batch)
             },
             {
                 TreeNodeType.Activity, new TreeNode<IMessageActivity, IEnumerable<Attachment>>((activity, next) =>
@@ -39,7 +39,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 })
             },
             {
-                TreeNodeType.Carousel, new EnumerableTreeNode<Attachment>(TreeNodeType.Attachment, PayloadIdTypes.Carousel)
+                TreeNodeType.Carousel, new EnumerableTreeNode<Attachment>(TreeNodeType.Attachment, DataIdTypes.Carousel)
             },
             {
                 TreeNodeType.Attachment, new TreeNode<Attachment, object>((attachment, next) =>
@@ -100,10 +100,10 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 TreeNodeType.VideoCard, new RichCardTreeNode<VideoCard>(card => card.Buttons)
             },
             {
-                TreeNodeType.SubmitActionList, new EnumerableTreeNode<object>(TreeNodeType.SubmitAction, PayloadIdTypes.Card)
+                TreeNodeType.SubmitActionList, new EnumerableTreeNode<object>(TreeNodeType.SubmitAction, DataIdTypes.Card)
             },
             {
-                TreeNodeType.CardActionList, new EnumerableTreeNode<CardAction>(TreeNodeType.CardAction, PayloadIdTypes.Card)
+                TreeNodeType.CardActionList, new EnumerableTreeNode<CardAction>(TreeNodeType.CardAction, DataIdTypes.Card)
             },
             {
                 TreeNodeType.SubmitAction, new TreeNode<object, JObject>((action, next) =>
@@ -115,7 +115,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                         {
                             if (actionJObject.GetValue(CardConstants.KeyData) is JObject data)
                             {
-                                next(data, TreeNodeType.Payload);
+                                next(data, TreeNodeType.ActionData);
                             }
                         }, true);
                 })
@@ -127,7 +127,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                     {
                         if (action.Value.ToJObject(true) is JObject valueJObject)
                         {
-                            next(valueJObject, TreeNodeType.Payload);
+                            next(valueJObject, TreeNodeType.ActionData);
 
                             if (reassignChildren)
                             {
@@ -139,7 +139,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                             action.Text = action.Text.ToJObjectAndBack(
                                 jObject =>
                                 {
-                                    next(jObject, TreeNodeType.Payload);
+                                    next(jObject, TreeNodeType.ActionData);
                                 },
                                 true);
                         }
@@ -149,23 +149,23 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 })
             },
             {
-                TreeNodeType.Payload, new TreeNode<JObject, PayloadItem>((payload, next) =>
+                TreeNodeType.ActionData, new TreeNode<JObject, DataItem>((data, next) =>
                 {
-                    foreach (var type in PayloadIdTypes.Collection)
+                    foreach (var type in DataIdTypes.Collection)
                     {
-                        var id = payload.GetIdFromPayload(type);
+                        var id = data.GetIdFromActionData(type);
 
                         if (id != null)
                         {
-                            next(new PayloadItem(type, id), TreeNodeType.Id);
+                            next(new DataItem(type, id), TreeNodeType.Id);
                         }
                     }
 
-                    return payload;
+                    return data;
                 })
             },
             {
-                TreeNodeType.Id, new TreeNode<PayloadItem, object>((id, _) => id)
+                TreeNodeType.Id, new TreeNode<DataItem, object>((id, _) => id)
             },
         };
 
@@ -251,21 +251,21 @@ namespace Bot.Builder.Community.Cards.Management.Tree
             return entryNode.CallChild(entryValue, Next, reassignChildren) as TEntry;
         }
 
-        internal static void ApplyIds<TEntry>(TEntry entryValue, PayloadIdOptions options = null, TreeNodeType? entryType = null)
+        internal static void ApplyIds<TEntry>(TEntry entryValue, DataIdOptions options = null, TreeNodeType? entryType = null)
             where TEntry : class
         {
-            options = options ?? new PayloadIdOptions(PayloadIdTypes.Action);
+            options = options ?? new DataIdOptions(DataIdTypes.Action);
 
             var modifiedOptions = options.Clone();
 
             Recurse(
                 entryValue,
-                (JObject payload) =>
+                (JObject data) =>
                 {
-                    payload.ApplyIdsToPayload(modifiedOptions);
+                    data.ApplyIdsToActionData(modifiedOptions);
                 },
                 entryType,
-                TreeNodeType.Payload,
+                TreeNodeType.ActionData,
                 true,
                 (value, node) =>
                 {
@@ -290,23 +290,23 @@ namespace Bot.Builder.Community.Cards.Management.Tree
 
                             if (id is null)
                             {
-                                modifiedOptions.Set(idType, PayloadIdTypes.GenerateId(idType));
+                                modifiedOptions.Set(idType, DataIdTypes.GenerateId(idType));
                             }
                         }
                     }
                 });
         }
 
-        internal static ISet<PayloadItem> GetIds<TEntry>(TEntry entryValue, TreeNodeType? entryType = null)
+        internal static ISet<DataItem> GetIds<TEntry>(TEntry entryValue, TreeNodeType? entryType = null)
             where TEntry : class
         {
-            var ids = new HashSet<PayloadItem>();
+            var ids = new HashSet<DataItem>();
 
             Recurse(
                 entryValue,
-                (PayloadItem payloadId) =>
+                (DataItem dataId) =>
                 {
-                    ids.Add(payloadId);
+                    ids.Add(dataId);
                 }, entryType);
 
             return ids;

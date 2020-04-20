@@ -2,7 +2,7 @@
 
 namespace Bot.Builder.Community.Cards.Management
 {
-    internal class PayloadMatchResult
+    internal class DataMatchResult
     {
         private bool _alreadyFoundMatch;
 

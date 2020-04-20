@@ -105,7 +105,7 @@ namespace Bot.Builder.Community.Cards.Management
             });
         }
 
-        public static void ApplyIdsToBatch(this IEnumerable<IMessageActivity> activities, PayloadIdOptions options = null)
+        public static void ApplyIdsToBatch(this IEnumerable<IMessageActivity> activities, DataIdOptions options = null)
         {
             if (activities is null)
             {
@@ -115,7 +115,7 @@ namespace Bot.Builder.Community.Cards.Management
             CardTree.ApplyIds(activities, options);
         }
 
-        public static ISet<PayloadItem> GetIdsFromBatch(this IEnumerable<IMessageActivity> activities)
+        public static ISet<DataItem> GetIdsFromBatch(this IEnumerable<IMessageActivity> activities)
         {
             if (activities is null)
             {
@@ -279,8 +279,8 @@ namespace Bot.Builder.Community.Cards.Management
         /// The returned value is guaranteed to not be a string.
         /// </summary>
         /// <param name="turnContext">The turn context.</param>
-        /// <returns>A button's payload if valid, null otherwise.</returns>
-        public static object GetIncomingPayload(this ITurnContext turnContext)
+        /// <returns>A button's action data if valid, null otherwise.</returns>
+        public static object GetIncomingActionData(this ITurnContext turnContext)
         {
             BotAssert.ContextNotNull(turnContext);
 
@@ -296,7 +296,7 @@ namespace Bot.Builder.Community.Cards.Management
             var value = activity.Value.ToJObject(true);
             var channelData = activity.ChannelData.ToJObject(true); // Channel data will have been serialized into a string in Kik
             var entities = activity.Entities;
-            var incomingPayload = value;
+            var incomingData = value;
 
             // Many channels have button responses that are hard to distinguish from user-entered text.
             // A common theme is that button responses often have a property in channel data that isn't
@@ -305,7 +305,7 @@ namespace Bot.Builder.Community.Cards.Management
             {
                 if (channelData?.GetValue(propName) != null)
                 {
-                    incomingPayload = newResult ?? parsedText;
+                    incomingData = newResult ?? parsedText;
                 }
             }
 
@@ -319,7 +319,7 @@ namespace Bot.Builder.Community.Cards.Management
                     // as confirmation of a missing "Intent" entity.
                     if (entities?.Any(entity => entity.Type.EqualsCI(CardConstants.TypeIntent)) != true)
                     {
-                        incomingPayload = parsedText;
+                        incomingData = parsedText;
                     }
 
                     break;
@@ -358,7 +358,7 @@ namespace Bot.Builder.Community.Cards.Management
                     // then we're interpreting that to mean that this is not a button response.
                     if (channelData?.GetValue(CardConstants.KeyText)?.ToString().Equals(text) == false)
                     {
-                        incomingPayload = parsedText;
+                        incomingData = parsedText;
                     }
 
                     break;
@@ -380,40 +380,40 @@ namespace Bot.Builder.Community.Cards.Management
 
             // Teams and Facebook values don't need to be adapted any further
 
-            return incomingPayload;
+            return incomingData;
         }
 
-        internal static void ApplyIdsToPayload(this JObject payload, PayloadIdOptions options)
+        internal static void ApplyIdsToActionData(this JObject data, DataIdOptions options)
         {
             foreach (var kvp in options.GetIds())
             {
                 var type = kvp.Key;
 
-                if (options.Overwrite || payload.GetIdFromPayload(type) is null)
+                if (options.Overwrite || data.GetIdFromActionData(type) is null)
                 {
                     var id = kvp.Value;
 
                     if (id is null)
                     {
-                        if (type == PayloadIdTypes.Action)
+                        if (type == DataIdTypes.Action)
                         {
                             // Only generate an ID for the action
-                            id = PayloadIdTypes.GenerateId(PayloadIdTypes.Action);
+                            id = DataIdTypes.GenerateId(DataIdTypes.Action);
                         }
                         else
                         {
                             // If any other ID's are null,
-                            // don't apply them to the payload
+                            // don't apply them to the data
                             continue;
                         }
                     }
 
-                    payload[PayloadIdTypes.GetKey(type)] = id;
+                    data[DataIdTypes.GetKey(type)] = id;
                 }
             }
         }
 
-        internal static string GetIdFromPayload(this JObject payload, string type = PayloadIdTypes.Action)
-            => payload?.GetValue(PayloadIdTypes.GetKey(type)) is JToken id ? id.ToString() : null;
+        internal static string GetIdFromActionData(this JObject data, string type = DataIdTypes.Action)
+            => data?.GetValue(DataIdTypes.GetKey(type)) is JToken id ? id.ToString() : null;
     }
 }

@@ -7,7 +7,7 @@ namespace Bot.Builder.Community.Cards.Management
     /// <summary>
     /// This class defines ID types with progressively increasing scope sizes.
     /// </summary>
-    public static class PayloadIdTypes
+    public static class DataIdTypes
     {
         /// <summary>
         /// An action ID should be globally unique and not found in different actions.
@@ -39,7 +39,7 @@ namespace Bot.Builder.Community.Cards.Management
 
         internal static int GetIndex(string type) => Collection.IndexOf(type);
 
-        internal static string GetKey(string type) => $"{CardConstants.PrefixPayloadId}{type}";
+        internal static string GetKey(string type) => $"{CardConstants.PrefixDataId}{type}";
 
         internal static string GenerateId(string type) => $"{type}-{Guid.NewGuid()}";
     }

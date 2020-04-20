@@ -35,27 +35,27 @@ namespace Bot.Builder.Community.Cards.Tests
         {
             var manager = CreateManager();
             var turnContext = CreateTurnContext();
-            var payloadId = new PayloadItem(PayloadIdTypes.Action, "action ID");
+            var dataId = new DataItem(DataIdTypes.Action, "action ID");
 
             Assert.IsNull(await manager.StateAccessor.GetAsync(turnContext));
 
-            await manager.EnableIdAsync(turnContext, payloadId);
+            await manager.EnableIdAsync(turnContext, dataId);
 
             var state = await manager.StateAccessor.GetAsync(turnContext);
-            var actionIds = state.PayloadIdsByType[PayloadIdTypes.Action];
+            var actionIds = state.DataIdsByType[DataIdTypes.Action];
 
-            Assert.AreEqual(payloadId.Value, actionIds.Single());
+            Assert.AreEqual(dataId.Value, actionIds.Single());
 
-            await manager.EnableIdAsync(turnContext, new PayloadItem(PayloadIdTypes.Action, "different action ID"), TrackingStyle.TrackDisabled);
+            await manager.EnableIdAsync(turnContext, new DataItem(DataIdTypes.Action, "different action ID"), TrackingStyle.TrackDisabled);
 
-            Assert.AreEqual(payloadId.Value, actionIds.Single());
+            Assert.AreEqual(dataId.Value, actionIds.Single());
 
-            await manager.EnableIdAsync(turnContext, payloadId, TrackingStyle.TrackDisabled);
+            await manager.EnableIdAsync(turnContext, dataId, TrackingStyle.TrackDisabled);
 
             Assert.AreEqual(0, actionIds.Count);
 
             await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await manager.EnableIdAsync(turnContext, null));
-            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await manager.EnableIdAsync(null, payloadId));
+            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await manager.EnableIdAsync(null, dataId));
         }
 
         [TestMethod]
@@ -63,27 +63,27 @@ namespace Bot.Builder.Community.Cards.Tests
         {
             var manager = CreateManager();
             var turnContext = CreateTurnContext();
-            var payloadId = new PayloadItem(PayloadIdTypes.Card, "card ID");
+            var dataId = new DataItem(DataIdTypes.Card, "card ID");
 
             Assert.IsNull(await manager.StateAccessor.GetAsync(turnContext));
 
-            await manager.DisableIdAsync(turnContext, payloadId, TrackingStyle.TrackDisabled);
+            await manager.DisableIdAsync(turnContext, dataId, TrackingStyle.TrackDisabled);
 
             var state = await manager.StateAccessor.GetAsync(turnContext);
-            var actionIds = state.PayloadIdsByType[PayloadIdTypes.Card];
+            var actionIds = state.DataIdsByType[DataIdTypes.Card];
 
-            Assert.AreEqual(payloadId.Value, actionIds.Single());
+            Assert.AreEqual(dataId.Value, actionIds.Single());
 
-            await manager.DisableIdAsync(turnContext, new PayloadItem(PayloadIdTypes.Card, "different card ID"));
+            await manager.DisableIdAsync(turnContext, new DataItem(DataIdTypes.Card, "different card ID"));
 
-            Assert.AreEqual(payloadId.Value, actionIds.Single());
+            Assert.AreEqual(dataId.Value, actionIds.Single());
 
-            await manager.DisableIdAsync(turnContext, payloadId);
+            await manager.DisableIdAsync(turnContext, dataId);
 
             Assert.AreEqual(0, actionIds.Count);
 
             await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await manager.DisableIdAsync(turnContext, null));
-            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await manager.DisableIdAsync(null, payloadId));
+            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await manager.DisableIdAsync(null, dataId));
         }
 
         [TestMethod]
@@ -91,19 +91,19 @@ namespace Bot.Builder.Community.Cards.Tests
         {
             var manager = CreateManager();
             var turnContext = CreateTurnContext();
-            var payloadId = new PayloadItem(PayloadIdTypes.Carousel, "carousel ID");
+            var dataId = new DataItem(DataIdTypes.Carousel, "carousel ID");
 
             Assert.IsNull(await manager.StateAccessor.GetAsync(turnContext));
 
-            await manager.TrackIdAsync(turnContext, payloadId);
+            await manager.TrackIdAsync(turnContext, dataId);
 
             var state = await manager.StateAccessor.GetAsync(turnContext);
-            var actionIds = state.PayloadIdsByType[PayloadIdTypes.Carousel];
+            var actionIds = state.DataIdsByType[DataIdTypes.Carousel];
 
-            Assert.AreEqual(payloadId.Value, actionIds.Single());
+            Assert.AreEqual(dataId.Value, actionIds.Single());
 
             await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await manager.TrackIdAsync(turnContext, null));
-            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await manager.TrackIdAsync(null, payloadId));
+            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await manager.TrackIdAsync(null, dataId));
         }
 
         [TestMethod]
@@ -111,28 +111,28 @@ namespace Bot.Builder.Community.Cards.Tests
         {
             var manager = CreateManager();
             var turnContext = CreateTurnContext();
-            var payloadId = new PayloadItem(PayloadIdTypes.Batch, "batch ID");
+            var dataId = new DataItem(DataIdTypes.Batch, "batch ID");
 
             Assert.IsNull(await manager.StateAccessor.GetAsync(turnContext));
 
-            await manager.ForgetIdAsync(turnContext, payloadId);
+            await manager.ForgetIdAsync(turnContext, dataId);
 
             var state = await manager.StateAccessor.GetAsync(turnContext);
 
-            Assert.AreEqual(0, state.PayloadIdsByType.Count);
+            Assert.AreEqual(0, state.DataIdsByType.Count);
 
-            var actionIds = state.PayloadIdsByType[PayloadIdTypes.Batch] = new HashSet<string> { payloadId.Value };
+            var actionIds = state.DataIdsByType[DataIdTypes.Batch] = new HashSet<string> { dataId.Value };
 
-            await manager.ForgetIdAsync(turnContext, new PayloadItem(PayloadIdTypes.Batch, "different batch ID"));
+            await manager.ForgetIdAsync(turnContext, new DataItem(DataIdTypes.Batch, "different batch ID"));
 
-            Assert.AreEqual(payloadId.Value, actionIds.Single());
+            Assert.AreEqual(dataId.Value, actionIds.Single());
 
-            await manager.ForgetIdAsync(turnContext, payloadId);
+            await manager.ForgetIdAsync(turnContext, dataId);
 
             Assert.AreEqual(0, actionIds.Count);
 
             await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await manager.ForgetIdAsync(turnContext, null));
-            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await manager.ForgetIdAsync(null, payloadId));
+            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await manager.ForgetIdAsync(null, dataId));
         }
 
         [TestMethod]
@@ -147,18 +147,18 @@ namespace Bot.Builder.Community.Cards.Tests
 
             var state = await manager.StateAccessor.GetAsync(turnContext);
 
-            Assert.AreEqual(0, state.PayloadIdsByType.Count);
+            Assert.AreEqual(0, state.DataIdsByType.Count);
 
-            state.PayloadIdsByType[PayloadIdTypes.Action] = new HashSet<string> { "action ID" };
-            state.PayloadIdsByType[PayloadIdTypes.Card] = new HashSet<string> { "card ID" };
-            state.PayloadIdsByType[PayloadIdTypes.Carousel] = new HashSet<string> { "carousel ID" };
-            state.PayloadIdsByType[PayloadIdTypes.Batch] = new HashSet<string> { "batch ID" };
+            state.DataIdsByType[DataIdTypes.Action] = new HashSet<string> { "action ID" };
+            state.DataIdsByType[DataIdTypes.Card] = new HashSet<string> { "card ID" };
+            state.DataIdsByType[DataIdTypes.Carousel] = new HashSet<string> { "carousel ID" };
+            state.DataIdsByType[DataIdTypes.Batch] = new HashSet<string> { "batch ID" };
 
-            Assert.AreEqual(4, state.PayloadIdsByType.Count);
+            Assert.AreEqual(4, state.DataIdsByType.Count);
 
             await manager.ClearTrackedIdsAsync(turnContext);
 
-            Assert.AreEqual(0, state.PayloadIdsByType.Count);
+            Assert.AreEqual(0, state.DataIdsByType.Count);
 
             await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await manager.ClearTrackedIdsAsync(null));
         }
@@ -192,9 +192,9 @@ namespace Bot.Builder.Community.Cards.Tests
 
             var state = await manager.StateAccessor.GetAsync(turnContext);
 
-            Assert.AreEqual(0, state.SavedActivities.Count, "An activity was saved despite having no payload ID's");
+            Assert.AreEqual(0, state.SavedActivities.Count, "An activity was saved despite having no data ID's");
 
-            value[PayloadIdTypes.GetKey(PayloadIdTypes.Action)] = "action ID";
+            value[DataIdTypes.GetKey(DataIdTypes.Action)] = "action ID";
 
             await manager.SaveActivitiesAsync(turnContext, activities);
 
@@ -218,7 +218,7 @@ namespace Bot.Builder.Community.Cards.Tests
                             {
                                 Data = new Dictionary<string, string>
                                 {
-                                    { PayloadIdTypes.GetKey(PayloadIdTypes.Card), "card ID" },
+                                    { DataIdTypes.GetKey(DataIdTypes.Card), "card ID" },
                                 },
                             },
                         },
@@ -235,7 +235,7 @@ namespace Bot.Builder.Community.Cards.Tests
                             {
                                 Data = new Dictionary<string, string>
                                 {
-                                    { PayloadIdTypes.GetKey(PayloadIdTypes.Carousel), "carousel ID" },
+                                    { DataIdTypes.GetKey(DataIdTypes.Carousel), "carousel ID" },
                                 },
                             },
                         },
@@ -254,7 +254,7 @@ namespace Bot.Builder.Community.Cards.Tests
                                 {
                                     Data = new Dictionary<string, string>
                                     {
-                                        { PayloadIdTypes.GetKey(PayloadIdTypes.Carousel), "carousel ID" },
+                                        { DataIdTypes.GetKey(DataIdTypes.Carousel), "carousel ID" },
                                     },
                                 },
                             },
@@ -262,7 +262,7 @@ namespace Bot.Builder.Community.Cards.Tests
                     },
                     new AnimationCard(buttons: new List<CardAction>
                     {
-                        new CardAction(type: ActionTypes.PostBack, value: $"{{'{PayloadIdTypes.GetKey(PayloadIdTypes.Batch)}':'batch ID'}}"),
+                        new CardAction(type: ActionTypes.PostBack, value: $"{{'{DataIdTypes.GetKey(DataIdTypes.Batch)}':'batch ID'}}"),
                     }).ToAttachment(),
                 }),
             };
@@ -317,7 +317,7 @@ namespace Bot.Builder.Community.Cards.Tests
                 {
                     Data = new Dictionary<string, string>
                     {
-                        { PayloadIdTypes.GetKey(PayloadIdTypes.Batch), BATCHID },
+                        { DataIdTypes.GetKey(DataIdTypes.Batch), BATCHID },
                     },
                 },
             });
@@ -363,9 +363,9 @@ namespace Bot.Builder.Community.Cards.Tests
                             {
                                 Data = new Dictionary<string, string>
                                 {
-                                    { PayloadIdTypes.GetKey(PayloadIdTypes.Card), CARDID },
-                                    { PayloadIdTypes.GetKey(PayloadIdTypes.Carousel), CAROUSELID },
-                                    { PayloadIdTypes.GetKey(PayloadIdTypes.Batch), BATCHID },
+                                    { DataIdTypes.GetKey(DataIdTypes.Card), CARDID },
+                                    { DataIdTypes.GetKey(DataIdTypes.Carousel), CAROUSELID },
+                                    { DataIdTypes.GetKey(DataIdTypes.Batch), BATCHID },
                                 },
                             },
                         },
@@ -468,7 +468,7 @@ namespace Bot.Builder.Community.Cards.Tests
                         {
                             Data = new Dictionary<string, string>
                             {
-                                { PayloadIdTypes.GetKey(PayloadIdTypes.Action), ACTIONID },
+                                { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID },
                             },
                         },
                     },
@@ -506,7 +506,7 @@ namespace Bot.Builder.Community.Cards.Tests
                         {
                             Data = new Dictionary<string, string>
                             {
-                                { PayloadIdTypes.GetKey(PayloadIdTypes.Batch), BATCHID },
+                                { DataIdTypes.GetKey(DataIdTypes.Batch), BATCHID },
                             },
                         },
                     },
@@ -520,7 +520,7 @@ namespace Bot.Builder.Community.Cards.Tests
                     new CardAction(ActionTypes.PostBack, value: new Dictionary<string, string>
                     {
                         { TOGGLEINPUTID, USERENTEREDTOGGLE },
-                        { PayloadIdTypes.GetKey(PayloadIdTypes.Batch), BATCHID },
+                        { DataIdTypes.GetKey(DataIdTypes.Batch), BATCHID },
                     }),
                 }).ToAttachment(),
                 new Attachment
@@ -554,16 +554,16 @@ namespace Bot.Builder.Community.Cards.Tests
                 { TEXTINPUTID, USERENTEREDTEXT },
                 { TIMEINPUTID, USERENTEREDTIME },
                 { TOGGLEINPUTID, USERENTEREDTOGGLE },
-                { PayloadIdTypes.GetKey(PayloadIdTypes.Action), ACTIONID },
-                { PayloadIdTypes.GetKey(PayloadIdTypes.Card), CARDID },
-                { PayloadIdTypes.GetKey(PayloadIdTypes.Carousel), CAROUSELID },
-                { PayloadIdTypes.GetKey(PayloadIdTypes.Batch), BATCHID },
+                { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID },
+                { DataIdTypes.GetKey(DataIdTypes.Card), CARDID },
+                { DataIdTypes.GetKey(DataIdTypes.Carousel), CAROUSELID },
+                { DataIdTypes.GetKey(DataIdTypes.Batch), BATCHID },
             };
 
             await manager.StateAccessor.SetAsync(turnContext, state);
             await manager.PreserveValuesAsync(turnContext);
 
-            Assert.IsFalse(updated, "Payload matched with additional field");
+            Assert.IsFalse(updated, "Data matched with additional field");
 
             turnContext.Activity.Value = new Dictionary<string, object>
             {
@@ -572,14 +572,14 @@ namespace Bot.Builder.Community.Cards.Tests
                 { NUMBERINPUTID, USERENTEREDNUMBER1 },
                 { TEXTINPUTID, USERENTEREDTEXT },
                 { TIMEINPUTID, USERENTEREDTIME },
-                { PayloadIdTypes.GetKey(PayloadIdTypes.Card), CARDID },
-                { PayloadIdTypes.GetKey(PayloadIdTypes.Carousel), CAROUSELID },
-                { PayloadIdTypes.GetKey(PayloadIdTypes.Batch), BATCHID },
+                { DataIdTypes.GetKey(DataIdTypes.Card), CARDID },
+                { DataIdTypes.GetKey(DataIdTypes.Carousel), CAROUSELID },
+                { DataIdTypes.GetKey(DataIdTypes.Batch), BATCHID },
             };
 
             await manager.PreserveValuesAsync(turnContext);
 
-            Assert.IsFalse(updated, "Payload matched with missing field");
+            Assert.IsFalse(updated, "Data matched with missing field");
 
             turnContext.Activity.Value = new Dictionary<string, object>
             {
@@ -589,9 +589,9 @@ namespace Bot.Builder.Community.Cards.Tests
                 { TEXTINPUTID, USERENTEREDTEXT },
                 { TIMEINPUTID, USERENTEREDTIME },
                 { TOGGLEINPUTID, USERENTEREDTOGGLE },
-                { PayloadIdTypes.GetKey(PayloadIdTypes.Card), CARDID },
-                { PayloadIdTypes.GetKey(PayloadIdTypes.Carousel), CAROUSELID },
-                { PayloadIdTypes.GetKey(PayloadIdTypes.Batch), BATCHID },
+                { DataIdTypes.GetKey(DataIdTypes.Card), CARDID },
+                { DataIdTypes.GetKey(DataIdTypes.Carousel), CAROUSELID },
+                { DataIdTypes.GetKey(DataIdTypes.Batch), BATCHID },
             };
 
             await manager.PreserveValuesAsync(turnContext);
@@ -644,7 +644,7 @@ namespace Bot.Builder.Community.Cards.Tests
 
             await manager.PreserveValuesAsync(turnContext);
 
-            Assert.IsFalse(updated, "Card was updated despite having same payload as other Adaptive Card");
+            Assert.IsFalse(updated, "Card was updated despite having same data as other Adaptive Card");
 
             turnContext.Activity.Value = new Dictionary<string, object>
             {
@@ -671,7 +671,7 @@ namespace Bot.Builder.Community.Cards.Tests
 
             turnContext.Activity.Value = new Dictionary<string, string>
             {
-                { PayloadIdTypes.GetKey(PayloadIdTypes.Action), ACTIONID },
+                { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID },
             };
 
             await manager.PreserveValuesAsync(turnContext);
@@ -682,24 +682,24 @@ namespace Bot.Builder.Community.Cards.Tests
 
             await manager.PreserveValuesAsync(turnContext);
 
-            Assert.IsFalse(updated, "Card was updated by a serialized payload");
+            Assert.IsFalse(updated, "Card was updated by serialized data");
 
             turnContext.Activity.Value = new Dictionary<string, string>
             {
                 { TOGGLEINPUTID, USERENTEREDTOGGLE },
-                { PayloadIdTypes.GetKey(PayloadIdTypes.Batch), BATCHID },
+                { DataIdTypes.GetKey(DataIdTypes.Batch), BATCHID },
             };
 
             await manager.PreserveValuesAsync(turnContext);
 
-            Assert.IsFalse(updated, "Card was updated despite having the same payload as a hero card");
+            Assert.IsFalse(updated, "Card was updated despite having the same data as a hero card");
 
             expectedActivity = activity2;
 
             turnContext.Activity.Value = new Dictionary<string, string>
             {
                 { CHOICEINPUTID, USERENTEREDCHOICE },
-                { PayloadIdTypes.GetKey(PayloadIdTypes.Batch), BATCHID },
+                { DataIdTypes.GetKey(DataIdTypes.Batch), BATCHID },
             };
 
             await manager.PreserveValuesAsync(turnContext);
@@ -751,14 +751,14 @@ namespace Bot.Builder.Community.Cards.Tests
                                 {
                                     Data = new Dictionary<string, string>
                                     {
-                                        { PayloadIdTypes.GetKey(PayloadIdTypes.Action), ACTIONID1 },
+                                        { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID1 },
                                     },
                                 },
                                 new AdaptiveSubmitAction
                                 {
                                     Data = new Dictionary<string, string>
                                     {
-                                        { PayloadIdTypes.GetKey(PayloadIdTypes.Action), ACTIONID2 },
+                                        { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID2 },
                                     },
                                 },
                             },
@@ -766,7 +766,7 @@ namespace Bot.Builder.Community.Cards.Tests
                             {
                                 Data = new Dictionary<string, string>
                                 {
-                                    { PayloadIdTypes.GetKey(PayloadIdTypes.Action), "Irrelevant action ID" },
+                                    { DataIdTypes.GetKey(DataIdTypes.Action), "Irrelevant action ID" },
                                 },
                             },
                         },
@@ -781,11 +781,11 @@ namespace Bot.Builder.Community.Cards.Tests
                         {
                             new CardAction(ActionTypes.PostBack, value: new Dictionary<string, string>
                             {
-                                { PayloadIdTypes.GetKey(PayloadIdTypes.Action), ACTIONID3 },
+                                { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID3 },
                             }),
                             new CardAction(ActionTypes.MessageBack, value: new Dictionary<string, string>
                             {
-                                { PayloadIdTypes.GetKey(PayloadIdTypes.Action), ACTIONID4 },
+                                { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID4 },
                             }),
                         }),
                     },
@@ -817,7 +817,7 @@ namespace Bot.Builder.Community.Cards.Tests
                                 {
                                     Data = new Dictionary<string, string>
                                     {
-                                        { PayloadIdTypes.GetKey(PayloadIdTypes.Action), ACTIONID5 },
+                                        { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID5 },
                                     },
                                 },
                             },
@@ -833,7 +833,7 @@ namespace Bot.Builder.Community.Cards.Tests
                         {
                             new CardAction(ActionTypes.PostBack, value: new Dictionary<string, string>
                             {
-                                { PayloadIdTypes.GetKey(PayloadIdTypes.Action), ACTIONID6 },
+                                { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID6 },
                             }),
                         }),
                     },
@@ -868,7 +868,7 @@ namespace Bot.Builder.Community.Cards.Tests
                                     {
                                         // Even though a carousel ID is used to identify an activity,
                                         // it can still be used to delete a single attachment
-                                        { PayloadIdTypes.GetKey(PayloadIdTypes.Carousel), CAROUSELID },
+                                        { DataIdTypes.GetKey(DataIdTypes.Carousel), CAROUSELID },
                                     },
                                 },
                             },
@@ -897,7 +897,7 @@ namespace Bot.Builder.Community.Cards.Tests
                             {
                                 // Even though a card ID is used to identify a single attachment,
                                 // it can still be used to delete an activity
-                                { PayloadIdTypes.GetKey(PayloadIdTypes.Card), CARDID },
+                                { DataIdTypes.GetKey(DataIdTypes.Card), CARDID },
                             }),
                         }),
                     },
@@ -921,7 +921,7 @@ namespace Bot.Builder.Community.Cards.Tests
                         {
                             new CardAction(ActionTypes.PostBack, value: new Dictionary<string, string>
                             {
-                                { PayloadIdTypes.GetKey(PayloadIdTypes.Batch), BATCHID },
+                                { DataIdTypes.GetKey(DataIdTypes.Batch), BATCHID },
                             }),
                         }),
                     },
@@ -937,10 +937,10 @@ namespace Bot.Builder.Community.Cards.Tests
                                 {
                                     Data = new Dictionary<string, string>
                                     {
-                                        { PayloadIdTypes.GetKey(PayloadIdTypes.Action), "Another irrelevant action ID" },
-                                        { PayloadIdTypes.GetKey(PayloadIdTypes.Card), "Irrelevant card ID" },
-                                        { PayloadIdTypes.GetKey(PayloadIdTypes.Carousel), "Irrelevant carousel ID" },
-                                        { PayloadIdTypes.GetKey(PayloadIdTypes.Batch), BATCHID },
+                                        { DataIdTypes.GetKey(DataIdTypes.Action), "Another irrelevant action ID" },
+                                        { DataIdTypes.GetKey(DataIdTypes.Card), "Irrelevant card ID" },
+                                        { DataIdTypes.GetKey(DataIdTypes.Carousel), "Irrelevant carousel ID" },
+                                        { DataIdTypes.GetKey(DataIdTypes.Batch), BATCHID },
                                     },
                                 },
                             },
@@ -967,7 +967,7 @@ namespace Bot.Builder.Community.Cards.Tests
                                 {
                                     Data = new Dictionary<string, string>
                                     {
-                                        { PayloadIdTypes.GetKey(PayloadIdTypes.Action), "Yet another irrelevant action ID" },
+                                        { DataIdTypes.GetKey(DataIdTypes.Action), "Yet another irrelevant action ID" },
                                     },
                                 },
                             },
@@ -984,7 +984,7 @@ namespace Bot.Builder.Community.Cards.Tests
                         {
                             new CardAction(ActionTypes.MessageBack, value: new Dictionary<string, string>
                             {
-                                { PayloadIdTypes.GetKey(PayloadIdTypes.Batch), BATCHID },
+                                { DataIdTypes.GetKey(DataIdTypes.Batch), BATCHID },
                             }),
                         }),
                     },
@@ -1004,7 +1004,7 @@ namespace Bot.Builder.Community.Cards.Tests
                         {
                             new CardAction(ActionTypes.PostBack, value: new Dictionary<string, string>
                             {
-                                { PayloadIdTypes.GetKey(PayloadIdTypes.Batch), "Irrelevant batch ID" },
+                                { DataIdTypes.GetKey(DataIdTypes.Batch), "Irrelevant batch ID" },
                             }),
                         }),
                     },
@@ -1026,7 +1026,7 @@ namespace Bot.Builder.Community.Cards.Tests
                             {
                                 // This ID won't be visible because it's in an imBack
                                 // and so the activity should immediately be removed from state
-                                { PayloadIdTypes.GetKey(PayloadIdTypes.Action), "Invisible action ID" },
+                                { DataIdTypes.GetKey(DataIdTypes.Action), "Invisible action ID" },
                             }),
                         }),
                     },
@@ -1071,8 +1071,8 @@ namespace Bot.Builder.Community.Cards.Tests
 
             turnContext.Activity.Value = new Dictionary<string, object>
             {
-                // This shouldn't match any payloads
-                { PayloadIdTypes.GetKey(PayloadIdTypes.Card), ACTIONID1 },
+                // This shouldn't match any action data
+                { DataIdTypes.GetKey(DataIdTypes.Card), ACTIONID1 },
             };
 
             await manager.StateAccessor.SetAsync(turnContext, state);
@@ -1080,7 +1080,7 @@ namespace Bot.Builder.Community.Cards.Tests
             Assert.IsTrue(state.SavedActivities.Contains(activity8));
             Assert.AreEqual(8, state.SavedActivities.Count);
 
-            await manager.DeleteAsync(turnContext, PayloadIdTypes.Action);
+            await manager.DeleteAsync(turnContext, DataIdTypes.Action);
 
             Assert.IsFalse(updated);
             Assert.AreEqual(0, deletedCount);
@@ -1091,13 +1091,13 @@ namespace Bot.Builder.Community.Cards.Tests
 
             turnContext.Activity.Value = new Dictionary<string, object>
             {
-                { PayloadIdTypes.GetKey(PayloadIdTypes.Action), ACTIONID1 },
+                { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID1 },
             };
 
-            await manager.DeleteAsync(turnContext, PayloadIdTypes.Action);
+            await manager.DeleteAsync(turnContext, DataIdTypes.Action);
 
             var actionId = ((JObject)((AdaptiveSubmitAction)((AdaptiveCard)activity1.Attachments[0].Content)
-                    .Actions.Single()).Data)[PayloadIdTypes.GetKey(PayloadIdTypes.Action)];
+                    .Actions.Single()).Data)[DataIdTypes.GetKey(DataIdTypes.Action)];
 
             Assert.IsTrue(updated);
             Assert.AreEqual(0, deletedCount);
@@ -1109,10 +1109,10 @@ namespace Bot.Builder.Community.Cards.Tests
 
             turnContext.Activity.Value = new Dictionary<string, object>
             {
-                { PayloadIdTypes.GetKey(PayloadIdTypes.Action), ACTIONID2 },
+                { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID2 },
             };
 
-            await manager.DeleteAsync(turnContext, PayloadIdTypes.Action);
+            await manager.DeleteAsync(turnContext, DataIdTypes.Action);
 
             Assert.IsTrue(updated);
             Assert.AreEqual(0, deletedCount);
@@ -1124,13 +1124,13 @@ namespace Bot.Builder.Community.Cards.Tests
 
             turnContext.Activity.Value = new Dictionary<string, object>
             {
-                { PayloadIdTypes.GetKey(PayloadIdTypes.Action), ACTIONID3 },
+                { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID3 },
             };
 
-            await manager.DeleteAsync(turnContext, PayloadIdTypes.Action);
+            await manager.DeleteAsync(turnContext, DataIdTypes.Action);
 
             actionId = ((Dictionary<string, string>)((HeroCard)activity1.Attachments.Single().Content)
-                .Buttons.Single().Value)[PayloadIdTypes.GetKey(PayloadIdTypes.Action)];
+                .Buttons.Single().Value)[DataIdTypes.GetKey(DataIdTypes.Action)];
 
             Assert.IsTrue(updated);
             Assert.AreEqual(0, deletedCount);
@@ -1142,10 +1142,10 @@ namespace Bot.Builder.Community.Cards.Tests
 
             turnContext.Activity.Value = new Dictionary<string, object>
             {
-                { PayloadIdTypes.GetKey(PayloadIdTypes.Action), ACTIONID4 },
+                { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID4 },
             };
 
-            await manager.DeleteAsync(turnContext, PayloadIdTypes.Action);
+            await manager.DeleteAsync(turnContext, DataIdTypes.Action);
 
             Assert.IsFalse(updated);
             Assert.AreEqual(1, deletedCount, "Activity wasn't deleted even though it was empty");
@@ -1160,10 +1160,10 @@ namespace Bot.Builder.Community.Cards.Tests
             turnContext.Activity.Value = new Dictionary<string, object>
             {
                 { CHOICEINPUTID, "User-entered choice" },
-                { PayloadIdTypes.GetKey(PayloadIdTypes.Action), ACTIONID5 },
+                { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID5 },
             };
 
-            await manager.DeleteAsync(turnContext, PayloadIdTypes.Action);
+            await manager.DeleteAsync(turnContext, DataIdTypes.Action);
 
             Assert.IsTrue(updated);
             Assert.AreEqual(0, deletedCount);
@@ -1175,10 +1175,10 @@ namespace Bot.Builder.Community.Cards.Tests
 
             turnContext.Activity.Value = new Dictionary<string, object>
             {
-                { PayloadIdTypes.GetKey(PayloadIdTypes.Action), ACTIONID6 },
+                { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID6 },
             };
 
-            await manager.DeleteAsync(turnContext, PayloadIdTypes.Action);
+            await manager.DeleteAsync(turnContext, DataIdTypes.Action);
 
             Assert.IsTrue(updated);
             Assert.AreEqual(0, deletedCount, "Activity was deleted even though it still had attachments");
@@ -1194,11 +1194,11 @@ namespace Bot.Builder.Community.Cards.Tests
             turnContext.Activity.Value = new Dictionary<string, object>
             {
                 { DATEINPUTID, "User-entered date" },
-                { PayloadIdTypes.GetKey(PayloadIdTypes.Carousel), CAROUSELID },
+                { DataIdTypes.GetKey(DataIdTypes.Carousel), CAROUSELID },
             };
 
             // We are deleting the card using a carousel ID
-            await manager.DeleteAsync(turnContext, PayloadIdTypes.Card);
+            await manager.DeleteAsync(turnContext, DataIdTypes.Card);
 
             Assert.IsTrue(updated);
             Assert.AreEqual(0, deletedCount, "Activity was deleted even though it still had attachments");
@@ -1213,11 +1213,11 @@ namespace Bot.Builder.Community.Cards.Tests
 
             turnContext.Activity.Value = new Dictionary<string, object>
             {
-                { PayloadIdTypes.GetKey(PayloadIdTypes.Card), CARDID },
+                { DataIdTypes.GetKey(DataIdTypes.Card), CARDID },
             };
 
             // We are deleting the carousel using a card ID
-            await manager.DeleteAsync(turnContext, PayloadIdTypes.Carousel);
+            await manager.DeleteAsync(turnContext, DataIdTypes.Carousel);
 
             Assert.IsFalse(updated);
             Assert.AreEqual(1, deletedCount);
@@ -1231,11 +1231,11 @@ namespace Bot.Builder.Community.Cards.Tests
 
             turnContext.Activity.Value = new Dictionary<string, object>
             {
-                { PayloadIdTypes.GetKey(PayloadIdTypes.Batch), BATCHID },
+                { DataIdTypes.GetKey(DataIdTypes.Batch), BATCHID },
             };
 
             // We are deleting the carousel using a card ID
-            await manager.DeleteAsync(turnContext, PayloadIdTypes.Batch);
+            await manager.DeleteAsync(turnContext, DataIdTypes.Batch);
 
             Assert.IsFalse(updated);
             Assert.AreEqual(2, deletedCount);
@@ -1244,7 +1244,7 @@ namespace Bot.Builder.Community.Cards.Tests
             Assert.IsFalse(queue.Contains(activity6), "Activity 6 activity not removed from the queue");
             Assert.AreEqual(4, queue.Count(), "Deleted activities not removed from the queue");
 
-            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await manager.DeleteAsync(null, PayloadIdTypes.Action));
+            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await manager.DeleteAsync(null, DataIdTypes.Action));
             await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await manager.DeleteAsync(turnContext, string.Empty));
         }
 

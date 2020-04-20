@@ -4,16 +4,16 @@ using System.Linq;
 
 namespace Bot.Builder.Community.Cards.Management
 {
-    public class PayloadIdOptions
+    public class DataIdOptions
     {
         private readonly IDictionary<string, string> _ids = new Dictionary<string, string>();
 
-        public PayloadIdOptions(bool overwrite = false) => Overwrite = overwrite;
+        public DataIdOptions(bool overwrite = false) => Overwrite = overwrite;
 
-        public PayloadIdOptions(string type, bool overwrite = false)
+        public DataIdOptions(string type, bool overwrite = false)
             : this(overwrite) => _ids.Add(type, null);
 
-        public PayloadIdOptions(IEnumerable<string> types, bool overwrite = false)
+        public DataIdOptions(IEnumerable<string> types, bool overwrite = false)
             : this(overwrite)
         {
             if (types is null)
@@ -27,12 +27,12 @@ namespace Bot.Builder.Community.Cards.Management
             }
         }
 
-        private PayloadIdOptions(IDictionary<string, string> ids, bool overwrite = false)
+        private DataIdOptions(IDictionary<string, string> ids, bool overwrite = false)
             : this(overwrite) => _ids = new Dictionary<string, string>(ids);
 
         public bool Overwrite { get; set; }
 
-        public PayloadIdOptions Clone() => new PayloadIdOptions(_ids, Overwrite);
+        public DataIdOptions Clone() => new DataIdOptions(_ids, Overwrite);
 
         public IEnumerable<string> GetIdTypes() => new HashSet<string>(_ids.Keys);
 
