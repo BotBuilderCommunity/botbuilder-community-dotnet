@@ -16,11 +16,10 @@ using Newtonsoft.Json;
 namespace Bot.Builder.Community.Dialogs.Adaptive.Rest.Actions
 {
     /// <summary>
-    /// RestAction is the abstraction for accessing REST operations and their payload data types..
+    /// RestAction is the abstraction for accessing REST operations and their payload data types.
     /// </summary>
     public abstract class RestAction : Dialog, IDisposable
     {
-
         [JsonProperty("$kind")]
         public const string DeclarativeType = "Community.RestAction";
 
@@ -62,9 +61,12 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Rest.Actions
         }
 
         /// <summary>
-        /// Gets get the HTTP pipelines for the given service client.
+        /// Gets the HTTP pipelines for the given action.
         /// </summary>
         /// <returns>The client's HTTP pipeline.</returns>
+        /// <value>
+        /// The HTTP pipelines.
+        /// </value>
         public virtual IEnumerable<HttpMessageHandler> HttpMessageHandlers
         {
             get
