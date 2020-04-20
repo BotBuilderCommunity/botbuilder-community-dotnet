@@ -246,7 +246,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
             activity.ServiceUrl = _options.ServiceUrl ?? $"{alexaSystem.ApiEndpoint}?token={alexaSystem.ApiAccessToken}";
             activity.Recipient = new ChannelAccount(alexaSystem.Application.ApplicationId);
             activity.From = new ChannelAccount(alexaSystem.Person?.PersonId ?? alexaSystem.User.UserId);
-            activity.Conversation = new ConversationAccount(false, "conversation", skillRequest.Session?.SessionId ?? skillRequest.Request.RequestId);
+            activity.Conversation = new ConversationAccount(isGroup: false, id: skillRequest.Session?.SessionId ?? skillRequest.Request.RequestId);
             activity.Timestamp = skillRequest.Request.Timestamp.ToUniversalTime();
             activity.ChannelData = skillRequest;
 
