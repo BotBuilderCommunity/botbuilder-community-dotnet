@@ -2,19 +2,24 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <LangVersion>latest</LangVersion>
     <CodeAnalysisRuleSet></CodeAnalysisRuleSet>
     <Version>4.3.0</Version>
     <FileVersion>4.3.0</FileVersion>
     <AssemblyVersion>4.3.0</AssemblyVersion>
   </PropertyGroup>
 
-
   <ItemGroup>
-    <Content Include="BotConfiguration.bot">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <PackageReference Include="Bot.Builder.Community.Middleware.BestMatch" Version="4.6.4" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.7.0" />
   </ItemGroup>
 
+    <ItemGroup>
+    <Content Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Bot.Builder.Community.Middleware.BestMatch" Version="4.8.2" />
@@ -29,6 +34,5 @@
     <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="2.1.1" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" PrivateAssets="all" />
   </ItemGroup>
-
 
 </Project>
