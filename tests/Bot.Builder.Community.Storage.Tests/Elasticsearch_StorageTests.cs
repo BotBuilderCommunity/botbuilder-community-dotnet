@@ -1,15 +1,13 @@
-﻿using Bot.Builder.Community.Storage.Elasticsearch;
+﻿using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using Bot.Builder.Community.Storage.Elasticsearch;
 using Elasticsearch.Net;
 using Microsoft.Bot.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Nest;
 using Nest.JsonNetSerializer;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Bot.Builder.Community.Storage.Tests
 {
@@ -72,7 +70,7 @@ namespace Bot.Builder.Community.Storage.Tests
                 var client = new ElasticClient(connectionSettings);
                 try
                 {
-                    await client.DeleteIndexAsync(Indices.Index(config["IndexName"] + "-" + DateTime.Now.ToString("MM-dd-yyyy")));
+                    await client.Indices.DeleteAsync(Indices.Index(config["IndexName"] + "-" + DateTime.Now.ToString("MM-dd-yyyy")));
                 }
                 catch (Exception ex)
                 {
@@ -113,7 +111,7 @@ namespace Bot.Builder.Community.Storage.Tests
         [Microsoft.VisualStudio.TestTools.UnitTesting.Ignore("Ignore this test as it requires an Elasticsearch environment to run.")]
         public async Task ElasticsearchStorage_CreateObjectTest()
         {
-            await base.CreateObjectTest(storage);
+            await this.CreateObjectTest(storage);
         }
 
         [TestMethod]
@@ -121,7 +119,7 @@ namespace Bot.Builder.Community.Storage.Tests
         [Microsoft.VisualStudio.TestTools.UnitTesting.Ignore("Ignore this test as it requires an Elasticsearch environment to run.")]
         public async Task ElasticsearchStorage_ReadUnknownTest()
         {
-            await base.ReadUnknownTest(storage);
+            await this.ReadUnknownTest(storage);
         }
 
         [TestMethod]
@@ -129,7 +127,7 @@ namespace Bot.Builder.Community.Storage.Tests
         [Microsoft.VisualStudio.TestTools.UnitTesting.Ignore("Ignore this test as it requires an Elasticsearch environment to run.")]
         public async Task ElasticsearchStorage_UpdateObjectTest()
         {
-            await base.UpdateObjectTest(storage);
+            await this.UpdateObjectTest(storage);
         }
 
 
@@ -138,7 +136,7 @@ namespace Bot.Builder.Community.Storage.Tests
         [Microsoft.VisualStudio.TestTools.UnitTesting.Ignore("Ignore this test as it requires an Elasticsearch environment to run.")]
         public async Task ElasticsearchStorage_DeleteObjectTest()
         {
-            await base.DeleteObjectTest(storage);
+            await this.DeleteObjectTest(storage);
         }
 
         [TestMethod]
@@ -146,7 +144,7 @@ namespace Bot.Builder.Community.Storage.Tests
         [Microsoft.VisualStudio.TestTools.UnitTesting.Ignore("Ignore this test as it requires an Elasticsearch environment to run.")]
         public async Task ElasticsearchStorage_HandleCrazyKeys()
         {
-            await base.HandleCrazyKeys(storage);
+            await this.HandleCrazyKeys(storage);
         }
     }
 }
