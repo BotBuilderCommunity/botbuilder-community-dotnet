@@ -209,7 +209,7 @@ namespace Bot.Builder.Community.Cards.Tests
                 new Activity(),
                 MessageFactory.Attachment(new Attachment
                 {
-                    ContentType = CardConstants.AdaptiveCardContentType,
+                    ContentType = ContentTypes.AdaptiveCard,
                     Content = new AdaptiveCard(new AdaptiveSchemaVersion())
                     {
                         Actions = new List<AdaptiveAction>

@@ -98,7 +98,7 @@ namespace Bot.Builder.Community.Cards.Management
 
             CardTree.Recurse(activities, (Attachment attachment) =>
             {
-                if (attachment.ContentType == CardConstants.AdaptiveCardContentType)
+                if (attachment.ContentType == ContentTypes.AdaptiveCard)
                 {
                     attachment.Content = attachment.Content.ToJObject();
                 }
@@ -317,7 +317,7 @@ namespace Bot.Builder.Community.Cards.Management
                     // is that they won't have an "Intent" entity.
                     // This if statement uses `!= true` because we're interpreting a null entities list
                     // as confirmation of a missing "Intent" entity.
-                    if (entities?.Any(entity => entity.Type.EqualsCI(CardConstants.TypeIntent)) != true)
+                    if (entities?.Any(entity => entity.Type.EqualsCI(EntityTypes.Intent)) != true)
                     {
                         incomingData = parsedText;
                     }
@@ -329,8 +329,8 @@ namespace Bot.Builder.Community.Cards.Management
                 case Channels.Webchat:
 
                     // In Direct Line / Web Chat, button responses can be recognized by a property of channel data.
-                    CheckForChannelDataProperty(CardConstants.KeyPostBack, value);
-                    CheckForChannelDataProperty(CardConstants.KeyMessageBack, value);
+                    CheckForChannelDataProperty(ChannelData.PostBack, value);
+                    CheckForChannelDataProperty(ChannelData.MessageBack, value);
 
                     break;
 
@@ -339,14 +339,14 @@ namespace Bot.Builder.Community.Cards.Management
                     // In Kik, button responses can be recognized by a property of channel data.
                     // Note that this condition will be true because metadata will not be a C# null,
                     // even though it's a "null" JValue.
-                    CheckForChannelDataProperty(CardConstants.KeyMetadata);
+                    CheckForChannelDataProperty(ChannelData.Metadata);
 
                     break;
 
                 case Channels.Line:
 
                     // In LINE, button responses can be recognized by a property of channel data.
-                    CheckForChannelDataProperty(CardConstants.KeyLinePostback);
+                    CheckForChannelDataProperty(ChannelData.LinePostback);
 
                     break;
 
@@ -356,7 +356,7 @@ namespace Bot.Builder.Community.Cards.Management
                     // is that the channel data text does not match the activity text.
                     // This if statement uses `== false` because if the channel data is null or has no text property
                     // then we're interpreting that to mean that this is not a button response.
-                    if (channelData?.GetValue(CardConstants.KeyText)?.ToString().Equals(text) == false)
+                    if (channelData?.GetValue(ChannelData.Text)?.ToString().Equals(text) == false)
                     {
                         incomingData = parsedText;
                     }
@@ -366,14 +366,14 @@ namespace Bot.Builder.Community.Cards.Management
                 case Channels.Slack:
 
                     // In Slack, button responses can be recognized by a property of channel data.
-                    CheckForChannelDataProperty(CardConstants.KeyPayload);
+                    CheckForChannelDataProperty(ChannelData.Payload);
 
                     break;
 
                 case Channels.Telegram:
 
                     // In Telegram, button responses can be recognized by a property of channel data.
-                    CheckForChannelDataProperty(CardConstants.KeyCallbackQuery);
+                    CheckForChannelDataProperty(ChannelData.CallbackQuery);
 
                     break;
             }

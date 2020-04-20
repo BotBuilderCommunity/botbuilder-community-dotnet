@@ -156,7 +156,7 @@ namespace Bot.Builder.Community.Cards.Management
                 var matchResult = await GetDataMatchAsync(turnContext, cancellationToken).ConfigureAwait(false);
 
                 if (matchResult.SavedActivity != null
-                    && matchResult.SavedAttachment?.ContentType.EqualsCI(CardConstants.AdaptiveCardContentType) == true)
+                    && matchResult.SavedAttachment?.ContentType.EqualsCI(ContentTypes.AdaptiveCard) == true)
                 {
                     var changed = false;
 
@@ -170,7 +170,7 @@ namespace Bot.Builder.Community.Cards.Management
                                 var id = AdaptiveCardUtil.GetAdaptiveInputId(input);
                                 var inputValue = data.GetValue(id);
 
-                                input.SetValue(CardConstants.KeyValue, inputValue);
+                                input.SetValue(AdaptiveProperties.Value, inputValue);
 
                                 changed = true;
                             }
@@ -236,7 +236,7 @@ namespace Bot.Builder.Community.Cards.Management
 
                 if (dataIdType == DataIdTypes.Action && matchedActivity != null && matchedAttachment != null && matchedAction != null)
                 {
-                    if (matchedAttachment.ContentType.EqualsCI(CardConstants.AdaptiveCardContentType))
+                    if (matchedAttachment.ContentType.EqualsCI(ContentTypes.AdaptiveCard))
                     {
                         // For Adaptive Cards
                         if (matchedAction is JObject savedSubmitAction)
@@ -252,8 +252,8 @@ namespace Bot.Builder.Community.Cards.Management
                             shouldUpdateActivity = true;
 
                             // Check if the Adaptive Card is now empty
-                            if (adaptiveCard.GetValue(CardConstants.KeyBody).IsNullishOrEmpty()
-                                && adaptiveCard.GetValue(CardConstants.KeyActions).IsNullishOrEmpty())
+                            if (adaptiveCard.GetValue(AdaptiveProperties.Body).IsNullishOrEmpty()
+                                && adaptiveCard.GetValue(AdaptiveProperties.Actions).IsNullishOrEmpty())
                             {
                                 // If the card is now empty, execute the next if block to delete it
                                 dataIdType = DataIdTypes.Card;
@@ -367,7 +367,7 @@ namespace Bot.Builder.Community.Cards.Management
             {
                 foreach (var savedAttachment in savedActivity.Attachments.WhereNotNull())
                 {
-                    if (savedAttachment.ContentType.EqualsCI(CardConstants.AdaptiveCardContentType))
+                    if (savedAttachment.ContentType.EqualsCI(ContentTypes.AdaptiveCard))
                     {
                         if (couldBeFromAdaptiveCard && savedAttachment.Content.ToJObject() is JObject savedAdaptiveCard)
                         {
@@ -409,7 +409,7 @@ namespace Bot.Builder.Community.Cards.Management
                                     (JObject savedSubmitAction) =>
                                     {
                                         var submitActionData = savedSubmitAction.GetValue(
-                                            CardConstants.KeyData) ?? new JObject();
+                                            AdaptiveProperties.Data) ?? new JObject();
 
                                         if (JToken.DeepEquals(submitActionData, dataWithoutInputValues))
                                         {

@@ -21,17 +21,17 @@ namespace Bot.Builder.Community.Cards
             container?.Descendants().Where(token =>
                 !token.Ancestors().Any(ancestor =>
                     (ancestor as JProperty)?.Name.Equals(
-                        CardConstants.KeyData) == true));
+                        AdaptiveProperties.Data) == true));
 
         internal static IEnumerable<JObject> GetAdaptiveInputs(JContainer container)
         {
             return NonDataDescendants(container)?
                 .Select(token => token is JObject element
-                    && InputTypes.Contains(element.GetValue(CardConstants.KeyType)?.ToString())
-                    && element.GetValue(CardConstants.KeyId) != null ? element : null)
+                    && InputTypes.Contains(element.GetValue(AdaptiveProperties.Type)?.ToString())
+                    && element.GetValue(AdaptiveProperties.Id) != null ? element : null)
                 .WhereNotNull();
         }
 
-        internal static string GetAdaptiveInputId(JObject input) => input?.GetValue(CardConstants.KeyId)?.ToString();
+        internal static string GetAdaptiveInputId(JObject input) => input?.GetValue(AdaptiveProperties.Id)?.ToString();
     }
 }

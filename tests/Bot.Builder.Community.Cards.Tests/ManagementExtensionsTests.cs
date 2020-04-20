@@ -472,13 +472,13 @@ namespace Bot.Builder.Community.Cards.Tests
                     },
                     new Attachment
                     {
-                        ContentType = CardConstants.AdaptiveCardContentType,
+                        ContentType = ContentTypes.AdaptiveCard,
                         Content = jObject,
                     },
                 }),
                 MessageFactory.Attachment(new Attachment
                 {
-                    ContentType = CardConstants.AdaptiveCardContentType,
+                    ContentType = ContentTypes.AdaptiveCard,
                     Content = new HeroCard(buttons: new List<CardAction>
                     {
                         new CardAction(ActionTypes.MessageBack, value: new JObject(), text: "{}"),
@@ -608,7 +608,7 @@ namespace Bot.Builder.Community.Cards.Tests
                     }).ToAttachment(),
                     new Attachment
                     {
-                        ContentType = CardConstants.AdaptiveCardContentType,
+                        ContentType = ContentTypes.AdaptiveCard,
                         Content = new AudioCard(buttons: new List<CardAction>
                         {
                             new CardAction(ActionTypes.PostBack, value: new Dictionary<string, string>
@@ -974,7 +974,7 @@ namespace Bot.Builder.Community.Cards.Tests
 
             Assert.IsNull(turnContext.GetIncomingActionData());
 
-            turnContext = GenerateTurnContext(Channels.Cortana, parsedJson, json, null, CardConstants.TypeIntent);
+            turnContext = GenerateTurnContext(Channels.Cortana, parsedJson, json, null, EntityTypes.Intent);
 
             Assert.AreSame(parsedJson, turnContext.GetIncomingActionData());
 
@@ -988,23 +988,23 @@ namespace Bot.Builder.Community.Cards.Tests
 
             Assert.AreSame(parsedJson, turnContext.GetIncomingActionData());
 
-            turnContext = GenerateTurnContext(Channels.Emulator, null, notJson, GenerateChannelData(CardConstants.KeyPostBack));
+            turnContext = GenerateTurnContext(Channels.Emulator, null, notJson, GenerateChannelData(ChannelData.PostBack));
 
             Assert.IsNull(turnContext.GetIncomingActionData());
 
-            turnContext = GenerateTurnContext(Channels.Emulator, parsedJson, notJson, GenerateChannelData(CardConstants.KeyPostBack));
+            turnContext = GenerateTurnContext(Channels.Emulator, parsedJson, notJson, GenerateChannelData(ChannelData.PostBack));
 
             Assert.AreSame(parsedJson, turnContext.GetIncomingActionData());
 
-            turnContext = GenerateTurnContext(Channels.Directline, json, null, GenerateChannelData(CardConstants.KeyPostBack));
+            turnContext = GenerateTurnContext(Channels.Directline, json, null, GenerateChannelData(ChannelData.PostBack));
 
             Assert.IsTrue(JToken.DeepEquals(parsedJson, (JObject)turnContext.GetIncomingActionData()));
 
-            turnContext = GenerateTurnContext(Channels.Webchat, null, json, GenerateChannelData(CardConstants.KeyMessageBack));
+            turnContext = GenerateTurnContext(Channels.Webchat, null, json, GenerateChannelData(ChannelData.MessageBack));
 
             Assert.IsTrue(JToken.DeepEquals(parsedJson, (JObject)turnContext.GetIncomingActionData()));
 
-            turnContext = GenerateTurnContext(Channels.Webchat, null, json, JsonConvert.SerializeObject(GenerateChannelData(CardConstants.KeyMessageBack)));
+            turnContext = GenerateTurnContext(Channels.Webchat, null, json, JsonConvert.SerializeObject(GenerateChannelData(ChannelData.MessageBack)));
 
             Assert.IsTrue(JToken.DeepEquals(parsedJson, (JObject)turnContext.GetIncomingActionData()));
 
@@ -1025,11 +1025,11 @@ namespace Bot.Builder.Community.Cards.Tests
                 Assert.IsTrue(JToken.DeepEquals(parsedJson, (JObject)turnContext.GetIncomingActionData()));
             }
 
-            AssertBasedOnChannelData(Channels.Kik, CardConstants.KeyMetadata);
+            AssertBasedOnChannelData(Channels.Kik, ChannelData.Metadata);
 
             // LINE
 
-            AssertBasedOnChannelData(Channels.Line, CardConstants.KeyLinePostback);
+            AssertBasedOnChannelData(Channels.Line, ChannelData.LinePostback);
 
             // SKYPE
 
@@ -1037,25 +1037,25 @@ namespace Bot.Builder.Community.Cards.Tests
 
             Assert.AreSame(parsedJson, turnContext.GetIncomingActionData());
 
-            turnContext = GenerateTurnContext(Channels.Skype, null, json, GenerateChannelData(CardConstants.KeyText, json));
+            turnContext = GenerateTurnContext(Channels.Skype, null, json, GenerateChannelData(ChannelData.Text, json));
 
             Assert.IsNull(turnContext.GetIncomingActionData());
 
-            turnContext = GenerateTurnContext(Channels.Skype, null, notJson, GenerateChannelData(CardConstants.KeyText, json));
+            turnContext = GenerateTurnContext(Channels.Skype, null, notJson, GenerateChannelData(ChannelData.Text, json));
 
             Assert.IsNull(turnContext.GetIncomingActionData());
 
-            turnContext = GenerateTurnContext(Channels.Skype, null, json, GenerateChannelData(CardConstants.KeyText, notJson));
+            turnContext = GenerateTurnContext(Channels.Skype, null, json, GenerateChannelData(ChannelData.Text, notJson));
 
             Assert.IsTrue(JToken.DeepEquals(parsedJson, (JObject)turnContext.GetIncomingActionData()));
 
             // SLACK
 
-            AssertBasedOnChannelData(Channels.Slack, CardConstants.KeyPayload);
+            AssertBasedOnChannelData(Channels.Slack, ChannelData.Payload);
 
             // TELEGRAM
 
-            AssertBasedOnChannelData(Channels.Telegram, CardConstants.KeyCallbackQuery);
+            AssertBasedOnChannelData(Channels.Telegram, ChannelData.CallbackQuery);
 
             // ANY CHANNELS NOT LISTED
 

@@ -13,7 +13,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
 
         private static readonly Dictionary<string, TreeNodeType> _cardTypes = new Dictionary<string, TreeNodeType>(StringComparer.OrdinalIgnoreCase)
         {
-            { CardConstants.AdaptiveCardContentType, TreeNodeType.AdaptiveCard },
+            { ContentTypes.AdaptiveCard, TreeNodeType.AdaptiveCard },
             { AnimationCard.ContentType, TreeNodeType.AnimationCard },
             { AudioCard.ContentType, TreeNodeType.AudioCard },
             { HeroCard.ContentType, TreeNodeType.HeroCard },
@@ -67,9 +67,9 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                             next(
                                 AdaptiveCardUtil.NonDataDescendants(cardJObject)
                                     .Select(token => token is JObject element
-                                            && element.GetValue(CardConstants.KeyType) is JToken type
+                                            && element.GetValue(AdaptiveProperties.Type) is JToken type
                                             && type.Type == JTokenType.String
-                                            && type.ToString().Equals(CardConstants.ActionSubmit)
+                                            && type.ToString().Equals(AdaptiveActionTypes.Submit)
                                         ? element : null)
                                     .WhereNotNull(), TreeNodeType.SubmitActionList);
                         }, true);
@@ -113,7 +113,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                     return action.ToJObjectAndBack(
                         actionJObject =>
                         {
-                            if (actionJObject.GetValue(CardConstants.KeyData) is JObject data)
+                            if (actionJObject.GetValue(AdaptiveProperties.Data) is JObject data)
                             {
                                 next(data, TreeNodeType.ActionData);
                             }
@@ -275,9 +275,9 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                         // if there isn't one already
                         value = value.ToJObjectAndBack(submitAction =>
                         {
-                            if (submitAction.GetValue(CardConstants.KeyData).IsNullish())
+                            if (submitAction.GetValue(AdaptiveProperties.Data).IsNullish())
                             {
-                                submitAction.SetValue(CardConstants.KeyData, new JObject());
+                                submitAction.SetValue(AdaptiveProperties.Data, new JObject());
                             }
                         });
                     }
