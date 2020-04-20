@@ -60,15 +60,21 @@ namespace Bot.Builder.Community.Cards.Management
         {
             BotAssert.ContextNotNull(turnContext);
 
+            if (next is null)
+            {
+                throw new ArgumentNullException(nameof(next));
+            }
+
             var options = GetOptionsForChannel(turnContext.Activity.ChannelId);
+            var idTypes = options.IdOptions is null ? new List<string> { PayloadIdTypes.Action } : options.IdOptions.GetIdTypes();
+            var isTracking = options.IdTrackingStyle != TrackingStyle.None;
+            var shouldDelete = options.AutoDeleteOnAction && idTypes.Any();
             var shouldProceed = true;
 
             // Is this activity from a button?
-            if (turnContext.GetIncomingPayload() is JObject payload)
+            if ((isTracking || shouldDelete) && turnContext.GetIncomingPayload() is JObject payload)
             {
-                var idTypes = options.IdOptions is null ? new List<string> { PayloadIdTypes.Action } : options.IdOptions.GetIdTypes();
-
-                if (options.IdTrackingStyle != TrackingStyle.None)
+                if (isTracking)
                 {
                     // Whether we should proceed by default depends on the ID-tracking style
                     shouldProceed = options.IdTrackingStyle == TrackingStyle.TrackDisabled;
@@ -103,7 +109,7 @@ namespace Bot.Builder.Community.Cards.Management
                     }
                 }
 
-                if (options.AutoDeleteOnAction && idTypes.Any())
+                if (shouldDelete)
                 {
                     // If there are multiple ID types in use,
                     // just delete the one that represents the largest scope
@@ -116,7 +122,7 @@ namespace Bot.Builder.Community.Cards.Management
             // TODO: Add update and delete handlers
             turnContext.OnSendActivities(OnSendActivities);
 
-            if (shouldProceed && next != null)
+            if (shouldProceed)
             {
                 // If this is not called, the middleware chain is effectively "short-circuited"
                 await next(cancellationToken).ConfigureAwait(false);
