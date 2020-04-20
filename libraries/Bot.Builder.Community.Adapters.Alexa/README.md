@@ -3,7 +3,7 @@
 ## Build status
 | Branch | Status | Recommended NuGet package version |
 | ------ | ------ | ------ |
-| master | [![Build status](https://ci.appveyor.com/api/projects/status/b9123gl3kih8x9cb?svg=true)](https://ci.appveyor.com/project/garypretty/botbuilder-community) | Preview [available via MyGet (version 4.6.4-beta0056)](https://www.myget.org/feed/botbuilder-community-dotnet/package/nuget/Bot.Builder.Community.Adapters.Alexa/4.6.4-beta0056) |
+| master | [![Build status](https://ci.appveyor.com/api/projects/status/b9123gl3kih8x9cb?svg=true)](https://ci.appveyor.com/project/garypretty/botbuilder-community) | Preview [available via MyGet (version 4.8.2-beta0111)](https://www.myget.org/feed/botbuilder-community-dotnet/package/nuget/Bot.Builder.Community.Adapters.Alexa/4.8.2-beta0111) |
 
 ## Description
 
@@ -18,24 +18,24 @@ Incoming Alexa Skill requests are transformed, by the adapter, into Bot Builder 
 The adapter currently supports the following scenarios;
 
 * Support for voice based Alexa Skills
+* Ability to send Alexa Cards
 * Support for the available display directives for Echo Show / Spot devices, with support for the new Fire Tablets coming very soon
-* Support for Alexa Cards
 * Support for Audio / Video directives
-* TurnContext extensions allowing the developer to;
-    * Send Alexa Progressive Updates
-    * Specify Alexa RePrompt speech / text
-    * Add to / access Alexa Session Attributes (similar to TurnState in Bot Builder SDK)
-    * Check if a device supports audio or audio and display
 * Full incoming request from Alexa is added to the incoming activity as ChannelData
-* Validation of incoming Alexa requests (required for certification)
+* Validation of incoming Alexa requests (required for certification), including validation the request has come from a specific skill (validated against the ID)
 
 ## Installation
 
-The preview of the next version of the Alexa Adapter is [available via MyGet (version 4.6.4-beta0036)](https://www.myget.org/feed/botbuilder-community-dotnet/package/nuget/Bot.Builder.Community.Adapters.Alexa/4.6.4-beta0036).
+The preview of the next version of the Alexa Adapter requires two packages, both available on MyGet.
+
+Bot.Builder.Community.Adapters.Alexa - https://www.myget.org/feed/botbuilder-community-dotnet/package/nuget/Bot.Builder.Community.Adapters.Alexa/4.8.2-beta0111
+Bot.Builder.Community.Adapters.Alexa.Core - https://www.myget.org/feed/botbuilder-community-dotnet/package/nuget/Bot.Builder.Community.Adapters.Alexa.Core/4.8.2-beta0111
 
 To install into your project use the following command in the package manager.  If you wish to use the Visual Studio package manager, then add https://www.myget.org/F/botbuilder-community-dotnet/api/v3/index.json as an additional package source.
 ```
-    PM> Install-Package Bot.Builder.Community.Adapters.Alexa -Version 4.6.4-beta0036 -Source https://www.myget.org/F/botbuilder-community-dotnet/api/v3/index.json
+    PM> Install-Package Bot.Builder.Community.Adapters.Alexa -Version 4.8.2-beta0111 -Source https://www.myget.org/F/botbuilder-community-dotnet/api/v3/index.json
+    
+        PM> Install-Package Bot.Builder.Community.Adapters.Alexa.Core -Version 4.8.2-beta0111 -Source https://www.myget.org/F/botbuilder-community-dotnet/api/v3/index.json
 ```
 
 ## Sample
@@ -98,19 +98,7 @@ In this article you will learn how to connect a bot to an Alexa skill using the 
                     ]
                 },
                 {
-                    "name": "AMAZON.CancelIntent",
-                    "samples": []
-                },
-                {
-                    "name": "AMAZON.HelpIntent",
-                    "samples": []
-                },
-                {
                     "name": "AMAZON.StopIntent",
-                    "samples": []
-                },
-                {
-                    "name": "AMAZON.NavigateHomeIntent",
                     "samples": []
                 }
             ],
@@ -149,7 +137,17 @@ Before you can complete the configuration of your Alexa skill, you need to wire 
 
 #### Install the Alexa adapter NuGet package
 
-Add  the [Bot.Builder.Community.Adapters.Alexa](https://www.nuget.org/packages/Bot.Builder.Community.Adapters.Alexa/) NuGet package. For more information on using NuGet, see [Install and manage packages in Visual Studio](https://aka.ms/install-manage-packages-vs)
+The preview of the next version of the Alexa Adapter requires two packages, both available on MyGet.
+
+Bot.Builder.Community.Adapters.Alexa - https://www.myget.org/feed/botbuilder-community-dotnet/package/nuget/Bot.Builder.Community.Adapters.Alexa/4.8.2-beta0111
+Bot.Builder.Community.Adapters.Alexa.Core - https://www.myget.org/feed/botbuilder-community-dotnet/package/nuget/Bot.Builder.Community.Adapters.Alexa.Core/4.8.2-beta0111
+
+To install into your project use the following command in the package manager.  If you wish to use the Visual Studio package manager, then add https://www.myget.org/F/botbuilder-community-dotnet/api/v3/index.json as an additional package source.
+```
+    PM> Install-Package Bot.Builder.Community.Adapters.Alexa -Version 4.8.2-beta0111 -Source https://www.myget.org/F/botbuilder-community-dotnet/api/v3/index.json
+    
+        PM> Install-Package Bot.Builder.Community.Adapters.Alexa.Core -Version 4.8.2-beta0111 -Source https://www.myget.org/F/botbuilder-community-dotnet/api/v3/index.json
+```
 
 #### Create an Alexa adapter class
 
@@ -170,8 +168,6 @@ Create a new class that inherits from the ***AlexaAdapter*** class. This class w
             await turnContext.SendActivityAsync("The bot encountered an error or bug.");
             await turnContext.SendActivityAsync("To continue to run this bot, please fix the bot source code.");
         };
-
-        Use(new AlexaRequestToMessageEventActivitiesMiddleware());
     }
 }
 ```
@@ -180,7 +176,6 @@ You will also need to add the following using statements.
 
 ```cs
 using Bot.Builder.Community.Adapters.Alexa;
-using Bot.Builder.Community.Adapters.Alexa.Middleware;
 using Microsoft.Extensions.Logging;
 ```
 
@@ -239,7 +234,7 @@ public void ConfigureServices(IServiceCollection services)
     // Create the default Bot Framework Adapter (used for Azure Bot Service channels and emulator).
     services.AddSingleton<IBotFrameworkHttpAdapter, BotFrameworkAdapterWithErrorHandler>();
 
-    // Create the Slack Adapter
+    // Create the Alexa Adapter
     services.AddSingleton<AlexaAdapter, AlexaAdapterWithErrorHandler>();
 
     // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
@@ -302,11 +297,13 @@ await turnContext.SendActivityAsync("Your message text", inputHint: InputHints.E
 
 You can alter the default behavior to leave the session open and listen for further input by default by setting the ***ShouldEndSessionByDefault*** setting on the ***AlexaAdapterOptions*** class when creating your adapter, as shown below.
 
+Here you can also determine if the source of incoming requests should be validating as being from the Alexa service and also provide your Skill ID in order to have that checked against the incoming request.
+
 ```csharp
     public class AlexaAdapterWithErrorHandler : AlexaAdapter
     {
-        public AlexaAdapterWithErrorHandler(ILogger<AlexaAdapter> logger)
-            : base(new AlexaAdapterOptions() { ShouldEndSessionByDefault = false }, logger)
+public AlexaAdapterWithErrorHandler(ILogger<AlexaAdapter> logger)
+            : base(new AlexaAdapterOptions() { ShouldEndSessionByDefault = false, ValidateIncomingAlexaRequests = false, AlexaSkillId = "XXXX" }, logger)
     {
         OnTurnError = async (turnContext, exception) =>
         {
@@ -347,17 +344,20 @@ To combat this issue the adapter will automatically concatenate multiple activit
 
 #### Sending an Alexa card as part of your response
 
-You can include an Alexa card in your response, which is shown on devices that have a screen and / or in the activity feed in the Alexa app.  To do this you include an attachment on your outgoing activity.
+If you send a Bot Framework Hero Card on your outgoing activity, the adapter will automatically convert this to a native Alexa card for you, which is shown on devices that have a screen and / or in the activity feed in the Alexa app.
+
+You can also include an Alexa card in your response, by creating a SimpleCard object and use the .ToAttachment() extension method to create an attachment, which can be added to the attachments collection on your outgoing activity.
 
 ```cs
-var activityWithCard = MessageFactory.Text($"Ok, I included a simple card.");
+ var activityWithCard = MessageFactory.Text($"Ok, I included a simple card.");
+ 
                     activityWithCard.Attachments.Add(
-                        new CardAttachment(
-                            new SimpleCard()
+                        new SimpleCard()
                             {
                                 Title = "This is a simple card",
                                 Content = "This is the simple card content"
-                            }));
+                            }.ToAttachment());
+                            
                     await turnContext.SendActivityAsync(activityWithCard, cancellationToken);
 ```
 
@@ -365,14 +365,14 @@ var activityWithCard = MessageFactory.Text($"Ok, I included a simple card.");
 
 You can send Alexa display directives, which will show structured information on devices with a screen, such as the Echo Show or Echo Spot. If you wish to send display directives, you need to enable the **Display Interface** setting within the **Interfaces** section within the Alexa Skills Console.
 
-To send a display directive, you send a ***DirectiveAttachment*** on your outgoing activity. On the attachment you set the template that you would like to use and populate the required fields.
+To send a display directive, you create a DisplayRenderTemplateDirective and use the .ToAttachment() extension method to create an attachment, which can be added to the attachments collection on your outgoing activity. On the DiaplyRenderTemplateDirective you set the template that you would like to use and populate the required fields.
 
 You can find information about the various display templates available and their required properties at [https://developer.amazon.com/en-US/docs/alexa/custom-skills/display-template-reference.html](https://developer.amazon.com/en-US/docs/alexa/custom-skills/display-template-reference.html).
 
 ```cs
-var activityWithDisplayDirective = MessageFactory.Text($"Ok, I included a display directive`.");
+var activityWithDisplayDirective = MessageFactory.Text($"Ok, I included a display directive.");
+
                     activityWithDisplayDirective.Attachments.Add(
-                        new DirectiveAttachment(
                             new DisplayRenderTemplateDirective()
                             {
                                 Template = new BodyTemplate1()
@@ -384,7 +384,7 @@ var activityWithDisplayDirective = MessageFactory.Text($"Ok, I included a displa
                                         {
                                             new ImageSource()
                                             {
-                                                Url = "https://via.placeholder.com/576.PNG?raw=true/09f/fff",
+                                                Url = "https://via.placeholder.com/576.png/09f/fff",
                                             }
                                         }
                                     },
@@ -394,5 +394,7 @@ var activityWithDisplayDirective = MessageFactory.Text($"Ok, I included a displa
                                     },
                                     Title = "Test title",
                                 }
-                            }));
+                            }.ToAttachment());
+                            
+                    await turnContext.SendActivityAsync(activityWithDisplayDirective, cancellationToken);
 ```
