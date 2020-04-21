@@ -24,7 +24,7 @@
     <PackageReference Include="Microsoft.Bot.Builder" Version="4.8.0" />
     <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.8.0" />
     <PackageReference Include="Microsoft.Net.Http.Headers" Version="2.1.1" />
-	  <PackageReference Include="Microsoft.Bot.Builder.Community.Adapters.Alexa.Core" Condition=" '$(IsBuildServer)' == '' " Version="4.0.0-local" />
+	<PackageReference Include="Microsoft.Bot.Builder.Community.Adapters.Alexa.Core" Condition=" '$(IsBuildServer)' == '' " Version="1.0.0" />
     <PackageReference Include="Microsoft.Bot.Builder.Community.Adapters.Alexa.Core" Condition=" '$(IsBuildServer)' != '' " Version="$(gv.GitVersion.NuGetVersion)" />
   </ItemGroup>
 
