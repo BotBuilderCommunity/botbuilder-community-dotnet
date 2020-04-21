@@ -53,7 +53,7 @@ steps:
 - task: DotNetCoreCLI@2
   displayName: dotnet pack
   inputs:
-    projects: '*/libraries/**/*.csproj'
+    packagesToPack: 'libraries/*/*.csproj'
     command: pack
     packDirectory: '$(Build.ArtifactStagingDirectory)/packages'
     configuration: '$(buildConfiguration)'
