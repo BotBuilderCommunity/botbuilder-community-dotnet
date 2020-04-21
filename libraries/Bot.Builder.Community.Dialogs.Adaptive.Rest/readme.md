@@ -22,7 +22,7 @@ Available via NuGet package [Bot.Builder.Community.Dialogs.Adaptive.Rest](https:
 
 Install into your project using the following command in the package manager;
 ```
-    PM> Install-Package Bot.Builder.Community.Dialogs.Adaptive.Dialogs.Rest
+    PM> Install-Package Bot.Builder.Community.Dialogs.Adaptive.Rest
 ```
 
 ### Usage
@@ -56,7 +56,7 @@ To use the Action, create a new class inherited from RestAction.
         {
         }
 
-		public async override Task<DialogTurnResult> BeginDialogAsync(DialogContext dc, object options = null, CancellationToken cancellationToken = default)
+        public async override Task<DialogTurnResult> BeginDialogAsync(DialogContext dc, object options = null, CancellationToken cancellationToken = default)
         {
 			... Do Stuff ...
 		}
@@ -76,7 +76,7 @@ Once you have created the instance of your RestAction implementation, you can ad
                         Actions = new List<Dialog>() {
                             new GetPetByIdAction() {
                                 BaseUrl = "=settings.baseUrl",
-								PetId = "=turn.petId",
+                                PetId = "=turn.petId",
                                 resultProperty = "conversation.currentPet",
                             },
                             new SendActivity("# Pet name of id ${turn.petId} is ${conversation.currentPet.name"),
