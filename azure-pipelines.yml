@@ -27,12 +27,6 @@ steps:
     additionalArguments: '/output BuildServer'
 
 - task: DotNetCoreCLI@2
-  displayName: Restore
-  inputs:
-    command: restore
-    projects: 'Bot.Builder.Community.sln'
-
-- task: DotNetCoreCLI@2
   displayName: dotnet build
   inputs:
     command: build
@@ -49,6 +43,12 @@ steps:
     configuration: '$(buildConfiguration)'
     nobuild: true
   condition: succeeded()
+
+- task: DotNetCoreCLI@2
+  displayName: Restore
+  inputs:
+    command: restore
+    projects: 'Bot.Builder.Community.sln'
 
 - task: DotNetCoreCLI@2
   displayName: dotnet pack
