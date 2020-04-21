@@ -2,17 +2,22 @@
 
 namespace Bot.Builder.Community.Cards.Management
 {
+    /// <summary>
+    /// An action data ID that can identify the action, card, carousel, or batch the data came from.
+    /// This class represents a sort of key/value pair where the key can be accessed in a shortened
+    /// form (the data ID type) or a longer form (the key). The reason the key is longer is so that it
+    /// will be less likely to conflict with other property names in the action data.
+    /// </summary>
     public class DataId : DataItem, IEquatable<DataId>
     {
         public DataId(string type, string value)
-            : base(value)
+            : base(type, value)
         {
-            Type = string.IsNullOrWhiteSpace(type) ? throw new ArgumentNullException(nameof(type)) : type.Trim();
         }
 
-        public string Type { get; }
+        public string Type => Name;
 
-        public override string Key => GetKey(Type);
+        public override string Key => GetKey(Name);
 
         public static bool operator ==(DataId left, DataId right) => left.Equals(right);
 
