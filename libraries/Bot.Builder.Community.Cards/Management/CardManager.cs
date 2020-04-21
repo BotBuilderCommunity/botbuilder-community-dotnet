@@ -41,7 +41,7 @@ namespace Bot.Builder.Community.Cards.Management
 
         public async Task EnableIdAsync(
             ITurnContext turnContext,
-            DataItem dataId,
+            DataId dataId,
             TrackingStyle style = TrackingStyle.TrackEnabled,
             CancellationToken cancellationToken = default)
         {
@@ -65,7 +65,7 @@ namespace Bot.Builder.Community.Cards.Management
 
         public async Task DisableIdAsync(
             ITurnContext turnContext,
-            DataItem dataId,
+            DataId dataId,
             TrackingStyle style = TrackingStyle.TrackEnabled,
             CancellationToken cancellationToken = default)
         {
@@ -87,7 +87,7 @@ namespace Bot.Builder.Community.Cards.Management
             }
         }
 
-        public async Task TrackIdAsync(ITurnContext turnContext, DataItem dataId, CancellationToken cancellationToken = default)
+        public async Task TrackIdAsync(ITurnContext turnContext, DataId dataId, CancellationToken cancellationToken = default)
         {
             BotAssert.ContextNotNull(turnContext);
 
@@ -98,10 +98,10 @@ namespace Bot.Builder.Community.Cards.Management
 
             var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
 
-            state.DataIdsByType.InitializeKey(dataId.Key, new HashSet<string>()).Add(dataId.Value);
+            state.DataIdsByType.InitializeKey(dataId.Type, new HashSet<string>()).Add(dataId.Value);
         }
 
-        public async Task ForgetIdAsync(ITurnContext turnContext, DataItem dataId, CancellationToken cancellationToken = default)
+        public async Task ForgetIdAsync(ITurnContext turnContext, DataId dataId, CancellationToken cancellationToken = default)
         {
             BotAssert.ContextNotNull(turnContext);
 
@@ -112,7 +112,7 @@ namespace Bot.Builder.Community.Cards.Management
 
             var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
 
-            if (state.DataIdsByType.TryGetValue(dataId.Key, out var ids))
+            if (state.DataIdsByType.TryGetValue(dataId.Type, out var ids))
             {
                 ids?.Remove(dataId.Value);
             }
@@ -210,7 +210,7 @@ namespace Bot.Builder.Community.Cards.Management
             {
                 if (turnContext.GetIncomingActionData().ToJObject().GetIdFromActionData(DataIdTypes.Batch) is string batchId)
                 {
-                    var toDelete = new DataItem(DataIdTypes.Batch, batchId);
+                    var toDelete = new DataId(DataIdTypes.Batch, batchId);
 
                     // Iterate over a copy of the set so the original can be modified
                     foreach (var activity in state.SavedActivities.ToList())

@@ -157,8 +157,8 @@ namespace Bot.Builder.Community.Cards.Tests
 
             var jObject = new JObject();
 
-            var json = $"{{'{DataIdTypes.GetKey(DataIdTypes.Card)}': '{CARDID}',"
-                         + $" '{DataIdTypes.GetKey(DataIdTypes.Carousel)}': '{CAROUSELID}'}}";
+            var json = $"{{'{DataId.GetKey(DataIdTypes.Card)}': '{CARDID}',"
+                         + $" '{DataId.GetKey(DataIdTypes.Carousel)}': '{CAROUSELID}'}}";
 
             var animationCard = new AnimationCard();
 
@@ -225,7 +225,7 @@ namespace Bot.Builder.Community.Cards.Tests
                     {
                         Data = new Dictionary<string, object>
                         {
-                            { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID },
+                            { DataId.GetKey(DataIdTypes.Action), ACTIONID },
                         },
                     },
                     new AdaptiveShowCardAction
@@ -451,8 +451,8 @@ namespace Bot.Builder.Community.Cards.Tests
                     {
                         Data = new Dictionary<string, object>
                         {
-                            { DataIdTypes.GetKey(DataIdTypes.Batch), BATCHID },
-                            { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID },
+                            { DataId.GetKey(DataIdTypes.Batch), BATCHID },
+                            { DataId.GetKey(DataIdTypes.Action), ACTIONID },
                         }
                     }
                 }
@@ -584,7 +584,7 @@ namespace Bot.Builder.Community.Cards.Tests
                     {
                         Data = new Dictionary<string, string>
                         {
-                            { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID },
+                            { DataId.GetKey(DataIdTypes.Action), ACTIONID },
                         },
                     },
                 },
@@ -603,7 +603,7 @@ namespace Bot.Builder.Community.Cards.Tests
                     {
                         new CardAction(ActionTypes.PostBack, value: new Dictionary<string, string>
                         {
-                            { DataIdTypes.GetKey(DataIdTypes.Card), CARDID },
+                            { DataId.GetKey(DataIdTypes.Card), CARDID },
                         }),
                     }).ToAttachment(),
                     new Attachment
@@ -613,7 +613,7 @@ namespace Bot.Builder.Community.Cards.Tests
                         {
                             new CardAction(ActionTypes.PostBack, value: new Dictionary<string, string>
                             {
-                                { DataIdTypes.GetKey(DataIdTypes.Card), CARDID2 },
+                                { DataId.GetKey(DataIdTypes.Card), CARDID2 },
                             }),
                         }),
                     },
@@ -624,7 +624,7 @@ namespace Bot.Builder.Community.Cards.Tests
                         {
                             new CardAction(ActionTypes.PostBack, value: new Dictionary<string, string>
                             {
-                                { DataIdTypes.GetKey(DataIdTypes.Card), CAROUSELID },
+                                { DataId.GetKey(DataIdTypes.Card), CAROUSELID },
                             }),
                         }),
                     },
@@ -633,17 +633,17 @@ namespace Bot.Builder.Community.Cards.Tests
                 {
                     new CardAction(ActionTypes.ImBack, value: new Dictionary<string, string>
                     {
-                        { DataIdTypes.GetKey(DataIdTypes.Carousel), CAROUSELID2 },
+                        { DataId.GetKey(DataIdTypes.Carousel), CAROUSELID2 },
                     }),
                     new CardAction(ActionTypes.PostBack, value: new Dictionary<string, string>
                     {
-                        { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID2 },
-                        { DataIdTypes.GetKey(DataIdTypes.Batch), BATCHID },
+                        { DataId.GetKey(DataIdTypes.Action), ACTIONID2 },
+                        { DataId.GetKey(DataIdTypes.Batch), BATCHID },
                     }),
                     new CardAction(ActionTypes.MessageBack, value: new Dictionary<string, string>
                     {
-                        { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID },
-                        { DataIdTypes.GetKey(DataIdTypes.Batch), BATCHID2 },
+                        { DataId.GetKey(DataIdTypes.Action), ACTIONID },
+                        { DataId.GetKey(DataIdTypes.Batch), BATCHID2 },
                     }),
                 }).ToAttachment()),
             };
@@ -652,14 +652,14 @@ namespace Bot.Builder.Community.Cards.Tests
 
             Assert.AreSame(adaptiveCard, batch[0].Attachments[0].Content, "Adaptive Card reference was broken");
             Assert.AreEqual(5, ids.Count);
-            Assert.IsTrue(ids.Contains(new DataItem(DataIdTypes.Action, ACTIONID)));
-            Assert.IsTrue(ids.Contains(new DataItem(DataIdTypes.Action, ACTIONID2)));
-            Assert.IsTrue(ids.Contains(new DataItem(DataIdTypes.Card, CARDID)));
-            Assert.IsFalse(ids.Contains(new DataItem(DataIdTypes.Card, CARDID2)));
-            Assert.IsFalse(ids.Contains(new DataItem(DataIdTypes.Carousel, CAROUSELID)));
-            Assert.IsFalse(ids.Contains(new DataItem(DataIdTypes.Carousel, CAROUSELID2)));
-            Assert.IsTrue(ids.Contains(new DataItem(DataIdTypes.Batch, BATCHID)));
-            Assert.IsTrue(ids.Contains(new DataItem(DataIdTypes.Batch, BATCHID2)));
+            Assert.IsTrue(ids.Contains(new DataId(DataIdTypes.Action, ACTIONID)));
+            Assert.IsTrue(ids.Contains(new DataId(DataIdTypes.Action, ACTIONID2)));
+            Assert.IsTrue(ids.Contains(new DataId(DataIdTypes.Card, CARDID)));
+            Assert.IsFalse(ids.Contains(new DataId(DataIdTypes.Card, CARDID2)));
+            Assert.IsFalse(ids.Contains(new DataId(DataIdTypes.Carousel, CAROUSELID)));
+            Assert.IsFalse(ids.Contains(new DataId(DataIdTypes.Carousel, CAROUSELID2)));
+            Assert.IsTrue(ids.Contains(new DataId(DataIdTypes.Batch, BATCHID)));
+            Assert.IsTrue(ids.Contains(new DataId(DataIdTypes.Batch, BATCHID2)));
 
             batch = null;
 

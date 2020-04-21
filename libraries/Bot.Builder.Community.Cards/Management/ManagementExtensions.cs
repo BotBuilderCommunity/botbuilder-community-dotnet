@@ -115,7 +115,7 @@ namespace Bot.Builder.Community.Cards.Management
             CardTree.ApplyIds(activities, options);
         }
 
-        public static ISet<DataItem> GetIdsFromBatch(this IEnumerable<IMessageActivity> activities)
+        public static ISet<DataId> GetIdsFromBatch(this IEnumerable<IMessageActivity> activities)
         {
             if (activities is null)
             {
@@ -398,7 +398,7 @@ namespace Bot.Builder.Community.Cards.Management
                         if (type == DataIdTypes.Action)
                         {
                             // Only generate an ID for the action
-                            id = DataIdTypes.GenerateId(DataIdTypes.Action);
+                            id = DataId.GenerateValue(DataIdTypes.Action);
                         }
                         else
                         {
@@ -408,12 +408,12 @@ namespace Bot.Builder.Community.Cards.Management
                         }
                     }
 
-                    data[DataIdTypes.GetKey(type)] = id;
+                    data[DataId.GetKey(type)] = id;
                 }
             }
         }
 
         internal static string GetIdFromActionData(this JObject data, string type = DataIdTypes.Action)
-            => data?.GetValue(DataIdTypes.GetKey(type)) is JToken id ? id.ToString() : null;
+            => data?.GetValue(DataId.GetKey(type)) is JToken id ? id.ToString() : null;
     }
 }

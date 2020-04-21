@@ -149,7 +149,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 })
             },
             {
-                TreeNodeType.ActionData, new TreeNode<JObject, DataItem>((data, next) =>
+                TreeNodeType.ActionData, new TreeNode<JObject, DataId>((data, next) =>
                 {
                     foreach (var type in DataIdTypes.Collection)
                     {
@@ -157,7 +157,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
 
                         if (id != null)
                         {
-                            next(new DataItem(type, id), TreeNodeType.Id);
+                            next(new DataId(type, id), TreeNodeType.Id);
                         }
                     }
 
@@ -165,7 +165,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 })
             },
             {
-                TreeNodeType.Id, new TreeNode<DataItem, object>((id, _) => id)
+                TreeNodeType.Id, new TreeNode<DataId, object>((id, _) => id)
             },
         };
 
@@ -290,21 +290,21 @@ namespace Bot.Builder.Community.Cards.Management.Tree
 
                             if (id is null)
                             {
-                                modifiedOptions.Set(idType, DataIdTypes.GenerateId(idType));
+                                modifiedOptions.Set(idType, DataId.GenerateValue(idType));
                             }
                         }
                     }
                 });
         }
 
-        internal static ISet<DataItem> GetIds<TEntry>(TEntry entryValue, TreeNodeType? entryType = null)
+        internal static ISet<DataId> GetIds<TEntry>(TEntry entryValue, TreeNodeType? entryType = null)
             where TEntry : class
         {
-            var ids = new HashSet<DataItem>();
+            var ids = new HashSet<DataId>();
 
             Recurse(
                 entryValue,
-                (DataItem dataId) =>
+                (DataId dataId) =>
                 {
                     ids.Add(dataId);
                 }, entryType);

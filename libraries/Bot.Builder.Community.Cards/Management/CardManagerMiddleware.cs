@@ -101,7 +101,7 @@ namespace Bot.Builder.Community.Cards.Management
                                 // This might disable an already-disabled ID but that's okay
                                 await Manager.DisableIdAsync(
                                     turnContext,
-                                    new DataItem(type, id),
+                                    new DataId(type, id),
                                     options.IdTrackingStyle,
                                     cancellationToken).ConfigureAwait(false);
                             }

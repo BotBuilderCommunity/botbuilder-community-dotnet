@@ -38,9 +38,5 @@ namespace Bot.Builder.Community.Cards.Management
         internal static IList<string> Collection { get; } = Array.AsReadOnly(new[] { Action, Card, Carousel, Batch });
 
         internal static int GetIndex(string type) => Collection.IndexOf(type);
-
-        internal static string GetKey(string type) => $"{Prefixes.DataIdKey}{type}";
-
-        internal static string GenerateId(string type) => $"{type}-{Guid.NewGuid()}";
     }
 }

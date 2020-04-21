@@ -35,7 +35,7 @@ namespace Bot.Builder.Community.Cards.Tests
         {
             var manager = CreateManager();
             var turnContext = CreateTurnContext();
-            var dataId = new DataItem(DataIdTypes.Action, "action ID");
+            var dataId = new DataId(DataIdTypes.Action, "action ID");
 
             Assert.IsNull(await manager.StateAccessor.GetAsync(turnContext));
 
@@ -46,7 +46,7 @@ namespace Bot.Builder.Community.Cards.Tests
 
             Assert.AreEqual(dataId.Value, actionIds.Single());
 
-            await manager.EnableIdAsync(turnContext, new DataItem(DataIdTypes.Action, "different action ID"), TrackingStyle.TrackDisabled);
+            await manager.EnableIdAsync(turnContext, new DataId(DataIdTypes.Action, "different action ID"), TrackingStyle.TrackDisabled);
 
             Assert.AreEqual(dataId.Value, actionIds.Single());
 
@@ -63,7 +63,7 @@ namespace Bot.Builder.Community.Cards.Tests
         {
             var manager = CreateManager();
             var turnContext = CreateTurnContext();
-            var dataId = new DataItem(DataIdTypes.Card, "card ID");
+            var dataId = new DataId(DataIdTypes.Card, "card ID");
 
             Assert.IsNull(await manager.StateAccessor.GetAsync(turnContext));
 
@@ -74,7 +74,7 @@ namespace Bot.Builder.Community.Cards.Tests
 
             Assert.AreEqual(dataId.Value, actionIds.Single());
 
-            await manager.DisableIdAsync(turnContext, new DataItem(DataIdTypes.Card, "different card ID"));
+            await manager.DisableIdAsync(turnContext, new DataId(DataIdTypes.Card, "different card ID"));
 
             Assert.AreEqual(dataId.Value, actionIds.Single());
 
@@ -91,7 +91,7 @@ namespace Bot.Builder.Community.Cards.Tests
         {
             var manager = CreateManager();
             var turnContext = CreateTurnContext();
-            var dataId = new DataItem(DataIdTypes.Carousel, "carousel ID");
+            var dataId = new DataId(DataIdTypes.Carousel, "carousel ID");
 
             Assert.IsNull(await manager.StateAccessor.GetAsync(turnContext));
 
@@ -111,7 +111,7 @@ namespace Bot.Builder.Community.Cards.Tests
         {
             var manager = CreateManager();
             var turnContext = CreateTurnContext();
-            var dataId = new DataItem(DataIdTypes.Batch, "batch ID");
+            var dataId = new DataId(DataIdTypes.Batch, "batch ID");
 
             Assert.IsNull(await manager.StateAccessor.GetAsync(turnContext));
 
@@ -123,7 +123,7 @@ namespace Bot.Builder.Community.Cards.Tests
 
             var actionIds = state.DataIdsByType[DataIdTypes.Batch] = new HashSet<string> { dataId.Value };
 
-            await manager.ForgetIdAsync(turnContext, new DataItem(DataIdTypes.Batch, "different batch ID"));
+            await manager.ForgetIdAsync(turnContext, new DataId(DataIdTypes.Batch, "different batch ID"));
 
             Assert.AreEqual(dataId.Value, actionIds.Single());
 
@@ -194,7 +194,7 @@ namespace Bot.Builder.Community.Cards.Tests
 
             Assert.AreEqual(0, state.SavedActivities.Count, "An activity was saved despite having no data ID's");
 
-            value[DataIdTypes.GetKey(DataIdTypes.Action)] = "action ID";
+            value[DataId.GetKey(DataIdTypes.Action)] = "action ID";
 
             await manager.SaveActivitiesAsync(turnContext, activities);
 
@@ -218,7 +218,7 @@ namespace Bot.Builder.Community.Cards.Tests
                             {
                                 Data = new Dictionary<string, string>
                                 {
-                                    { DataIdTypes.GetKey(DataIdTypes.Card), "card ID" },
+                                    { DataId.GetKey(DataIdTypes.Card), "card ID" },
                                 },
                             },
                         },
@@ -235,7 +235,7 @@ namespace Bot.Builder.Community.Cards.Tests
                             {
                                 Data = new Dictionary<string, string>
                                 {
-                                    { DataIdTypes.GetKey(DataIdTypes.Carousel), "carousel ID" },
+                                    { DataId.GetKey(DataIdTypes.Carousel), "carousel ID" },
                                 },
                             },
                         },
@@ -254,7 +254,7 @@ namespace Bot.Builder.Community.Cards.Tests
                                 {
                                     Data = new Dictionary<string, string>
                                     {
-                                        { DataIdTypes.GetKey(DataIdTypes.Carousel), "carousel ID" },
+                                        { DataId.GetKey(DataIdTypes.Carousel), "carousel ID" },
                                     },
                                 },
                             },
@@ -262,7 +262,7 @@ namespace Bot.Builder.Community.Cards.Tests
                     },
                     new AnimationCard(buttons: new List<CardAction>
                     {
-                        new CardAction(type: ActionTypes.PostBack, value: $"{{'{DataIdTypes.GetKey(DataIdTypes.Batch)}':'batch ID'}}"),
+                        new CardAction(type: ActionTypes.PostBack, value: $"{{'{DataId.GetKey(DataIdTypes.Batch)}':'batch ID'}}"),
                     }).ToAttachment(),
                 }),
             };
@@ -317,7 +317,7 @@ namespace Bot.Builder.Community.Cards.Tests
                 {
                     Data = new Dictionary<string, string>
                     {
-                        { DataIdTypes.GetKey(DataIdTypes.Batch), BATCHID },
+                        { DataId.GetKey(DataIdTypes.Batch), BATCHID },
                     },
                 },
             });
@@ -363,9 +363,9 @@ namespace Bot.Builder.Community.Cards.Tests
                             {
                                 Data = new Dictionary<string, string>
                                 {
-                                    { DataIdTypes.GetKey(DataIdTypes.Card), CARDID },
-                                    { DataIdTypes.GetKey(DataIdTypes.Carousel), CAROUSELID },
-                                    { DataIdTypes.GetKey(DataIdTypes.Batch), BATCHID },
+                                    { DataId.GetKey(DataIdTypes.Card), CARDID },
+                                    { DataId.GetKey(DataIdTypes.Carousel), CAROUSELID },
+                                    { DataId.GetKey(DataIdTypes.Batch), BATCHID },
                                 },
                             },
                         },
@@ -468,7 +468,7 @@ namespace Bot.Builder.Community.Cards.Tests
                         {
                             Data = new Dictionary<string, string>
                             {
-                                { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID },
+                                { DataId.GetKey(DataIdTypes.Action), ACTIONID },
                             },
                         },
                     },
@@ -506,7 +506,7 @@ namespace Bot.Builder.Community.Cards.Tests
                         {
                             Data = new Dictionary<string, string>
                             {
-                                { DataIdTypes.GetKey(DataIdTypes.Batch), BATCHID },
+                                { DataId.GetKey(DataIdTypes.Batch), BATCHID },
                             },
                         },
                     },
@@ -520,7 +520,7 @@ namespace Bot.Builder.Community.Cards.Tests
                     new CardAction(ActionTypes.PostBack, value: new Dictionary<string, string>
                     {
                         { TOGGLEINPUTID, USERENTEREDTOGGLE },
-                        { DataIdTypes.GetKey(DataIdTypes.Batch), BATCHID },
+                        { DataId.GetKey(DataIdTypes.Batch), BATCHID },
                     }),
                 }).ToAttachment(),
                 new Attachment
@@ -554,10 +554,10 @@ namespace Bot.Builder.Community.Cards.Tests
                 { TEXTINPUTID, USERENTEREDTEXT },
                 { TIMEINPUTID, USERENTEREDTIME },
                 { TOGGLEINPUTID, USERENTEREDTOGGLE },
-                { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID },
-                { DataIdTypes.GetKey(DataIdTypes.Card), CARDID },
-                { DataIdTypes.GetKey(DataIdTypes.Carousel), CAROUSELID },
-                { DataIdTypes.GetKey(DataIdTypes.Batch), BATCHID },
+                { DataId.GetKey(DataIdTypes.Action), ACTIONID },
+                { DataId.GetKey(DataIdTypes.Card), CARDID },
+                { DataId.GetKey(DataIdTypes.Carousel), CAROUSELID },
+                { DataId.GetKey(DataIdTypes.Batch), BATCHID },
             };
 
             await manager.StateAccessor.SetAsync(turnContext, state);
@@ -572,9 +572,9 @@ namespace Bot.Builder.Community.Cards.Tests
                 { NUMBERINPUTID, USERENTEREDNUMBER1 },
                 { TEXTINPUTID, USERENTEREDTEXT },
                 { TIMEINPUTID, USERENTEREDTIME },
-                { DataIdTypes.GetKey(DataIdTypes.Card), CARDID },
-                { DataIdTypes.GetKey(DataIdTypes.Carousel), CAROUSELID },
-                { DataIdTypes.GetKey(DataIdTypes.Batch), BATCHID },
+                { DataId.GetKey(DataIdTypes.Card), CARDID },
+                { DataId.GetKey(DataIdTypes.Carousel), CAROUSELID },
+                { DataId.GetKey(DataIdTypes.Batch), BATCHID },
             };
 
             await manager.PreserveValuesAsync(turnContext);
@@ -589,9 +589,9 @@ namespace Bot.Builder.Community.Cards.Tests
                 { TEXTINPUTID, USERENTEREDTEXT },
                 { TIMEINPUTID, USERENTEREDTIME },
                 { TOGGLEINPUTID, USERENTEREDTOGGLE },
-                { DataIdTypes.GetKey(DataIdTypes.Card), CARDID },
-                { DataIdTypes.GetKey(DataIdTypes.Carousel), CAROUSELID },
-                { DataIdTypes.GetKey(DataIdTypes.Batch), BATCHID },
+                { DataId.GetKey(DataIdTypes.Card), CARDID },
+                { DataId.GetKey(DataIdTypes.Carousel), CAROUSELID },
+                { DataId.GetKey(DataIdTypes.Batch), BATCHID },
             };
 
             await manager.PreserveValuesAsync(turnContext);
@@ -671,7 +671,7 @@ namespace Bot.Builder.Community.Cards.Tests
 
             turnContext.Activity.Value = new Dictionary<string, string>
             {
-                { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID },
+                { DataId.GetKey(DataIdTypes.Action), ACTIONID },
             };
 
             await manager.PreserveValuesAsync(turnContext);
@@ -687,7 +687,7 @@ namespace Bot.Builder.Community.Cards.Tests
             turnContext.Activity.Value = new Dictionary<string, string>
             {
                 { TOGGLEINPUTID, USERENTEREDTOGGLE },
-                { DataIdTypes.GetKey(DataIdTypes.Batch), BATCHID },
+                { DataId.GetKey(DataIdTypes.Batch), BATCHID },
             };
 
             await manager.PreserveValuesAsync(turnContext);
@@ -699,7 +699,7 @@ namespace Bot.Builder.Community.Cards.Tests
             turnContext.Activity.Value = new Dictionary<string, string>
             {
                 { CHOICEINPUTID, USERENTEREDCHOICE },
-                { DataIdTypes.GetKey(DataIdTypes.Batch), BATCHID },
+                { DataId.GetKey(DataIdTypes.Batch), BATCHID },
             };
 
             await manager.PreserveValuesAsync(turnContext);
@@ -751,14 +751,14 @@ namespace Bot.Builder.Community.Cards.Tests
                                 {
                                     Data = new Dictionary<string, string>
                                     {
-                                        { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID1 },
+                                        { DataId.GetKey(DataIdTypes.Action), ACTIONID1 },
                                     },
                                 },
                                 new AdaptiveSubmitAction
                                 {
                                     Data = new Dictionary<string, string>
                                     {
-                                        { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID2 },
+                                        { DataId.GetKey(DataIdTypes.Action), ACTIONID2 },
                                     },
                                 },
                             },
@@ -766,7 +766,7 @@ namespace Bot.Builder.Community.Cards.Tests
                             {
                                 Data = new Dictionary<string, string>
                                 {
-                                    { DataIdTypes.GetKey(DataIdTypes.Action), "Irrelevant action ID" },
+                                    { DataId.GetKey(DataIdTypes.Action), "Irrelevant action ID" },
                                 },
                             },
                         },
@@ -781,11 +781,11 @@ namespace Bot.Builder.Community.Cards.Tests
                         {
                             new CardAction(ActionTypes.PostBack, value: new Dictionary<string, string>
                             {
-                                { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID3 },
+                                { DataId.GetKey(DataIdTypes.Action), ACTIONID3 },
                             }),
                             new CardAction(ActionTypes.MessageBack, value: new Dictionary<string, string>
                             {
-                                { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID4 },
+                                { DataId.GetKey(DataIdTypes.Action), ACTIONID4 },
                             }),
                         }),
                     },
@@ -817,7 +817,7 @@ namespace Bot.Builder.Community.Cards.Tests
                                 {
                                     Data = new Dictionary<string, string>
                                     {
-                                        { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID5 },
+                                        { DataId.GetKey(DataIdTypes.Action), ACTIONID5 },
                                     },
                                 },
                             },
@@ -833,7 +833,7 @@ namespace Bot.Builder.Community.Cards.Tests
                         {
                             new CardAction(ActionTypes.PostBack, value: new Dictionary<string, string>
                             {
-                                { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID6 },
+                                { DataId.GetKey(DataIdTypes.Action), ACTIONID6 },
                             }),
                         }),
                     },
@@ -868,7 +868,7 @@ namespace Bot.Builder.Community.Cards.Tests
                                     {
                                         // Even though a carousel ID is used to identify an activity,
                                         // it can still be used to delete a single attachment
-                                        { DataIdTypes.GetKey(DataIdTypes.Carousel), CAROUSELID },
+                                        { DataId.GetKey(DataIdTypes.Carousel), CAROUSELID },
                                     },
                                 },
                             },
@@ -897,7 +897,7 @@ namespace Bot.Builder.Community.Cards.Tests
                             {
                                 // Even though a card ID is used to identify a single attachment,
                                 // it can still be used to delete an activity
-                                { DataIdTypes.GetKey(DataIdTypes.Card), CARDID },
+                                { DataId.GetKey(DataIdTypes.Card), CARDID },
                             }),
                         }),
                     },
@@ -921,7 +921,7 @@ namespace Bot.Builder.Community.Cards.Tests
                         {
                             new CardAction(ActionTypes.PostBack, value: new Dictionary<string, string>
                             {
-                                { DataIdTypes.GetKey(DataIdTypes.Batch), BATCHID },
+                                { DataId.GetKey(DataIdTypes.Batch), BATCHID },
                             }),
                         }),
                     },
@@ -937,10 +937,10 @@ namespace Bot.Builder.Community.Cards.Tests
                                 {
                                     Data = new Dictionary<string, string>
                                     {
-                                        { DataIdTypes.GetKey(DataIdTypes.Action), "Another irrelevant action ID" },
-                                        { DataIdTypes.GetKey(DataIdTypes.Card), "Irrelevant card ID" },
-                                        { DataIdTypes.GetKey(DataIdTypes.Carousel), "Irrelevant carousel ID" },
-                                        { DataIdTypes.GetKey(DataIdTypes.Batch), BATCHID },
+                                        { DataId.GetKey(DataIdTypes.Action), "Another irrelevant action ID" },
+                                        { DataId.GetKey(DataIdTypes.Card), "Irrelevant card ID" },
+                                        { DataId.GetKey(DataIdTypes.Carousel), "Irrelevant carousel ID" },
+                                        { DataId.GetKey(DataIdTypes.Batch), BATCHID },
                                     },
                                 },
                             },
@@ -967,7 +967,7 @@ namespace Bot.Builder.Community.Cards.Tests
                                 {
                                     Data = new Dictionary<string, string>
                                     {
-                                        { DataIdTypes.GetKey(DataIdTypes.Action), "Yet another irrelevant action ID" },
+                                        { DataId.GetKey(DataIdTypes.Action), "Yet another irrelevant action ID" },
                                     },
                                 },
                             },
@@ -984,7 +984,7 @@ namespace Bot.Builder.Community.Cards.Tests
                         {
                             new CardAction(ActionTypes.MessageBack, value: new Dictionary<string, string>
                             {
-                                { DataIdTypes.GetKey(DataIdTypes.Batch), BATCHID },
+                                { DataId.GetKey(DataIdTypes.Batch), BATCHID },
                             }),
                         }),
                     },
@@ -1004,7 +1004,7 @@ namespace Bot.Builder.Community.Cards.Tests
                         {
                             new CardAction(ActionTypes.PostBack, value: new Dictionary<string, string>
                             {
-                                { DataIdTypes.GetKey(DataIdTypes.Batch), "Irrelevant batch ID" },
+                                { DataId.GetKey(DataIdTypes.Batch), "Irrelevant batch ID" },
                             }),
                         }),
                     },
@@ -1026,7 +1026,7 @@ namespace Bot.Builder.Community.Cards.Tests
                             {
                                 // This ID won't be visible because it's in an imBack
                                 // and so the activity should immediately be removed from state
-                                { DataIdTypes.GetKey(DataIdTypes.Action), "Invisible action ID" },
+                                { DataId.GetKey(DataIdTypes.Action), "Invisible action ID" },
                             }),
                         }),
                     },
@@ -1072,7 +1072,7 @@ namespace Bot.Builder.Community.Cards.Tests
             turnContext.Activity.Value = new Dictionary<string, object>
             {
                 // This shouldn't match any action data
-                { DataIdTypes.GetKey(DataIdTypes.Card), ACTIONID1 },
+                { DataId.GetKey(DataIdTypes.Card), ACTIONID1 },
             };
 
             await manager.StateAccessor.SetAsync(turnContext, state);
@@ -1091,13 +1091,13 @@ namespace Bot.Builder.Community.Cards.Tests
 
             turnContext.Activity.Value = new Dictionary<string, object>
             {
-                { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID1 },
+                { DataId.GetKey(DataIdTypes.Action), ACTIONID1 },
             };
 
             await manager.DeleteAsync(turnContext, DataIdTypes.Action);
 
             var actionId = ((JObject)((AdaptiveSubmitAction)((AdaptiveCard)activity1.Attachments[0].Content)
-                    .Actions.Single()).Data)[DataIdTypes.GetKey(DataIdTypes.Action)];
+                    .Actions.Single()).Data)[DataId.GetKey(DataIdTypes.Action)];
 
             Assert.IsTrue(updated);
             Assert.AreEqual(0, deletedCount);
@@ -1109,7 +1109,7 @@ namespace Bot.Builder.Community.Cards.Tests
 
             turnContext.Activity.Value = new Dictionary<string, object>
             {
-                { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID2 },
+                { DataId.GetKey(DataIdTypes.Action), ACTIONID2 },
             };
 
             await manager.DeleteAsync(turnContext, DataIdTypes.Action);
@@ -1124,13 +1124,13 @@ namespace Bot.Builder.Community.Cards.Tests
 
             turnContext.Activity.Value = new Dictionary<string, object>
             {
-                { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID3 },
+                { DataId.GetKey(DataIdTypes.Action), ACTIONID3 },
             };
 
             await manager.DeleteAsync(turnContext, DataIdTypes.Action);
 
             actionId = ((Dictionary<string, string>)((HeroCard)activity1.Attachments.Single().Content)
-                .Buttons.Single().Value)[DataIdTypes.GetKey(DataIdTypes.Action)];
+                .Buttons.Single().Value)[DataId.GetKey(DataIdTypes.Action)];
 
             Assert.IsTrue(updated);
             Assert.AreEqual(0, deletedCount);
@@ -1142,7 +1142,7 @@ namespace Bot.Builder.Community.Cards.Tests
 
             turnContext.Activity.Value = new Dictionary<string, object>
             {
-                { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID4 },
+                { DataId.GetKey(DataIdTypes.Action), ACTIONID4 },
             };
 
             await manager.DeleteAsync(turnContext, DataIdTypes.Action);
@@ -1160,7 +1160,7 @@ namespace Bot.Builder.Community.Cards.Tests
             turnContext.Activity.Value = new Dictionary<string, object>
             {
                 { CHOICEINPUTID, "User-entered choice" },
-                { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID5 },
+                { DataId.GetKey(DataIdTypes.Action), ACTIONID5 },
             };
 
             await manager.DeleteAsync(turnContext, DataIdTypes.Action);
@@ -1175,7 +1175,7 @@ namespace Bot.Builder.Community.Cards.Tests
 
             turnContext.Activity.Value = new Dictionary<string, object>
             {
-                { DataIdTypes.GetKey(DataIdTypes.Action), ACTIONID6 },
+                { DataId.GetKey(DataIdTypes.Action), ACTIONID6 },
             };
 
             await manager.DeleteAsync(turnContext, DataIdTypes.Action);
@@ -1194,7 +1194,7 @@ namespace Bot.Builder.Community.Cards.Tests
             turnContext.Activity.Value = new Dictionary<string, object>
             {
                 { DATEINPUTID, "User-entered date" },
-                { DataIdTypes.GetKey(DataIdTypes.Carousel), CAROUSELID },
+                { DataId.GetKey(DataIdTypes.Carousel), CAROUSELID },
             };
 
             // We are deleting the card using a carousel ID
@@ -1213,7 +1213,7 @@ namespace Bot.Builder.Community.Cards.Tests
 
             turnContext.Activity.Value = new Dictionary<string, object>
             {
-                { DataIdTypes.GetKey(DataIdTypes.Card), CARDID },
+                { DataId.GetKey(DataIdTypes.Card), CARDID },
             };
 
             // We are deleting the carousel using a card ID
@@ -1231,7 +1231,7 @@ namespace Bot.Builder.Community.Cards.Tests
 
             turnContext.Activity.Value = new Dictionary<string, object>
             {
-                { DataIdTypes.GetKey(DataIdTypes.Batch), BATCHID },
+                { DataId.GetKey(DataIdTypes.Batch), BATCHID },
             };
 
             // We are deleting the carousel using a card ID

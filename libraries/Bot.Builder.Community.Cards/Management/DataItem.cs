@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Bot.Builder.Community.Cards.Management
 {
@@ -12,7 +10,12 @@ namespace Bot.Builder.Community.Cards.Management
             Value = value;
         }
 
-        public string Key { get; }
+        internal DataItem(string value)
+        {
+            Value = value;
+        }
+
+        public virtual string Key { get; }
 
         public string Value { get; }
 
