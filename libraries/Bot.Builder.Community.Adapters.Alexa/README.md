@@ -13,34 +13,30 @@ The Alexa Adapter allows you to add an additional endpoint to your bot for Alexa
 in conjunction with other channels meaning, for example, you can have a bot exposed on out of the box channels such as Facebook and 
 Teams, but also via an Alexa Skill (as well as side by side with the Google / Twitter Adapters also available from the Bot Builder Community Project).
 
-Incoming Alexa Skill requests are transformed, by the adapter, into Bot Builder Activties and then when your bot responds, the adapter transforms the outgoing Activity into an Alexa Skill response.
+Incoming Alexa Skill requests are transformed, by the adapter, into Bot Framework Activties and then when your bot sends outgoing activities, the adapter transforms the outgoing Activity into an Alexa Skill response.
 
 The adapter currently supports the following scenarios;
 
 * Support for voice based Alexa Skills
-* Ability to send Alexa Cards
-* Support for the available display directives for Echo Show / Spot devices, with support for the new Fire Tablets coming very soon
-* Support for Audio / Video directives
+* Ability to send Alexa Cards (via automatic translation of Bot Framework Hero Cards or using the included Alexa specific attachments)
+* Support for the available display directives for Echo Show / Spot devices
+* Support for audio / video directives
 * Full incoming request from Alexa is added to the incoming activity as ChannelData
 * Validation of incoming Alexa requests (required for certification), including validation the request has come from a specific skill (validated against the ID)
 
 ## Installation
 
-The preview of the next version of the Alexa Adapter requires two packages, both available on MyGet.
+Available via NuGet package [Bot.Builder.Community.Adapters.Alexa](https://www.nuget.org/packages/Bot.Builder.Community.Adapters.Alexa/).
 
-Bot.Builder.Community.Adapters.Alexa - https://www.myget.org/feed/botbuilder-community-dotnet/package/nuget/Bot.Builder.Community.Adapters.Alexa/4.8.2-beta0111
-Bot.Builder.Community.Adapters.Alexa.Core - https://www.myget.org/feed/botbuilder-community-dotnet/package/nuget/Bot.Builder.Community.Adapters.Alexa.Core/4.8.2-beta0111
+Install into your project use the following command in the package manager. 
 
-To install into your project use the following command in the package manager.  If you wish to use the Visual Studio package manager, then add https://www.myget.org/F/botbuilder-community-dotnet/api/v3/index.json as an additional package source.
 ```
-    PM> Install-Package Bot.Builder.Community.Adapters.Alexa -Version 4.8.2-beta0111 -Source https://www.myget.org/F/botbuilder-community-dotnet/api/v3/index.json
-    
-        PM> Install-Package Bot.Builder.Community.Adapters.Alexa.Core -Version 4.8.2-beta0111 -Source https://www.myget.org/F/botbuilder-community-dotnet/api/v3/index.json
+    PM> Install-Package Bot.Builder.Community.Adapters.Alexa
 ```
 
 ## Sample
 
-Sample bot, showing examples of Alexa specific functionality using the current preview is available [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/feature/adopt-alexadotnet/samples/Alexa%20Adapter%20Sample).
+Sample bot, showing examples of Alexa specific functionality is available [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/samples/Alexa%20Adapter%20Sample).
 
 ## Usage
 
@@ -48,10 +44,12 @@ Sample bot, showing examples of Alexa specific functionality using the current p
 * [Create an Alexa skill](#create-an-alexa-skill)
 * [Wiring up the Alexa adapter in your bot](#wiring-up-the-alexa-adapter-in-your-bot)
 * [Complete configuration of your Alexa skill](#complete-configuration-of-your-alexa-skill)
-* [Test your Alexa skill](#test-your-alexa-skill) - Test your bot in the Alexa skill simulator and Alexa devices
-* [Customising your conversation](#customising-your-conversation) - Learn about controlling end of session and use of cards / display directives etc.
+* [Test your Alexa skill](#test-your-alexa-skill) - Test your bot in the Alexa skill simulator and Alexa devices.
+* [Incoming Alexa request to Bot Framework activity mapping](#Incoming-Alexa-request-to-Bot-Framework-activity-mapping) - Learn how incoming request types are handled by the adapter and the activities receieved by your bot.
+* [Controlling and Customising your conversation](#customising-your-conversation) - Learn about handle multi-turn conversations by controlling end of session, the use of cards / display directives and also how the adapter handles multiple outgoing activities (Alexa only accepts a single response).
+* [Extending capabilities with Alexa.NET](#Extending-capabilities-with-Alexa.NET)
 
-In this article you will learn how to connect a bot to an Alexa skill using the Alexa adapter.  This article will walk you through modifying the EchoBot sample to connect it to a skill.
+The following sections will demonstrate how to connect a bot to an Alexa skill using the Alexa adapter, by walking you through modifying the EchoBot sample to connect it to an Alexa skill.
 
 ### Prerequisites
 
@@ -285,6 +283,26 @@ You can now test interacting with your Alexa skill using the simulator.
 
 Now that you have enabled testing for your skill, you can also test your skill using a physical Echo device or the Alexa app, providing you are logged into the device / app with the same account used to login to the Alexa Developer Console (or an account that you have added as a beta tester for your skill within the console).
 
+### Incoming Alexa request to Bot Framework activity mapping
+
+The Alexa service can send your bot a number of different request types.  You can read about the different request types [in the Alexa developer documentation](https://developer.amazon.com/en-US/docs/alexa/custom-skills/request-types-reference.html).
+
+Here is how the adapter handles different types.
+
+* **Intent Requests -> Message Activity**
+Most incoming requests when a user talks to your skill will be sent as an IntentRequest. In this case the adapter transforms this into a Bot Framework Message activity.
+Key exceptions here include if a user triggers a built in Amazon intent. The only built in intent available in the default configuration described within this document is the AMAZON.StopIntent - if this is receieved then this is converted to an EndOfConversationActivity.
+Any other intent requests receieved, that are not using the default intent described within this article, your bot will receieve an Event Activity, where the type is set to 'IntentRequest' and the incoming request payload set as the value property on the activity.
+
+* **Launch Request -> ConversationUpdate Activity**
+If a user explicitly launches your skill without any other intent / input (e.g. "Alexa open ***your skill name***"), then your bot will recieve a ConversationUpdate Activity.  This is mirrors the default functionality on Azure bot Service channels when a user starts a conversation.
+
+* **SessionEnded Request -> EndOfCOnversation Activity**
+In the case that your bot receieves a SessionEnded request, your bot will recieve an EndOfConversation activity. You can use this opportunity to clean up any data related to the conversation / user that you wish, but any outgoing activities you send in response will be ignored by the adapter, due to Alexa not allowing responses to SessionEnded requests.
+
+* **All other request types -> Event Activity**
+All request types, not explicity mentioned above, will be sent to your bot as an Event activity. The name property on the Event activity will be set to the type of the Alexa request, with the value set to the full request payload.
+
 ### Customising your conversation
 
 #### Controlling the end of a session
@@ -397,4 +415,21 @@ var activityWithDisplayDirective = MessageFactory.Text($"Ok, I included a displa
                             }.ToAttachment());
                             
                     await turnContext.SendActivityAsync(activityWithDisplayDirective, cancellationToken);
+```
+
+### Extending capabilities with Alexa.NET
+
+The Alexa adapter uses the [Alexa.NET library](https://github.com/timheuer/alexa-skills-dotnet) to handle the parsing of incoming requests and help to create outgoing responses.
+Due to this, you can take advantage of a large number of extensions available to interact with Alexa APIs, including proactive events, messaging, user profile, reminders and more.
+
+You can see a full list of the extensions on the [home page of the Alexa.NET repo](https://github.com/timheuer/alexa-skills-dotnet).
+
+Many of the extensions will require you to pass in the original incoming alexa request object, or a specific value found on it.
+
+Below is an example of using the customer profile extension by getting the original incoming request from the ChannelData property on your incoming activity.
+
+```cs
+    // you can also use the available context extension to get the SkillRequest object - context.GetAlexaRequestBody();
+    var profileClient = new CustomerProfileClient((SkillRequest)context.Activity.ChannelData);
+    return await profileClient.FullAddress();
 ```
