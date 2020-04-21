@@ -1,8 +1,10 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29318.209
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BestMatch Middleware Sample", "samples\BestMatch Middleware Sample\BestMatch Middleware Sample.csproj", "{7927A7EE-C327-4403-A5F4-B5E2C0BF4D47}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alexa Adapter Sample", "samples\Alexa Adapter Sample\Alexa Adapter Sample.csproj", "{8183FE0F-6F69-48B4-B2C3-7FEB48DCECD6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Location Dialog Sample", "samples\Location Dialog Sample\Location Dialog Sample.csproj", "{10BEDE11-C9DE-4B67-9467-4E48272229C6}"
@@ -25,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BestMatch Middleware Sample
 End Project
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingCentral Adapter Sample", "samples\RingCentral Adapter Sample\RingCentral Adapter Sample.csproj", "{231952BC-62A6-4D86-82FB-A2A5940EF403}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alexa Adapter Sample", "samples\Alexa Adapter Sample\Alexa Adapter Sample.csproj", "{53BCE929-C57D-4AF9-91C9-FCA5C7E2CE41}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +39,10 @@ Global
 		{8183FE0F-6F69-48B4-B2C3-7FEB48DCECD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8183FE0F-6F69-48B4-B2C3-7FEB48DCECD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8183FE0F-6F69-48B4-B2C3-7FEB48DCECD6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7927A7EE-C327-4403-A5F4-B5E2C0BF4D47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7927A7EE-C327-4403-A5F4-B5E2C0BF4D47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7927A7EE-C327-4403-A5F4-B5E2C0BF4D47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7927A7EE-C327-4403-A5F4-B5E2C0BF4D47}.Release|Any CPU.Build.0 = Release|Any CPU
 		{10BEDE11-C9DE-4B67-9467-4E48272229C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{10BEDE11-C9DE-4B67-9467-4E48272229C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{10BEDE11-C9DE-4B67-9467-4E48272229C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -75,6 +83,10 @@ Global
 		{231952BC-62A6-4D86-82FB-A2A5940EF403}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{231952BC-62A6-4D86-82FB-A2A5940EF403}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{231952BC-62A6-4D86-82FB-A2A5940EF403}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53BCE929-C57D-4AF9-91C9-FCA5C7E2CE41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53BCE929-C57D-4AF9-91C9-FCA5C7E2CE41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53BCE929-C57D-4AF9-91C9-FCA5C7E2CE41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53BCE929-C57D-4AF9-91C9-FCA5C7E2CE41}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
