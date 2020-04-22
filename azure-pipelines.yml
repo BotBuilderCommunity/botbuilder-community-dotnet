@@ -14,6 +14,8 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  isBuildServer: 'true'
+  
 
 steps:
 
@@ -23,12 +25,6 @@ steps:
   inputs:
     versionSpec: '5.x'
     additionalArguments: '/output BuildServer'
-
-- task: DotNetCoreCLI@2
-  displayName: Restore
-  inputs:
-    command: restore
-    projects: 'Bot.Builder.Community.sln'
 
 - task: DotNetCoreCLI@2
   displayName: dotnet build
@@ -49,16 +45,21 @@ steps:
   condition: succeeded()
 
 - task: DotNetCoreCLI@2
+  displayName: Restore
+  inputs:
+    command: restore
+    projects: 'Bot.Builder.Community.sln'
+
+- task: DotNetCoreCLI@2
   displayName: dotnet pack
   inputs:
-    projects: 'Bot.Builder.Community.sln'
+    packagesToPack: 'libraries/*/*.csproj'
     command: pack
     packDirectory: '$(Build.ArtifactStagingDirectory)/packages'
     configuration: '$(buildConfiguration)'
     versioningScheme: byEnvVar
     versionEnvVar: gv.GitVersion.NuGetVersion
     nobuild: true
-    arguments: "-IncludeReferencedProjects"
   condition: succeeded()
 
 - task: PublishBuildArtifacts@1

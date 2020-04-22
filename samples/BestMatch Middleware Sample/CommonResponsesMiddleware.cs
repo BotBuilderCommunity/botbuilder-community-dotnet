@@ -3,7 +3,7 @@ using Microsoft.Bot.Builder;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace BestMatchMiddleware_Sample
+namespace BestMatch_Middleware_Sample
 {
     public class CommonResponsesMiddleware : BestMatchMiddleware
     {

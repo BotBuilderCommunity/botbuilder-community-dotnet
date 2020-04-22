@@ -252,7 +252,7 @@ public class AdapterWithErrorHandler : BotFrameworkHttpAdapter
 
 This community project is the result of two targetted projects around RingCentral integration with the Bot Framework.  This code base has used many learnings, effort and contributions from the following engineers:
 
-- [Jo�o Almeida](https://github.com/joalmeid)
+- [João Almeida](https://github.com/joalmeid)
 - [Remi Bauby]()
 - [Michael Brunner](https://github.com/michaelbrunner)
 - [Jamie Dalton](https://github.com/daltskin)
@@ -263,7 +263,7 @@ This community project is the result of two targetted projects around RingCentra
 - [Shobhit Mishra]()
 - [Egor Nikitin]()
 - [Vishesh Oberoi](https://github.com/ovishesh)
-- [Martin Oss]()
+- [Martin Oss](https://github.com/martinoss)
 - [Martin Schray](https://github.com/mschray/)
 - [Autumn Wyborny]()
 
