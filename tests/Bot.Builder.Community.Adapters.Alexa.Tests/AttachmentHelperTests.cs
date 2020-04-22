@@ -6,10 +6,8 @@ using Alexa.NET.Response.Directive;
 using Alexa.NET.Response.Directive.Templates.Types;
 using Bot.Builder.Community.Adapters.Alexa.Core.Attachments;
 using Bot.Builder.Community.Adapters.Alexa.Core.Helpers;
-using Microsoft.Bot.Builder.Integration.AspNet.Core;
+using Bot.Builder.Community.Adapters.Alexa.Tests.Helpers;
 using Microsoft.Bot.Schema;
-using Microsoft.Rest;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
 using AlexaCardImage = Alexa.NET.Response.CardImage;
@@ -22,7 +20,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
         [Fact]
         public void ConvertNullActivityDoesNothing()
         {
-            AttachmentHelper.ConvertAlexaAttachmentContent(null);
+            AttachmentHelper.ConvertAttachmentContent(null);
         }
 
         [Fact]
@@ -32,7 +30,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
             {
                 Attachments = null
             };
-            activity.ConvertAlexaAttachmentContent();
+            activity.ConvertAttachmentContent();
         }
 
         [Fact]
@@ -42,7 +40,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
             {
                 Attachments = new List<Attachment> { new TestAttachment { ContentType = null } }
             };
-            activity.ConvertAlexaAttachmentContent();
+            activity.ConvertAttachmentContent();
 
             Assert.Equal(typeof(TestAttachment), activity.Attachments[0].GetType());
         }
@@ -181,15 +179,15 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
             // Prior to serialization type is as expected.
             Assert.Equal(typeof(JObject), activity.Attachments[0].Content.GetType());
 
-            var clonedActivity = JsonConvert.DeserializeObject<Activity>(JsonConvert.SerializeObject(activity, HttpHelper.BotMessageSerializerSettings), HttpHelper.BotMessageSerializerSettings);
+            var anonymizedActivity = ActivityHelper.GetAnonymizedActivity(activity);
 
             // After conversion the type information is lost.
-            Assert.Equal(typeof(JObject), clonedActivity.Attachments[0].Content.GetType());
+            Assert.Equal(typeof(JObject), anonymizedActivity.Attachments[0].Content.GetType());
 
-            clonedActivity.ConvertAlexaAttachmentContent();
+            anonymizedActivity.ConvertAttachmentContent();
 
             // After converting Alexa attachments the type information is back.
-            Assert.Equal(supportedType ? typeof(T) : typeof(JObject), clonedActivity.Attachments[0].Content.GetType());
+            Assert.Equal(supportedType ? typeof(T) : typeof(JObject), anonymizedActivity.Attachments[0].Content.GetType());
         }
 
         class TestAttachment : Attachment
