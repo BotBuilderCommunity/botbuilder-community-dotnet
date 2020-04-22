@@ -3,7 +3,7 @@
 ## Build status
 | Branch | Status | Recommended NuGet package version |
 | ------ | ------ | ------ |
-| master | [![Build status](https://ci.appveyor.com/api/projects/status/b9123gl3kih8x9cb?svg=true)](https://ci.appveyor.com/project/garypretty/botbuilder-community) | Preview [available via MyGet (version 4.8.2-beta0111)](https://www.myget.org/feed/botbuilder-community-dotnet/package/nuget/Bot.Builder.Community.Adapters.Alexa/4.8.2-beta0111) |
+| master | [![Build status](https://ci.appveyor.com/api/projects/status/b9123gl3kih8x9cb?svg=true)](https://ci.appveyor.com/project/garypretty/botbuilder-community) | Available via NuGet](https://www.nuget.org/packages/Bot.Builder.Community.Adapters.Alexa/) |
 
 ## Description
 
