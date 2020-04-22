@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Alexa.NET.Response;
 using Bot.Builder.Community.Adapters.Alexa.Core.Attachments;
 using Microsoft.Bot.Schema;

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Alexa.NET;
 using Alexa.NET.ConnectionTasks.Inputs;
 using Alexa.NET.Response;
