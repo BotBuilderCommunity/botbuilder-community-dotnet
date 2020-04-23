@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.MarkedNet;
+﻿using Microsoft.MarkedNet;
 
 namespace Bot.Builder.Community.Adapters.Alexa.Core.Helpers
 {
@@ -43,11 +42,14 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core.Helpers
                 return $"{body.Trim().TrimEnd(',')}. ";
             }
             public override string ListItem(string text) => $"{ListItemMarker}{text}, ";
-            public override string Paragraph(string text) => string.Concat(text.TrimEnd('.'), ". ");
+            public override string Paragraph(string text) => string.Concat(text.Replace("\n", " ").TrimEnd('.'), ". ");
             public override string Strong(string text) => text;
             public override string Table(string header, string body) => string.Empty;
             public override string TableCell(string content, TableCellFlags flags) => string.Empty;
             public override string TableRow(string content) => string.Empty;
+            public override string Text(string text) => text.TrimEnd('.');
+            public override string Preprocess(string text) => text.Trim();
+            public override string Postprocess(string text) => text.Trim();
         }
     }
 }
