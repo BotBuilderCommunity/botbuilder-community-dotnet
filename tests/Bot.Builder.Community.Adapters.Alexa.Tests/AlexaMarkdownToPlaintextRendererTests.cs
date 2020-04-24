@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Bot.Builder.Community.Adapters.Alexa.Core.Helpers;
+﻿using Bot.Builder.Community.Adapters.Alexa.Core.Helpers;
 using Xunit;
 
 namespace Bot.Builder.Community.Adapters.Alexa.Tests
@@ -63,6 +60,14 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
             var md = "Same line.\nSame line.\n2nd line.\n\r3rd line.";
             var result = AlexaMarkdownToPlaintextRenderer.Render(md);
             Assert.Equal("Same line. Same line. 2nd line. 3rd line.", result);
+        }
+
+        [Fact]
+        public void ConvertQuotesAndUrls()
+        {
+            var md = "{   \"contentType\": \"image/jpeg\",   \"content\": \"https://somefantasticurl/\",   \"name\": \"Attachment1.jpg\" }";
+            var result = AlexaMarkdownToPlaintextRenderer.Render(md);
+            Assert.Equal("{   \"contentType\": \"image/jpeg\",   \"content\": \"https://somefantasticurl/\",   \"name\": \"Attachment1.jpg\" }.", result);
         }
     }
 }

@@ -7,13 +7,16 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core.Helpers
     /// </summary>
     public static class AlexaMarkdownToPlaintextRenderer
     {
-        private static readonly Marked _marked = new Marked(new Options { Renderer = new RemoveMarkupRenderer() });
+        private static readonly Marked _marked = new Marked(new Options { EscapeHtml = false, Sanitize = false, Mangle = false, Renderer = new RemoveMarkupRenderer() });
 
         public static string Render(string source) => _marked.Parse(source);
 
         private class RemoveMarkupRenderer : MarkdownRenderer
         {
             private const string ListItemMarker = "$$ListItemMarker$$";
+
+            public RemoveMarkupRenderer() : base() { }
+            public RemoveMarkupRenderer(Options options) : base(options) { }
 
             public override string Blockquote(string quote) => string.Concat(quote, ". ");
             public override string Br() => ". ";
@@ -25,7 +28,19 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core.Helpers
             public override string Hr() => ". ";
             public override string Html(string html) => string.Empty;
             public override string Image(string href, string title, string text) => title ?? text;
-            public override string Link(string href, string title, string text) => $"{title ?? text} {href}";
+            public override string Link(string href, string title, string text)
+            {
+                if (title != null)
+                {
+                    return $"{title} {href}";
+                }
+                else if (text == href)
+                {
+                    // For standard links the title and href will be the same.
+                    return href;
+                }
+                return $"{text} {href}";
+            }
             public override string List(string body, bool ordered, int start)
             {
                 if (ordered)
