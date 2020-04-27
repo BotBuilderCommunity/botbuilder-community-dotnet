@@ -175,20 +175,27 @@ namespace Bot.Builder.Community.Cards.Tests
 
             var value = new Dictionary<string, object>
             {
-                { "foo", "bar" }, // No ID's
+                { "foo", "bar" }, // No data ID's
             };
 
-            var activities = new List<IMessageActivity>
+            var activities1 = new List<IMessageActivity>
             {
-                MessageFactory.Attachment(new HeroCard(buttons: new List<CardAction>
+                new Activity
                 {
-                    new CardAction(type: ActionTypes.PostBack, value: value),
-                }).ToAttachment()),
+                    Attachments = new List<Attachment>
+                    {
+                        new HeroCard(buttons: new List<CardAction>
+                        {
+                            // This acitivity shouldn't be saved because the value has no data ID's
+                            new CardAction(type: ActionTypes.PostBack, value: value),
+                        }).ToAttachment(),
+                    },
+                },
             };
 
             Assert.IsNull(await manager.StateAccessor.GetAsync(turnContext));
 
-            await manager.SaveActivitiesAsync(turnContext, activities);
+            await manager.SaveActivitiesAsync(turnContext, activities1);
 
             var state = await manager.StateAccessor.GetAsync(turnContext);
 
@@ -196,86 +203,136 @@ namespace Bot.Builder.Community.Cards.Tests
 
             value[DataId.GetKey(DataIdTypes.Action)] = "action ID";
 
-            await manager.SaveActivitiesAsync(turnContext, activities);
+            await manager.SaveActivitiesAsync(turnContext, activities1);
 
-            Assert.AreSame(activities.Single(), state.SavedActivities.Single());
+            Assert.AreSame(activities1.Single(), state.SavedActivities.Single());
 
-            await manager.SaveActivitiesAsync(turnContext, activities);
+            await manager.SaveActivitiesAsync(turnContext, activities1);
 
             Assert.AreEqual(1, state.SavedActivities.Count, "One activity was saved as multiple activities");
 
             var activities2 = new List<IMessageActivity>
             {
-                new Activity(),
-                MessageFactory.Attachment(new Attachment
+                new Activity(id: "2.0"),
+                new Activity
                 {
-                    ContentType = ContentTypes.AdaptiveCard,
-                    Content = new AdaptiveCard(new AdaptiveSchemaVersion())
+                    Id = "2.1",
+                    Attachments = new List<Attachment>
                     {
-                        Actions = new List<AdaptiveAction>
+                        new Attachment
                         {
-                            new AdaptiveSubmitAction
+                            ContentType = ContentTypes.AdaptiveCard,
+                            Content = new AdaptiveCard(new AdaptiveSchemaVersion())
                             {
-                                Data = new Dictionary<string, string>
+                                Actions = new List<AdaptiveAction>
                                 {
-                                    { DataId.GetKey(DataIdTypes.Card), "card ID" },
-                                },
-                            },
-                        },
-                    },
-                }),
-                MessageFactory.Attachment(new Attachment
-                {
-                    ContentType = HeroCard.ContentType,
-                    Content = new AdaptiveCard(new AdaptiveSchemaVersion())
-                    {
-                        Actions = new List<AdaptiveAction>
-                        {
-                            new AdaptiveSubmitAction
-                            {
-                                Data = new Dictionary<string, string>
-                                {
-                                    { DataId.GetKey(DataIdTypes.Carousel), "carousel ID" },
-                                },
-                            },
-                        },
-                    },
-                }),
-                MessageFactory.Carousel(new List<Attachment>
-                {
-                    new Attachment
-                    {
-                        ContentType = HeroCard.ContentType,
-                        Content = new AdaptiveCard(new AdaptiveSchemaVersion())
-                        {
-                            Actions = new List<AdaptiveAction>
-                            {
-                                new AdaptiveSubmitAction
-                                {
-                                    Data = new Dictionary<string, string>
+                                    new AdaptiveSubmitAction
                                     {
-                                        { DataId.GetKey(DataIdTypes.Carousel), "carousel ID" },
+                                        Data = new Dictionary<string, string>
+                                        {
+                                            { DataId.GetKey(DataIdTypes.Card), "card ID" },
+                                        },
                                     },
                                 },
                             },
                         },
                     },
-                    new AnimationCard(buttons: new List<CardAction>
+                },
+                new Activity
+                {
+                    Id = "2.2",
+                    Attachments = new List<Attachment>
                     {
-                        new CardAction(type: ActionTypes.PostBack, value: $"{{'{DataId.GetKey(DataIdTypes.Batch)}':'batch ID'}}"),
-                    }).ToAttachment(),
-                }),
+                        new Attachment
+                        {
+                            ContentType = HeroCard.ContentType, // Wrong content type
+                            Content = new AdaptiveCard(new AdaptiveSchemaVersion())
+                            {
+                                Actions = new List<AdaptiveAction>
+                                {
+                                    new AdaptiveSubmitAction
+                                    {
+                                        Data = new Dictionary<string, string>
+                                        {
+                                            { DataId.GetKey(DataIdTypes.Carousel), "carousel ID" },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+                new Activity
+                {
+                    Id = "2.3",
+                    Attachments = new List<Attachment>
+                    {
+                        new Attachment
+                        {
+                            ContentType = HeroCard.ContentType,
+                            Content = new AdaptiveCard(new AdaptiveSchemaVersion())
+                            {
+                                Actions = new List<AdaptiveAction>
+                                {
+                                    new AdaptiveSubmitAction
+                                    {
+                                        Data = new Dictionary<string, string>
+                                        {
+                                            { DataId.GetKey(DataIdTypes.Carousel), "other carousel ID" },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                        new AnimationCard(buttons: new List<CardAction>
+                        {
+                            new CardAction(type: ActionTypes.MessageBack, value: $"{{'{DataId.GetKey(DataIdTypes.Batch)}':'batch ID'}}"),
+                        }).ToAttachment(),
+                    },
+                },
+                new Activity
+                {
+                    Id = "2.3", // Duplicate ID
+                    Attachments = new List<Attachment>
+                    {
+                        new AudioCard(buttons: new List<CardAction>
+                        {
+                            new CardAction(type: ActionTypes.PostBack, value: $"{{'{DataId.GetKey(DataIdTypes.Batch)}':'batch ID'}}"),
+                        }).ToAttachment(),
+                    },
+                },
             };
 
             await manager.SaveActivitiesAsync(turnContext, activities2);
 
             Assert.AreEqual(3, state.SavedActivities.Count);
-            Assert.IsTrue(state.SavedActivities.Contains(activities.Single()));
+            Assert.IsTrue(state.SavedActivities.Contains(activities1.Single()));
             Assert.IsTrue(state.SavedActivities.Contains(activities2[1]));
-            Assert.IsTrue(state.SavedActivities.Contains(activities2[3]));
+            Assert.IsTrue(state.SavedActivities.Contains(activities2[4]));
+
+            var activities3 = new List<IMessageActivity>
+            {
+                new Activity
+                {
+                    Attachments = new List<Attachment>
+                    {
+                        new ReceiptCard(buttons: new List<CardAction>
+                        {
+                            new CardAction(type: ActionTypes.PostBack, value: new Dictionary<string, string>
+                            {
+                                { DataId.GetKey(DataIdTypes.Action), "other action ID" },
+                            }),
+                        }).ToAttachment(),
+                    },
+                },
+            };
+
+            await manager.SaveActivitiesAsync(turnContext, activities3);
+
+            Assert.AreEqual(4, state.SavedActivities.Count, "Null ID collided with other null ID");
 
             await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await manager.SaveActivitiesAsync(turnContext, null));
-            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await manager.SaveActivitiesAsync(null, activities));
+            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await manager.SaveActivitiesAsync(null, activities1));
         }
 
         [TestMethod]

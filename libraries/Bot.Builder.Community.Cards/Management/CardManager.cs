@@ -142,9 +142,23 @@ namespace Bot.Builder.Community.Cards.Management
 
             var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
 
-            state.SavedActivities.UnionWith(activities);
+            foreach (var activity in activities)
+            {
+                if (activity.Id != null)
+                {
+                    var oldActivity = state.SavedActivities.FirstOrDefault(savedActivity => savedActivity.Id == activity.Id);
 
-            await CleanSavedActivitiesAsync(turnContext, cancellationToken).ConfigureAwait(false);
+                    if (oldActivity != null)
+                    {
+                        state.SavedActivities.Remove(oldActivity);
+                    }
+                }
+
+                if (CardTree.GetIds(activity).Any())
+                {
+                    state.SavedActivities.Add(activity);
+                }
+            }
         }
 
         public async Task PreserveValuesAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
@@ -419,7 +433,7 @@ namespace Bot.Builder.Community.Cards.Management
                                     TreeNodeType.AdaptiveCard,
                                     TreeNodeType.SubmitAction,
                                     true);
-                            } 
+                            }
                         }
                     }
                     else
