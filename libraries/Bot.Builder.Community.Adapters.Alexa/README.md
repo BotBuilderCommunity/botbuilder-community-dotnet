@@ -137,8 +137,11 @@ Before you can complete the configuration of your Alexa skill, you need to wire 
 
 The preview of the next version of the Alexa Adapter requires two packages, both available on MyGet.
 
-Bot.Builder.Community.Adapters.Alexa - https://www.myget.org/feed/botbuilder-community-dotnet/package/nuget/Bot.Builder.Community.Adapters.Alexa/4.8.2-beta0111
-Bot.Builder.Community.Adapters.Alexa.Core - https://www.myget.org/feed/botbuilder-community-dotnet/package/nuget/Bot.Builder.Community.Adapters.Alexa.Core/4.8.2-beta0111
+Bot.Builder.Community.Adapters.Alexa - 
+https://www.myget.org/feed/botbuilder-community-dotnet/package/nuget/Bot.Builder.Community.Adapters.Alexa/4.8.2-beta0111
+
+Bot.Builder.Community.Adapters.Alexa.Core - 
+https://www.myget.org/feed/botbuilder-community-dotnet/package/nuget/Bot.Builder.Community.Adapters.Alexa.Core/4.8.2-beta0111
 
 To install into your project use the following command in the package manager.  If you wish to use the Visual Studio package manager, then add https://www.myget.org/F/botbuilder-community-dotnet/api/v3/index.json as an additional package source.
 ```
