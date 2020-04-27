@@ -79,7 +79,7 @@ namespace Bot.Builder.Community.Cards.Management
                     // Whether we should proceed by default depends on the ID-tracking style
                     shouldProceed = options.IdTrackingStyle == TrackingStyle.TrackDisabled;
 
-                    var state = await Manager.StateAccessor.GetNotNullAsync(turnContext, () => new CardManagerState(), cancellationToken).ConfigureAwait(false);
+                    var state = await Manager.GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
 
                     foreach (var type in idTypes)
                     {

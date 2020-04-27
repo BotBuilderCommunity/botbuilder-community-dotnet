@@ -35,6 +35,13 @@ namespace Bot.Builder.Community.Cards.Management
             return new CardManager(stateAccessor ?? throw new ArgumentNullException(nameof(stateAccessor)));
         }
 
+        public async Task<CardManagerState> GetStateAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
+        {
+            BotAssert.ContextNotNull(turnContext);
+
+            return await StateAccessor.GetNotNullAsync(turnContext, () => new CardManagerState(), cancellationToken).ConfigureAwait(false);
+        }
+
         // --------------------
         // NON-UPDATING METHODS
         // --------------------
@@ -454,11 +461,6 @@ namespace Bot.Builder.Community.Cards.Management
             }
 
             return result;
-        }
-
-        private async Task<CardManagerState> GetStateAsync(ITurnContext turnContext, CancellationToken cancellationToken)
-        {
-            return await StateAccessor.GetNotNullAsync(turnContext, () => new CardManagerState(), cancellationToken).ConfigureAwait(false);
         }
     }
 }
