@@ -113,7 +113,7 @@ namespace Bot.Builder.Community.Cards.Management
                 {
                     // If there are multiple ID types in use,
                     // just delete the one that represents the largest scope
-                    var type = DataIdTypes.Collection.ElementAtOrDefault(idTypes.Max(idType => DataIdTypes.GetIndex(idType)));
+                    var type = DataId.Types.ElementAtOrDefault(idTypes.Max(idType => DataId.Types.IndexOf(idType)));
 
                     await Manager.DeleteAsync(turnContext, type, cancellationToken).ConfigureAwait(false);
                 }

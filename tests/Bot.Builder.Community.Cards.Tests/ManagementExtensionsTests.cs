@@ -279,7 +279,7 @@ namespace Bot.Builder.Community.Cards.Tests
                 }),
             };
 
-            var options = new DataIdOptions(DataIdTypes.Collection);
+            var options = new DataIdOptions(DataId.Types);
 
             options.Set(DataIdTypes.Batch, BATCHID);
             batch.ApplyIdsToBatch(options);

@@ -151,7 +151,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
             {
                 TreeNodeType.ActionData, new TreeNode<JObject, DataId>((data, next) =>
                 {
-                    foreach (var type in DataIdTypes.Collection)
+                    foreach (var type in DataId.Types)
                     {
                         var id = data.GetIdFromActionData(type);
 

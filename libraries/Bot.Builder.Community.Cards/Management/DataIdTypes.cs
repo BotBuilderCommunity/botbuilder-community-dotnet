@@ -34,9 +34,5 @@ namespace Bot.Builder.Community.Cards.Management
         /// but this can be used for any arbitrarily-defined group of activities.
         /// </summary>
         public const string Batch = "batch";
-
-        internal static IList<string> Collection { get; } = Array.AsReadOnly(new[] { Action, Card, Carousel, Batch });
-
-        internal static int GetIndex(string type) => Collection.IndexOf(type);
     }
 }
