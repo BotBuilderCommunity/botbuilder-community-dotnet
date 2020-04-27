@@ -1,4 +1,4 @@
-# Alexa Adapter for Bot Builder v4 .NET SDK - ***PREVIEW***
+# Alexa Adapter for Bot Builder v4 .NET SDK
 
 ## Build status
 | Branch | Status | Recommended NuGet package version |
@@ -133,9 +133,7 @@ The following sections will demonstrate how to connect a bot to an Alexa skill u
 
 Before you can complete the configuration of your Alexa skill, you need to wire up the Alexa adapter into your bot.
 
-#### Install the Alexa adapter NuGet package
-
-The preview of the next version of the Alexa Adapter requires two packages, both available on MyGet.
+#### Install the Alexa adapter NuGet packages
 
 Bot.Builder.Community.Adapters.Alexa - 
 https://www.myget.org/feed/botbuilder-community-dotnet/package/nuget/Bot.Builder.Community.Adapters.Alexa/4.8.2-beta0111
