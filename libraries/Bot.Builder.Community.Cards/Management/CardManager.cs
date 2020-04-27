@@ -153,18 +153,31 @@ namespace Bot.Builder.Community.Cards.Management
             {
                 if (activity.Id != null)
                 {
-                    var oldActivity = state.SavedActivities.FirstOrDefault(savedActivity => savedActivity.Id == activity.Id);
-
-                    if (oldActivity != null)
-                    {
-                        state.SavedActivities.Remove(oldActivity);
-                    }
+                    await UnsaveActivityAsync(turnContext, activity.Id, cancellationToken).ConfigureAwait(false); 
                 }
 
                 if (CardTree.GetIds(activity).Any())
                 {
                     state.SavedActivities.Add(activity);
                 }
+            }
+        }
+
+        public async Task UnsaveActivityAsync(ITurnContext turnContext, string activityId, CancellationToken cancellationToken = default)
+        {
+            BotAssert.ContextNotNull(turnContext);
+
+            if (activityId is null)
+            {
+                throw new ArgumentNullException(nameof(activityId));
+            }
+
+            var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
+            var savedActivity = state.SavedActivities.FirstOrDefault(activity => activity.Id == activityId);
+
+            if (savedActivity != null)
+            {
+                state.SavedActivities.Remove(savedActivity);
             }
         }
 

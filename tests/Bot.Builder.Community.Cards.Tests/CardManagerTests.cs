@@ -336,6 +336,29 @@ namespace Bot.Builder.Community.Cards.Tests
         }
 
         [TestMethod]
+        public async Task TestUnsaveActivityAsync()
+        {
+            var manager = CreateManager();
+            var turnContext = CreateTurnContext();
+            var state = new CardManagerState();
+            var activity = new Activity(id: "activity ID");
+
+            await manager.StateAccessor.SetAsync(turnContext, state);
+            await manager.UnsaveActivityAsync(turnContext, activity.Id);
+
+            state.SavedActivities.Add(activity);
+
+            Assert.AreEqual(1, state.SavedActivities.Count);
+
+            await manager.UnsaveActivityAsync(turnContext, activity.Id);
+
+            Assert.AreEqual(0, state.SavedActivities.Count);
+
+            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await manager.UnsaveActivityAsync(turnContext, null));
+            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await manager.UnsaveActivityAsync(null, "ID"));
+        }
+
+        [TestMethod]
         public async Task TestPreserveValuesAsync()
         {
             const string ACTIONID = "action ID";
