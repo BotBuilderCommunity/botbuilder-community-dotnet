@@ -218,7 +218,7 @@ namespace Bot.Builder.Community.Cards.Management
             }
         }
 
-        public async Task DeleteAsync(ITurnContext turnContext, string dataIdType, CancellationToken cancellationToken = default)
+        public async Task DeleteActionSourceAsync(ITurnContext turnContext, string dataIdType, CancellationToken cancellationToken = default)
         {
             // TODO: Provide a way to delete elements by specifying an ID that's not in the incoming action data
 

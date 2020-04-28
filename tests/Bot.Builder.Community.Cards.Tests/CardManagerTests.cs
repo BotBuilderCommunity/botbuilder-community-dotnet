@@ -1153,7 +1153,7 @@ namespace Bot.Builder.Community.Cards.Tests
             };
 
             await manager.StateAccessor.SetAsync(turnContext, state);
-            await manager.DeleteAsync(turnContext, DataIdTypes.Action);
+            await manager.DeleteActionSourceAsync(turnContext, DataIdTypes.Action);
 
             Assert.IsFalse(updated);
             Assert.AreEqual(0, deletedCount);
@@ -1167,7 +1167,7 @@ namespace Bot.Builder.Community.Cards.Tests
                 { DataId.GetKey(DataIdTypes.Action), ACTIONID1 },
             };
 
-            await manager.DeleteAsync(turnContext, DataIdTypes.Action);
+            await manager.DeleteActionSourceAsync(turnContext, DataIdTypes.Action);
 
             var actionId = ((JObject)((AdaptiveSubmitAction)((AdaptiveCard)activity1.Attachments[0].Content)
                     .Actions.Single()).Data)[DataId.GetKey(DataIdTypes.Action)];
@@ -1185,7 +1185,7 @@ namespace Bot.Builder.Community.Cards.Tests
                 { DataId.GetKey(DataIdTypes.Action), ACTIONID2 },
             };
 
-            await manager.DeleteAsync(turnContext, DataIdTypes.Action);
+            await manager.DeleteActionSourceAsync(turnContext, DataIdTypes.Action);
 
             Assert.IsTrue(updated);
             Assert.AreEqual(0, deletedCount);
@@ -1200,7 +1200,7 @@ namespace Bot.Builder.Community.Cards.Tests
                 { DataId.GetKey(DataIdTypes.Action), ACTIONID3 },
             };
 
-            await manager.DeleteAsync(turnContext, DataIdTypes.Action);
+            await manager.DeleteActionSourceAsync(turnContext, DataIdTypes.Action);
 
             actionId = ((Dictionary<string, string>)((HeroCard)activity1.Attachments.Single().Content)
                 .Buttons.Single().Value)[DataId.GetKey(DataIdTypes.Action)];
@@ -1218,7 +1218,7 @@ namespace Bot.Builder.Community.Cards.Tests
                 { DataId.GetKey(DataIdTypes.Action), ACTIONID4 },
             };
 
-            await manager.DeleteAsync(turnContext, DataIdTypes.Action);
+            await manager.DeleteActionSourceAsync(turnContext, DataIdTypes.Action);
 
             Assert.IsFalse(updated);
             Assert.AreEqual(1, deletedCount, "Activity wasn't deleted even though it was empty");
@@ -1236,7 +1236,7 @@ namespace Bot.Builder.Community.Cards.Tests
                 { DataId.GetKey(DataIdTypes.Action), ACTIONID5 },
             };
 
-            await manager.DeleteAsync(turnContext, DataIdTypes.Action);
+            await manager.DeleteActionSourceAsync(turnContext, DataIdTypes.Action);
 
             Assert.IsTrue(updated);
             Assert.AreEqual(0, deletedCount);
@@ -1251,7 +1251,7 @@ namespace Bot.Builder.Community.Cards.Tests
                 { DataId.GetKey(DataIdTypes.Action), ACTIONID6 },
             };
 
-            await manager.DeleteAsync(turnContext, DataIdTypes.Action);
+            await manager.DeleteActionSourceAsync(turnContext, DataIdTypes.Action);
 
             Assert.IsTrue(updated);
             Assert.AreEqual(0, deletedCount, "Activity was deleted even though it still had attachments");
@@ -1271,7 +1271,7 @@ namespace Bot.Builder.Community.Cards.Tests
             };
 
             // We are deleting the card using a carousel ID
-            await manager.DeleteAsync(turnContext, DataIdTypes.Card);
+            await manager.DeleteActionSourceAsync(turnContext, DataIdTypes.Card);
 
             Assert.IsTrue(updated);
             Assert.AreEqual(0, deletedCount, "Activity was deleted even though it still had attachments");
@@ -1290,7 +1290,7 @@ namespace Bot.Builder.Community.Cards.Tests
             };
 
             // We are deleting the carousel using a card ID
-            await manager.DeleteAsync(turnContext, DataIdTypes.Carousel);
+            await manager.DeleteActionSourceAsync(turnContext, DataIdTypes.Carousel);
 
             Assert.IsFalse(updated);
             Assert.AreEqual(1, deletedCount);
@@ -1308,7 +1308,7 @@ namespace Bot.Builder.Community.Cards.Tests
             };
 
             // We are deleting the carousel using a card ID
-            await manager.DeleteAsync(turnContext, DataIdTypes.Batch);
+            await manager.DeleteActionSourceAsync(turnContext, DataIdTypes.Batch);
 
             Assert.IsFalse(updated);
             Assert.AreEqual(2, deletedCount);
@@ -1317,8 +1317,8 @@ namespace Bot.Builder.Community.Cards.Tests
             Assert.IsFalse(queue.Contains(activity6), "Activity 6 activity not removed from the queue");
             Assert.AreEqual(4, queue.Count(), "Deleted activities not removed from the queue");
 
-            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await manager.DeleteAsync(null, DataIdTypes.Action));
-            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await manager.DeleteAsync(turnContext, string.Empty));
+            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await manager.DeleteActionSourceAsync(null, DataIdTypes.Action));
+            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await manager.DeleteActionSourceAsync(turnContext, string.Empty));
         }
 
         private UserState CreateUserState() => new UserState(new MemoryStorage());
