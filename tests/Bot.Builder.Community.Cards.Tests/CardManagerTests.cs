@@ -338,21 +338,34 @@ namespace Bot.Builder.Community.Cards.Tests
         [TestMethod]
         public async Task TestUnsaveActivityAsync()
         {
+            const string ACTIVITYID1 = "activity ID 1";
+            const string ACTIVITYID2 = "activity ID 2";
+
             var manager = CreateManager();
             var turnContext = CreateTurnContext();
             var state = new CardManagerState();
-            var activity = new Activity(id: "activity ID");
+            var activity1 = new Activity(id: ACTIVITYID1);
+            var activity2 = new Activity(id: ACTIVITYID2);
+            var activity3 = new Activity(id: ACTIVITYID2);
 
             await manager.StateAccessor.SetAsync(turnContext, state);
-            await manager.UnsaveActivityAsync(turnContext, activity.Id);
-
-            state.SavedActivities.Add(activity);
-
-            Assert.AreEqual(1, state.SavedActivities.Count);
-
-            await manager.UnsaveActivityAsync(turnContext, activity.Id);
+            await manager.UnsaveActivityAsync(turnContext, ACTIVITYID1);
 
             Assert.AreEqual(0, state.SavedActivities.Count);
+
+            state.SavedActivities.Add(activity1);
+            state.SavedActivities.Add(activity2);
+            state.SavedActivities.Add(activity3);
+
+            Assert.AreEqual(3, state.SavedActivities.Count);
+
+            await manager.UnsaveActivityAsync(turnContext, ACTIVITYID1);
+
+            Assert.AreEqual(2, state.SavedActivities.Count, "Did not remove one activity");
+
+            await manager.UnsaveActivityAsync(turnContext, ACTIVITYID2);
+
+            Assert.AreEqual(0, state.SavedActivities.Count, "Did not remove two activities");
 
             await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await manager.UnsaveActivityAsync(turnContext, null));
             await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await manager.UnsaveActivityAsync(null, "ID"));

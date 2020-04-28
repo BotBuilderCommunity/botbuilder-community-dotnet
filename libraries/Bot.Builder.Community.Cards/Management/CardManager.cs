@@ -153,6 +153,7 @@ namespace Bot.Builder.Community.Cards.Management
             {
                 if (activity.Id != null)
                 {
+                    // Remove any activities with a matching ID so that a duplicate isn't saved when updating
                     await UnsaveActivityAsync(turnContext, activity.Id, cancellationToken).ConfigureAwait(false); 
                 }
 
@@ -173,12 +174,10 @@ namespace Bot.Builder.Community.Cards.Management
             }
 
             var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
-            var savedActivity = state.SavedActivities.FirstOrDefault(activity => activity.Id == activityId);
+            var activitiesWithMatchingId = state.SavedActivities.Where(activity => activity.Id == activityId).ToArray();
 
-            if (savedActivity != null)
-            {
-                state.SavedActivities.Remove(savedActivity);
-            }
+            // The WhereEnumerableIterator must be copied or else it would throw an exception here
+            state.SavedActivities.ExceptWith(activitiesWithMatchingId);
         }
 
         public async Task PreserveValuesAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
@@ -387,10 +386,6 @@ namespace Bot.Builder.Community.Cards.Management
 
         private async Task DeleteActivityAsync(ITurnContext turnContext, IMessageActivity activity, CancellationToken cancellationToken)
         {
-            var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
-
-            state.SavedActivities.Remove(activity);
-
             var ignoreDelete = turnContext.TurnState.Get<CardManagerTurnState>()?.MiddlewareIgnoreDelete;
 
             ignoreDelete?.Add(activity.Id);
@@ -408,6 +403,10 @@ namespace Bot.Builder.Community.Cards.Management
             {
                 ignoreDelete?.Remove(activity.Id);
             }
+
+            var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
+
+            state.SavedActivities.Remove(activity);
         }
 
         private async Task<DataMatchResult> GetDataMatchAsync(
