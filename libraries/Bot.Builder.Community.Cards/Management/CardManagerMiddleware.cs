@@ -226,7 +226,10 @@ namespace Bot.Builder.Community.Cards.Management
                 }
             }
 
-            if (options.AutoSaveActivitiesOnSend)
+            var state = await Manager.GetStateAsync(turnContext).ConfigureAwait(false);
+            var savedActivity = state.SavedActivities.FirstOrDefault(a => a.Id == activity.Id);
+
+            if (options.AutoSaveActivitiesOnSend || savedActivity != null)
             {
                 await Manager.SaveActivitiesAsync(turnContext, activities).ConfigureAwait(false);
             }
@@ -237,10 +240,7 @@ namespace Bot.Builder.Community.Cards.Management
         // This will be called by the Bot Builder SDK and all three of these parameters are guaranteed to not be null
         private async Task OnDeleteActivity(ITurnContext turnContext, ConversationReference reference, Func<Task> next)
         {
-            if (reference.ActivityId != null)
-            {
-                await Manager.UnsaveActivityAsync(turnContext, reference.ActivityId).ConfigureAwait(false); 
-            }
+            await Manager.UnsaveActivityAsync(turnContext, reference.ActivityId).ConfigureAwait(false); 
 
             await next().ConfigureAwait(false);
         }
