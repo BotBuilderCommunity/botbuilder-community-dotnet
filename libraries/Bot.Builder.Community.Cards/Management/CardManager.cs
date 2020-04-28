@@ -345,22 +345,6 @@ namespace Bot.Builder.Community.Cards.Management
             }
         }
 
-        private async Task CleanSavedActivitiesAsync(ITurnContext turnContext, CancellationToken cancellationToken)
-        {
-            var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
-            var toRemove = new List<IMessageActivity>();
-
-            foreach (var savedActivity in state.SavedActivities)
-            {
-                if (!CardTree.GetIds(savedActivity).Any())
-                {
-                    toRemove.Add(savedActivity);
-                }
-            }
-
-            state.SavedActivities.ExceptWith(toRemove);
-        }
-
         private async Task UpdateActivityAsync(ITurnContext turnContext, IMessageActivity activity, CancellationToken cancellationToken)
         {
             var ignoreUpdate = turnContext.TurnState.Get<CardManagerTurnState>()?.MiddlewareIgnoreDelete;
