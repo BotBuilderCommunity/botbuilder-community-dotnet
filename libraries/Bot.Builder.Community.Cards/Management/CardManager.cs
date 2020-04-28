@@ -343,8 +343,6 @@ namespace Bot.Builder.Community.Cards.Management
                     await UpdateActivityAsync(turnContext, matchedActivity, cancellationToken).ConfigureAwait(false);
                 }
             }
-
-            await CleanSavedActivitiesAsync(turnContext, cancellationToken).ConfigureAwait(false);
         }
 
         private async Task CleanSavedActivitiesAsync(ITurnContext turnContext, CancellationToken cancellationToken)
@@ -382,6 +380,11 @@ namespace Bot.Builder.Community.Cards.Management
             {
                 ignoreUpdate?.Remove(activity.Id);
             }
+
+            if (!CardTree.GetIds(activity).Any())
+            {
+                await RemoveActivityAsync(turnContext, activity, cancellationToken).ConfigureAwait(false);
+            }
         }
 
         private async Task DeleteActivityAsync(ITurnContext turnContext, IMessageActivity activity, CancellationToken cancellationToken)
@@ -404,6 +407,11 @@ namespace Bot.Builder.Community.Cards.Management
                 ignoreDelete?.Remove(activity.Id);
             }
 
+            await RemoveActivityAsync(turnContext, activity, cancellationToken).ConfigureAwait(false);
+        }
+
+        private async Task RemoveActivityAsync(ITurnContext turnContext, IMessageActivity activity, CancellationToken cancellationToken)
+        {
             var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
 
             state.SavedActivities.Remove(activity);

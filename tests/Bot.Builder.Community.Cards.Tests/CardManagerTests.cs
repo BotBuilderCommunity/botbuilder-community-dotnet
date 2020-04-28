@@ -1107,23 +1107,6 @@ namespace Bot.Builder.Community.Cards.Tests
             var activity8 = new Activity
             {
                 Id = "Irrelevant activity ID",
-                Attachments = new List<Attachment>
-                {
-                    new Attachment
-                    {
-                        Name = "7,0",
-                        ContentType = HeroCard.ContentType,
-                        Content = new HeroCard(buttons: new List<CardAction>
-                        {
-                            new CardAction(ActionTypes.ImBack, value: new Dictionary<string, string>
-                            {
-                                // This ID won't be visible because it's in an imBack
-                                // and so the activity should immediately be removed from state
-                                { DataId.GetKey(DataIdTypes.Action), "Invisible action ID" },
-                            }),
-                        }),
-                    },
-                },
             };
 
             // We need to use the active queue or else the test adapter will remove the ID
@@ -1137,9 +1120,10 @@ namespace Bot.Builder.Community.Cards.Tests
             queue.Enqueue(activity5);
             queue.Enqueue(activity6);
             queue.Enqueue(activity7);
-            queue.Enqueue(activity8);
 
             state.SavedActivities.UnionWith(queue);
+
+            queue.Enqueue(activity8);
 
             var expectedActivities = new[] { activity1 };
 
@@ -1169,18 +1153,14 @@ namespace Bot.Builder.Community.Cards.Tests
             };
 
             await manager.StateAccessor.SetAsync(turnContext, state);
-
-            Assert.IsTrue(state.SavedActivities.Contains(activity8));
-            Assert.AreEqual(8, state.SavedActivities.Count);
-
             await manager.DeleteAsync(turnContext, DataIdTypes.Action);
 
             Assert.IsFalse(updated);
             Assert.AreEqual(0, deletedCount);
-            Assert.IsFalse(state.SavedActivities.Contains(activity8), "Saved activities weren't cleaned correctly");
-            Assert.AreEqual(7, state.SavedActivities.Count, "Saved activities weren't cleaned correctly");
-            Assert.IsTrue(queue.Contains(activity8), "Cleaned activity removed from the queue");
-            Assert.AreEqual(8, queue.Count(), "Cleaned activity removed from the queue");
+            Assert.IsFalse(state.SavedActivities.Contains(activity8));
+            Assert.AreEqual(7, state.SavedActivities.Count);
+            Assert.IsTrue(queue.Contains(activity8));
+            Assert.AreEqual(8, queue.Count());
 
             turnContext.Activity.Value = new Dictionary<string, object>
             {
