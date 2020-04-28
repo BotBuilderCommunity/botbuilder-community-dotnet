@@ -65,6 +65,8 @@ namespace Bot.Builder.Community.Cards.Management
                 throw new ArgumentNullException(nameof(next));
             }
 
+            turnContext.TurnState.Add(new CardManagerTurnState());
+
             var options = GetOptionsForChannel(turnContext.Activity.ChannelId);
             var idTypes = options.IdOptions is null ? new List<string> { DataIdTypes.Action } : options.IdOptions.GetIdTypes();
             var isTracking = options.IdTrackingStyle != TrackingStyle.None;
@@ -190,6 +192,13 @@ namespace Bot.Builder.Community.Cards.Management
         // This will be called by the Bot Builder SDK and all three of these parameters are guaranteed to not be null
         private async Task<ResourceResponse> OnUpdateActivity(ITurnContext turnContext, Activity activity, Func<Task<ResourceResponse>> next)
         {
+            var ignoreUpdate = turnContext.TurnState.Get<CardManagerTurnState>()?.MiddlewareIgnoreUpdate;
+
+            if (ignoreUpdate.Remove(activity.Id))
+            {
+                return await next().ConfigureAwait(false);
+            }
+
             var options = GetOptionsForChannel(turnContext.Activity.ChannelId);
             var activities = new[] { activity };
 
@@ -240,9 +249,16 @@ namespace Bot.Builder.Community.Cards.Management
         // This will be called by the Bot Builder SDK and all three of these parameters are guaranteed to not be null
         private async Task OnDeleteActivity(ITurnContext turnContext, ConversationReference reference, Func<Task> next)
         {
-            await Manager.UnsaveActivityAsync(turnContext, reference.ActivityId).ConfigureAwait(false); 
-
             await next().ConfigureAwait(false);
+
+            var ignoreDelete = turnContext.TurnState.Get<CardManagerTurnState>()?.MiddlewareIgnoreDelete;
+
+            if (ignoreDelete.Remove(reference.ActivityId))
+            {
+                return;
+            }
+
+            await Manager.UnsaveActivityAsync(turnContext, reference.ActivityId).ConfigureAwait(false); 
         }
 
         private CardManagerMiddlewareOptions GetOptionsForChannel(string channelId)

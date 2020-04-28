@@ -212,16 +212,8 @@ namespace Bot.Builder.Community.Cards.Management
 
                     if (changed)
                     {
-                        try
-                        {
-                            // The changes to the attachment will already be reflected in the activity
-                            await turnContext.UpdateActivityAsync(matchResult.SavedActivity).ConfigureAwait(false);
-                        }
-                        catch
-                        {
-                            // TODO: Find out what exceptions I need to handle
-                            throw;
-                        }
+                        // The changes to the attachment will already be reflected in the activity
+                        await UpdateActivityAsync(turnContext, matchResult.SavedActivity, cancellationToken).ConfigureAwait(false);
                     }
                 }
             }
@@ -349,7 +341,7 @@ namespace Bot.Builder.Community.Cards.Management
                 }
                 else if (shouldUpdateActivity)
                 {
-                    await turnContext.UpdateActivityAsync(matchedActivity, cancellationToken).ConfigureAwait(false);
+                    await UpdateActivityAsync(turnContext, matchedActivity, cancellationToken).ConfigureAwait(false);
                 }
             }
 
@@ -372,13 +364,50 @@ namespace Bot.Builder.Community.Cards.Management
             state.SavedActivities.ExceptWith(toRemove);
         }
 
+        private async Task UpdateActivityAsync(ITurnContext turnContext, IMessageActivity activity, CancellationToken cancellationToken)
+        {
+            var ignoreUpdate = turnContext.TurnState.Get<CardManagerTurnState>()?.MiddlewareIgnoreDelete;
+
+            ignoreUpdate?.Add(activity.Id);
+
+            try
+            {
+                await turnContext.UpdateActivityAsync(activity, cancellationToken).ConfigureAwait(false);
+            }
+            catch
+            {
+                // TODO: Find out what exceptions I need to handle
+                throw;
+            }
+            finally
+            {
+                ignoreUpdate?.Remove(activity.Id);
+            }
+        }
+
         private async Task DeleteActivityAsync(ITurnContext turnContext, IMessageActivity activity, CancellationToken cancellationToken)
         {
-            await turnContext.DeleteActivityAsync(activity.Id, cancellationToken).ConfigureAwait(false);
-
             var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
 
             state.SavedActivities.Remove(activity);
+
+            var ignoreDelete = turnContext.TurnState.Get<CardManagerTurnState>()?.MiddlewareIgnoreDelete;
+
+            ignoreDelete?.Add(activity.Id);
+
+            try
+            {
+                await turnContext.DeleteActivityAsync(activity.Id, cancellationToken).ConfigureAwait(false);
+            }
+            catch
+            {
+                // TODO: Find out what exceptions I need to handle
+                throw;
+            }
+            finally
+            {
+                ignoreDelete?.Remove(activity.Id);
+            }
         }
 
         private async Task<DataMatchResult> GetDataMatchAsync(
