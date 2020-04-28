@@ -24,7 +24,7 @@ namespace Bot.Builder.Community.Cards.Management
         {
             AutoAdaptOutgoingCardActions = true,
             AutoApplyIds = true,
-            AutoClearTrackedOnSend = false,
+            AutoClearEnabledOnSend = false,
             AutoConvertAdaptiveCards = true,
             AutoDeleteOnAction = true,
             AutoDisableOnAction = false,
@@ -39,7 +39,7 @@ namespace Bot.Builder.Community.Cards.Management
         {
             AutoAdaptOutgoingCardActions = true,
             AutoApplyIds = true,
-            AutoClearTrackedOnSend = true,
+            AutoClearEnabledOnSend = true,
             AutoConvertAdaptiveCards = true,
             AutoDeleteOnAction = false,
             AutoDisableOnAction = true,
@@ -119,8 +119,9 @@ namespace Bot.Builder.Community.Cards.Management
                 }
             }
 
-            // TODO: Add update and delete handlers
             turnContext.OnSendActivities(OnSendActivities);
+            turnContext.OnUpdateActivity(OnUpdateActivity);
+            turnContext.OnDeleteActivity(OnDeleteActivity);
 
             if (shouldProceed)
             {
@@ -132,58 +133,116 @@ namespace Bot.Builder.Community.Cards.Management
         // This will be called by the Bot Builder SDK and all three of these parameters are guaranteed to not be null
         private async Task<ResourceResponse[]> OnSendActivities(ITurnContext turnContext, List<Activity> activities, Func<Task<ResourceResponse[]>> next)
         {
-            if (activities.Any(activity => activity.Type == ActivityTypes.Message))
+            if (activities.Any(activity => activity.Attachments?.Any() != true))
             {
-                var options = GetOptionsForChannel(turnContext.Activity.ChannelId);
-
-                if (options.AutoClearTrackedOnSend && options.IdTrackingStyle == TrackingStyle.TrackEnabled)
-                {
-                    await Manager.ClearTrackedIdsAsync(turnContext).ConfigureAwait(false);
-                }
-
-                if (options.AutoConvertAdaptiveCards)
-                {
-                    activities.ConvertAdaptiveCards();
-                }
-
-                if (options.AutoSeparateAttachmentsOnSend)
-                {
-                    activities.SeparateAttachments();
-                }
-
-                if (options.AutoAdaptOutgoingCardActions)
-                {
-                    activities.AdaptOutgoingCardActions(turnContext.Activity.ChannelId);
-                }
-
-                if (options.AutoApplyIds)
-                {
-                    activities.ApplyIdsToBatch(options.IdOptions);
-                }
-
-                // The resource response ID's will be automatically applied to the activities
-                // so this return value is only passed along as the next return value
-                // and is not used for tracking/management.
-                // The needed activity ID's can be extracted from the activities directly.
-                var resourceResponses = await next().ConfigureAwait(false);
-
-                if (options.AutoEnableOnSend && options.IdTrackingStyle == TrackingStyle.TrackEnabled)
-                {
-                    foreach (var dataId in activities.GetIdsFromBatch())
-                    {
-                        await Manager.EnableIdAsync(turnContext, dataId, options.IdTrackingStyle).ConfigureAwait(false);
-                    }
-                }
-
-                if (options.AutoSaveActivitiesOnSend)
-                {
-                    await Manager.SaveActivitiesAsync(turnContext, activities).ConfigureAwait(false);
-                }
-
-                return resourceResponses; 
+                return await next().ConfigureAwait(false);
             }
 
-            return await next().ConfigureAwait(false);
+            var options = GetOptionsForChannel(turnContext.Activity.ChannelId);
+
+            if (options.AutoClearEnabledOnSend && options.IdTrackingStyle == TrackingStyle.TrackEnabled)
+            {
+                await Manager.ClearTrackedIdsAsync(turnContext).ConfigureAwait(false);
+            }
+
+            if (options.AutoConvertAdaptiveCards)
+            {
+                activities.ConvertAdaptiveCards();
+            }
+
+            if (options.AutoSeparateAttachmentsOnSend)
+            {
+                activities.SeparateAttachments();
+            }
+
+            if (options.AutoAdaptOutgoingCardActions)
+            {
+                activities.AdaptOutgoingCardActions(turnContext.Activity.ChannelId);
+            }
+
+            if (options.AutoApplyIds)
+            {
+                activities.ApplyIdsToBatch(options.IdOptions);
+            }
+
+            // The resource response ID's will be automatically applied to the activities
+            // so this return value is only passed along as the outer return value
+            // and is not used for tracking/management.
+            // The needed activity ID's can be extracted from the activities directly.
+            var resourceResponses = await next().ConfigureAwait(false);
+
+            if (options.AutoEnableOnSend && options.IdTrackingStyle == TrackingStyle.TrackEnabled)
+            {
+                foreach (var dataId in activities.GetIdsFromBatch())
+                {
+                    await Manager.EnableIdAsync(turnContext, dataId, options.IdTrackingStyle).ConfigureAwait(false);
+                }
+            }
+
+            if (options.AutoSaveActivitiesOnSend)
+            {
+                await Manager.SaveActivitiesAsync(turnContext, activities).ConfigureAwait(false);
+            }
+
+            return resourceResponses;
+        }
+
+        // This will be called by the Bot Builder SDK and all three of these parameters are guaranteed to not be null
+        private async Task<ResourceResponse> OnUpdateActivity(ITurnContext turnContext, Activity activity, Func<Task<ResourceResponse>> next)
+        {
+            var options = GetOptionsForChannel(turnContext.Activity.ChannelId);
+            var activities = new[] { activity };
+
+            // Some functionality that is in OnSendActivities is intentionally omitted here.
+            // We don't clear enabled ID's because a new activity isn't being sent.
+            // We don't separate attachments because it's impossible to update an activity with multiple activities.
+
+            if (options.AutoConvertAdaptiveCards)
+            {
+                activities.ConvertAdaptiveCards();
+            }
+
+            if (options.AutoAdaptOutgoingCardActions)
+            {
+                activities.AdaptOutgoingCardActions(turnContext.Activity.ChannelId);
+            }
+
+            if (options.AutoApplyIds)
+            {
+                activities.ApplyIdsToBatch(options.IdOptions);
+            }
+
+            // The resource response ID will already be the ID of the activity
+            // so this return value is only passed along as the outer return value
+            // and is not used for tracking/management.
+            // The needed activity ID can be extracted from the activity directly.
+            var resourceResponse = await next().ConfigureAwait(false);
+
+            if (options.AutoEnableOnSend && options.IdTrackingStyle == TrackingStyle.TrackEnabled)
+            {
+                foreach (var dataId in activities.GetIdsFromBatch())
+                {
+                    await Manager.EnableIdAsync(turnContext, dataId, options.IdTrackingStyle).ConfigureAwait(false);
+                }
+            }
+
+            if (options.AutoSaveActivitiesOnSend)
+            {
+                await Manager.SaveActivitiesAsync(turnContext, activities).ConfigureAwait(false);
+            }
+
+            return resourceResponse;
+        }
+
+        // This will be called by the Bot Builder SDK and all three of these parameters are guaranteed to not be null
+        private async Task OnDeleteActivity(ITurnContext turnContext, ConversationReference reference, Func<Task> next)
+        {
+            if (reference.ActivityId != null)
+            {
+                await Manager.UnsaveActivityAsync(turnContext, reference.ActivityId).ConfigureAwait(false); 
+            }
+
+            await next().ConfigureAwait(false);
         }
 
         private CardManagerMiddlewareOptions GetOptionsForChannel(string channelId)

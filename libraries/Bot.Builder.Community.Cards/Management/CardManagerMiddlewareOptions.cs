@@ -17,7 +17,7 @@ namespace Bot.Builder.Community.Cards.Management
         /// <value>
         /// If true, the middleware will clear the enabled ID list every time a message activity is sent from the bot.
         /// </value>
-        public bool AutoClearTrackedOnSend { get; set; }
+        public bool AutoClearEnabledOnSend { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether to automatically convert outgoing Adaptive Cards to JObject instances.
