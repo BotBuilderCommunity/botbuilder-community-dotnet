@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Schema;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Bot.Builder.Community.Cards.Management
@@ -20,7 +19,13 @@ namespace Bot.Builder.Community.Cards.Management
             Manager = manager ?? throw new ArgumentNullException(nameof(manager));
         }
 
-        public static CardManagerMiddlewareOptions DefaultUpdatingOptions => new CardManagerMiddlewareOptions
+        public CardManager Manager { get; }
+
+        public CardManagerMiddlewareOptions UpdatingOptions { get; set; } = GetDefaultUpdatingOptions();
+
+        public CardManagerMiddlewareOptions NonUpdatingOptions { get; set; } = GetDefaultNonUpdatingOptions();
+
+        public static CardManagerMiddlewareOptions GetDefaultUpdatingOptions() => new CardManagerMiddlewareOptions
         {
             AutoAdaptOutgoingCardActions = true,
             AutoApplyIds = true,
@@ -35,7 +40,7 @@ namespace Bot.Builder.Community.Cards.Management
             IdOptions = new DataIdOptions(DataIdTypes.Action),
         };
 
-        public static CardManagerMiddlewareOptions DefaultNonUpdatingOptions => new CardManagerMiddlewareOptions
+        public static CardManagerMiddlewareOptions GetDefaultNonUpdatingOptions() => new CardManagerMiddlewareOptions
         {
             AutoAdaptOutgoingCardActions = true,
             AutoApplyIds = true,
@@ -49,12 +54,6 @@ namespace Bot.Builder.Community.Cards.Management
             IdTrackingStyle = TrackingStyle.TrackEnabled,
             IdOptions = new DataIdOptions(DataIdTypes.Action),
         };
-
-        public CardManagerMiddlewareOptions UpdatingOptions { get; } = DefaultUpdatingOptions;
-
-        public CardManagerMiddlewareOptions NonUpdatingOptions { get; } = DefaultNonUpdatingOptions;
-
-        public CardManager Manager { get; }
 
         public async Task OnTurnAsync(ITurnContext turnContext, NextDelegate next, CancellationToken cancellationToken = default)
         {
@@ -263,7 +262,9 @@ namespace Bot.Builder.Community.Cards.Management
 
         private CardManagerMiddlewareOptions GetOptionsForChannel(string channelId)
         {
-            return ChannelsWithMessageUpdates.Contains(channelId) ? UpdatingOptions : NonUpdatingOptions;
+            return ChannelsWithMessageUpdates.Contains(channelId)
+                ? UpdatingOptions ?? GetDefaultUpdatingOptions()
+                : NonUpdatingOptions ?? GetDefaultNonUpdatingOptions();
         }
     }
 }
