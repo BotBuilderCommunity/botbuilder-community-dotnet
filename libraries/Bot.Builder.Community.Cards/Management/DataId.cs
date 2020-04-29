@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Bot.Builder.Community.Cards.Management
 {
@@ -20,6 +20,14 @@ namespace Bot.Builder.Community.Cards.Management
 
         public override string Key => GetKey(Name);
 
+        internal static ReadOnlyCollection<string> Types { get; } = Array.AsReadOnly(new[]
+        {
+            DataIdTypes.Action,
+            DataIdTypes.Card,
+            DataIdTypes.Carousel,
+            DataIdTypes.Batch,
+        });
+
         public static bool operator ==(DataId left, DataId right) => left.Equals(right);
 
         public static bool operator !=(DataId left, DataId right) => !left.Equals(right);
@@ -29,14 +37,6 @@ namespace Bot.Builder.Community.Cards.Management
         public override bool Equals(object obj) => Equals(obj as DataId);
 
         public bool Equals(DataId other) => Type == other?.Type && Value == other?.Value;
-
-        internal static IList<string> Types { get; } = Array.AsReadOnly(new[]
-        {
-            DataIdTypes.Action,
-            DataIdTypes.Card,
-            DataIdTypes.Carousel,
-            DataIdTypes.Batch
-        });
 
         internal static string GetKey(string type) => $"{Prefixes.DataIdKey}{type}";
 
