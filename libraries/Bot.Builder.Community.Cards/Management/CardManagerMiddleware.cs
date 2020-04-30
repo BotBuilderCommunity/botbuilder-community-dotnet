@@ -12,14 +12,14 @@ namespace Bot.Builder.Community.Cards.Management
 {
     public class CardManagerMiddleware : IMiddleware
     {
-        public static readonly IList<string> ChannelsWithMessageUpdates = new List<string> { Channels.Msteams, Channels.Skype, Channels.Slack, Channels.Telegram };
-
         public CardManagerMiddleware(CardManager manager)
         {
             Manager = manager ?? throw new ArgumentNullException(nameof(manager));
         }
 
         public CardManager Manager { get; }
+
+        public IList<string> ChannelsWithMessageUpdates { get; } = new List<string> { Channels.Msteams, Channels.Skype, Channels.Slack, Channels.Telegram };
 
         public CardManagerMiddlewareOptions UpdatingOptions { get; set; } = GetDefaultUpdatingOptions();
 
