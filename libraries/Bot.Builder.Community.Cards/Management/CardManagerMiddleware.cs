@@ -134,16 +134,20 @@ namespace Bot.Builder.Community.Cards.Management
         // This will be called by the Bot Builder SDK and all three of these parameters are guaranteed to not be null
         private async Task<ResourceResponse[]> OnSendActivities(ITurnContext turnContext, List<Activity> activities, Func<Task<ResourceResponse[]>> next)
         {
+            var options = GetOptionsForChannel(turnContext.Activity.ChannelId);
+
+            // This method should be executed even if the bot is only sending text
+            if (options.AutoClearEnabledOnSend
+                && options.IdTrackingStyle == TrackingStyle.TrackEnabled
+                && activities.Any(activity => activity.Type == ActivityTypes.Message))
+            {
+                await Manager.ClearTrackedIdsAsync(turnContext).ConfigureAwait(false);
+            }
+
+            // The other methods will only be effective if the bot is sending attachments
             if (activities.Any(activity => activity.Attachments?.Any() != true))
             {
                 return await next().ConfigureAwait(false);
-            }
-
-            var options = GetOptionsForChannel(turnContext.Activity.ChannelId);
-
-            if (options.AutoClearEnabledOnSend && options.IdTrackingStyle == TrackingStyle.TrackEnabled)
-            {
-                await Manager.ClearTrackedIdsAsync(turnContext).ConfigureAwait(false);
             }
 
             if (options.AutoConvertAdaptiveCards)
