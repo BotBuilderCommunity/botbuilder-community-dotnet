@@ -17,6 +17,116 @@ namespace Bot.Builder.Community.Cards.Tests
     [TestClass]
     public class CardManagerMiddlewareTests
     {
+        private const string ActivityId = "activity ID";
+
+        [TestMethod]
+        public async Task ChannelsWithMessageUpdates_CanBeChanged()
+        {
+            var turnContext = CreateTurnContext();
+            var botState = CreateUserState();
+            var middleware = new CardManagerMiddleware(new CardManager(botState));
+            var state = new CardManagerState();
+            var shortCircuited = true;
+            var deleted = false;
+
+            NextDelegate next = (ct) =>
+            {
+                shortCircuited = false;
+
+                return Task.CompletedTask;
+            };
+
+            DeleteActivityHandler handler = (turnContext, reference, next) =>
+            {
+                deleted = true;
+
+                return Task.CompletedTask;
+            };
+
+            state.SavedActivities.Add(new Activity
+            {
+                Id = ActivityId,
+                Attachments = new List<Attachment>
+                {
+                    new HeroCard(buttons: new List<CardAction>
+                    {
+                        new CardAction(ActionTypes.PostBack, value: new object()),
+                    }).ToAttachment(),
+                },
+            });
+
+            await middleware.Manager.StateAccessor.SetAsync(turnContext, state);
+            await botState.SaveChangesAsync(turnContext);
+            await middleware.OnTurnAsync(CreateTurnContext().OnDeleteActivity(handler), next);
+
+            Assert.IsTrue(shortCircuited);
+            Assert.IsFalse(deleted);
+
+            middleware.ChannelsWithMessageUpdates.Add(Channels.Test);
+
+            await middleware.OnTurnAsync(CreateTurnContext().OnDeleteActivity(handler), next);
+
+            Assert.IsFalse(shortCircuited);
+            Assert.IsTrue(deleted);
+        }
+
+        [TestMethod]
+        public async Task ChannelsWithMessageUpdates_CanBeChanged2()
+        {
+            var botState = CreateUserState();
+            var middleware = new CardManagerMiddleware(new CardManager(botState));
+            var adapter = new TestAdapter().Use(middleware);
+            var state = new CardManagerState();
+            var shortCircuited = true;
+            var turnContext = new TurnContext(adapter, new Activity().ApplyConversationReference(adapter.Conversation, true));
+            var actionActivity = new Activity(value: new object());
+
+            BotCallbackHandler callback = async (turnContext, cancellationToken) =>
+            {
+                shortCircuited = false;
+
+                await botState.SaveChangesAsync(turnContext);
+            };
+
+            state.SavedActivities.Add(new Activity
+            {
+                Id = ActivityId,
+                Attachments = new List<Attachment>
+                {
+                    new HeroCard(buttons: new List<CardAction>
+                    {
+                        new CardAction(ActionTypes.PostBack, value: new object()),
+                    }).ToAttachment(),
+                },
+            });
+
+            await middleware.Manager.StateAccessor.SetAsync(turnContext, state);
+            await botState.SaveChangesAsync(turnContext);
+
+            await RunTest();
+
+            Assert.IsTrue(shortCircuited);
+            Assert.IsTrue(state.SavedActivities.Any());
+
+            middleware.ChannelsWithMessageUpdates.Add(Channels.Test);
+
+            await RunTest();
+
+            Assert.IsFalse(shortCircuited);
+            Assert.IsFalse(state.SavedActivities.Any());
+
+            async Task RunTest()
+            {
+                await new TestFlow(adapter, callback)
+                    .Send(actionActivity)
+                    .StartTestAsync();
+
+                await botState.LoadAsync(turnContext, true);
+
+                state = await middleware.Manager.StateAccessor.GetAsync(turnContext);
+            }
+        }
+
         [TestMethod]
         public async Task NonUpdatingSettingsAreUsed()
         {
@@ -213,5 +323,18 @@ namespace Bot.Builder.Community.Cards.Tests
 
             return new DataIdOptions(hashSet);
         }
+
+        private UserState CreateUserState() => new UserState(new MemoryStorage());
+
+        private CardManager CreateManager() => new CardManager(CreateUserState());
+
+        private ITurnContext CreateTurnContext() => new TurnContext(
+            new TestAdapter(),
+            new Activity(
+                ActivityTypes.Message,
+                ActivityId,
+                from: new ChannelAccount("CardManagerTests"),
+                channelId: Channels.Test,
+                value: new object()));
     }
 }
