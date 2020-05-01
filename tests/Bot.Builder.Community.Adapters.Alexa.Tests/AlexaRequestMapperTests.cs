@@ -1,21 +1,21 @@
+using System.Collections.Generic;
+using System.Text;
 using Alexa.NET.Request;
 using Alexa.NET.Request.Type;
 using Alexa.NET.Response;
-using Bot.Builder.Community.Adapters.Alexa.Core;
-using Microsoft.Bot.Builder;
-using Microsoft.Bot.Schema;
-using Microsoft.Extensions.Logging;
-using Moq;
-using System.Collections.Generic;
-using System.Text;
 using Alexa.NET.Response.Directive;
 using Alexa.NET.Response.Directive.Templates;
 using Alexa.NET.Response.Directive.Templates.Types;
+using Bot.Builder.Community.Adapters.Alexa.Core;
 using Bot.Builder.Community.Adapters.Alexa.Core.Attachments;
 using Bot.Builder.Community.Adapters.Alexa.Tests.Helpers;
 using FluentAssertions.Common;
+using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Integration.AspNet.Core;
+using Microsoft.Bot.Schema;
+using Microsoft.Extensions.Logging;
+using Moq;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Bot.Builder.Community.Adapters.Alexa.Tests
@@ -98,6 +98,25 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
             var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { firstActivity, secondActivity });
 
             Assert.Equal("This is the first activity. This is the second activity", processActivityResult.Text);
+        }
+
+        [Fact]
+        public void MergeActivitiesAttachmentAndPlainText()
+        {
+            var alexaAdapter = new AlexaRequestMapper();
+
+            var attachment = new Attachment
+            {
+                Name = "Attachment1.jpg",
+                ContentType = "image/jpeg",
+                Content = "https://somefantasticurl/",
+            };
+            var firstActivity = MessageFactory.Text(JsonConvert.SerializeObject(attachment, HttpHelper.BotMessageSerializerSettings));
+            var secondActivity = (Activity) MessageFactory.Attachment(attachment);
+
+            var processActivityResult = alexaAdapter.MergeActivities(new List<Activity> { firstActivity, secondActivity });
+
+            Assert.Equal("{   \"contentType\": \"image/jpeg\",   \"content\": \"https://somefantasticurl/\",   \"name\": \"Attachment1.jpg\" }", processActivityResult.Text);
         }
 
         [Fact]
