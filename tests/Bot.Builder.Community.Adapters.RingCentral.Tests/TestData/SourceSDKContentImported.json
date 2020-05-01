@@ -1,0 +1,39 @@
+{
+  "id": "5d8fcb2d9cd9febd76772ab3",
+  "domain_id": "5dbafdcedbddbb93c20fe1ca",
+  "events": [
+    {
+      "type": "content.imported",
+      "id": "5e5d523abd0e54427f350321",
+      "issued_at": "2020-03-02T18:36:42.963Z",
+      "resource": {
+        "type": "sdk/content",
+        "id": "5e5d523a7133686cc52b7e61",
+        "metadata": {
+          "approval_required": false,
+          "author_id": "5e5793f5bd0e5455e2b09fc2",
+          "body": "Where are you traveling from?",
+          "body_input_format": "html",
+          "category_ids": [],
+          "creator_id": null,
+          "date": "2020-03-02",
+          "first_in_thread": false,
+          "foreign_categories": null,
+          "foreign_id": "c2905910-5cb4-11ea-9c5e-43c6ebccbb26",
+          "has_attachment": false,
+          "intervention_id": null,
+          "in_reply_to_author_id": null,
+          "in_reply_to_id": null,
+          "language": "en",
+          "source_id": "5dc206a10e69dc66c5b55f21",
+          "status": "new",
+          "thread_id": "5e5d522d4f181b83e8d32765",
+          "thread_title": "NOTE: LUIS is not configured. To enable all capabilities, add 'LuisAppId', 'LuisAPIKey' and 'LuisAPIHostName' to the appsettings.json file.",
+          "created_from": "synchronizer",
+          "private": false,
+          "context_data": {}
+        }
+      }
+    }
+  ]
+}

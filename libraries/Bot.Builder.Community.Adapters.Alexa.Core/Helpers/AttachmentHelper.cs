@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Alexa.NET.Response;
 using Bot.Builder.Community.Adapters.Alexa.Core.Attachments;
 using Microsoft.Bot.Schema;
@@ -14,7 +14,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core.Helpers
         /// Convert all Alexa specific attachments to their correct type.
         /// </summary>
         /// <param name="activity"></param>
-        public static void ConvertAlexaAttachmentContent(this Activity activity)
+        public static void ConvertAttachmentContent(this Activity activity)
         {
             if (activity == null || activity.Attachments == null)
             {
@@ -23,13 +23,20 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core.Helpers
 
             foreach (var attachment in activity.Attachments)
             {
-                if (attachment.ContentType == AlexaAttachmentContentTypes.Card)
+                switch (attachment.ContentType)
                 {
-                    Convert<ICard>(attachment);
-                }
-                else if (attachment.ContentType == AlexaAttachmentContentTypes.Directive)
-                {
-                    Convert<IDirective>(attachment);
+                    case HeroCard.ContentType:
+                        Convert<HeroCard>(attachment);
+                        break;
+                    case SigninCard.ContentType:
+                        Convert<SigninCard>(attachment);
+                        break;
+                    case AlexaAttachmentContentTypes.Card:
+                        Convert<ICard>(attachment);
+                        break;
+                    case AlexaAttachmentContentTypes.Directive:
+                        Convert<IDirective>(attachment);
+                        break;
                 }
             }
         }

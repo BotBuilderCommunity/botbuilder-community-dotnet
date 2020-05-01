@@ -3,7 +3,7 @@ using Bot.Builder.Community.Adapters.Alexa;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Builder;
 
-namespace Bot.Builder.Community.Samples.Google.Controllers
+namespace Bot.Builder.Community.Samples.Alexa.Controllers
 {
     // This ASP Controller is created to handle a request. Dependency Injection will provide the Adapter and IBot
     // implementation at runtime. Multiple different IBot implementations running at different endpoints can be

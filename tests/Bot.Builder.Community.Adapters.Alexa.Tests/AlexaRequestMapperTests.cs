@@ -1,21 +1,21 @@
+using System.Collections.Generic;
+using System.Text;
 using Alexa.NET.Request;
 using Alexa.NET.Request.Type;
 using Alexa.NET.Response;
-using Bot.Builder.Community.Adapters.Alexa.Core;
-using Microsoft.Bot.Builder;
-using Microsoft.Bot.Schema;
-using Microsoft.Extensions.Logging;
-using Moq;
-using System.Collections.Generic;
-using System.Text;
 using Alexa.NET.Response.Directive;
 using Alexa.NET.Response.Directive.Templates;
 using Alexa.NET.Response.Directive.Templates.Types;
+using Bot.Builder.Community.Adapters.Alexa.Core;
 using Bot.Builder.Community.Adapters.Alexa.Core.Attachments;
 using Bot.Builder.Community.Adapters.Alexa.Tests.Helpers;
 using FluentAssertions.Common;
+using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Integration.AspNet.Core;
+using Microsoft.Bot.Schema;
+using Microsoft.Extensions.Logging;
+using Moq;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Bot.Builder.Community.Adapters.Alexa.Tests
@@ -98,6 +98,25 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
             var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { firstActivity, secondActivity });
 
             Assert.Equal("This is the first activity. This is the second activity", processActivityResult.Text);
+        }
+
+        [Fact]
+        public void MergeActivitiesAttachmentAndPlainText()
+        {
+            var alexaAdapter = new AlexaRequestMapper();
+
+            var attachment = new Attachment
+            {
+                Name = "Attachment1.jpg",
+                ContentType = "image/jpeg",
+                Content = "https://somefantasticurl/",
+            };
+            var firstActivity = MessageFactory.Text(JsonConvert.SerializeObject(attachment, HttpHelper.BotMessageSerializerSettings));
+            var secondActivity = (Activity) MessageFactory.Attachment(attachment);
+
+            var processActivityResult = alexaAdapter.MergeActivities(new List<Activity> { firstActivity, secondActivity });
+
+            Assert.Equal("{   \"contentType\": \"image/jpeg\",   \"content\": \"https://somefantasticurl/\",   \"name\": \"Attachment1.jpg\" }", processActivityResult.Text);
         }
 
         [Fact]
@@ -197,7 +216,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
             activity.Text = "Hello world";
             activity.TextFormat = TextFormatTypes.Plain;
 
-            var skillResponse = mapper.ActivityToResponse(activity, skillRequest);
+            var skillResponse = ExecuteActivityToResponse(mapper, activity, skillRequest);
             VerifyPlainTextResponse(skillResponse, activity.Text);
         }
 
@@ -209,7 +228,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
 
             var activity = Activity.CreateTraceActivity("This is a trace") as Activity;
 
-            var skillResponse = mapper.ActivityToResponse(activity, skillRequest);
+            var skillResponse = ExecuteActivityToResponse(mapper, activity, skillRequest);
             VerifyPlainTextResponse(skillResponse, string.Empty);
         }
 
@@ -271,9 +290,79 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
             activity.Attachments.Add(displayDirective.ToAttachment());
             activity.Attachments.Add(simpleCard.ToAttachment());
 
-            var skillResponse = mapper.ActivityToResponse(activity, skillRequest);
+            var skillResponse = ExecuteActivityToResponse(mapper, activity, skillRequest);
 
             VerifyCardAttachmentAndDirectiveResponse(skillResponse, simpleCard, new List<IDirective>() { hintDirective, displayDirective });
+        }
+
+        [Fact]
+        public void MessageActivityWithHeroCardConverted()
+        {
+            var skillRequest = SkillRequestHelper.CreateIntentRequest();
+            var mapper = new AlexaRequestMapper();
+
+            var heroCard = new HeroCard
+            {
+                Title = "Card title",
+                Text = "Card text",
+                Images = new List<Microsoft.Bot.Schema.CardImage>
+                {
+                    new Microsoft.Bot.Schema.CardImage() { Url = "https://url" }
+                },
+                Buttons = new List<CardAction>()
+                {
+                    new CardAction { Title = "Places to buy", Type=ActionTypes.ImBack, Value="Places To Buy" },
+                    new CardAction
+                    {
+                        Title = "I feel lucky",
+                        Type=ActionTypes.OpenUrl,
+                        Image = "https://image",
+                        Value="https://value"
+                    }
+                }
+            };
+
+            var activity = Activity.CreateMessageActivity() as Activity;
+            activity.Attachments.Add(new Attachment() { ContentType = HeroCard.ContentType, Content = heroCard});
+
+            var skillResponse = ExecuteActivityToResponse(mapper, activity, skillRequest);
+
+            Assert.NotNull(skillResponse.Response.Card);
+            Assert.Equal(typeof(StandardCard), skillResponse.Response.Card.GetType());
+            var card = skillResponse.Response.Card as StandardCard;
+            Assert.Equal(heroCard.Text, card.Content);
+            Assert.Equal(heroCard.Title, card.Title);
+            Assert.Equal(heroCard.Images[0].Url, heroCard.Images[0].Url);
+        }
+
+        [Fact]
+        public void MessageActivityWithSignInCard()
+        {
+            var skillRequest = SkillRequestHelper.CreateIntentRequest();
+            var mapper = new AlexaRequestMapper();
+
+            var signinCard = new SigninCard
+            {
+                Text = "sign in text",
+                Buttons = new List<CardAction>()
+                {
+                    new CardAction
+                    {
+                        Title = "sign in",
+                        Type=ActionTypes.OpenUrl,
+                        Image = "https://image",
+                        Value="https://value"
+                    }
+                }
+            };
+
+            var activity = Activity.CreateMessageActivity() as Activity;
+            activity.Attachments.Add(new Attachment() { ContentType = SigninCard.ContentType, Content = signinCard });
+
+            var skillResponse = ExecuteActivityToResponse(mapper, activity, skillRequest);
+
+            Assert.NotNull(skillResponse.Response.Card);
+            Assert.Equal(typeof(LinkAccountCard), skillResponse.Response.Card.GetType());
         }
 
         private static void VerifyIntentRequest(SkillRequest skillRequest, IActivity activity, AlexaRequestMapperOptions mapperOptions)
@@ -295,7 +384,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
             Assert.Equal(mapperOptions.ChannelId, activity.ChannelId);
 
             Assert.NotNull(activity.Conversation);
-            Assert.Equal("conversation", activity.Conversation.ConversationType);
+            Assert.Null(activity.Conversation.ConversationType);
             Assert.Equal(skillRequest.Session.SessionId, activity.Conversation.Id);
             Assert.Equal(false, activity.Conversation.IsGroup);
 
@@ -336,5 +425,8 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
             Assert.Equal(directives.Count, skillResponse.Response.Directives.Count);
             directives.IsSameOrEqualTo(skillResponse.Response.Directives);
         }
+
+        private static SkillResponse ExecuteActivityToResponse(AlexaRequestMapper mapper, Activity activity, SkillRequest alexaRequest)
+            => mapper.ActivityToResponse(ActivityHelper.GetAnonymizedActivity(activity), alexaRequest);
     }
 }

@@ -9,7 +9,7 @@ using Bot.Builder.Community.Adapters.Alexa.Core.Attachments;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 
-namespace Bot.Builder.Community.Samples.Google.Bots
+namespace Bot.Builder.Community.Samples.Alexa.Bots
 {
     public class EchoBot : ActivityHandler
     {

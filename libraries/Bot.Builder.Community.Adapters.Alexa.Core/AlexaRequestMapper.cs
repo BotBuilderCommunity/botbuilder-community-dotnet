@@ -246,7 +246,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
             activity.ServiceUrl = _options.ServiceUrl ?? $"{alexaSystem.ApiEndpoint}?token={alexaSystem.ApiAccessToken}";
             activity.Recipient = new ChannelAccount(alexaSystem.Application.ApplicationId);
             activity.From = new ChannelAccount(alexaSystem.Person?.PersonId ?? alexaSystem.User.UserId);
-            activity.Conversation = new ConversationAccount(false, "conversation", skillRequest.Session?.SessionId ?? skillRequest.Request.RequestId);
+            activity.Conversation = new ConversationAccount(isGroup: false, id: skillRequest.Session?.SessionId ?? skillRequest.Request.RequestId);
             activity.Timestamp = skillRequest.Request.Timestamp.ToUniversalTime();
             activity.ChannelData = skillRequest;
 
@@ -347,20 +347,20 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
         /// <param name="response">The SkillResponse to be modified based on the attachments on the Activity object.</param>
         private void ProcessActivityAttachments(Activity activity, SkillResponse response)
         {
-            activity.ConvertAlexaAttachmentContent();
+           activity.ConvertAttachmentContent();
 
             var bfCard = activity.Attachments?.FirstOrDefault(a => a.ContentType == HeroCard.ContentType || a.ContentType == SigninCard.ContentType);
 
             if (bfCard != null)
             {
-                if (bfCard?.ContentType == SigninCard.ContentType)
+                switch (bfCard.Content)
                 {
-                    response.Response.Card = new LinkAccountCard();
-                }
-
-                if (bfCard?.ContentType == HeroCard.ContentType)
-                {
-                    response.Response.Card = CreateAlexaCardFromHeroCard(bfCard.Content as HeroCard);
+                    case SigninCard signinCard:
+                        response.Response.Card = new LinkAccountCard();
+                        break;
+                    case HeroCard heroCard:
+                        response.Response.Card = CreateAlexaCardFromHeroCard(heroCard);
+                        break;
                 }
             }
             else
