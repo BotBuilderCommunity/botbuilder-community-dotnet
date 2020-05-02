@@ -26,11 +26,12 @@ namespace Bot.Builder.Community.Adapters.Google.Core
 
             var activity = new Activity
             {
+                Type = ActivityTypes.Message,
                 DeliveryMode = DeliveryModes.ExpectReplies,
                 ChannelId = _options.ChannelId,
                 ServiceUrl = _options.ServiceUrl,
                 Recipient = new ChannelAccount("", "action"),
-                Conversation = new ConversationAccount(false, "conversation", $"{payload.Conversation.ConversationId}"),
+                Conversation = new ConversationAccount(false, id: $"{payload.Conversation.ConversationId}"),
                 From = new ChannelAccount(payload.GetUserIdFromUserStorage()),
                 Id = request.ResponseId,
                 Timestamp = DateTime.UtcNow,
@@ -46,17 +47,6 @@ namespace Bot.Builder.Community.Adapters.Google.Core
                 activity.Type = ActivityTypes.ConversationUpdate;
                 activity.MembersAdded = new List<ChannelAccount>() { new ChannelAccount() { Id = activity.From.Id } };
             }
-            else
-            {
-                activity.Type = ActivityTypes.Message;
-            }
-
-            if (payload.Inputs.FirstOrDefault()?.Arguments?.FirstOrDefault()?.Name == "OPTION")
-            {
-                activity.Value = payload.Inputs.First().Arguments.First().TextValue;
-            }
-
-            activity.ChannelData = payload;
 
             return activity;
         }

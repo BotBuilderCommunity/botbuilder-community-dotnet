@@ -19,7 +19,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
 {
     public class AlexaRequestMapper
     {
-        private AlexaRequestMapperOptions _options;
+        private readonly AlexaRequestMapperOptions _options;
         private ILogger _logger;
 
         public AlexaRequestMapper(AlexaRequestMapperOptions options = null, ILogger logger = null)

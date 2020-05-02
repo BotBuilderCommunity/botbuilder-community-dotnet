@@ -26,11 +26,12 @@ namespace Bot.Builder.Community.Adapters.Google.Core
         {
             var activity = new Activity
             {
+                Type = ActivityTypes.Message,
                 DeliveryMode = DeliveryModes.ExpectReplies,
                 ChannelId = _options.ChannelId,
                 ServiceUrl = _options.ServiceUrl,
                 Recipient = new ChannelAccount("", "action"),
-                Conversation = new ConversationAccount(false, "conversation", $"{payload.Conversation.ConversationId}"),
+                Conversation = new ConversationAccount(false, id: $"{payload.Conversation.ConversationId}"),
                 From = new ChannelAccount(payload.GetUserIdFromUserStorage()),
                 Id = Guid.NewGuid().ToString(),
                 Timestamp = DateTime.UtcNow,
@@ -40,24 +41,11 @@ namespace Bot.Builder.Community.Adapters.Google.Core
                     _options.ActionInvocationName)
             };
 
-
             if (string.IsNullOrEmpty(activity.Text))
             {
                 activity.Type = ActivityTypes.ConversationUpdate;
                 activity.MembersAdded = new List<ChannelAccount>() { new ChannelAccount() { Id = activity.From.Id } };
             }
-            else
-            {
-                activity.Type = ActivityTypes.Message;
-                activity.Text = MappingHelper.StripInvocation(payload.Inputs[0]?.RawInputs[0]?.Query, _options.ActionInvocationName);
-            }
-
-            if (payload.Inputs.FirstOrDefault()?.Arguments?.FirstOrDefault()?.Name == "OPTION")
-            {
-                activity.Value = payload.Inputs.First().Arguments.First().TextValue;
-            }
-
-            activity.ChannelData = payload;
 
             return activity;
         }
