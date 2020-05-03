@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Description>Adapter for v4 of the Bot Builder .NET SDK to allow for a bot to be used for Zoom skills.</Description>
+    <Description>Adapter for v4 of the Bot Builder .NET SDK to allow for a bot to be used to build Zoom chatbot apps.</Description>
     <Authors>Bot Builder Community</Authors>
     <Company>Bot Builder Community</Company>
     <PackageLicenseUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/master/LICENSE</PackageLicenseUrl>
@@ -20,15 +20,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Zoom.NET" Version="1.13.0" />
-    <PackageReference Include="Zoom.NET.CustomerProfile" Version="2.1.1" />
     <PackageReference Include="Microsoft.Bot.Builder" Version="4.8.0" />
     <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.8.0" />
     <PackageReference Include="Microsoft.Net.Http.Headers" Version="2.1.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Bot.Builder.Community.Adapters.Zoom.Core\Bot.Builder.Community.Adapters.Zoom.Core.csproj" />
+    <PackageReference Include="RestSharp" Version="106.10.2-alpha.0.8" />
   </ItemGroup>
 
 </Project>
