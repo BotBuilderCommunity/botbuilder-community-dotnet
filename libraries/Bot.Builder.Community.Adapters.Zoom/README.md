@@ -1,9 +1,9 @@
-# Zoom Adapter for Bot Builder v4 .NET SDK
+# Zoom Adapter for Bot Builder v4 .NET SDK - ***PREVIEW***
 
 ## Build status
 | Branch | Status | Recommended NuGet package version |
 | ------ | ------ | ------ |
-| master | [![Build status](https://ci.appveyor.com/api/projects/status/b9123gl3kih8x9cb?svg=true)](https://ci.appveyor.com/project/garypretty/botbuilder-community) | [Available via NuGet](https://www.nuget.org/packages/Bot.Builder.Community.Adapters.Alexa/) |
+| master | [![Build status](https://ci.appveyor.com/api/projects/status/b9123gl3kih8x9cb?svg=true)](https://ci.appveyor.com/project/garypretty/botbuilder-community) | [PREVIEW Available via MyGet](https://www.myget.org/feed/botbuilder-community-dotnet/package/nuget/Bot.Builder.Community.Adapters.Zoom) |
 
 ## Description
 
@@ -24,13 +24,7 @@ The adapter currently supports the following scenarios;
 
 ## Installation
 
-Available via NuGet package [Bot.Builder.Community.Adapters.Zoom](https://www.nuget.org/packages/Bot.Builder.Community.Adapters.Zoom/).
-
-Install into your project use the following command in the package manager. 
-
-```
-    PM> Install-Package Bot.Builder.Community.Adapters.Zoom
-```
+Preview package available via **MyGet** pacakage [Bot.Builder.Community.Adapters.Zoom](https://www.myget.org/feed/botbuilder-community-dotnet/package/nuget/Bot.Builder.Community.Adapters.Zoom).
 
 ## Sample
 
@@ -69,13 +63,7 @@ Before you can complete the configuration of your Zoom app, you need to wire up 
 
 #### Install the Zoom adapter NuGet packages
 
-Available via NuGet package [Bot.Builder.Community.Adapters.Zoom](https://www.nuget.org/packages/Bot.Builder.Community.Adapters.Zoom/).
-
-Install into your project use the following command in the package manager. 
-
-```
-    PM> Install-Package Bot.Builder.Community.Adapters.Zoom
-```
+Preview available via **MyGet** package [Bot.Builder.Community.Adapters.Zoom](https://www.myget.org/feed/botbuilder-community-dotnet/package/nuget/Bot.Builder.Community.Adapters.Zoom).
 
 #### Create a Zoom adapter class
 
