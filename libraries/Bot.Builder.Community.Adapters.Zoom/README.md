@@ -33,10 +33,10 @@ Sample bot, showing examples of Zoom specific functionality is available [here](
 ## Usage
 
 * [Prerequisites](#prerequisites)
-* [Create a Zoom app)](#create-a-zoom-app)
+* [Create a Zoom chatbot app](#create-a-zoom-app)
 * [Wiring up the Zoom adapter in your bot](#wiring-up-the-zoom-adapter-in-your-bot)
 * [Complete configuration of your Zoom app](#complete-configuration-of-your-zoom-app)
-* [Populate your Application Settings](#)
+* [Populate your Application Settings](#configure-your-bot-application-settings-appsettingsjson)
 * [Install and Test your Zoom app](#install-and-test-your-zoom-app)
 * [Incoming Zoom request to Bot Framework activity mapping](#Incoming-Zoom-request-to-Bot-Framework-activity-mapping) - Learn how incoming request types are handled by the adapter and the activities receieved by your bot.
 * [Sending Zoom Message Templates](#sending-zoom-message-templates) - Sending Zoom chat messages using Zoom message templates
