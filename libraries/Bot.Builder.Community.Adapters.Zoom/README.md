@@ -72,25 +72,28 @@ Create a new class that inherits from the ***ZoomAdapter*** class. This class wi
 The adapter also reads Zoom congifuration values from our appSettings.json file and supplies them to the adapter via the ***ZoomAdapterOptions*** class.
 
 ```csharp
-    public ZoomAdapterWithErrorHandler(IConfiguration configuration, ILogger<ZoomAdapter> logger)
-            : base(new ZoomAdapterOptions()
-            {
-                ValidateIncomingZoomRequests = false,
-                ClientId = configuration["ZoomClientId"],
-                ClientSecret = configuration["ZoomClientSecret"],
-                BotJid = configuration["ZoomBotJid"],
-                VerificationToken = configuration["ZoomVerificationToken"]
-            }, logger)
+    public class ZoomAdapterWithErrorHandler : ZoomAdapter
+    {
+        public ZoomAdapterWithErrorHandler(IConfiguration configuration, ILogger<ZoomAdapter> logger)
+                : base(new ZoomAdapterOptions()
+                {
+                    ValidateIncomingZoomRequests = false,
+                    ClientId = configuration["ZoomClientId"],
+                    ClientSecret = configuration["ZoomClientSecret"],
+                    BotJid = configuration["ZoomBotJid"],
+                    VerificationToken = configuration["ZoomVerificationToken"]
+                }, logger)
         {
             OnTurnError = async (turnContext, exception) =>
             {
-                // Log any leaked exception from the application.
-                logger.LogError($"Exception caught : {exception.Message}");
+            // Log any leaked exception from the application.
+            logger.LogError($"Exception caught : {exception.Message}");
 
-                // Send a catch-all apology to the user.
-                await turnContext.SendActivityAsync("Sorry, it looks like something went wrong.");
+            // Send a catch-all apology to the user.
+            await turnContext.SendActivityAsync("Sorry, it looks like something went wrong.");
             };
         }
+    }
 ```
 
 You will also need to add the following using statements.
