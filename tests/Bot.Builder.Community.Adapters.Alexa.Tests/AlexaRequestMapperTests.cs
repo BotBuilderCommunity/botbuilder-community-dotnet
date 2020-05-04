@@ -1,21 +1,21 @@
+using System.Collections.Generic;
+using System.Text;
 using Alexa.NET.Request;
 using Alexa.NET.Request.Type;
 using Alexa.NET.Response;
-using Bot.Builder.Community.Adapters.Alexa.Core;
-using Microsoft.Bot.Builder;
-using Microsoft.Bot.Schema;
-using Microsoft.Extensions.Logging;
-using Moq;
-using System.Collections.Generic;
-using System.Text;
 using Alexa.NET.Response.Directive;
 using Alexa.NET.Response.Directive.Templates;
 using Alexa.NET.Response.Directive.Templates.Types;
+using Bot.Builder.Community.Adapters.Alexa.Core;
 using Bot.Builder.Community.Adapters.Alexa.Core.Attachments;
 using Bot.Builder.Community.Adapters.Alexa.Tests.Helpers;
 using FluentAssertions.Common;
+using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Integration.AspNet.Core;
+using Microsoft.Bot.Schema;
+using Microsoft.Extensions.Logging;
+using Moq;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Bot.Builder.Community.Adapters.Alexa.Tests
@@ -57,34 +57,47 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
         [Fact]
         public void MergeActivitiesReturnIdenticalSingleActivityNoSsml()
         {
+            const string text = "This is the single activity";
+            const string ssml = null;
+
             var alexaAdapter = new AlexaRequestMapper();
-            var inputActivity = MessageFactory.Text("This is the single activity", "<speak>This is<break strength=\"strong\"/>the SSML</speak>");
+            var inputActivity = MessageFactory.Text(text, ssml);
 
             var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { inputActivity });
 
-            Assert.Equal(inputActivity, processActivityResult);
+            Assert.Equal(text, processActivityResult.Text);
+            Assert.Equal(ssml, processActivityResult.Speak);
         }
 
         [Fact]
         public void MergeActivitiesReturnsIdenticalSingleActivityWithSpeakSsmlTag()
         {
+            const string text = "This is the single activity";
+            const string ssml = "<speak>This is<break strength=\"strong\"/>the SSML</speak>";
+
             var alexaAdapter = new AlexaRequestMapper();
-            var inputActivity = MessageFactory.Text("This is the single activity", "<speak>This is<break strength=\"strong\"/>the SSML</speak>");
+            var inputActivity = MessageFactory.Text(text, ssml);
 
             var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { inputActivity });
 
-            Assert.Equal(inputActivity, processActivityResult);
+            Assert.Equal(text, processActivityResult.Text);
+            // When removing the speak tag the serializer adds the missing space at the end of the xml element. This doesn't matter for rendering in Alexa so it is fine.
+            Assert.Equal(ssml.Replace("/>", " />"), processActivityResult.Speak);
         }
 
         [Fact]
         public void MergeActivitiesReturnsSingleActivityAddingSpeakSsmlTag()
         {
+            const string text = "This is the single activity";
+            const string ssml = "This is<break strength=\"strong\"/>the SSML";
+
             var alexaAdapter = new AlexaRequestMapper();
-            var inputActivity = MessageFactory.Text("This is the single activity", "This is<break strength=\"strong\"/>the SSML");
+            var inputActivity = MessageFactory.Text(text, ssml);
 
             var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { inputActivity });
 
-            Assert.Equal(inputActivity, processActivityResult);
+            Assert.Equal(text, processActivityResult.Text);
+            Assert.Equal($"<speak>{ssml}</speak>", processActivityResult.Speak);
         }
 
         [Fact]
@@ -98,6 +111,25 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
             var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { firstActivity, secondActivity });
 
             Assert.Equal("This is the first activity. This is the second activity", processActivityResult.Text);
+        }
+
+        [Fact]
+        public void MergeActivitiesAttachmentAndPlainText()
+        {
+            var alexaAdapter = new AlexaRequestMapper();
+
+            var attachment = new Attachment
+            {
+                Name = "Attachment1.jpg",
+                ContentType = "image/jpeg",
+                Content = "https://somefantasticurl/",
+            };
+            var firstActivity = MessageFactory.Text(JsonConvert.SerializeObject(attachment, HttpHelper.BotMessageSerializerSettings));
+            var secondActivity = (Activity) MessageFactory.Attachment(attachment);
+
+            var processActivityResult = alexaAdapter.MergeActivities(new List<Activity> { firstActivity, secondActivity });
+
+            Assert.Equal("{   \"contentType\": \"image/jpeg\",   \"content\": \"https://somefantasticurl/\",   \"name\": \"Attachment1.jpg\" }", processActivityResult.Text);
         }
 
         [Fact]
@@ -199,6 +231,43 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
 
             var skillResponse = ExecuteActivityToResponse(mapper, activity, skillRequest);
             VerifyPlainTextResponse(skillResponse, activity.Text);
+        }
+
+        [Fact]
+        public void AppostrophiesNotConvertedNonSsml()
+        {
+            const string text = "It's amazing <xml />";
+            var alexaAdapter = new AlexaRequestMapper();
+
+            var skillRequest = SkillRequestHelper.CreateIntentRequest();
+            var mapper = new AlexaRequestMapper();
+
+            var activity = Activity.CreateMessageActivity() as Activity;
+            activity.Text = text;
+
+            var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { activity });
+
+            var skillResponse = ExecuteActivityToResponse(mapper, processActivityResult, skillRequest);
+            VerifyPlainTextResponse(skillResponse, text);
+        }
+
+        [Fact]
+        public void AppostrophiesNotConvertedSsml()
+        {
+            const string text = "It's amazing <break /> really";
+            var alexaAdapter = new AlexaRequestMapper();
+
+            var skillRequest = SkillRequestHelper.CreateIntentRequest();
+            var mapper = new AlexaRequestMapper();
+
+            var activity = Activity.CreateMessageActivity() as Activity;
+            activity.Speak = text;
+
+            var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { activity });
+
+            var skillResponse = ExecuteActivityToResponse(mapper, processActivityResult, skillRequest);
+            var outputSpeech = skillResponse.Response.OutputSpeech as SsmlOutputSpeech;
+            Assert.Equal($"<speak>{text}</speak>", outputSpeech.Ssml);
         }
 
         [Fact]

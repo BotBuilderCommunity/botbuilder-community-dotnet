@@ -1,9 +1,9 @@
-# Alexa Adapter for Bot Builder v4 .NET SDK - ***PREVIEW***
+# Alexa Adapter for Bot Builder v4 .NET SDK
 
 ## Build status
 | Branch | Status | Recommended NuGet package version |
 | ------ | ------ | ------ |
-| master | [![Build status](https://ci.appveyor.com/api/projects/status/b9123gl3kih8x9cb?svg=true)](https://ci.appveyor.com/project/garypretty/botbuilder-community) | Preview [available via MyGet (version 4.8.2-beta0111)](https://www.myget.org/feed/botbuilder-community-dotnet/package/nuget/Bot.Builder.Community.Adapters.Alexa/4.8.2-beta0111) |
+| master | [![Build status](https://ci.appveyor.com/api/projects/status/b9123gl3kih8x9cb?svg=true)](https://ci.appveyor.com/project/garypretty/botbuilder-community) | [Available via NuGet](https://www.nuget.org/packages/Bot.Builder.Community.Adapters.Alexa/) |
 
 ## Description
 
@@ -133,18 +133,14 @@ The following sections will demonstrate how to connect a bot to an Alexa skill u
 
 Before you can complete the configuration of your Alexa skill, you need to wire up the Alexa adapter into your bot.
 
-#### Install the Alexa adapter NuGet package
+#### Install the Alexa adapter NuGet packages
 
-The preview of the next version of the Alexa Adapter requires two packages, both available on MyGet.
+Available via NuGet package [Bot.Builder.Community.Adapters.Alexa](https://www.nuget.org/packages/Bot.Builder.Community.Adapters.Alexa/).
 
-Bot.Builder.Community.Adapters.Alexa - https://www.myget.org/feed/botbuilder-community-dotnet/package/nuget/Bot.Builder.Community.Adapters.Alexa/4.8.2-beta0111
-Bot.Builder.Community.Adapters.Alexa.Core - https://www.myget.org/feed/botbuilder-community-dotnet/package/nuget/Bot.Builder.Community.Adapters.Alexa.Core/4.8.2-beta0111
+Install into your project use the following command in the package manager. 
 
-To install into your project use the following command in the package manager.  If you wish to use the Visual Studio package manager, then add https://www.myget.org/F/botbuilder-community-dotnet/api/v3/index.json as an additional package source.
 ```
-    PM> Install-Package Bot.Builder.Community.Adapters.Alexa -Version 4.8.2-beta0111 -Source https://www.myget.org/F/botbuilder-community-dotnet/api/v3/index.json
-    
-        PM> Install-Package Bot.Builder.Community.Adapters.Alexa.Core -Version 4.8.2-beta0111 -Source https://www.myget.org/F/botbuilder-community-dotnet/api/v3/index.json
+    PM> Install-Package Bot.Builder.Community.Adapters.Alexa
 ```
 
 #### Create an Alexa adapter class
