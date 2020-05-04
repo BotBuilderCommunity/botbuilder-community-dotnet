@@ -6,7 +6,7 @@
     <Authors>Bot Builder Community</Authors>
     <Company>Bot Builder Community</Company>
     <PackageLicenseUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/libraries/Bot.Builder.Community.Adapters.Google</PackageProjectUrl>
     <Version>1.0.0</Version>
     <FileVersion>1.0.0</FileVersion>
     <AssemblyVersion>1.0.0</AssemblyVersion>
