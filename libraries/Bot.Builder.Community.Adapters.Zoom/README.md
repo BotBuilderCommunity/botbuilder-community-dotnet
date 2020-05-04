@@ -1,9 +1,9 @@
-# Zoom Adapter for Bot Builder v4 .NET SDK
+# Zoom Adapter for Bot Builder v4 .NET SDK - ***PREVIEW***
 
 ## Build status
 | Branch | Status | Recommended NuGet package version |
 | ------ | ------ | ------ |
-| master | [![Build status](https://ci.appveyor.com/api/projects/status/b9123gl3kih8x9cb?svg=true)](https://ci.appveyor.com/project/garypretty/botbuilder-community) | [Available via NuGet](https://www.nuget.org/packages/Bot.Builder.Community.Adapters.Alexa/) |
+| master | [![Build status](https://ci.appveyor.com/api/projects/status/b9123gl3kih8x9cb?svg=true)](https://ci.appveyor.com/project/garypretty/botbuilder-community) | [PREVIEW Available via MyGet](https://www.myget.org/feed/botbuilder-community-dotnet/package/nuget/Bot.Builder.Community.Adapters.Zoom) |
 
 ## Description
 
@@ -24,13 +24,7 @@ The adapter currently supports the following scenarios;
 
 ## Installation
 
-Available via NuGet package [Bot.Builder.Community.Adapters.Zoom](https://www.nuget.org/packages/Bot.Builder.Community.Adapters.Zoom/).
-
-Install into your project use the following command in the package manager. 
-
-```
-    PM> Install-Package Bot.Builder.Community.Adapters.Zoom
-```
+Preview package available via **MyGet** pacakage [Bot.Builder.Community.Adapters.Zoom](https://www.myget.org/feed/botbuilder-community-dotnet/package/nuget/Bot.Builder.Community.Adapters.Zoom).
 
 ## Sample
 
@@ -39,10 +33,10 @@ Sample bot, showing examples of Zoom specific functionality is available [here](
 ## Usage
 
 * [Prerequisites](#prerequisites)
-* [Create a Zoom app)](#create-a-zoom-app)
+* [Create a Zoom chatbot app](#create-a-zoom-app)
 * [Wiring up the Zoom adapter in your bot](#wiring-up-the-zoom-adapter-in-your-bot)
 * [Complete configuration of your Zoom app](#complete-configuration-of-your-zoom-app)
-* [Populate your Application Settings](#)
+* [Populate your Application Settings](#configure-your-bot-application-settings-appsettingsjson)
 * [Install and Test your Zoom app](#install-and-test-your-zoom-app)
 * [Incoming Zoom request to Bot Framework activity mapping](#Incoming-Zoom-request-to-Bot-Framework-activity-mapping) - Learn how incoming request types are handled by the adapter and the activities receieved by your bot.
 * [Sending Zoom Message Templates](#sending-zoom-message-templates) - Sending Zoom chat messages using Zoom message templates
@@ -69,13 +63,7 @@ Before you can complete the configuration of your Zoom app, you need to wire up 
 
 #### Install the Zoom adapter NuGet packages
 
-Available via NuGet package [Bot.Builder.Community.Adapters.Zoom](https://www.nuget.org/packages/Bot.Builder.Community.Adapters.Zoom/).
-
-Install into your project use the following command in the package manager. 
-
-```
-    PM> Install-Package Bot.Builder.Community.Adapters.Zoom
-```
+Preview available via **MyGet** package [Bot.Builder.Community.Adapters.Zoom](https://www.myget.org/feed/botbuilder-community-dotnet/package/nuget/Bot.Builder.Community.Adapters.Zoom).
 
 #### Create a Zoom adapter class
 
