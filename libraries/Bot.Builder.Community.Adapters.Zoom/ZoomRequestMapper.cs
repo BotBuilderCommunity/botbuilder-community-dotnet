@@ -66,6 +66,7 @@ namespace Bot.Builder.Community.Adapters.Zoom
             activity.From = new ChannelAccount(botNotificationPayload.UserJid, botNotificationPayload.UserName);
             activity.ChannelData = request;
             activity.Recipient = new ChannelAccount(botNotificationPayload.ToJid);
+            activity.ChannelId = "zoom";
             activity.Conversation = new ConversationAccount(id: $"{botNotificationPayload.AccountId}:{botNotificationPayload.ChannelName}");
             return activity;
         }
