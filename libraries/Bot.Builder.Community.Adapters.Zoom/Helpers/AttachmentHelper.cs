@@ -22,16 +22,16 @@ namespace Bot.Builder.Community.Adapters.Zoom.Helpers
                 switch (attachment.ContentType)
                 {
                     case ZoomAttachmentContentTypes.MessageWithLink:
-                        Convert<MessageItemWithLink>(attachment);
+                        Convert<MessageBodyItemWithLink>(attachment);
                         break;
                     case ZoomAttachmentContentTypes.Fields:
-                        Convert<FieldsItem>(attachment);
+                        Convert<FieldsBodyItem>(attachment);
                         break;
                     case ZoomAttachmentContentTypes.Dropdown:
-                        Convert<DropdownItem>(attachment);
+                        Convert<DropdownBodyItem>(attachment);
                         break;
                     case ZoomAttachmentContentTypes.Attachment:
-                        Convert<AttachmentItem>(attachment);
+                        Convert<AttachmentBodyItem>(attachment);
                         break;
                 }
             }

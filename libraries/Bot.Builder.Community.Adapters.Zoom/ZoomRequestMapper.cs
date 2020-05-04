@@ -35,10 +35,23 @@ namespace Bot.Builder.Community.Adapters.Zoom
                 case "interactive_message_actions":
                     var messageActionsPayload = request.Payload.ToObject<InteractiveMessageActionsPayload>();
                     activity.Type = ActivityTypes.Message;
-                    activity.Text = messageActionsPayload.ZoomActionItem.Text;
+                    activity.Text = messageActionsPayload.ActionItem.Text;
+                    break;
+                case "interactive_message_fields_editable":
+                    var fieldsEditablePayload = request.Payload.ToObject<InteractiveMessageFieldsEditablePayload>();
+                    activity.Value = fieldsEditablePayload;
+                    activity.Type = ActivityTypes.Event;
+                    activity.Name = request.Event;
+                    break;
+                case "interactive_message_select":
+                    var selectPayload = request.Payload.ToObject<InteractiveMessageSelectPayload>();
+                    activity.Value = selectPayload;
+                    activity.Type = ActivityTypes.Event;
+                    activity.Name = request.Event;
                     break;
                 default:
                     activity.Type = ActivityTypes.Event;
+                    activity.Name = request.Event;
                     activity.Value = request.Payload;
                     break;
             }
@@ -100,33 +113,20 @@ namespace Bot.Builder.Community.Adapters.Zoom
         {
             activity.ConvertAttachmentContent();
 
+            ProcessAttachment<MessageBodyItemWithLink>(ZoomAttachmentContentTypes.MessageWithLink, activity, response);
+            ProcessAttachment<FieldsBodyItem>(ZoomAttachmentContentTypes.Fields, activity, response);
+            ProcessAttachment<AttachmentBodyItem>(ZoomAttachmentContentTypes.Attachment, activity, response);
+            ProcessAttachment<DropdownBodyItem>(ZoomAttachmentContentTypes.Dropdown, activity, response);
+        }
+
+        private static void ProcessAttachment<T>(string contentType, Activity activity, ChatResponse response) where T : BodyItem
+        {
             var messageWithLinks = activity.Attachments?
-                .Where(a => a.ContentType == ZoomAttachmentContentTypes.MessageWithLink)
-                .Select(a => a.Content as MessageItemWithLink).ToList();
+                .Where(a => a.ContentType == contentType)
+                .Select(a => (T)a.Content).ToList();
 
-            if(messageWithLinks != null && messageWithLinks.Any())
+            if (messageWithLinks != null && messageWithLinks.Any())
                 response.Content.Body.AddRange(messageWithLinks);
-
-            var fieldsItems = activity.Attachments?
-                .Where(a => a.ContentType == ZoomAttachmentContentTypes.Fields)
-                .Select(a => a.Content as FieldsItem).ToList();
-
-            if (fieldsItems != null && fieldsItems.Any())
-                response.Content.Body.AddRange(fieldsItems);
-
-            var dropdownItems = activity.Attachments?
-                .Where(a => a.ContentType == ZoomAttachmentContentTypes.Dropdown)
-                .Select(a => a.Content as DropdownItem).ToList();
-
-            if (dropdownItems != null && dropdownItems.Any())
-                response.Content.Body.AddRange(dropdownItems);
-
-            var attachmentItems = activity.Attachments?
-                .Where(a => a.ContentType == ZoomAttachmentContentTypes.Attachment)
-                .Select(a => a.Content as AttachmentItem).ToList();
-
-            if (attachmentItems != null && attachmentItems.Any())
-                response.Content.Body.AddRange(attachmentItems);
         }
     }
 }

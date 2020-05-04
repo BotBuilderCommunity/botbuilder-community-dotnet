@@ -30,7 +30,7 @@ namespace Bot.Builder.Community.Samples.Zoom.Bots
                             new CardAction(text: "This is the text for action 2", displayText: "action 2 display text")
                         },
                         "Here are some actions.");
-                    multiPartMessage.Attachments.Add(new MessageItemWithLink()
+                    multiPartMessage.Attachments.Add(new MessageBodyItemWithLink()
                     {
                         Link = "https://www.microsoft.com",
                         Text = "Visit the Microsoft web site"
@@ -50,7 +50,7 @@ namespace Bot.Builder.Community.Samples.Zoom.Bots
 
                 case "fields":
                     var fieldsMessage = MessageFactory.Text("This is the text");
-                    fieldsMessage.Attachments.Add(new FieldsItem()
+                    fieldsMessage.Attachments.Add(new FieldsBodyItem()
                     {
                         Fields = new List<ZoomField>()
                         {
@@ -63,7 +63,7 @@ namespace Bot.Builder.Community.Samples.Zoom.Bots
 
                 case "fields-noedit":
                     var fieldsMessage2 = MessageFactory.Text("This is the text");
-                    fieldsMessage2.Attachments.Add(new FieldsItem()
+                    fieldsMessage2.Attachments.Add(new FieldsBodyItem()
                     {
                         Fields = new List<ZoomField>()
                         {
@@ -76,7 +76,7 @@ namespace Bot.Builder.Community.Samples.Zoom.Bots
 
                 case "link":
                     var messageWithLink = MessageFactory.Text("Here is a link.");
-                    messageWithLink.Attachments.Add(new MessageItemWithLink()
+                    messageWithLink.Attachments.Add(new MessageBodyItemWithLink()
                     {
                         Link = "https://www.microsoft.com",
                         Text = "Visit the Microsoft web site"
@@ -86,7 +86,7 @@ namespace Bot.Builder.Community.Samples.Zoom.Bots
 
                 case "dropdown":
                     var messageWithDropdown = MessageFactory.Text("Here is a dropdown.");
-                    messageWithDropdown.Attachments.Add(new DropdownItem()
+                    messageWithDropdown.Attachments.Add(new DropdownBodyItem()
                     {
                         Text = "Visit the Microsoft web site",
                         SelectItems = new List<ZoomSelectItem>()
@@ -100,7 +100,7 @@ namespace Bot.Builder.Community.Samples.Zoom.Bots
 
                 case "attachment":
                     var messageWithAttachment = MessageFactory.Text("Here is an attachment.");
-                    messageWithAttachment.Attachments.Add(new AttachmentItem()
+                    messageWithAttachment.Attachments.Add(new AttachmentBodyItem()
                     {
                         ImageUrl = new Uri("https://s3.amazonaws.com/user-content.stoplight.io/19808/1560465782721"),
                         Size = 250,

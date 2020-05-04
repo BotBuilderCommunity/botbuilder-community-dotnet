@@ -12,13 +12,13 @@ namespace Bot.Builder.Community.Adapters.Zoom.Attachments
         {
             switch (bodyItem)
             {
-                case MessageItemWithLink messageItemWithLink:
+                case MessageBodyItemWithLink messageItemWithLink:
                     return CreateAttachment(messageItemWithLink, ZoomAttachmentContentTypes.MessageWithLink);
-                case DropdownItem dropdownItem:
+                case DropdownBodyItem dropdownItem:
                     return CreateAttachment(dropdownItem, ZoomAttachmentContentTypes.Dropdown);
-                case AttachmentItem attachmentItem:
+                case AttachmentBodyItem attachmentItem:
                     return CreateAttachment(attachmentItem, ZoomAttachmentContentTypes.Attachment);
-                case FieldsItem fieldsItem:
+                case FieldsBodyItem fieldsItem:
                     return CreateAttachment(fieldsItem, ZoomAttachmentContentTypes.Fields);
                 default:
                     return null;

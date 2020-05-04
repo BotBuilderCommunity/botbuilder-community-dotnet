@@ -11,17 +11,4 @@
         public string UserJid { get; set; }
         public string UserName { get; set; }
     }
-
-    public class BotNotificationPayload : Payload
-    {
-        public string Cmd { get; set; }
-        public string Name { get; set; }
-    }
-
-    public class InteractiveMessageActionsPayload : Payload
-    {
-        public ZoomAction ZoomActionItem { get; set; }
-
-        public ChatResponseContent Original { get; set; }
-    }
 }
