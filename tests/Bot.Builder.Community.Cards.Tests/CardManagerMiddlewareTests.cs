@@ -18,6 +18,7 @@ namespace Bot.Builder.Community.Cards.Tests
     public class CardManagerMiddlewareTests
     {
         private const string ActivityId = "activity ID";
+        private const string ActionId = "action ID";
 
         [TestMethod]
         public async Task ChannelsWithMessageUpdates_CanBeChanged()
@@ -124,6 +125,66 @@ namespace Bot.Builder.Community.Cards.Tests
                 await botState.LoadAsync(turnContext, true);
 
                 state = await middleware.Manager.StateAccessor.GetAsync(turnContext);
+            }
+        }
+
+        [TestMethod]
+        public async Task ChannelsWithMessageUpdates_CanBeChanged3()
+        {
+            var shortCircuited = false;
+            var deleted = false;
+
+            await RunTest();
+
+            Assert.IsTrue(shortCircuited);
+            Assert.IsFalse(deleted);
+
+            await RunTest(middleware => middleware.ChannelsWithMessageUpdates.Add(Channels.Test));
+
+            Assert.IsFalse(shortCircuited);
+            Assert.IsTrue(deleted);
+
+            async Task RunTest(Action<CardManagerMiddleware> action = null)
+            {
+                var botState = CreateUserState();
+                var middleware = new CardManagerMiddleware(new CardManager(botState));
+                var adapter = new TestAdapter().Use(middleware);
+
+                var cardActivity = MessageFactory.Attachment(new HeroCard(buttons: new List<CardAction>
+                {
+                    new CardAction(ActionTypes.PostBack, value: new object()),
+                }).ToAttachment());
+
+                var actionActivity = new Activity(value: new JObject
+                {
+                    { DataId.GetKey(DataIdTypes.Action), ActionId }
+                });
+
+                action?.Invoke(middleware);
+
+                middleware.UpdatingOptions.IdOptions.Set(DataIdTypes.Action, ActionId);
+                middleware.NonUpdatingOptions.IdOptions.Set(DataIdTypes.Action, ActionId);
+
+                BotCallbackHandler callback = async (turnContext, cancellationToken) =>
+                {
+                    if (turnContext.Activity.Value == null)
+                    {
+                        await turnContext.SendActivityAsync(cardActivity);
+                    }
+
+                    shortCircuited = false;
+
+                    await botState.SaveChangesAsync(turnContext);
+                };
+
+                await new TestFlow(adapter, callback)
+                    .Send("hi")
+                        .Do(() => Assert.IsTrue(adapter.ActiveQueue.Contains(cardActivity)))
+                    .Send(actionActivity)
+                        .Do(() => deleted = !adapter.ActiveQueue.Contains(cardActivity))
+                        .Do(() => shortCircuited = true)
+                    .Send(actionActivity)
+                    .StartTestAsync();
             }
         }
 

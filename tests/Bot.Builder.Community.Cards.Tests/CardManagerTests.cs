@@ -1121,8 +1121,10 @@ namespace Bot.Builder.Community.Cards.Tests
             queue.Enqueue(activity6);
             queue.Enqueue(activity7);
 
+            // The first 7 activities should be saved in state as well as the active queue
             state.SavedActivities.UnionWith(queue);
 
+            // But this one shouldn't be
             queue.Enqueue(activity8);
 
             var expectedActivities = new[] { activity1 };
