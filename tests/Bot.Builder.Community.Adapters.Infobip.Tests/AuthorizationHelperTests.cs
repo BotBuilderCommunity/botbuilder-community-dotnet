@@ -1,20 +1,18 @@
 using Bot.Builder.Community.Adapters.Infobip;
-using NUnit.Framework;
+using Xunit;
 
 namespace Bot.Builder.Community.Adapter.Infobip.Tests
 {
-    [TestFixture(Description = "Tests for calls to Infobip authorization helper and checks the result")]
     public class AuthorizationHelperTests
     {
         private InfobipAdapterOptions _infobipAdapterOptions;
 
-        [SetUp]
-        public void Setup()
+        public AuthorizationHelperTests()
         {
             _infobipAdapterOptions = TestOptions.Get();
         }
 
-        [Test(Description = "issues verify correct signature ")]
+        [Fact]
         public void VerifySignature()
         {
             const string signature = "SHA1=5d340080cdb91ce00e9f9455e750a7188f3b3203";
@@ -43,7 +41,7 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
                                    "}";
 
             var isCorrect = new AuthorizationHelper().VerifySignature(signature, payload, _infobipAdapterOptions.InfobipAppSecret);
-            Assert.IsTrue(isCorrect);
+            Assert.True(isCorrect);
         }
     }
 }

@@ -15,14 +15,13 @@ using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Newtonsoft.Json;
-using NUnit.Framework;
+using Xunit;
 
 namespace Bot.Builder.Community.Adapter.Infobip.Tests
 {
-    [TestFixture]
     public class InfobipAdapterTests
     {
-        [Test]
+        [Fact]
         public async Task SendActivities_NoActivities()
         {
             var adapter = GetInfobipAdapter();
@@ -34,10 +33,10 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
             var responses = await adapter.SendActivitiesAsync(turnContext.Object, activities, CancellationToken.None).ConfigureAwait(false);
 
             // No responses.
-            Assert.AreEqual(0, responses.Length);
+            Assert.Empty(responses);
         }
 
-        [Test]
+        [Fact]
         public void SendActivities_BadActivity()
         {
             var adapter = GetInfobipAdapter();
@@ -55,7 +54,7 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
             Assert.ThrowsAsync<Microsoft.Rest.ValidationException>(async () => await adapter.SendActivitiesAsync(turnContext.Object, activities, CancellationToken.None).ConfigureAwait(false));
         }
 
-        [Test]
+        [Fact]
         public async Task SendActivities_SingleActivity_SendSucceeds()
         {
             // Setup client to return a success message.
@@ -72,11 +71,11 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
             var responses = await adapter.SendActivitiesAsync(turnContext.Object, activities, CancellationToken.None).ConfigureAwait(false);
 
             // Singe response with the message id configured above.
-            Assert.AreEqual(1, responses.Length);
-            Assert.AreEqual(messageId.ToString(), responses[0].Id);
+            Assert.Single(responses);
+            Assert.Equal(messageId.ToString(), responses[0].Id);
         }
 
-        [Test]
+        [Fact]
         public void SendActivities_MultipleActivitiesOneFails()
         {
             // Setup client to throw for the 2nd message sent (1st and 3rd work fine).
@@ -95,7 +94,7 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
             Assert.ThrowsAsync<HttpRequestException>(async () => await adapter.SendActivitiesAsync(turnContext.Object, activities, CancellationToken.None).ConfigureAwait(false));
         }
 
-        [Test]
+        [Fact]
         public async Task Process_SingleMessage()
         {
             // Setup client to return a success message.
@@ -115,17 +114,17 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
                     var response = await t.SendActivityAsync(activity, c).ConfigureAwait(false);
 
                     // Sending succeeds and bot gets the message id configured above.
-                    Assert.AreEqual(messageId.ToString(), response.Id);
+                    Assert.Equal(messageId.ToString(), response.Id);
                 }
             };
 
             await adapter.ProcessAsync(httpContext.Request, httpContext.Response, bot, CancellationToken.None).ConfigureAwait(false);
 
             // Bot was called 1x.
-            Assert.AreEqual(1, bot.OnMessageActivityInvocationCount);
+            Assert.Equal(1, bot.OnMessageActivityInvocationCount);
         }
 
-        [Test]
+        [Fact]
         public async Task Process_MultipleSeparateMessages()
         {
             // Setup client to return two success results.
@@ -147,19 +146,19 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
                         responses.Add(await t.SendActivityAsync(activity, c).ConfigureAwait(false));
 
                     // We got a response for each message and they are in the order we sent them.
-                    Assert.AreEqual(messageIds.Length, responses.Count);
+                    Assert.Equal(messageIds.Length, responses.Count);
                     for (int i = 0; i < messageIds.Length; ++i)
-                        Assert.AreEqual(messageIds[i].Value.ToString(), responses[i].Id);
+                        Assert.Equal(messageIds[i].Value.ToString(), responses[i].Id);
                 }
             };
 
             await adapter.ProcessAsync(httpContext.Request, httpContext.Response, bot, CancellationToken.None).ConfigureAwait(false);
 
             // Bot was called 1x.
-            Assert.AreEqual(1, bot.OnMessageActivityInvocationCount);
+            Assert.Equal(1, bot.OnMessageActivityInvocationCount);
         }
 
-        [Test]
+        [Fact]
         public async Task Process_MultipleMessagesTogether()
         {
             // Setup client to return two success results.
@@ -178,19 +177,19 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
                     var responses = await t.SendActivitiesAsync(new[] { CreateMessageActivity(), CreateMessageActivity(), CreateMessageActivity() }, c).ConfigureAwait(false);
 
                     // We got a response for each message and they are in the order we sent them.
-                    Assert.AreEqual(messageIds.Length, responses.Length);
+                    Assert.Equal(messageIds.Length, responses.Length);
                     for (int i = 0; i < messageIds.Length; ++i)
-                        Assert.AreEqual(messageIds[i].Value.ToString(), responses[i].Id);
+                        Assert.Equal(messageIds[i].Value.ToString(), responses[i].Id);
                 }
             };
 
             await adapter.ProcessAsync(httpContext.Request, httpContext.Response, bot, CancellationToken.None).ConfigureAwait(false);
 
             // Bot was called 1x.
-            Assert.AreEqual(1, bot.OnMessageActivityInvocationCount);
+            Assert.Equal(1, bot.OnMessageActivityInvocationCount);
         }
 
-        [Test]
+        [Fact]
         public void Process_MultipleMessagesTogether_OneFails()
         {
             // Setup client to throw for the 2nd message sent (1st and 3rd work fine).
@@ -214,7 +213,7 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
             Assert.ThrowsAsync<HttpRequestException>(async () => await adapter.ProcessAsync(httpContext.Request, httpContext.Response, bot, CancellationToken.None).ConfigureAwait(false));
         }
 
-        [Test]
+        [Fact]
         public async Task Process_OneActivityWithMultipleInfobipMessages()
         {
             var messageIds = new Guid?[] { Guid.NewGuid(), Guid.NewGuid() };
@@ -228,17 +227,17 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
                 new [] {activity}, CancellationToken.None);
             var infobipResponses = responses.Select(x => x as InfobipResourceResponse).ToArray();
 
-            Assert.AreEqual(infobipResponses.Length, 1);
+            Assert.Single(infobipResponses);
             var infobipResponse = infobipResponses.First();
             Assert.NotNull(infobipResponse);
-            Assert.AreEqual(string.Join("|", messageIds), infobipResponse.Id);
-            Assert.AreEqual(infobipResponse.ActivityId, activity.Id);
-            Assert.AreEqual(infobipResponse.ResponseMessages.Count, 2);
-            Assert.IsTrue(infobipResponse.ResponseMessages.Any(x => x.MessageId == messageIds[0]));
-            Assert.IsTrue(infobipResponse.ResponseMessages.Any(x => x.MessageId == messageIds[1]));
+            Assert.Equal(string.Join("|", messageIds), infobipResponse.Id);
+            Assert.Equal(infobipResponse.ActivityId, activity.Id);
+            Assert.Equal(2, infobipResponse.ResponseMessages.Count);
+            Assert.Contains(infobipResponse.ResponseMessages, x => x.MessageId == messageIds[0]);
+            Assert.Contains(infobipResponse.ResponseMessages, x => x.MessageId == messageIds[1]);
         }
 
-        [Test]
+        [Fact]
         public async Task Process_TwoActivitiesWithMultipleInfobipMessages()
         {
             var messageIds = new Guid?[] { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() };
@@ -258,22 +257,22 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
                 activities.ToArray(), CancellationToken.None);
             var infobipResponses = responses.Select(x => x as InfobipResourceResponse).ToArray();
 
-            Assert.AreEqual(infobipResponses.Length, 2);
+            Assert.Equal(2, infobipResponses.Length);
             var firstInfobipResponse = infobipResponses.First();
-            Assert.AreEqual(messageIds[0].ToString(), firstInfobipResponse.Id);
-            Assert.AreEqual(firstInfobipResponse.ActivityId, firstActivity.Id);
-            Assert.AreEqual(firstInfobipResponse.ResponseMessages.Count, 1);
-            Assert.IsTrue(firstInfobipResponse.ResponseMessages[0].MessageId == messageIds[0]);
+            Assert.Equal(messageIds[0].ToString(), firstInfobipResponse.Id);
+            Assert.Equal(firstInfobipResponse.ActivityId, firstActivity.Id);
+            Assert.Equal(1, firstInfobipResponse.ResponseMessages.Count);
+            Assert.True(firstInfobipResponse.ResponseMessages[0].MessageId == messageIds[0]);
 
             var secondResponse = infobipResponses.ElementAt(1);
-            Assert.AreEqual(string.Join("|", new []{messageIds[1], messageIds[2]}), secondResponse.Id);
-            Assert.AreEqual(secondResponse.ActivityId, secondActivity.Id);
-            Assert.AreEqual(secondResponse.ResponseMessages.Count, 2);
-            Assert.IsTrue(secondResponse.ResponseMessages[0].MessageId == messageIds[1]);
-            Assert.IsTrue(secondResponse.ResponseMessages[1].MessageId == messageIds[2]);
+            Assert.Equal(string.Join("|", new []{messageIds[1], messageIds[2]}), secondResponse.Id);
+            Assert.Equal(secondResponse.ActivityId, secondActivity.Id);
+            Assert.Equal(2, secondResponse.ResponseMessages.Count);
+            Assert.True(secondResponse.ResponseMessages[0].MessageId == messageIds[1]);
+            Assert.True(secondResponse.ResponseMessages[1].MessageId == messageIds[2]);
         }
 
-        public Activity CreateMessageActivity()
+        private Activity CreateMessageActivity()
         {
             var message = MessageFactory.Text("text for message");
             message.Id = Guid.NewGuid().ToString();

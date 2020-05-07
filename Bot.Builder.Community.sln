@@ -79,7 +79,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Infobip", "libraries\Bot.Builder.Community.Adapters.Infobip\Bot.Builder.Community.Adapters.Infobip.csproj", "{0F8ADFCE-3E91-4F85-BC0B-4B0A5C98797C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapter.Infobip.Tests", "tests\Bot.Builder.Community.Adapter.Infobip.Tests\Bot.Builder.Community.Adapter.Infobip.Tests.csproj", "{6356EF6A-406B-4B2E-A229-C1D042C2FCF6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Infobip.Tests", "tests\Bot.Builder.Community.Adapters.Infobip.Tests\Bot.Builder.Community.Adapters.Infobip.Tests.csproj", "{6356EF6A-406B-4B2E-A229-C1D042C2FCF6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
