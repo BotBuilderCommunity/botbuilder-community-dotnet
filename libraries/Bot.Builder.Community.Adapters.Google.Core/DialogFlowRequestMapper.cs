@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Bot.Builder.Community.Adapters.Google.Core.Helpers;
 using Bot.Builder.Community.Adapters.Google.Core.Model;
+using Bot.Builder.Community.Adapters.Google.Core.Model.Request;
+using Bot.Builder.Community.Adapters.Google.Core.Model.Response;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -82,7 +84,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core
                 }
             };
 
-            var responseItems = new List<Item> { simpleResponse };
+            var responseItems = new List<ResponseItem> { simpleResponse };
 
             response.Payload.Google.RichResponse.Items = responseItems.ToArray();
 

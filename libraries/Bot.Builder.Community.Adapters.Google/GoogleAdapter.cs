@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Bot.Builder.Community.Adapters.Google.Core;
 using Bot.Builder.Community.Adapters.Google.Core.Helpers;
 using Bot.Builder.Community.Adapters.Google.Core.Model;
+using Bot.Builder.Community.Adapters.Google.Core.Model.Request;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;

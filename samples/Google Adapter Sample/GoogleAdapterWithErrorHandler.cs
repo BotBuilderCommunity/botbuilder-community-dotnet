@@ -1,5 +1,4 @@
 ﻿using Bot.Builder.Community.Adapters.Google;
-using Bot.Builder.Community.Adapters.Google.Model;
 using Microsoft.Extensions.Logging;
 
 namespace Bot.Builder.Community.Samples.Google

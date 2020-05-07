@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security;
 using System.Xml;
 using System.Xml.Linq;
+using Bot.Builder.Community.Adapters.Google.Core.Model.Response;
 using Microsoft.Bot.Schema;
 
 namespace Bot.Builder.Community.Adapters.Google.Core.Helpers

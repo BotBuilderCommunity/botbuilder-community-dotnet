@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 
-namespace Bot.Builder.Community.Adapters.Google.Core.Model
+namespace Bot.Builder.Community.Adapters.Google.Core.Model.Request
 {
     public class DialogFlowRequest
     {

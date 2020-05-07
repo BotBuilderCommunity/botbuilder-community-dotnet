@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Bot.Builder.Community.Adapters.Google.Core.Model;
-using Bot.Builder.Community.Adapters.Google.Model;
 using Microsoft.Bot.Builder;
 
 namespace Bot.Builder.Community.Adapters.Google

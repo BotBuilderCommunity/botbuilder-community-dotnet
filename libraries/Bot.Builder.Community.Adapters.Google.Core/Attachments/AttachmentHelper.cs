@@ -1,37 +1,68 @@
 ﻿using System;
-using Bot.Builder.Community.Adapters.Google.Core.Model.Attachments;
-using Bot.Builder.Community.Adapters.Google.Model;
+using System.Collections.Generic;
+using System.Text;
+using Bot.Builder.Community.Adapters.Google.Core.Model.Response;
+using Bot.Builder.Community.Adapters.Google.Core.Model.SystemIntents;
 using Microsoft.Bot.Schema;
 using Microsoft.Rest;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using BasicCard = Bot.Builder.Community.Adapters.Google.Core.Model.Response.BasicCard;
 
-namespace Bot.Builder.Community.Adapters.Google.Core.Helpers
+namespace Bot.Builder.Community.Adapters.Google.Core.Attachments
 {
     public static class AttachmentHelper
     {
         /// <summary>
-        /// Convert all Alexa specific attachments to their correct type.
+        /// Convert all Google specific attachments to their correct type.
         /// </summary>
         /// <param name="activity"></param>
-        public static void ConvertAlexaAttachmentContent(this Activity activity)
+        public static void ConvertAttachmentContent(this Activity activity)
         {
-            //if (activity == null || activity.Attachments == null)
-            //{
-            //    return;
-            //}
+            if (activity == null || activity.Attachments == null)
+            {
+                return;
+            }
 
-            //foreach (var attachment in activity.Attachments)
-            //{
-            //    if (attachment.ContentType == AlexaAttachmentContentTypes.Card)
-            //    {
-            //        Convert<ICard>(attachment);
-            //    }
-            //    else if (attachment.ContentType == AlexaAttachmentContentTypes.Directive)
-            //    {
-            //        Convert<IDirective>(attachment);
-            //    }
-            //}
+            foreach (var attachment in activity.Attachments)
+            {
+                switch (attachment.ContentType)
+                {
+                    case HeroCard.ContentType:
+                        Convert<HeroCard>(attachment);
+                        break;
+                    case SigninCard.ContentType:
+                        Convert<SigninCard>(attachment);
+                        break;
+                    case GoogleAttachmentContentTypes.BasicCard:
+                        Convert<BasicCard>(attachment);
+                        break;
+                    case GoogleAttachmentContentTypes.MediaResponse:
+                        Convert<MediaResponse>(attachment);
+                        break;
+                    case GoogleAttachmentContentTypes.TableCard:
+                        Convert<TableCard>(attachment);
+                        break;
+                    case GoogleAttachmentContentTypes.CarouselIntent:
+                        Convert<CarouselIntent>(attachment);
+                        break;
+                    case GoogleAttachmentContentTypes.ListIntent:
+                        Convert<ListIntent>(attachment);
+                        break;
+                    case GoogleAttachmentContentTypes.DateTimeIntent:
+                        Convert<DateTimeIntent>(attachment);
+                        break;
+                    case GoogleAttachmentContentTypes.PermissionsIntent:
+                        Convert<PermissionsIntent>(attachment);
+                        break;
+                    case GoogleAttachmentContentTypes.PlaceLocationIntent:
+                        Convert<PlaceLocationIntent>(attachment);
+                        break;
+                    case GoogleAttachmentContentTypes.ConfirmationIntent:
+                        Convert<ConfirmationIntent>(attachment);
+                        break;
+                }
+            }
         }
 
         private static void Convert<T>(Attachment attachment)
@@ -86,33 +117,6 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Helpers
                 return JsonConvert.DeserializeObject<T>((string)attachment.Content);
             }
             return (T)((JObject)attachment.Content).ToObject<T>();
-        }
-
-        internal static OptionIntentData GetOptionIntentDataFromListAttachment(ListAttachment listAttachment)
-        {
-            switch (listAttachment.ListStyle)
-            {
-                case ListAttachmentStyle.Carousel:
-                    return new CarouselOptionIntentData
-                    {
-                        CarouselSelect = new OptionIntentSelect()
-                        {
-                            Items = listAttachment.Items,
-                            Title = listAttachment.Title
-                        }
-                    };
-                case ListAttachmentStyle.List:
-                    return new ListOptionIntentData
-                    {
-                        ListSelect = new OptionIntentSelect()
-                        {
-                            Items = listAttachment.Items,
-                            Title = listAttachment.Title
-                        }
-                    };
-                default:
-                    return null;
-            }
         }
     }
 }

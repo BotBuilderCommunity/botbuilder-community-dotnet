@@ -1,5 +1,6 @@
 ﻿using System;
 using Bot.Builder.Community.Adapters.Google.Core.Model;
+using Bot.Builder.Community.Adapters.Google.Core.Model.Request;
 using Newtonsoft.Json.Linq;
 
 namespace Bot.Builder.Community.Adapters.Google.Core.Helpers

@@ -1,8 +1,8 @@
-﻿using Bot.Builder.Community.Adapters.Google.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Bot.Builder.Community.Adapters.Google.Core.Model;
+using Bot.Builder.Community.Adapters.Google.Core.Model.Request;
 
 namespace Bot.Builder.Community.Adapters.Google
 {
