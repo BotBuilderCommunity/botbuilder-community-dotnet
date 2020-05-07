@@ -9,9 +9,7 @@
 
 This is part of the [Bot Builder Community Extensions](https://github.com/botbuildercommunity) project which contains various pieces of middleware, recognizers and other components for use with the Bot Builder .NET SDK v4.
 
-The Infobip Whatsapp adapter enables receiving and sending Whatsapp messages. The Infobip Adapter allows you to add an additional endpoint to your bot for receiving WhatsApp messages. The Infobip endpoint can be used
-in conjunction with other channels meaning, for example, you can have a bot exposed on out of the box channels such as Facebook and 
-Teams, but also via an Infobip (as well as side by side with the Google / Twitter Adapters also available from the Bot Builder Community Project).
+The Infobip WhatsApp adapter enables receiving and sending WhatsApp messages. The Infobip adapter allows you to add an additional endpoint to your bot for receiving WhatsApp messages. The Infobip endpoint can be used in conjunction with other channels meaning, for example, you can have a bot exposed on out of the box channels such as Facebook and Teams, but also via an Infobip (as well as side by side with the Google/Twitter adapters also available from the Bot Builder Community Project).
 
 Incoming WhatsApp message requests are transformed, by the adapter, into Bot Framework Activites and then when your bot sends outgoing activities, the adapter transforms the outgoing Activity into an Infobip OMNI failover messages.
 
@@ -24,7 +22,7 @@ The adapter currently supports the following scenarios:
 * Verification of incoming Infobip requests
 * Receive delivery reports
 * Receive seen reports
-* Callback data - You can add some data in every message and that data will be returned to bot in delivery report for that message
+* Callback data - You can add some data in every message and that data will be returned to bot in the delivery report for that message
 * Full incoming request from Infobip is added to the incoming activity as ChannelData
 
 ## Installation
@@ -53,21 +51,21 @@ Sample bot, showing examples of Infobip specific functionality is available [her
 
 ### Prerequisites
 
-You need to contact [Infobip support](https://www.infobip.com/contact) regarding WhatsApp business verification and obtaining Infobip credentials. More details about that are available [here](https://www.infobip.com/docs/whatsapp/client-onboarding).
+Contact the [Infobip](https://www.infobip.com/contact) regarding the WhatsApp business verification and obtaining Infobip credentials. More details about that are available [here](https://www.infobip.com/docs/whatsapp/client-onboarding).
 
 ### Set the Infobip options
 
-On the end of process you will get following parameters:
-* Api key - will be used for requests authentication and authorization 
+At the end of process you will get the following parameters:
+* API key - will be used for requests authentication and authorization 
 * Base URL - endpoint on which messages will be sent
 * WhatsApp number - will be used as subscriber number from which will be sent outgoing messages
-* Scenario key - we are using OMNI failover API which can have multiple scenarios. For more details you can check [here](https://dev.infobip.com/#programmable-communications/omni-failover).
+* Scenario key - we are using OMNI failover API which can have multiple scenarios. For more details refer to the [Infobip API Reference](https://dev.infobip.com/#programmable-communications/omni-failover).
 
-Also you will need to provide:
+Also, you will need to provide:
 * App secret - will be used for incoming request authentication
 * Bot URL - Infobip will forward all incoming WhatsApp messages on this endpoint
 
-To authenticate the requests, you'll need to configure the Adapter with the Base URL, API key, App secret, WhatsApp number and Scenario key.
+To authenticate the requests, you will need to configure the Adapter with the Base URL, API key, App secret, WhatsApp number and Scenario key.
 
 You could create in the project an `appsettings.json` file to set the Infobip options as follows:
 
@@ -87,7 +85,7 @@ After you completed the configuration of your Infobip adapter, you need to wire 
 
 #### Install the Infobip adapter NuGet package
 
-Install into your project using the following command in the package manager;
+Install it into your project using the following command in the package manager;
 
 ````
 PM> Install-Package Bot.Builder.Community.Adapters.Infobip
@@ -127,7 +125,7 @@ You will also need to add the following using statements.
 
 #### Create a new controller for handling Infobip requests
 
-You now need to create a new controller which will handle requests for incoming WhatsAppMessages, delivery and seen reports, on a new endpoint 'api/infobip' instead of the default 'api/messages' used for requests from Azure Bot Service Channels.  By adding an additional endpoint to your bot, you can accept requests from Bot Service channels (or additional adapters), as well as from Infobip, using the same bot.
+You now need to create a new controller which will handle requests for incoming WhatsApp messages, delivery and seen reports, on a new endpoint 'api/infobip' instead of the default 'api/messages' used for requests from Azure Bot Service Channels. By adding an additional endpoint to your bot, you can accept requests from Bot Service channels (or additional adapters), as well as from Infobip, using the same bot.
 
 ```csharp
   [Route("api/infobip")]
@@ -171,11 +169,11 @@ Add the following line into the ***ConfigureServices*** method within your Start
   services.AddSingleton<InfobipAdapterOptions>();
   services.AddSingleton<IInfobipClient, InfobipClient>();
 
-  // Add Infobip Adapter with error handler
+  // Add Infobip Adapter with the error handler
   services.AddSingleton<InfobipAdapter, InfobipAdapterWithErrorHandler>();
 ```
 
-Once added, your ***ConfigureServices*** method shold look like this.
+Once added, your ***ConfigureServices*** method should look like this.
 
 ```csharp
   public void ConfigureServices(IServiceCollection services)
@@ -203,9 +201,9 @@ You will also need to add the following using statement, in addition to those al
   using Bot.Builder.Community.Adapters.Infobip;
 ```
 
-### Incoming Whatsapp message requests to Bot Framework Activity mapping
+### Incoming WhatsApp message requests to Bot Framework Activity mapping
 
-All messages sent by end-user Infobip will forward to your endpoint. End-users can send to your bot several different message types. You can read about the different message types [in the Infobip developer documentation](https://dev.infobip.com/#programmable-communications/omni-failover/receive-incoming-messages).
+All messages sent by the end user, Infobip will forward to your endpoint. End users can send to your bot several different message types. You can read about the different message types [in the Infobip developer documentation](https://dev.infobip.com/#programmable-communications/omni-failover/receive-incoming-messages).
 
 Here are details about common details for all Activity types:
 
@@ -213,10 +211,10 @@ Here are details about common details for all Activity types:
 * All Infobip request messages will be available in ChannelData
 * ActivityId will be Infobip messageId
 
-Here are how the adapter handles different message request types.
+Here is how the adapter handles different message request types.
 
 * **Text Message Requests -> Message Activity**
-Text property will contain content of message. TextFormat will be always plain.
+Text property will contain the message content. TextFormat will be always plain.
 
 ```cs
   activity.Text = response.Message.Text;
@@ -235,7 +233,7 @@ Message content will be in Entities. It will be mapped to *GeoCoordinates*.
 ```
 
 * **Media Message Requests -> Message Activity**
-Message content will be stored as Attachment. Content type will be valid [MIME type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types).
+The message content will be stored as an Attachment. Content type will be valid [MIME type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types).
 
 ```cs
   activity.Attachments = new List<Attachment>
@@ -249,23 +247,23 @@ Message content will be stored as Attachment. Content type will be valid [MIME t
   };
 ```
 
-You will recieve just URL of media so you can use extension method *Download* on Attachment class which is provided by Infobip Adapter if you want to download content.
+You will receive just the media URL so you can use the extension method *Download* on Attachment class which is provided by the Infobip Adapter if you want to download the content.
 
 ```cs
   var media = attachment.Download();
 ```
 
 * **Delivery report -> Event Activity**
-For each message that you send out, we will send you a delivery report on Infobip endpoint as Event Activity. Activity name will be "DELIVERY". That payload will be in ChannelData property. More details about payload and statuses are available [here](https://dev.infobip.com/#programmable-communications/omni-failover/receive-omni-delivery-reports). You can use this to check is message delivered to end-user. You can use this to see is your message seen by user.
+For each message that you send out, we will send you a delivery report on the Infobip endpoint as Event Activity. Activity name will be "DELIVERY". That payload will be in ChannelData property. More details about payload and statuses are available [here](https://dev.infobip.com/#programmable-communications/omni-failover/receive-omni-delivery-reports). You can use this to check whether the message was delivered to the end user.
 
 * **Seen report -> Event Activity**
-Seen report also will be forwarded to Infobip endpoint as Event Activity. Activity name will be "SEEN". Payload is also available in ChannelData property. More details about payload are available [here](https://dev.infobip.com/#programmable-communications/omni-failover/receive-omni-seen-reports).
+Seen report will also be forwarded to the Infobip endpoint as Event Activity. Activity name will be "SEEN". Payload is also available in ChannelData property. More details about payload are available [here](https://dev.infobip.com/#programmable-communications/omni-failover/receive-omni-seen-reports). You can use this to see whether the message was seen by end user.
 
-### Outgoing Bot Framework Activity to Infobip Whatsapp message mapping
+### Outgoing Bot Framework Activity to Infobip WhatsApp message mapping
 Each Activity can have multiple attachments or entities and it is converted to WhatsApp messages. In one WhatsApp message we can send just one media item or location so one Activity can produce multiple WhatsApp messages.
 
 * **Message Activity -> WhatsApp text Message**
-If you want send text WhatsApp Message add message content to Text property of Activity. If you want format message, you can do that manualy accrording to this [documentation](https://www.infobip.com/docs/whatsapp/send-whatsapp-over-api#send-free-form-messages). Adapter will just pass that message without modification.
+If you want send text WhatsApp Message add message content to Text property of Activity. If you want to format the message, you can do that manually according to this [documentation](https://www.infobip.com/docs/whatsapp/send-whatsapp-over-api#send-free-form-messages). Adapter will just pass that message without modification.
 
 ```cs
   var message = "Some text with *bold*, _italic_, ~strike through~ and ```code``` formatting";
@@ -275,7 +273,7 @@ If you want send text WhatsApp Message add message content to Text property of A
 ```
 
 * **Message Activity -> WhatsApp location Message**
-For location message you should create entity and it can be one of this two types: *GeoCoordinates* or *Place*.
+For location message you should create an entity and it can be one of these two types: *GeoCoordinates* or *Place*.
 
 ```cs
   activity.Entities.Add(new GeoCoordinates
@@ -294,7 +292,7 @@ For location message you should create entity and it can be one of this two type
 ```
 
 * **Message Activity -> WhatsApp media Message**
-If you want send media message you need to insert media URL which should be available for Infobip. Content type should be valid [MIME type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types) and type of MIME type will be used for detecting type of WhatsApp media message. If ContentType is not valid MIME type message will be sent as document. Content property of Attachment will be ignored because it is not supported by Infobip. If you want to add caption you should add it to Text property. If you have multiple attachments only first attachment will have caption. Caption is available for all WhatsApp media message types except for audio. 
+If you want send a media message, you need to insert the media URL which should be available for Infobip. Content type should be valid [MIME type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types) and type of MIME type will be used for detecting type of WhatsApp media message. If ContentType is not valid MIME type, message will be sent as a document. Content property of Attachment will be ignored because it is not supported by Infobip. If you want to add a caption, you should add it to Text property. If you have multiple attachments, only first attachment will have caption. Caption is available for all WhatsApp media message types except for audio. 
 
 ```cs
   var attachment = new Attachment
@@ -306,7 +304,7 @@ If you want send media message you need to insert media URL which should be avai
 ```
 
 * **Message Activity -> WhatsApp template Message**
-Adapter supports WhatsApp template messages. More details about WhatsApp template messages are availeble [here](https://www.infobip.com/docs/whatsapp/message-templates-guidelines).
+Adapter supports WhatsApp template messages. More details about WhatsApp template messages are available [here](https://www.infobip.com/docs/whatsapp/message-templates-guidelines).
 
 ```cs
   var templateMessage = new InfobipWhatsAppTemplateMessage
@@ -331,7 +329,7 @@ Adapter supports WhatsApp template messages. More details about WhatsApp templat
 ```
 
 ### Callback data
-For each message you can add some custom data and that data will be returned to bot in delivery report for that message. 
+For each message, you can add some custom data and that data will be returned to bot in delivery report for that message. 
 
 Send callback data:
 
