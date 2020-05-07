@@ -2,7 +2,7 @@
 
 namespace Bot.Builder.Community.Adapters.Infobip.Models
 {
-    public class InfobipAttachment: Attachment
+    public class InfobipAttachment : Attachment
     {
         public InfobipAttachment(InfobipWhatsAppTemplateMessage template)
         {

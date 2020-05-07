@@ -220,11 +220,11 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
             var adapter = GetInfobipAdapter(messageIds);
             var activity = CreateMessageActivity();
             // A message with attachments will create two messages to Infobip.
-            activity.Attachments.Add(new Attachment{ContentUrl = "http://dummy-image", ContentType = "image"});
+            activity.Attachments.Add(new Attachment { ContentUrl = "http://dummy-image", ContentType = "image" });
             activity.Attachments.Add(new Attachment { ContentUrl = "http://dummy-image", ContentType = "image" });
 
             var responses = await adapter.SendActivitiesAsync(new TurnContext(adapter, CreateMessageActivity()),
-                new [] {activity}, CancellationToken.None);
+                new[] { activity }, CancellationToken.None);
             var infobipResponses = responses.Select(x => x as InfobipResourceResponse).ToArray();
 
             Assert.Single(infobipResponses);
@@ -265,7 +265,7 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
             Assert.True(firstInfobipResponse.ResponseMessages[0].MessageId == messageIds[0]);
 
             var secondResponse = infobipResponses.ElementAt(1);
-            Assert.Equal(string.Join("|", new []{messageIds[1], messageIds[2]}), secondResponse.Id);
+            Assert.Equal(string.Join("|", new[] { messageIds[1], messageIds[2] }), secondResponse.Id);
             Assert.Equal(secondResponse.ActivityId, secondActivity.Id);
             Assert.Equal(2, secondResponse.ResponseMessages.Count);
             Assert.True(secondResponse.ResponseMessages[0].MessageId == messageIds[1]);

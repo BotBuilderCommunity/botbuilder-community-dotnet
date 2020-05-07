@@ -34,7 +34,7 @@ namespace Bot.Builder.Community.Adapters.Infobip.Models
         [JsonProperty("message")] public InfobipIncomingWhatsAppMessage Message { get; set; }
         [JsonProperty("contact")] public InfobipIncomingWhatsAppContact Contact { get; set; }
         [JsonProperty("receivedAt")] public DateTimeOffset? ReceivedAt { get; set; }
-        
+
 
         /// <summary>
         /// when message was seen in ISO8601 date time format
@@ -121,7 +121,7 @@ namespace Bot.Builder.Community.Adapters.Infobip.Models
         [JsonProperty("pricePerMessage")] public long PricePerMessage { get; set; }
         [JsonProperty("currency")] public string Currency { get; set; }
     }
-    
+
     /// <summary>
     /// Types of reports sent to bot by Infobip server:
     /// https://dev-old.infobip.com/whatsapp-business-messaging/delivery-and-seen-reports

@@ -47,7 +47,8 @@ namespace Bot.Builder.Community.Adapters.Infobip
             {
                 var data = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
                 if (data == null) throw new Exception("Attachment was not downloaded!");
-                return new Attachment{
+                return new Attachment
+                {
                     Content = data,
                     ContentType = response.Content.Headers?.ContentType?.MediaType
                 };

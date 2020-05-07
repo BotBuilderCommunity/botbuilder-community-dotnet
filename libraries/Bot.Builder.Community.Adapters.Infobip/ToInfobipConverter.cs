@@ -51,7 +51,7 @@ namespace Bot.Builder.Community.Adapters.Infobip
         {
             foreach (var entity in activity.Entities)
             {
-                if(entity.Type == InfobipConstants.InfobipCallbackDataEntityType)
+                if (entity.Type == InfobipConstants.InfobipCallbackDataEntityType)
                     continue;
 
                 var geoCoordinates = entity.GetAs<GeoCoordinates>();
@@ -66,7 +66,7 @@ namespace Bot.Builder.Community.Adapters.Infobip
                 var place = entity.GetAs<Place>();
                 if (place.Type == nameof(Place))
                 {
-                    if(place.Address != null && place.Address.GetType() != typeof(string))
+                    if (place.Address != null && place.Address.GetType() != typeof(string))
                         throw new Exception("For Place object Address can only be string");
 
                     var geoEntity = JsonConvert.DeserializeObject<GeoCoordinates>(JsonConvert.SerializeObject(place.Geo));
@@ -102,7 +102,7 @@ namespace Bot.Builder.Community.Adapters.Infobip
                     ValidateContentUrl(attachment);
                     SetMedaUrl(contentType, message, attachment);
                 }
-                
+
                 messages.Add(message);
             }
         }

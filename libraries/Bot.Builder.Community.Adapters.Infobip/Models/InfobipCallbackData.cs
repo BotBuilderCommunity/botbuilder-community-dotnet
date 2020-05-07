@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Bot.Builder.Community.Adapters.Infobip.Models
 {
-    public class InfobipCallbackData: Entity
+    public class InfobipCallbackData : Entity
     {
         public InfobipCallbackData(Dictionary<string, string> callbackData)
         {

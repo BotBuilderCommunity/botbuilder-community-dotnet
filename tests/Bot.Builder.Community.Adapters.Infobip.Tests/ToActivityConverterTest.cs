@@ -92,7 +92,7 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
             };
 
             var activity = (await _toActivityConverter.Convert(incomingMessage).ConfigureAwait(false)).First();
-            
+
             Assert.NotNull(activity);
             Assert.Equal(InfobipConstants.ChannelName, activity.ChannelId);
 

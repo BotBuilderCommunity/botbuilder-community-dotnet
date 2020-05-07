@@ -24,7 +24,7 @@ namespace Bot.Builder.Community.Adapters.Infobip.Models
         [JsonProperty("phoneNumber")] public string PhoneNumber { get; set; }
     }
 
-    public class InfobipOmniWhatsAppMessage: InfobipWhatsAppTemplateMessage
+    public class InfobipOmniWhatsAppMessage : InfobipWhatsAppTemplateMessage
     {
         [JsonProperty("text")] public string Text { get; set; }
         [JsonProperty("latitude")] public double? Latitude { get; set; }

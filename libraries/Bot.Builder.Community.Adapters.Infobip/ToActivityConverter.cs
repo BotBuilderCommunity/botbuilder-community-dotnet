@@ -125,7 +125,7 @@ namespace Bot.Builder.Community.Adapters.Infobip
 
                 // handle any type of WA message sent by subscriber, can be: TEXT, IMAGE, DOCUMENT, LOCATION, CONTACT, VIDEO
                 // - https://dev-old.infobip.com/whatsapp-business-messaging/incoming-whatsapp-messages
-                return (Activity) await ConvertMessageToMessageActivity(response);
+                return (Activity)await ConvertMessageToMessageActivity(response);
             }
 
             throw new Exception("Unsupported message received - not DLR, SEEN or MO message: \n" +
