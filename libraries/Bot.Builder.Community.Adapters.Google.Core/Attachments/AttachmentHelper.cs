@@ -81,7 +81,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Attachments
             }
             catch (JsonException ex)
             {
-                throw new ValidationException($"Failed to convert Alexa Attachment with ContentType {attachment?.ContentType} to {typeof(T).Name}", ex);
+                throw new ValidationException($"Failed to convert Google Attachment with ContentType {attachment?.ContentType} to {typeof(T).Name}", ex);
             }
             catch
             {

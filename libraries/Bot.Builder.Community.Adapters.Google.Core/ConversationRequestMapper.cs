@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Bot.Builder.Community.Adapters.Google.Core.Attachments;
 using Bot.Builder.Community.Adapters.Google.Core.Helpers;
-using Bot.Builder.Community.Adapters.Google.Core.Model;
 using Bot.Builder.Community.Adapters.Google.Core.Model.Request;
 using Bot.Builder.Community.Adapters.Google.Core.Model.Response;
 using Bot.Builder.Community.Adapters.Google.Core.Model.SystemIntents;
@@ -25,30 +24,61 @@ namespace Bot.Builder.Community.Adapters.Google.Core
             _logger = logger ?? NullLogger.Instance;
         }
 
-        public Activity RequestToActivity(ConversationRequest payload)
+        public Activity RequestToActivity(ConversationRequest request)
         {
-            var activity = new Activity
-            {
-                Type = ActivityTypes.Message,
-                DeliveryMode = DeliveryModes.ExpectReplies,
-                ChannelId = _options.ChannelId,
-                ServiceUrl = _options.ServiceUrl,
-                Recipient = new ChannelAccount("", "action"),
-                Conversation = new ConversationAccount(false, id: $"{payload.Conversation.ConversationId}"),
-                From = new ChannelAccount(payload.GetUserIdFromUserStorage()),
-                Id = Guid.NewGuid().ToString(),
-                Timestamp = DateTime.UtcNow,
-                Locale = payload.User.Locale,
-                ChannelData = payload,
-                Text = MappingHelper.StripInvocation(payload.Inputs[0]?.RawInputs[0]?.Query,
-                    _options.ActionInvocationName)
-            };
+            var activity = new Activity();
 
-            if (string.IsNullOrEmpty(activity.Text))
+            var actionIntent =
+                request.Inputs.FirstOrDefault(i => i.Intent.ToLowerInvariant().StartsWith("actions.intent"))?.Intent;
+
+            switch (actionIntent?.ToLowerInvariant())
+            {
+                case "actions.intent.permission":
+                case "actions.intent.datetime":
+                case "ask_for_sign_in_confirmation":
+                case "actions.intent.place":
+                case "actions.intent.confirmation":
+                    activity.Type = ActivityTypes.Event;
+                    activity = SetGeneralActivityProperties(activity, request);
+                    activity.Name = actionIntent;
+                    activity.Value = request;
+                    return activity;
+                case "actions.intent.option":
+                    activity.Type = ActivityTypes.Message;
+                    activity = SetGeneralActivityProperties(activity, request);
+                    activity.Text = MappingHelper.StripInvocation(request.Inputs[0]?.RawInputs[0]?.Query,
+                        _options.ActionInvocationName);
+                    return activity;
+            }
+
+            var text = MappingHelper.StripInvocation(request.Inputs[0]?.RawInputs[0]?.Query, _options.ActionInvocationName);
+
+            if (string.IsNullOrEmpty(text))
             {
                 activity.Type = ActivityTypes.ConversationUpdate;
+                activity = SetGeneralActivityProperties(activity, request);
                 activity.MembersAdded = new List<ChannelAccount>() { new ChannelAccount() { Id = activity.From.Id } };
+                return activity;
             }
+
+            activity.Type = ActivityTypes.Message;
+            activity = SetGeneralActivityProperties(activity, request);
+            activity.Text = text;
+            return activity;
+        }
+        
+        private Activity SetGeneralActivityProperties(Activity activity, ConversationRequest request)
+        {
+            activity.DeliveryMode = DeliveryModes.ExpectReplies;
+            activity.ChannelId = _options.ChannelId;
+            activity.ServiceUrl = _options.ServiceUrl;
+            activity.Recipient = new ChannelAccount("", "action");
+            activity.Conversation = new ConversationAccount(false, id: $"{request.Conversation.ConversationId}");
+            activity.From = new ChannelAccount(request.GetUserIdFromUserStorage());
+            activity.Id = Guid.NewGuid().ToString();
+            activity.Timestamp = DateTime.UtcNow;
+            activity.Locale = request.User.Locale;
+            activity.ChannelData = request;
 
             return activity;
         }

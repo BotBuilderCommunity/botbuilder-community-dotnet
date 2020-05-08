@@ -33,7 +33,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Model.Request
     }
 
     public class Argument
-    {
+    {   
         public string RawText { get; set; }
         public string TextValue { get; set; }
         public string Name { get; set; }

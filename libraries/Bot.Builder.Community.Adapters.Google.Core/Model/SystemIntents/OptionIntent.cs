@@ -55,6 +55,15 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Model.SystemIntents
 
     public class OptionItem
     {
+        public OptionItem(string title, string description = null, OptionItemInfo info = null,
+            OptionItemImage image = null)
+        {
+            this.Title = title;
+            this.Description = description;
+            this.OptionInfo = info;
+            this.Image = image;
+        }
+
         public OptionItemInfo OptionInfo { get; set; }
         public string Description { get; set; }
         public string Title { get; set; }
