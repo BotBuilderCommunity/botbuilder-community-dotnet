@@ -1,4 +1,5 @@
 ﻿using Bot.Builder.Community.Adapters.Google.Core.Model.SystemIntents;
+using Newtonsoft.Json.Linq;
 
 namespace Bot.Builder.Community.Adapters.Google.Core.Model.Response
 {
@@ -11,7 +12,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Model.Response
     {
         public bool ExpectUserResponse { get; set; }
         public RichResponse RichResponse { get; set; }
-        public SystemIntent SystemIntent { get; set; }
-        public string UserStorage { get; set; }
+        public DialogFlowSystemIntent SystemIntent { get; set; }
+        public JObject UserStorage { get; set; }
     }
 }

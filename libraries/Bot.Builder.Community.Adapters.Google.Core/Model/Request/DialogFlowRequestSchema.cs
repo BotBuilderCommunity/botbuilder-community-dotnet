@@ -36,6 +36,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Model.Request
     {
         public string Name { get; set; }
         public string DisplayName { get; set; }
+        public bool IsFallback { get; set; }
     }
 
     public class OutputContext

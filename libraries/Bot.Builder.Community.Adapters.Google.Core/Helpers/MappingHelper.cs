@@ -98,47 +98,5 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Helpers
             }
             return plainText;
         }
-
-        public static List<Suggestion> ConvertSuggestedActivitiesToSuggestionChips(SuggestedActions suggestedActions)
-        {
-            var suggestionChips = new List<Suggestion>();
-
-            if (suggestedActions != null && suggestedActions.Actions != null && suggestedActions.Actions.Any())
-            {
-                foreach (var suggestion in suggestedActions.Actions)
-                {
-                    suggestionChips.Add(new Suggestion { Title = suggestion.Title });
-                }
-            }
-
-            return suggestionChips;
-        }
-
-        public static string StripInvocation(string query, string invocationName)
-        {
-            if (query != null)
-            {
-                if (query.ToLower().StartsWith("talk to") || query.ToLower().StartsWith("speak to")
-                                                          || query.ToLower().StartsWith("i want to speak to") ||
-                                                          query.ToLower().StartsWith("ask"))
-                {
-                    query = query.ToLower().Replace($"talk to", string.Empty);
-                    query = query.ToLower().Replace($"speak to", string.Empty);
-                    query = query.ToLower().Replace($"I want to speak to", string.Empty);
-                    query = query.ToLower().Replace($"ask", string.Empty);
-                }
-
-                query = query.TrimStart().TrimEnd();
-
-                if (!string.IsNullOrEmpty(invocationName)
-                    && query.ToLower().StartsWith(invocationName.ToLower()))
-                {
-                    query = query.ToLower().Replace(invocationName.ToLower(), string.Empty);
-                }
-            }
-
-            return query?.TrimStart().TrimEnd();
-        }
-
     }
 }

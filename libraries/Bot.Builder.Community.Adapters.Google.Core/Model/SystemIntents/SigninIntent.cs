@@ -4,7 +4,7 @@
     {
         public SigninIntent()
         {
-            Intent = "actions.intent.SIGNIN";
+            Intent = "actions.intent.SIGN_IN";
         }
 
         public IntentInputValueData InputValueData => new IntentInputValueData {Type = "type.googleapis.com/google.actions.v2.SignInValueSpec"};

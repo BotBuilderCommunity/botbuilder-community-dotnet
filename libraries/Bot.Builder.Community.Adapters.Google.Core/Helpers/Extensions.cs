@@ -9,27 +9,24 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Helpers
     {
         public static void EnsureUniqueUserIdInUserStorage(this ConversationRequest conversationRequest)
         {
-            if (!string.IsNullOrEmpty(conversationRequest.User.UserStorage))
+            if (conversationRequest.User.UserStorage == null || !conversationRequest.User.UserStorage.ContainsKey("UserId"))
             {
-                var values = JObject.Parse(conversationRequest.User.UserStorage);
-                if (!values.ContainsKey("UserId"))
+                if (conversationRequest.User.UserStorage == null)
                 {
-                    values.Add("UserId", Guid.NewGuid().ToString());       
+                    conversationRequest.User.UserStorage = new JObject();
                 }
+                
+                conversationRequest.User.UserStorage.Add("UserId", Guid.NewGuid().ToString());
             }
         }
 
         public static string GetUserIdFromUserStorage(this ConversationRequest payload)
         {
-            if (!string.IsNullOrEmpty(payload.User.UserStorage))
+            if (payload.User.UserStorage != null && payload.User.UserStorage.ContainsKey("UserId"))
             {
-                var values = JObject.Parse(payload.User.UserStorage);
-                if (values.ContainsKey("UserId"))
-                {
-                    return values.GetValue("UserId").ToString();
-                }
+                return payload.User.UserStorage["UserId"].ToString();
             }
-
+            
             return null;
         }
     }

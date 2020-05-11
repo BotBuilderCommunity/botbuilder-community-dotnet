@@ -31,6 +31,13 @@ namespace Bot.Builder.Community.Samples.Google.Bots
                     await turnContext.SendActivityAsync(activityWithCard, cancellationToken);
                     break;
 
+                case "signin":
+                    var activityWithSigninCard = MessageFactory.Text($"Ok, I included a simple card.");
+                    var signinCard = new SigninCard();
+                    activityWithSigninCard.Attachments.Add(signinCard.ToAttachment());
+                    await turnContext.SendActivityAsync(activityWithSigninCard, cancellationToken);
+                    break;
+
                 case "list":
                     var activityWithListAttachment = MessageFactory.Text($"Ok, I included a list.");
                     var listIntent = GoogleHelperIntentFactory.CreateListIntent(

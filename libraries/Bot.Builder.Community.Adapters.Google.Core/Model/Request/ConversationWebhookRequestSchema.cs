@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
 namespace Bot.Builder.Community.Adapters.Google.Core.Model.Request
@@ -37,7 +38,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Model.Request
         public string RawText { get; set; }
         public string TextValue { get; set; }
         public string Name { get; set; }
-        public object Extension { get; set; }
+        public JObject Extension { get; set; }
         public int IntValue { get; set; }
         public float FloatValue { get; set; }
         public bool BoolValue { get; set; }
@@ -94,7 +95,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Model.Request
 
         public DateTime LastSeen { get; set; }
 
-        public string UserStorage { get; set; }
+        public JObject UserStorage { get; set; }
 
         public PackageEntitlement[] PackageEntitlements { get; set; }
 

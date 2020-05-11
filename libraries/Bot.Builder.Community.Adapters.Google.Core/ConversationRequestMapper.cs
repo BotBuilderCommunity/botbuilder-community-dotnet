@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Bot.Builder.Community.Adapters.Google.Core.Attachments;
 using Bot.Builder.Community.Adapters.Google.Core.Helpers;
@@ -8,20 +7,13 @@ using Bot.Builder.Community.Adapters.Google.Core.Model.Response;
 using Bot.Builder.Community.Adapters.Google.Core.Model.SystemIntents;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-using BasicCard = Bot.Builder.Community.Adapters.Google.Core.Model.Response.BasicCard;
 
 namespace Bot.Builder.Community.Adapters.Google.Core
 {
-    public class ConversationRequestMapper
+    public class ConversationRequestMapper : GoogleRequestMapperBase
     {
-        private readonly GoogleRequestMapperOptions _options;
-        private ILogger _logger;
-
-        public ConversationRequestMapper(GoogleRequestMapperOptions options = null, ILogger logger = null)
+        public ConversationRequestMapper(GoogleRequestMapperOptions options = null, ILogger logger = null) : base(options, logger)
         {
-            _options = options ?? new GoogleRequestMapperOptions();
-            _logger = logger ?? NullLogger.Instance;
         }
 
         public Activity RequestToActivity(ConversationRequest request)
@@ -43,15 +35,23 @@ namespace Bot.Builder.Community.Adapters.Google.Core
                     activity.Name = actionIntent;
                     activity.Value = request;
                     return activity;
+                case "actions.intent.sign_in":
+                    activity.Type = ActivityTypes.Event;
+                    activity = SetGeneralActivityProperties(activity, request);
+                    activity.Name = actionIntent;
+                    var signinStatusArgument = request.Inputs.First()?.Arguments?.Where(a => a.Name == "SIGN_IN").FirstOrDefault();
+                    var argumentExtension = signinStatusArgument?.Extension;
+                    activity.Value = argumentExtension?["status"];
+                    return activity;
                 case "actions.intent.option":
                     activity.Type = ActivityTypes.Message;
                     activity = SetGeneralActivityProperties(activity, request);
-                    activity.Text = MappingHelper.StripInvocation(request.Inputs[0]?.RawInputs[0]?.Query,
-                        _options.ActionInvocationName);
+                    activity.Text = StripInvocation(request.Inputs[0]?.RawInputs[0]?.Query,
+                        Options.ActionInvocationName);
                     return activity;
             }
 
-            var text = MappingHelper.StripInvocation(request.Inputs[0]?.RawInputs[0]?.Query, _options.ActionInvocationName);
+            var text = StripInvocation(request.Inputs[0]?.RawInputs[0]?.Query, Options.ActionInvocationName);
 
             if (string.IsNullOrEmpty(text))
             {
@@ -64,22 +64,6 @@ namespace Bot.Builder.Community.Adapters.Google.Core
             activity.Type = ActivityTypes.Message;
             activity = SetGeneralActivityProperties(activity, request);
             activity.Text = text;
-            return activity;
-        }
-        
-        private Activity SetGeneralActivityProperties(Activity activity, ConversationRequest request)
-        {
-            activity.DeliveryMode = DeliveryModes.ExpectReplies;
-            activity.ChannelId = _options.ChannelId;
-            activity.ServiceUrl = _options.ServiceUrl;
-            activity.Recipient = new ChannelAccount("", "action");
-            activity.Conversation = new ConversationAccount(false, id: $"{request.Conversation.ConversationId}");
-            activity.From = new ChannelAccount(request.GetUserIdFromUserStorage());
-            activity.Id = Guid.NewGuid().ToString();
-            activity.Timestamp = DateTime.UtcNow;
-            activity.Locale = request.User.Locale;
-            activity.ChannelData = request;
-
             return activity;
         }
 
@@ -125,12 +109,12 @@ namespace Bot.Builder.Community.Adapters.Google.Core
                         },
                         InputPrompt = processedIntentStatus.AllowAdditionalInputPrompt
                             ? new InputPrompt()
+                            {
+                                RichInitialPrompt = new RichResponse()
                                 {
-                                    RichInitialPrompt = new RichResponse()
-                                    {
-                                        Items = new ResponseItem[] { simpleResponse }
-                                    }
+                                    Items = new ResponseItem[] { simpleResponse }
                                 }
+                            }
                             : null
                     }
                 };
@@ -147,7 +131,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core
             if (activity.InputHint == null || activity.InputHint == InputHints.AcceptingInput)
             {
                 activity.InputHint =
-                    _options.ShouldEndSessionByDefault ? InputHints.IgnoringInput : InputHints.ExpectingInput;
+                    Options.ShouldEndSessionByDefault ? InputHints.IgnoringInput : InputHints.ExpectingInput;
             }
 
             // check if we should be listening for more input from the user
@@ -163,167 +147,24 @@ namespace Bot.Builder.Community.Adapters.Google.Core
                 case InputHints.ExpectingInput:
                     response.ExpectUserResponse = true;
                     response.ExpectedInputs = new ExpectedInput[]
+                    {
+                        new ExpectedInput()
                         {
-                                new ExpectedInput()
-                                {
-                                    PossibleIntents = new SystemIntent[]
-                                    {
-                                        new TextIntent(),
-                                    },
-                                    InputPrompt = new InputPrompt()
-                                    {
-                                        RichInitialPrompt = new RichResponse() {Items = responseItems.ToArray()}
-                                    }
-                                }
-                        };
-                    ProcessSuggestedActions(activity, response);
+                            PossibleIntents = new SystemIntent[]
+                            {
+                                new TextIntent(),
+                            },
+                            InputPrompt = new InputPrompt()
+                            {
+                                RichInitialPrompt = new RichResponse() {Items = responseItems.ToArray()}
+                            }
+                        }
+                    };
+                    response.ExpectedInputs.First().InputPrompt.RichInitialPrompt.Suggestions = ConvertSuggestedActionsToSuggestionChips(activity)?.ToArray();
                     break;
             }
 
             return response;
         }
-
-        public static Activity MergeActivities(IList<Activity> activities)
-        {
-            return MappingHelper.MergeActivities(activities);
-        }
-
-        private void ProcessSuggestedActions(Activity activity, ConversationWebhookResponse response)
-        {
-            // Process SuggestedActions
-            var suggestionChips = MappingHelper.ConvertSuggestedActivitiesToSuggestionChips(activity.SuggestedActions);
-            if (suggestionChips.Any())
-            {
-                response.ExpectedInputs.First().InputPrompt.RichInitialPrompt.Suggestions =
-                    suggestionChips.ToArray();
-            }
-        }
-
-        private ProcessHelperIntentAttachmentsResult ProcessHelperIntentAttachments(Activity activity)
-        {
-            var result = new ProcessHelperIntentAttachmentsResult();
-
-            if (activity.Attachments.FirstOrDefault(a =>
-                    a.ContentType == GoogleAttachmentContentTypes.ConfirmationIntent) != null)
-            {
-                return new ProcessHelperIntentAttachmentsResult()
-                {
-                    Intent = ProcessSystemIntentAttachment<ConfirmationIntent>(
-                        GoogleAttachmentContentTypes.ConfirmationIntent,
-                        activity),
-                    AllowAdditionalInputPrompt = false
-                };
-            }
-
-            if (activity.Attachments.FirstOrDefault(a =>
-                    a.ContentType == GoogleAttachmentContentTypes.DateTimeIntent) != null)
-            {
-                return new ProcessHelperIntentAttachmentsResult()
-                {
-                    Intent = ProcessSystemIntentAttachment<DateTimeIntent>(
-                        GoogleAttachmentContentTypes.DateTimeIntent,
-                        activity),
-                    AllowAdditionalInputPrompt = false
-                };
-            }
-
-            if (activity.Attachments.FirstOrDefault(a =>
-                    a.ContentType == GoogleAttachmentContentTypes.PermissionsIntent) != null)
-            {
-                return new ProcessHelperIntentAttachmentsResult()
-                {
-                    Intent = ProcessSystemIntentAttachment<PermissionsIntent>(
-                        GoogleAttachmentContentTypes.PermissionsIntent,
-                        activity),
-                    AllowAdditionalInputPrompt = false
-                };
-            }
-
-            if (activity.Attachments.FirstOrDefault(a =>
-                    a.ContentType == GoogleAttachmentContentTypes.PlaceLocationIntent) != null)
-            {
-                return new ProcessHelperIntentAttachmentsResult()
-                {
-                    Intent = ProcessSystemIntentAttachment<PlaceLocationIntent>(
-                        GoogleAttachmentContentTypes.PlaceLocationIntent,
-                        activity),
-                    AllowAdditionalInputPrompt = false
-                };
-            }
-
-            if (activity.Attachments.FirstOrDefault(a =>
-                    a.ContentType == GoogleAttachmentContentTypes.SigninIntent) != null)
-            {
-                return new ProcessHelperIntentAttachmentsResult()
-                {
-                    Intent = ProcessSystemIntentAttachment<SigninIntent>(
-                        GoogleAttachmentContentTypes.SigninIntent,
-                        activity),
-                    AllowAdditionalInputPrompt = false
-                };
-            }
-
-            if (activity.Attachments.FirstOrDefault(a =>
-                    a.ContentType == GoogleAttachmentContentTypes.CarouselIntent) != null)
-            {
-                return new ProcessHelperIntentAttachmentsResult()
-                {
-                    Intent = ProcessSystemIntentAttachment<CarouselIntent>(
-                        GoogleAttachmentContentTypes.CarouselIntent,
-                        activity),
-                    AllowAdditionalInputPrompt = true
-                };
-            }
-
-            if (activity.Attachments.FirstOrDefault(a =>
-                    a.ContentType == GoogleAttachmentContentTypes.ListIntent) != null)
-            {
-                return new ProcessHelperIntentAttachmentsResult()
-                {
-                    Intent = ProcessSystemIntentAttachment<ListIntent>(
-                        GoogleAttachmentContentTypes.ListIntent,
-                        activity),
-                    AllowAdditionalInputPrompt = true
-                };
-            }
-
-            return new ProcessHelperIntentAttachmentsResult()
-            {
-                Intent = null
-            };
-        }
-
-        private List<ResponseItem> GetResponseItemsFromActivityAttachments(Activity activity)
-        {
-            var responseItems = new List<ResponseItem>();
-
-            activity.ConvertAttachmentContent();
-
-            responseItems.Add(ProcessResponseItemAttachment<BasicCard>(GoogleAttachmentContentTypes.BasicCard, activity));
-            responseItems.Add(ProcessResponseItemAttachment<TableCard>(GoogleAttachmentContentTypes.TableCard, activity));
-            responseItems.Add(ProcessResponseItemAttachment<MediaResponse>(GoogleAttachmentContentTypes.MediaResponse, activity));
-
-            return responseItems;
-        }
-
-        private static ResponseItem ProcessResponseItemAttachment<T>(string contentType, Activity activity) where T : ResponseItem
-        {
-            return activity.Attachments?
-                .Where(a => a.ContentType == contentType)
-                .Select(a => (T)a.Content).FirstOrDefault();
-        }
-
-        private static SystemIntent ProcessSystemIntentAttachment<T>(string contentType, Activity activity) where T : SystemIntent
-        {
-            return activity.Attachments?
-                .Where(a => a.ContentType == contentType)
-                .Select(a => (T)a.Content).FirstOrDefault();
-        }
-    }
-
-    internal class ProcessHelperIntentAttachmentsResult
-    {
-        public SystemIntent Intent { get; set; }
-        public bool AllowAdditionalInputPrompt { get; set; }
     }
 }

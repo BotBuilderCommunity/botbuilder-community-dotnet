@@ -1,4 +1,5 @@
 ﻿using Bot.Builder.Community.Adapters.Google;
+using Bot.Builder.Community.Adapters.Google.Core.Model.Request;
 using Bot.Builder.Community.Samples.Google.Bots;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -31,14 +32,15 @@ namespace Bot.Builder.Community.Samples.Google
             {
                 return new GoogleAdapterOptions()
                 {
-                    ActionInvocationName = "adapter helper",
-                    ActionProjectId = "adapter-helper-53294",
-                    ShouldEndSessionByDefault = false
+                    ActionInvocationName = "dialogflow adapter",
+                    //ActionProjectId = "adapter-helper-53294",
+                    ShouldEndSessionByDefault = false,
+                    WebhookType = GoogleWebhookType.DialogFlow
                 };
             });
 
             services.AddSingleton<GoogleAdapter, GoogleAdapterWithErrorHandler>();
-
+            
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
             services.AddTransient<IBot, EchoBot>();
         }

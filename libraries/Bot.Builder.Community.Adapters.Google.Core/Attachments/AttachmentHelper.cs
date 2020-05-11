@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Bot.Builder.Community.Adapters.Google.Core.Model.Response;
 using Bot.Builder.Community.Adapters.Google.Core.Model.SystemIntents;
 using Microsoft.Bot.Schema;
