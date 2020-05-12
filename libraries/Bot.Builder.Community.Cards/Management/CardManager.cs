@@ -347,9 +347,9 @@ namespace Bot.Builder.Community.Cards.Management
 
         private async Task UpdateActivityAsync(ITurnContext turnContext, IMessageActivity activity, CancellationToken cancellationToken)
         {
-            var ignoreUpdate = turnContext.TurnState.Get<CardManagerTurnState>()?.MiddlewareIgnoreDelete;
+            var ignoreUpdate = turnContext.TurnState.Get<CardManagerTurnState>()?.MiddlewareIgnoreUpdate;
 
-            ignoreUpdate?.Add(activity.Id);
+            ignoreUpdate?.Add(activity);
 
             try
             {
@@ -362,7 +362,7 @@ namespace Bot.Builder.Community.Cards.Management
             }
             finally
             {
-                ignoreUpdate?.Remove(activity.Id);
+                ignoreUpdate?.Remove(activity);
             }
 
             if (!CardTree.GetIds(activity).Any())

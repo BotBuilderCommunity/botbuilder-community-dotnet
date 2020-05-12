@@ -197,7 +197,8 @@ namespace Bot.Builder.Community.Cards.Management
         {
             var ignoreUpdate = turnContext.TurnState.Get<CardManagerTurnState>()?.MiddlewareIgnoreUpdate;
 
-            if (ignoreUpdate.Remove(activity.Id))
+            // Removing the item also checks if it was present
+            if (ignoreUpdate.Remove(activity))
             {
                 return await next().ConfigureAwait(false);
             }
@@ -256,6 +257,7 @@ namespace Bot.Builder.Community.Cards.Management
 
             var ignoreDelete = turnContext.TurnState.Get<CardManagerTurnState>()?.MiddlewareIgnoreDelete;
 
+            // Removing the item also checks if it was present
             if (ignoreDelete.Remove(reference.ActivityId))
             {
                 return;
