@@ -78,6 +78,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bot.Builder.Community.Dialogs.Adaptive.Rest.Tests", "tests\Bot.Builder.Community.Dialogs.Adaptive.Rest.Tests\Bot.Builder.Community.Dialogs.Adaptive.Rest.Tests.csproj", "{E14564ED-C929-4F43-BD1B-46D20DFAAF3A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bot.Builder.Community.Adapters.RingCentral", "libraries\Bot.Builder.Community.Adapters.RingCentral\Bot.Builder.Community.Adapters.RingCentral.csproj", "{042403D4-2D7B-482E-87DD-51B1CFDEC210}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Zoom", "libraries\Bot.Builder.Community.Adapters.Zoom\Bot.Builder.Community.Adapters.Zoom.csproj", "{DA1A84A1-D921-412F-A855-93FC9A525D27}"
 EndProject
 Global
