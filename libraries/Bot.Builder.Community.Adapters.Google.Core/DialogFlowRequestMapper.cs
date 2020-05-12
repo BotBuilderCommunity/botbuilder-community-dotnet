@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Bot.Builder.Community.Adapters.Google.Core.Attachments;
+using Bot.Builder.Community.Adapters.Google.Core.Model;
 using Bot.Builder.Community.Adapters.Google.Core.Model.Request;
 using Bot.Builder.Community.Adapters.Google.Core.Model.Response;
 using Bot.Builder.Community.Adapters.Google.Core.Model.SystemIntents;

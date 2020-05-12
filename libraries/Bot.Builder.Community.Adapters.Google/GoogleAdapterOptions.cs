@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Bot.Builder.Community.Adapters.Google.Core.Model;
-using Bot.Builder.Community.Adapters.Google.Core.Model.Request;
+﻿using Bot.Builder.Community.Adapters.Google.Core.Model.Request;
 
 namespace Bot.Builder.Community.Adapters.Google
 {
@@ -16,6 +12,6 @@ namespace Bot.Builder.Community.Adapters.Google
 
         public string ActionProjectId { get; set; }
 
-        public bool ValidateIncomingRequests { get; set; }
+        public bool ValidateIncomingRequests { get; set; } = true;
     }
 }

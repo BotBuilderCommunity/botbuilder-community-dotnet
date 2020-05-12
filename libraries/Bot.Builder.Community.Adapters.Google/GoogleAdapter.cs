@@ -8,7 +8,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Bot.Builder.Community.Adapters.Google.Core;
 using Bot.Builder.Community.Adapters.Google.Core.Helpers;
-using Bot.Builder.Community.Adapters.Google.Core.Model;
 using Bot.Builder.Community.Adapters.Google.Core.Model.Request;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Bot.Builder;
@@ -147,7 +146,6 @@ namespace Bot.Builder.Community.Adapters.Google
         private async Task<TurnContextEx> CreateContextAndRunPipelineAsync(IBot bot, CancellationToken cancellationToken, Activity activity)
         {
             var context = new TurnContextEx(this, activity);
-            context.TurnState.Add("GoogleUserId", activity.From.Id);
             await RunPipelineAsync(context, bot.OnTurnAsync, cancellationToken).ConfigureAwait(false);
             return context;
         }

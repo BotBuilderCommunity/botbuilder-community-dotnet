@@ -33,8 +33,9 @@ namespace Bot.Builder.Community.Samples.Google
                 return new GoogleAdapterOptions()
                 {
                     ActionInvocationName = "dialogflow adapter",
-                    //ActionProjectId = "adapter-helper-53294",
+                    //ActionProjectId = "YOUR-GOOGLE-ACTION-ID",
                     ShouldEndSessionByDefault = false,
+                    ValidateIncomingRequests = false,
                     WebhookType = GoogleWebhookType.DialogFlow
                 };
             });

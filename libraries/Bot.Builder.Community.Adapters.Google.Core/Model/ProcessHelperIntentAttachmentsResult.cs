@@ -1,6 +1,6 @@
 ﻿using Bot.Builder.Community.Adapters.Google.Core.Model.SystemIntents;
 
-namespace Bot.Builder.Community.Adapters.Google.Core
+namespace Bot.Builder.Community.Adapters.Google.Core.Model
 {
     public class ProcessHelperIntentAttachmentsResult
     {

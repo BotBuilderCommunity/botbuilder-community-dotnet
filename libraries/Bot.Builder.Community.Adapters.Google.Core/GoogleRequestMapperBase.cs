@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using Bot.Builder.Community.Adapters.Google.Core.Attachments;
 using Bot.Builder.Community.Adapters.Google.Core.Helpers;
+using Bot.Builder.Community.Adapters.Google.Core.Model;
 using Bot.Builder.Community.Adapters.Google.Core.Model.Request;
 using Bot.Builder.Community.Adapters.Google.Core.Model.Response;
 using Bot.Builder.Community.Adapters.Google.Core.Model.SystemIntents;
@@ -185,28 +187,19 @@ namespace Bot.Builder.Community.Adapters.Google.Core
         
         public string StripInvocation(string query, string invocationName)
         {
-            if (query != null)
+            if (!string.IsNullOrEmpty(query) && !string.IsNullOrEmpty(invocationName))
             {
-                if (query.ToLower().StartsWith("talk to") || query.ToLower().StartsWith("speak to")
-                                                          || query.ToLower().StartsWith("i want to speak to") ||
-                                                          query.ToLower().StartsWith("ask"))
-                {
-                    query = query.ToLower().Replace($"talk to", String.Empty);
-                    query = query.ToLower().Replace($"speak to", String.Empty);
-                    query = query.ToLower().Replace($"I want to speak to", String.Empty);
-                    query = query.ToLower().Replace($"ask", String.Empty);
-                }
+                invocationName = invocationName.ToLowerInvariant();
+                query = query.ToLowerInvariant();
 
-                query = query.TrimStart().TrimEnd();
-
-                if (!String.IsNullOrEmpty(invocationName)
-                    && query.ToLower().StartsWith(invocationName.ToLower()))
+                if (query.Contains(invocationName))
                 {
-                    query = query.ToLower().Replace(invocationName.ToLower(), String.Empty);
+                    var newStartPosition = query.IndexOf(invocationName, StringComparison.Ordinal);
+                    query = query.Substring(newStartPosition + invocationName.Length);
                 }
             }
 
-            return query?.TrimStart().TrimEnd();
+            return query;
         }
 
         public static List<Suggestion> ConvertSuggestedActionsToSuggestionChips(Activity activity)

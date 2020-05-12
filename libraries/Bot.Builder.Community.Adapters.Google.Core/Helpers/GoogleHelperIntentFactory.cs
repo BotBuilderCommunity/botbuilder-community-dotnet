@@ -15,7 +15,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Helpers
                 {
                     ListSelect = new OptionIntentSelect()
                     {
-                        Title = "This is the list title",
+                        Title = title,
                         Items = items
                     }
                 }

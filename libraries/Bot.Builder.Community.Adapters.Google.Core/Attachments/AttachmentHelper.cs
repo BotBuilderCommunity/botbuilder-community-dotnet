@@ -65,14 +65,6 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Attachments
 
         private static void Convert<T>(Attachment attachment)
         {
-            // Alexa-skills-dotnet has a custom JsonConverter that converts ICards and IDirective to their correct type so we don't need to do that.
-            // However, it throws in two main cases:
-            //  1) [JsonException] When the json fails to deserialize due to various reasons. In this case we want to throw a validation exception to
-            //     let the bot developer know something is wrong.
-            //  2) [Exception] When it doesn't recognize the type. In this case we want to leave the attachment unconverted - we ignore it.
-            //
-            //  See: https://github.com/timheuer/alexa-skills-dotnet/blob/master/Alexa.NET/Response/Converters/CardConverter.cs
-            //       https://github.com/timheuer/alexa-skills-dotnet/blob/master/Alexa.NET/Response/Converters/DirectiveConverter.cs
             try
             {
                 attachment.Content = attachment.ContentAs<T>();
