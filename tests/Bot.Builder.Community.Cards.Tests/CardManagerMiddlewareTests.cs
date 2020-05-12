@@ -189,6 +189,143 @@ namespace Bot.Builder.Community.Cards.Tests
         }
 
         [TestMethod]
+        public async Task Options_AutoAdaptOutgoingCardActions()
+        {
+            await RunTest(true, typeof(string));
+            await RunTest(false, typeof(object));
+
+            async Task RunTest(bool autoAdaptOutgoingCardActions, Type expectedType)
+            {
+                var middleware = CreateMiddleware();
+                var adapter = new TestAdapter().Use(middleware);
+
+                var cardActivity = MessageFactory.Attachment(new HeroCard(buttons: new List<CardAction>
+                {
+                    new CardAction(ActionTypes.ImBack, value: new object()),
+                }).ToAttachment());
+
+                middleware.NonUpdatingOptions.AutoAdaptOutgoingCardActions = autoAdaptOutgoingCardActions;
+
+                // No adaptations take place in the test channel, so we'll use Direct Line as an example
+                adapter.Conversation.ChannelId = Channels.Directline;
+
+                BotCallbackHandler callback = async (turnContext, cancellationToken) =>
+                {
+                    await turnContext.SendActivityAsync(cardActivity);
+                };
+
+                await new TestFlow(adapter, callback)
+                    .Send("hi")
+                        .AssertReply(activity => Assert.AreEqual(expectedType, ((HeroCard)((Activity)activity).Attachments.Single().Content).Buttons.Single().Value.GetType()))
+                    .StartTestAsync();
+            }
+        }
+
+        [TestMethod]
+        public async Task Options_AutoApplyIds()
+        {
+            await RunTest(true, 1);
+            await RunTest(false, 0);
+
+            async Task RunTest(bool autoApplyIds, int idCount)
+            {
+                var middleware = CreateMiddleware();
+                var adapter = new TestAdapter().Use(middleware);
+
+                var cardActivity = MessageFactory.Attachment(new HeroCard(buttons: new List<CardAction>
+                {
+                    new CardAction(ActionTypes.MessageBack, value: new JObject()),
+                }).ToAttachment());
+
+                middleware.NonUpdatingOptions.AutoApplyIds = autoApplyIds;
+
+                BotCallbackHandler callback = async (turnContext, cancellationToken) =>
+                {
+                    await turnContext.SendActivityAsync(cardActivity);
+                };
+
+                await new TestFlow(adapter, callback)
+                    .Send("hi")
+                        .AssertReply(activity => Assert.AreEqual(idCount, ((JObject)((HeroCard)((Activity)activity).Attachments.Single().Content).Buttons.Single().Value).Count))
+                    .StartTestAsync();
+            }
+        }
+
+        [TestMethod]
+        public async Task Options_AutoConvertAdaptiveCards()
+        {
+            await RunTest(true, typeof(JObject));
+            await RunTest(false, typeof(AdaptiveCard));
+
+            async Task RunTest(bool autoConvertAdaptiveCards, Type expectedType)
+            {
+                var middleware = CreateMiddleware();
+                var adapter = new TestAdapter().Use(middleware);
+
+                var cardActivity = MessageFactory.Attachment(new Attachment
+                {
+                    ContentType = ContentTypes.AdaptiveCard,
+                    Content = new AdaptiveCard("1.0"),
+                });
+
+                middleware.NonUpdatingOptions.AutoConvertAdaptiveCards = autoConvertAdaptiveCards;
+
+                BotCallbackHandler callback = async (turnContext, cancellationToken) =>
+                {
+                    await turnContext.SendActivityAsync(cardActivity);
+                };
+
+                await new TestFlow(adapter, callback)
+                    .Send("hi")
+                        .AssertReply(activity => Assert.AreEqual(expectedType, ((Activity)activity).Attachments.Single().Content.GetType()))
+                    .StartTestAsync();
+            }
+        }
+
+        [TestMethod]
+        public async Task IdTrackingStyle_Disabled()
+        {
+            var botState = CreateUserState();
+            var accessor = botState.CreateProperty<CardManagerState>(nameof(CardManagerState));
+            var middleware = new CardManagerMiddleware(new CardManager(botState));
+            var adapter = new TestAdapter().Use(middleware);
+
+            var cardActivity = MessageFactory.Attachment(new HeroCard(buttons: new List<CardAction>
+            {
+                new CardAction(ActionTypes.PostBack, value: new object()),
+            }).ToAttachment());
+
+            var actionActivity = new Activity(value: new JObject
+            {
+                { DataId.GetKey(DataIdTypes.Action), ActionId }
+            });
+
+            middleware.NonUpdatingOptions.IdTrackingStyle = TrackingStyle.TrackDisabled;
+            middleware.NonUpdatingOptions.IdOptions.Set(DataIdTypes.Action, ActionId);
+
+            BotCallbackHandler callback = async (turnContext, cancellationToken) =>
+            {
+                if (turnContext.Activity.Value == null)
+                {
+                    await turnContext.SendActivityAsync(cardActivity);
+                }
+
+                var state = await accessor.GetNotNullAsync(turnContext, () => new CardManagerState());
+
+                await turnContext.SendActivityAsync(
+                    $"Tracked: {(state.DataIdsByType.TryGetValue(DataIdTypes.Action, out var set) ? set.Contains(ActionId) : false)}");
+            };
+
+            await new TestFlow(adapter, callback)
+                .Send("hi")
+                    .AssertReply(cardActivity, EqualityComparer<IActivity>.Default)
+                    .AssertReply($"Tracked: {false}")
+                .Send(actionActivity)
+                    .AssertReply($"Tracked: {true}")
+                .StartTestAsync();
+        }
+
+        [TestMethod]
         public async Task NonUpdatingSettingsAreUsed()
         {
             await RunTestFlow();
@@ -382,12 +519,14 @@ namespace Bot.Builder.Community.Cards.Tests
 
             hashSet.ExceptWith(idOptions.GetIdTypes());
 
-            return new DataIdOptions(hashSet);
+            return new DataIdOptions(hashSet, !idOptions.Overwrite);
         }
 
         private UserState CreateUserState() => new UserState(new MemoryStorage());
 
         private CardManager CreateManager() => new CardManager(CreateUserState());
+
+        private CardManagerMiddleware CreateMiddleware() => new CardManagerMiddleware(CreateManager());
 
         private ITurnContext CreateTurnContext() => new TurnContext(
             new TestAdapter(),
