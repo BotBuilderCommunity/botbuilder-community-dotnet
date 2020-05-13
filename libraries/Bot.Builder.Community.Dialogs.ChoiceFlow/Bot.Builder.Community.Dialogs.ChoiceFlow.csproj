@@ -6,7 +6,7 @@
     <Authors>Bot Builder Community</Authors>
     <Company>Bot Builder Community</Company>
     <PackageLicenseUrl>https://github.com/botbuildercommunity/botbuilder-community-dotnet/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/botbuildercommunity/botbuilder-community-dotnet</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/libraries/Bot.Builder.Community.Dialogs.ChoiceFlow</PackageProjectUrl>
     <RepositoryUrl>https://github.com/botbuildercommunity/botbuilder-community-dotnet</RepositoryUrl>
     <PackageTags>bot framework;bot builder;azure bot service;dialogs;choiceflow</PackageTags>
     <Version>1.0.0</Version>
@@ -15,8 +15,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.5.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.8.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
 </Project>

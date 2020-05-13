@@ -14,19 +14,17 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  isBuildServer: 'true'
+  
 
 steps:
 
-- task: gittools.gitversion.gitversion-task.GitVersion@4
+- task: UseGitVersion@5
+  name: gv
   displayName: GitVersion
   inputs:
-    preferBundledVersion: false
-
-- task: DotNetCoreCLI@2
-  displayName: Restore
-  inputs:
-    command: restore
-    projects: 'Bot.Builder.Community.sln'
+    versionSpec: '5.x'
+    additionalArguments: '/output BuildServer'
 
 - task: DotNetCoreCLI@2
   displayName: dotnet build
@@ -34,7 +32,7 @@ steps:
     command: build
     projects: 'Bot.Builder.Community.sln'
     versioningScheme: byEnvVar
-    versionEnvVar: GitVersion.NuGetVersion
+    versionEnvVar: gv.GitVersion.NuGetVersion
     arguments: "--configuration $(buildConfiguration)"
 
 - task: DotNetCoreCLI@2
@@ -47,14 +45,20 @@ steps:
   condition: succeeded()
 
 - task: DotNetCoreCLI@2
+  displayName: Restore
+  inputs:
+    command: restore
+    projects: 'Bot.Builder.Community.sln'
+
+- task: DotNetCoreCLI@2
   displayName: dotnet pack
   inputs:
-    projects: 'Bot.Builder.Community.sln'
+    packagesToPack: 'libraries/*/*.csproj'
     command: pack
     packDirectory: '$(Build.ArtifactStagingDirectory)/packages'
     configuration: '$(buildConfiguration)'
     versioningScheme: byEnvVar
-    versionEnvVar: GitVersion.NuGetVersion
+    versionEnvVar: gv.GitVersion.NuGetVersion
     nobuild: true
   condition: succeeded()
 

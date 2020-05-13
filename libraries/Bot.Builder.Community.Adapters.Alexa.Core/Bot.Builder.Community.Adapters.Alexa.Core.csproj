@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Description>Core package containing Attachment types and turn context extensions for when using Bot Builder .NET Alexa Adapter to allow for a bot to be used for Alexa skills.</Description>
+    <RepositoryUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/</RepositoryUrl>
+    <Authors>Bot Builder Community</Authors>
+    <Company>Bot Builder Community</Company>
+    <PackageProjectUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/libraries/Bot.Builder.Community.Adapters.Alexa</PackageProjectUrl>
+    <Version>1.0.0</Version>
+    <FileVersion>1.0.0</FileVersion>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="Alexa.NET" Version="1.13.0" />
+    <PackageReference Include="Alexa.NET.CustomerProfile" Version="2.1.1" />
+    <PackageReference Include="Microsoft.MarkedNet" Version="1.0.13" />
+    <PackageReference Include="Microsoft.Bot.Builder" Version="4.8.0" />
+    <PackageReference Include="Microsoft.Bot.Schema" Version="4.8.0" />
+  </ItemGroup>
+
+</Project>

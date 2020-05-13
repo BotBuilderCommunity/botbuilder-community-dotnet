@@ -6,7 +6,7 @@
     <Authors>Bot Builder Community</Authors>
     <Company>Bot Builder Community</Company>
     <PackageLicenseUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/libraries/Bot.Builder.Community.Storage.ElasticSearch</PackageProjectUrl>
     <Version>1.0.0</Version>
     <PackageTags>bot framework, bot builder, azure bot service, storage</PackageTags>
     <FileVersion>1.0.0</FileVersion>
@@ -14,10 +14,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Bot.Builder" Version="4.6.3" />
-    <PackageReference Include="NEST" Version="6.4.1" />
-    <PackageReference Include="NEST.JsonNetSerializer" Version="6.4.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="Microsoft.Bot.Builder" Version="4.8.0" />
+    <PackageReference Include="NEST" Version="7.6.1" />
+    <PackageReference Include="NEST.JsonNetSerializer" Version="7.6.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
 </Project>

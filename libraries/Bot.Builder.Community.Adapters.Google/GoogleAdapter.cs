@@ -284,7 +284,7 @@ namespace Bot.Builder.Community.Adapters.Google
                                 }
                             };
 
-                        var suggestionChips = AddSuggestionChipsToResponse(context);
+                        var suggestionChips = AddSuggestionChipsToResponse(context, activity);
                         if (suggestionChips.Any())
                         {
                             response.ExpectedInputs.First().InputPrompt.RichInitialPrompt.Suggestions =
@@ -343,7 +343,7 @@ namespace Bot.Builder.Community.Adapters.Google
 
                 // If suggested actions have been added to outgoing activity
                 // add these to the response as Google Suggestion Chips
-                var suggestionChips = AddSuggestionChipsToResponse(context);
+                var suggestionChips = AddSuggestionChipsToResponse(context, activity);
                 if (suggestionChips.Any())
                 {
                     response.Payload.Google.RichResponse.Suggestions = suggestionChips.ToArray();
@@ -385,7 +385,7 @@ namespace Bot.Builder.Community.Adapters.Google
             }
         }
 
-        private static List<Suggestion> AddSuggestionChipsToResponse(ITurnContext context)
+        private static List<Suggestion> AddSuggestionChipsToResponse(ITurnContext context, Activity activity)
         {
             var suggestionChips = new List<Suggestion>();
 
@@ -394,9 +394,9 @@ namespace Bot.Builder.Community.Adapters.Google
                 suggestionChips.AddRange(context.TurnState.Get<List<Suggestion>>("GoogleSuggestionChips"));
             }
 
-            if (context.Activity.SuggestedActions != null && context.Activity.SuggestedActions.Actions.Any())
+            if (activity.SuggestedActions != null && activity.SuggestedActions.Actions.Any())
             {
-                foreach (var suggestion in context.Activity.SuggestedActions.Actions)
+                foreach (var suggestion in activity.SuggestedActions.Actions)
                 {
                     suggestionChips.Add(new Suggestion { Title = suggestion.Title });
                 }

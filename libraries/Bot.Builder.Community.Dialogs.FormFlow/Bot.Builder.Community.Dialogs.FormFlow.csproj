@@ -19,7 +19,7 @@
     <Authors>Bot Builder Community</Authors>
     <Company>Bot Builder Community</Company>
     <PackageLicenseUrl>https://github.com/botbuildercommunity/botbuilder-community-dotnet/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/botbuildercommunity/botbuilder-community-dotnet</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/libraries/Bot.Builder.Community.Dialogs.FormFlow</PackageProjectUrl>
     <RepositoryUrl>https://github.com/botbuildercommunity/botbuilder-community-dotnet</RepositoryUrl>
     <PackageTags>bot framework;bot builder;azure bot service;formflow;form flow;dialogs</PackageTags>
     <Version>1.0.0</Version>
@@ -40,12 +40,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-    <PackageReference Include="Microsoft.Bot.Builder" Version="4.6.3" />
-    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.5.1" />
-    <PackageReference Include="Microsoft.Recognizers.Text" Version="1.2.6.1" />
-		<PackageReference Include="Microsoft.Recognizers.Text.Choice" Version="1.2.6.1" />
-		<PackageReference Include="Microsoft.Recognizers.Text.DataTypes.TimexExpression" Version="1.2.4" />
-		<PackageReference Include="Microsoft.Recognizers.Text.DateTime" Version="1.2.6.1" />
+    <PackageReference Include="Microsoft.Bot.Builder" Version="4.8.0" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.8.0" />
+    <PackageReference Include="Microsoft.Recognizers.Text" Version="1.3.2" />
+		<PackageReference Include="Microsoft.Recognizers.Text.Choice" Version="1.3.2" />
+		<PackageReference Include="Microsoft.Recognizers.Text.DataTypes.TimexExpression" Version="1.3.2" />
+		<PackageReference Include="Microsoft.Recognizers.Text.DateTime" Version="1.3.2" />
 		<PackageReference Include="SourceLink.Create.CommandLine" Version="2.8.3">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

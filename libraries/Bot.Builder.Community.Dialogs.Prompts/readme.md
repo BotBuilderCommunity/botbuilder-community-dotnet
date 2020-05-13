@@ -15,6 +15,7 @@ Currently the following Prompts are available;
 | Prompt | Description |
 | ------ | ------ |
 | [Number with Unit](#number-with-unit-prompt) | Prompt a user for Currency, Temperature, Age, Dimension (distance). |
+| [Adaptive Card](#adaptive-card-prompt) | Prompt a user using an Adaptive Card. |
 
 ### Installation
 
@@ -75,3 +76,69 @@ Below is an example of how you might use this result.
 
 ```
 
+### Adaptive Card Prompt
+
+#### Features
+
+* Includes validation for specified required input fields
+* Displays custom message if user replies via text and not card input
+* Ensures input is only valid if it comes from the appropriate card (not one shown previous to prompt)
+
+#### Usage
+
+```csharp
+// Load an adaptive card
+const cardJson = require('./adaptiveCard.json');
+const card = CardFactory.adaptiveCard(cardJson);
+
+// Configure settings - All optional
+var promptSettings = new AdaptiveCardPromptSettings() {
+    Card: card,
+    InputFailMessage: 'Please fill out the adaptive card',
+    RequiredInputIds: [
+        'inputA',
+        'inputB',
+    ],
+    MissingRequiredInputsMessage: 'The following inputs are required',
+    AttemptsBeforeCardRedsiplayed: 5,
+    PromptId: 'myCustomId'
+}
+
+// Initialize the prompt
+var adaptiveCardPrompt = new AdaptiveCardPrompt('adaptiveCardPrompt', null, promptSettings);
+
+// Add the prompt to your dialogs
+dialogSet.add(adaptiveCardPrompt);
+
+// Call the prompt
+return await stepContext.prompt('adaptiveCardPrompt');
+
+// Use the result
+const result = stepContext.result;
+```
+
+#### Adaptive Cards
+
+Card authors describe their content as a simple JSON object. That content can then be rendered natively inside a host application, automatically adapting to the look and feel of the host. For example, Contoso Bot can author an Adaptive Card through the Bot Framework, and when delivered to Cortana, it will look and feel like a Cortana card. When that same payload is sent to Microsoft Teams, it will look and feel like Microsoft Teams. As more host apps start to support Adaptive Cards, that same payload will automatically light up inside these applications, yet still feel entirely native to the app. Users win because everything feels familiar. Host apps win because they control the user experience. Card authors win because their content gets broader reach without any additional work.
+
+The Bot Framework provides support for Adaptive Cards.  See the following to learn more about Adaptive Cards.
+
+- [Adaptive card](http://adaptivecards.io)
+- [Send an Adaptive card](https://docs.microsoft.com/en-us/azure/bot-service/nodejs/bot-builder-nodejs-send-rich-cards?view=azure-bot-service-3.0&viewFallbackFrom=azure-bot-service-4.0#send-an-adaptive-card)
+
+##### Getting Input Data From Adaptive Cards
+
+In a `TextPrompt`, the user response is returned in the `Activity.Text` property, which only accepts strings. Because Adaptive Cards can contain multiple inputs, the user response is sent as a JSON object in `Activity.Value`, like so:
+
+```json
+const activity = {
+    [...]
+    "value": {
+        "inputA": "response A",
+        "inputB": "response B",
+        [...etc]
+    }
+}
+```
+
+Because of this, it can be a little difficult to gather user input using an Adaptive Card within a dialog. The `AdaptiveCardPrompt` allows you to do so easily and returns the JSON object user response in `stepContext.result`.

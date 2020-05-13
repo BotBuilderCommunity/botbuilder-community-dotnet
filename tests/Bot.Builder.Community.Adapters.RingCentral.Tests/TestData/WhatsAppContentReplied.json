@@ -1,0 +1,39 @@
+{
+  "id": "00000000d08c17142985b60b",
+  "domain_id": "593ff7f892002631cc843c84",
+  "events": [
+    {
+      "type": "content.replied",
+      "id": "000000005267222dd14d645d",
+      "issued_at": "2020-03-04T11:17:36.373Z",
+      "user_id": "000000005267229e9cb856c8",
+      "resource": {
+        "type": "whats_app/message",
+        "id": "000000005267222dd14d645c",
+        "metadata": {
+          "approval_required": false,
+          "author_id": "000000000e69dc636a707fd6",
+          "body": "abv",
+          "body_input_format": "text",
+          "category_ids": [],
+          "creator_id": "000000005267229e9cb856c8",
+          "date": "2020-03-04",
+          "first_in_thread": false,
+          "foreign_categories": [],
+          "foreign_id": "00000000VYSfAgm8bDwLeDgRapE",
+          "has_attachment": false,
+          "intervention_id": "0000000052672288f0743241",
+          "in_reply_to_author_id": "00000000d6cb00ad2e99f2b5",
+          "in_reply_to_id": "000000007133688dc0529421",
+          "language": "it",
+          "source_id": "000000000e69dc636a707fd3",
+          "status": "user_reply",
+          "thread_id": "000000000d0e5459abed9b69",
+          "thread_title": "Hi there",
+          "created_from": "interface",
+          "private": false
+        }
+      }
+    }
+  ]
+}
