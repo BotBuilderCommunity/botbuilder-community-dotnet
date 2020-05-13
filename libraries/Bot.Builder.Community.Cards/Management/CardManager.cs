@@ -176,7 +176,8 @@ namespace Bot.Builder.Community.Cards.Management
             var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
             var activitiesWithMatchingId = state.SavedActivities.Where(activity => activity.Id == activityId).ToArray();
 
-            // The WhereEnumerableIterator must be copied or else it would throw an exception here
+            // We used ToArray because the WhereEnumerableIterator must be copied
+            // or else it would throw an exception here
             state.SavedActivities.ExceptWith(activitiesWithMatchingId);
         }
 

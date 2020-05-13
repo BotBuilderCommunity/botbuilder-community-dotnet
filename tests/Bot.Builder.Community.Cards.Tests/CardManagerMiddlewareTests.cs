@@ -326,6 +326,116 @@ namespace Bot.Builder.Community.Cards.Tests
         }
 
         [TestMethod]
+        public async Task OnUpdateActivity_Ignore()
+        {
+            const string UserSays_PleaseUpdate = "please update";
+
+            await RunTest(true, 0);
+            await RunTest(false, 1);
+
+            async Task RunTest(bool ignore, int idCount)
+            {
+                var middleware = CreateMiddleware();
+                var adapter = new TestAdapter().Use(middleware);
+
+                var cardActivity = MessageFactory.Attachment(new HeroCard(buttons: new List<CardAction>
+                {
+                    new CardAction(ActionTypes.MessageBack, value: new JObject()),
+                }).ToAttachment());
+
+                ResourceResponse response = null;
+
+                middleware.ChannelsWithMessageUpdates.Add(Channels.Test);
+
+                BotCallbackHandler callback = async (turnContext, cancellationToken) =>
+                {
+                    if (turnContext.Activity.Text == UserSays_PleaseUpdate)
+                    {
+                        cardActivity.Id = response.Id;
+
+                        if (ignore)
+                        {
+                            var ignoreUpdate = turnContext.TurnState.Get<CardManagerTurnState>()?.MiddlewareIgnoreUpdate;
+
+                            ignoreUpdate?.Add(cardActivity);
+                        }
+
+                        await turnContext.UpdateActivityAsync(cardActivity);
+                    }
+                    else
+                    {
+                        response = await turnContext.SendActivityAsync("This will get updated");
+                    }
+                };
+
+                await new TestFlow(adapter, callback)
+                    .Send("hi")
+                    .Send(UserSays_PleaseUpdate)
+                        .AssertReply(activity => Assert.AreEqual(idCount, ((JObject)((HeroCard)((Activity)activity).Attachments.Single().Content).Buttons.Single().Value).Count))
+                    .StartTestAsync();
+            }
+        }
+
+        [TestMethod]
+        public async Task OnDeleteActivity_Ignore()
+        {
+            const string UserSays_PleaseDelete = "please delete";
+
+            await RunTest(true, 1);
+            await RunTest(false, 0);
+
+            async Task RunTest(bool ignore, int activityCount)
+            {
+                var botState = CreateUserState();
+                var accessor = botState.CreateProperty<CardManagerState>(nameof(CardManagerState));
+                var middleware = new CardManagerMiddleware(new CardManager(botState));
+                var adapter = new TestAdapter().Use(middleware);
+
+                var cardActivity = MessageFactory.Attachment(new HeroCard(buttons: new List<CardAction>
+                {
+                    new CardAction(ActionTypes.PostBack, value: new JObject()),
+                }).ToAttachment());
+
+                ResourceResponse response = null;
+
+                middleware.ChannelsWithMessageUpdates.Add(Channels.Test);
+
+                BotCallbackHandler callback = async (turnContext, cancellationToken) =>
+                {
+                    if (turnContext.Activity.Text == UserSays_PleaseDelete)
+                    {
+                        if (ignore)
+                        {
+                            var ignoreDelete = turnContext.TurnState.Get<CardManagerTurnState>()?.MiddlewareIgnoreDelete;
+
+                            ignoreDelete?.Add(response.Id);
+                        }
+
+                        await turnContext.DeleteActivityAsync(response.Id);
+                    }
+                    else
+                    {
+                        response = await turnContext.SendActivityAsync(cardActivity);
+                    }
+
+                    var state = await accessor.GetNotNullAsync(turnContext, () => new CardManagerState());
+
+                    await turnContext.SendActivityAsync($"Saved: {state.SavedActivities.Count}");
+
+                    await botState.SaveChangesAsync(turnContext);
+                };
+
+                await new TestFlow(adapter, callback)
+                    .Send("hi")
+                        .AssertReply(cardActivity, EqualityComparer<IActivity>.Default)
+                        .AssertReply($"Saved: {1}")
+                    .Send(UserSays_PleaseDelete)
+                        .AssertReply($"Saved: {activityCount}")
+                    .StartTestAsync();
+            }
+        }
+
+        [TestMethod]
         public async Task NonUpdatingSettingsAreUsed()
         {
             await RunTestFlow();
