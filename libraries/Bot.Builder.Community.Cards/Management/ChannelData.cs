@@ -1,4 +1,4 @@
-﻿namespace Bot.Builder.Community.Cards
+﻿namespace Bot.Builder.Community.Cards.Management
 {
     internal static class ChannelData
     {
