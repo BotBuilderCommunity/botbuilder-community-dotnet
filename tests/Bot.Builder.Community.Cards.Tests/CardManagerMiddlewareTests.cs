@@ -55,7 +55,8 @@ namespace Bot.Builder.Community.Cards.Tests
                 middleware.UpdatingOptions.IdOptions.Set(DataIdTypes.Action, ActionId);
                 middleware.NonUpdatingOptions.IdOptions.Set(DataIdTypes.Action, ActionId);
 
-                BotCallbackHandler callback = async (turnContext, cancellationToken) =>
+
+                await new TestFlow(adapter, async (turnContext, cancellationToken) =>
                 {
                     if (turnContext.Activity.Value == null)
                     {
@@ -65,9 +66,7 @@ namespace Bot.Builder.Community.Cards.Tests
                     shortCircuited = false;
 
                     await botState.SaveChangesAsync(turnContext);
-                };
-
-                await new TestFlow(adapter, callback)
+                })
                     .Send("hi")
                         .Do(() => Assert.IsTrue(adapter.ActiveQueue.Contains(cardActivity)))
                     .Send(actionActivity)
@@ -99,12 +98,11 @@ namespace Bot.Builder.Community.Cards.Tests
                 // No adaptations take place in the test channel, so we'll use Direct Line as an example
                 adapter.Conversation.ChannelId = Channels.Directline;
 
-                BotCallbackHandler callback = async (turnContext, cancellationToken) =>
+
+                await new TestFlow(adapter, async (turnContext, cancellationToken) =>
                 {
                     await turnContext.SendActivityAsync(cardActivity);
-                };
-
-                await new TestFlow(adapter, callback)
+                })
                     .Send("hi")
                         .AssertReply(activity => Assert.AreEqual(expectedType, ((HeroCard)((Activity)activity).Attachments.Single().Content).Buttons.Single().Value.GetType()))
                     .StartTestAsync();
@@ -129,12 +127,11 @@ namespace Bot.Builder.Community.Cards.Tests
 
                 middleware.NonUpdatingOptions.AutoApplyIds = autoApplyIds;
 
-                BotCallbackHandler callback = async (turnContext, cancellationToken) =>
+
+                await new TestFlow(adapter, async (turnContext, cancellationToken) =>
                 {
                     await turnContext.SendActivityAsync(cardActivity);
-                };
-
-                await new TestFlow(adapter, callback)
+                })
                     .Send("hi")
                         .AssertReply(activity => Assert.AreEqual(idCount, ((JObject)((HeroCard)((Activity)activity).Attachments.Single().Content).Buttons.Single().Value).Count))
                     .StartTestAsync();
@@ -160,12 +157,11 @@ namespace Bot.Builder.Community.Cards.Tests
 
                 middleware.NonUpdatingOptions.AutoConvertAdaptiveCards = autoConvertAdaptiveCards;
 
-                BotCallbackHandler callback = async (turnContext, cancellationToken) =>
+
+                await new TestFlow(adapter, async (turnContext, cancellationToken) =>
                 {
                     await turnContext.SendActivityAsync(cardActivity);
-                };
-
-                await new TestFlow(adapter, callback)
+                })
                     .Send("hi")
                         .AssertReply(activity => Assert.AreEqual(expectedType, ((Activity)activity).Attachments.Single().Content.GetType()))
                     .StartTestAsync();
@@ -195,7 +191,8 @@ namespace Bot.Builder.Community.Cards.Tests
             middleware.NonUpdatingOptions.IdTrackingStyle = TrackingStyle.TrackDisabled;
             middleware.NonUpdatingOptions.IdOptions.Set(DataIdTypes.Action, ActionId);
 
-            BotCallbackHandler callback = async (turnContext, cancellationToken) =>
+
+            await new TestFlow(adapter, async (turnContext, cancellationToken) =>
             {
                 if (turnContext.Activity.Value == null)
                 {
@@ -206,9 +203,7 @@ namespace Bot.Builder.Community.Cards.Tests
 
                 await turnContext.SendActivityAsync(
                     $"Tracked: {(state.DataIdsByType.TryGetValue(DataIdTypes.Action, out var set) ? set.Contains(ActionId) : false)}");
-            };
-
-            await new TestFlow(adapter, callback)
+            })
                 .Send("hi")
                     .AssertReply(cardActivity, EqualityComparer<IActivity>.Default)
                     .AssertReply($"Tracked: {false}")
@@ -239,7 +234,8 @@ namespace Bot.Builder.Community.Cards.Tests
 
                 middleware.ChannelsWithMessageUpdates.Add(Channels.Test);
 
-                BotCallbackHandler callback = async (turnContext, cancellationToken) =>
+
+                await new TestFlow(adapter, async (turnContext, cancellationToken) =>
                 {
                     if (turnContext.Activity.Text == UserSays_PleaseUpdate)
                     {
@@ -258,9 +254,7 @@ namespace Bot.Builder.Community.Cards.Tests
                     {
                         response = await turnContext.SendActivityAsync("This will get updated");
                     }
-                };
-
-                await new TestFlow(adapter, callback)
+                })
                     .Send("hi")
                     .Send(UserSays_PleaseUpdate)
                         .AssertReply(activity => Assert.AreEqual(idCount, ((JObject)((HeroCard)((Activity)activity).Attachments.Single().Content).Buttons.Single().Value).Count))
@@ -292,7 +286,8 @@ namespace Bot.Builder.Community.Cards.Tests
 
                 middleware.ChannelsWithMessageUpdates.Add(Channels.Test);
 
-                BotCallbackHandler callback = async (turnContext, cancellationToken) =>
+
+                await new TestFlow(adapter, async (turnContext, cancellationToken) =>
                 {
                     if (turnContext.Activity.Text == UserSays_PleaseDelete)
                     {
@@ -315,9 +310,7 @@ namespace Bot.Builder.Community.Cards.Tests
                     await turnContext.SendActivityAsync($"Saved: {state.SavedActivities.Count}");
 
                     await botState.SaveChangesAsync(turnContext);
-                };
-
-                await new TestFlow(adapter, callback)
+                })
                     .Send("hi")
                         .AssertReply(cardActivity, EqualityComparer<IActivity>.Default)
                         .AssertReply($"Saved: {1}")
