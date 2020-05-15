@@ -61,9 +61,16 @@ namespace Bot.Builder.Community.Adapters.Google
                 throw new ArgumentNullException(nameof(bot));
             }
 
-            if (_options.ValidateIncomingRequests && !GoogleAuthorizationHandler.ValidateActionProjectId(httpRequest.Headers["Authorization"], _options.ActionProjectId))
+            if (_options.ValidateIncomingRequests)
             {
-                throw new AuthenticationException("Failed to validate incoming request. Project ID in authentication header did not match project ID in AlexaAdapterOptions");
+                if (!GoogleAuthorizationHandler.ValidateActionProjectId(
+                    httpRequest.Headers["Authorization"],
+                    _options.ActionProjectId))
+                {
+                    _logger.LogError("Failed to validate incoming request. Project ID in authentication header did not match project ID in GoogleAdapterOptions.");
+                    throw new AuthenticationException(
+                        "Failed to validate incoming request. Project ID in authentication header did not match project ID in AlexaAdapterOptions");
+                }
             }
 
             string body;
