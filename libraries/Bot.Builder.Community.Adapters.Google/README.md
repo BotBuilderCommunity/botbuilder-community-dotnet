@@ -1,4 +1,4 @@
-# Google Adapter for Bot Builder v4 .NET SDK - ***PREVIEW***
+# Google Adapter for Bot Builder v4 .NET SDK
 
 ## Build status
 | Branch | Status | Recommended NuGet package version |
@@ -40,10 +40,13 @@ Sample bot, showing examples of Google specific functionality using the current 
 ## Usage
 
 * [Prerequisites](#prerequisites)
-* [Create an Actions on Google project](#create-an-actions-on-google-project)
+* [Create and Configure Google Action](#configuring-google-action-via-actions-on-google-or-dialogflow)
+    * [Create an Actions on Google project](#create-an-actions-on-google-project-recommended)
+    * [Create a DialogFlow project (alternative)](#configuring-a-google-action-using-dialogflow-alternative)
 * [Wiring up the Google adapter in your bot](#wiring-up-the-google-adapter-in-your-bot)
-* [Complete configuration of your Action package](#complete-configuration-of-your-action-package)
-* [Test your Google Action](#test-your-google-action) - Test your bot in the Google Actions simulator
+* [Complete configuration of your Google Action](#complete-configuration-of-your-google-action)
+* [Testing your Google Action](#testing-your-google-action)
+* [Incoming action requests to Bot Framework activity mapping](#Incoming-action-requests-to-Bot-Framework-activity-mapping)
 * [Customising your conversation](#customising-your-conversation) - Learn about controlling end of session and use of basic card, table card, list and carousel
 
 In this article you will learn how to connect a bot to Google Assistant using the Google adapter.  This article will walk you through modifying the EchoBot sample to connect it to a skill.
@@ -60,7 +63,7 @@ The Google adapter supports connecting to Actions on Google (the conversations w
 
 The following two sections describe hwo how to correctly configure your Google Action.
 
-#### Create an Actions on Google project (recommended)
+### Create an Actions on Google project (recommended)
 
 1. Log into the [Actions on Google console](https://console.actions.google.com/) and then click the **New project** button.
 
@@ -127,7 +130,7 @@ The following two sections describe hwo how to correctly configure your Google A
 
 10. Save your new Action package (.json) file.  We will update your Actions SDK project later, using the **gactions** cli tool you previously downloaded, but you still need to update the URL to your bot's endpoint. To obtain the correct endpoint, you need to wire up the Google Adapter and complete configuration of your bot using the details later in this article into your bot and deploy it.
 
-#### Configuring a Google Action using DialogFlow (alternative)
+### Configuring a Google Action using DialogFlow (alternative)
 
 1. Log into the [DialogFlow console](https://dialogflow.cloud.google.com/) and then select the dropdown at the drop of the lefthand menu and click the **Create new agent** button.
 
