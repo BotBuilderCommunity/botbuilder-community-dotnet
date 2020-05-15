@@ -79,13 +79,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Dialo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.RingCentral", "libraries\Bot.Builder.Community.Adapters.RingCentral\Bot.Builder.Community.Adapters.RingCentral.csproj", "{042403D4-2D7B-482E-87DD-51B1CFDEC210}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Google.Core", "libraries\Bot.Builder.Community.Adapters.Google.Core\Bot.Builder.Community.Adapters.Google.Core.csproj", "{4E4FAD6B-117D-48A7-BC5D-FACFD415ED47}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Zoom", "libraries\Bot.Builder.Community.Adapters.Zoom\Bot.Builder.Community.Adapters.Zoom.csproj", "{DA1A84A1-D921-412F-A855-93FC9A525D27}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Infobip", "libraries\Bot.Builder.Community.Adapters.Infobip\Bot.Builder.Community.Adapters.Infobip.csproj", "{0F8ADFCE-3E91-4F85-BC0B-4B0A5C98797C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Infobip.Tests", "tests\Bot.Builder.Community.Adapters.Infobip.Tests\Bot.Builder.Community.Adapters.Infobip.Tests.csproj", "{6356EF6A-406B-4B2E-A229-C1D042C2FCF6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Google.Core", "libraries\Bot.Builder.Community.Adapters.Google.Core\Bot.Builder.Community.Adapters.Google.Core.csproj", "{7856219A-3537-4F81-86A8-4CB020BD2B9A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -317,14 +317,6 @@ Global
 		{042403D4-2D7B-482E-87DD-51B1CFDEC210}.Documentation|Any CPU.Build.0 = Debug|Any CPU
 		{042403D4-2D7B-482E-87DD-51B1CFDEC210}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{042403D4-2D7B-482E-87DD-51B1CFDEC210}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4E4FAD6B-117D-48A7-BC5D-FACFD415ED47}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
-		{4E4FAD6B-117D-48A7-BC5D-FACFD415ED47}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
-		{4E4FAD6B-117D-48A7-BC5D-FACFD415ED47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4E4FAD6B-117D-48A7-BC5D-FACFD415ED47}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4E4FAD6B-117D-48A7-BC5D-FACFD415ED47}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
-		{4E4FAD6B-117D-48A7-BC5D-FACFD415ED47}.Documentation|Any CPU.Build.0 = Debug|Any CPU
-		{4E4FAD6B-117D-48A7-BC5D-FACFD415ED47}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4E4FAD6B-117D-48A7-BC5D-FACFD415ED47}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DA1A84A1-D921-412F-A855-93FC9A525D27}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
 		{DA1A84A1-D921-412F-A855-93FC9A525D27}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
 		{DA1A84A1-D921-412F-A855-93FC9A525D27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -333,6 +325,14 @@ Global
 		{DA1A84A1-D921-412F-A855-93FC9A525D27}.Documentation|Any CPU.Build.0 = Debug|Any CPU
 		{DA1A84A1-D921-412F-A855-93FC9A525D27}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA1A84A1-D921-412F-A855-93FC9A525D27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7856219A-3537-4F81-86A8-4CB020BD2B9A}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{7856219A-3537-4F81-86A8-4CB020BD2B9A}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{7856219A-3537-4F81-86A8-4CB020BD2B9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7856219A-3537-4F81-86A8-4CB020BD2B9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7856219A-3537-4F81-86A8-4CB020BD2B9A}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{7856219A-3537-4F81-86A8-4CB020BD2B9A}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{7856219A-3537-4F81-86A8-4CB020BD2B9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7856219A-3537-4F81-86A8-4CB020BD2B9A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0F8ADFCE-3E91-4F85-BC0B-4B0A5C98797C}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
 		{0F8ADFCE-3E91-4F85-BC0B-4B0A5C98797C}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
 		{0F8ADFCE-3E91-4F85-BC0B-4B0A5C98797C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -387,8 +387,8 @@ Global
 		{63AFED39-D4AC-4B1E-94B9-EF58EE687B3D} = {08759E28-8592-4EBA-9A07-19A5BED3FB0C}
 		{E14564ED-C929-4F43-BD1B-46D20DFAAF3A} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
 		{042403D4-2D7B-482E-87DD-51B1CFDEC210} = {BF310E8A-8DA1-441F-90E9-DE0E66553048}
-		{4E4FAD6B-117D-48A7-BC5D-FACFD415ED47} = {BF310E8A-8DA1-441F-90E9-DE0E66553048}
 		{DA1A84A1-D921-412F-A855-93FC9A525D27} = {BF310E8A-8DA1-441F-90E9-DE0E66553048}
+		{7856219A-3537-4F81-86A8-4CB020BD2B9A} = {BF310E8A-8DA1-441F-90E9-DE0E66553048}
 		{0F8ADFCE-3E91-4F85-BC0B-4B0A5C98797C} = {BF310E8A-8DA1-441F-90E9-DE0E66553048}
 		{6356EF6A-406B-4B2E-A229-C1D042C2FCF6} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
 	EndGlobalSection
