@@ -86,7 +86,6 @@ namespace Bot.Builder.Community.Adapters.Google
             {
                 var dialogFlowRequest = JsonConvert.DeserializeObject<DialogFlowRequest>(body);
                 var requestMapper = new DialogFlowRequestMapper(_requestMapperOptions, _logger);
-                //dialogFlowRequest.OriginalDetectIntentRequest.Payload.EnsureUniqueUserIdInUserStorage();
                 activity = requestMapper.RequestToActivity(dialogFlowRequest);
                 var context = await CreateContextAndRunPipelineAsync(bot, cancellationToken, activity);
                 var response = requestMapper.ActivityToResponse(ProcessOutgoingActivities(context.SentActivities), dialogFlowRequest);
@@ -94,23 +93,15 @@ namespace Bot.Builder.Community.Adapters.Google
             }
             else
             {
-                try
-                {
-                    var conversationRequest = JsonConvert.DeserializeObject<ConversationRequest>(body);
-                    var requestMapper = new ConversationRequestMapper(_requestMapperOptions, _logger);
-                    //conversationRequest.EnsureUniqueUserIdInUserStorage();
-                    activity = requestMapper.RequestToActivity(conversationRequest);
-                    var context = await CreateContextAndRunPipelineAsync(bot, cancellationToken, activity);
-                    var response = requestMapper.ActivityToResponse(ProcessOutgoingActivities(context.SentActivities), conversationRequest);
-                    responseJson = JsonConvert.SerializeObject(response, JsonSerializerSettings);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    throw;
-                }
+                var conversationRequest = JsonConvert.DeserializeObject<ConversationRequest>(body);
+                var requestMapper = new ConversationRequestMapper(_requestMapperOptions, _logger);
+                activity = requestMapper.RequestToActivity(conversationRequest);
+                var context = await CreateContextAndRunPipelineAsync(bot, cancellationToken, activity);
+                var response = requestMapper.ActivityToResponse(ProcessOutgoingActivities(context.SentActivities),
+                    conversationRequest);
+                responseJson = JsonConvert.SerializeObject(response, JsonSerializerSettings);
             }
-            
+
             httpResponse.ContentType = "application/json;charset=utf-8";
             httpResponse.StatusCode = (int)HttpStatusCode.OK;
 
