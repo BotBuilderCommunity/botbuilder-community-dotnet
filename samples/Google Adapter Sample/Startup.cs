@@ -32,11 +32,11 @@ namespace Bot.Builder.Community.Samples.Google
             {
                 return new GoogleAdapterOptions()
                 {
-                    ActionInvocationName = "dialogflow adapter",
+                    ActionInvocationName = "my awesome action",
                     //ActionProjectId = "YOUR-GOOGLE-ACTION-ID",
                     ShouldEndSessionByDefault = false,
                     ValidateIncomingRequests = false,
-                    WebhookType = GoogleWebhookType.DialogFlow
+                    WebhookType = GoogleWebhookType.Conversation
                 };
             });
 
