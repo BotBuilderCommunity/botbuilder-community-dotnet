@@ -6,10 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Bot.Builder.Community.Middleware.SentimentAnalysis" Version="4.5.7" />
+    <PackageReference Include="Bot.Builder.Community.Middleware.SentimentAnalysis" Version="4.8.5" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.13.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.8.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Primitives" Version="3.1.4" />
   </ItemGroup>
 
   <ItemGroup>
