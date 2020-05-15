@@ -13,6 +13,6 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Model.Response
         public bool ExpectUserResponse { get; set; }
         public RichResponse RichResponse { get; set; }
         public DialogFlowSystemIntent SystemIntent { get; set; }
-        public JObject UserStorage { get; set; }
+        public object UserStorage { get; set; }
     }
 }
