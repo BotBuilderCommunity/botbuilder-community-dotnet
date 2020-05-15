@@ -28,9 +28,9 @@ namespace Bot.Builder.Community.Adapters.Google.Core
             var actionIntent = payload.Inputs.FirstOrDefault(i => i.Intent.ToLowerInvariant().StartsWith("actions.intent"))?.Intent;
             var queryText = StripInvocation(payload.Inputs[0]?.RawInputs[0]?.Query, Options.ActionInvocationName);
 
-            if (request.QueryResult.Intent.IsFallback)
+            if (request.QueryResult.Intent.IsFallback || request.QueryResult.Intent.DisplayName.ToLowerInvariant() == "launch")
             {
-                if (string.IsNullOrEmpty(queryText))
+                if (string.IsNullOrEmpty(queryText) || request.QueryResult.Intent.DisplayName.ToLowerInvariant() == "launch")
                 {
                     activity.Type = ActivityTypes.ConversationUpdate;
                     activity.MembersAdded = new List<ChannelAccount>() { new ChannelAccount() { Id = activity.From.Id } };
