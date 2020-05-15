@@ -256,7 +256,7 @@ using Microsoft.Bot.Builder;
 
 You need to set the following properties 
 
-* **WebhookType** - Se this to either GoogleWebhookType.Conversation or GoogleWebhookType.DialogFlow depending on which integration method you have chosen.
+* **WebhookType** - Set this to either GoogleWebhookType.Conversation or GoogleWebhookType.DialogFlow depending on which integration method you have chosen.
 
 * **ActionInvocationName** - replace "YOUR-ACTION-DISPLAY-NAME" with the display name you gave to your action. If using Actions on Google, this will be the name specified in your action package. If using DialogFlow, this is the display name you specified on the **Invocation** details page for your action. 
 
