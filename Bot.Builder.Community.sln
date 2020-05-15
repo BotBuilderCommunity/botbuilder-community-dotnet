@@ -73,11 +73,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.RingCentral.Tests", "tests\Bot.Builder.Community.Adapters.RingCentral.Tests\Bot.Builder.Community.Adapters.RingCentral.Tests.csproj", "{441E05D3-43A9-4C4B-AB5B-06AF27742885}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bot.Builder.Community.Dialogs.Adaptive.Rest", "libraries\Bot.Builder.Community.Dialogs.Adaptive.Rest\Bot.Builder.Community.Dialogs.Adaptive.Rest.csproj", "{63AFED39-D4AC-4B1E-94B9-EF58EE687B3D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Dialogs.Adaptive.Rest", "libraries\Bot.Builder.Community.Dialogs.Adaptive.Rest\Bot.Builder.Community.Dialogs.Adaptive.Rest.csproj", "{63AFED39-D4AC-4B1E-94B9-EF58EE687B3D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bot.Builder.Community.Dialogs.Adaptive.Rest.Tests", "tests\Bot.Builder.Community.Dialogs.Adaptive.Rest.Tests\Bot.Builder.Community.Dialogs.Adaptive.Rest.Tests.csproj", "{E14564ED-C929-4F43-BD1B-46D20DFAAF3A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Dialogs.Adaptive.Rest.Tests", "tests\Bot.Builder.Community.Dialogs.Adaptive.Rest.Tests\Bot.Builder.Community.Dialogs.Adaptive.Rest.Tests.csproj", "{E14564ED-C929-4F43-BD1B-46D20DFAAF3A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bot.Builder.Community.Adapters.RingCentral", "libraries\Bot.Builder.Community.Adapters.RingCentral\Bot.Builder.Community.Adapters.RingCentral.csproj", "{042403D4-2D7B-482E-87DD-51B1CFDEC210}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.RingCentral", "libraries\Bot.Builder.Community.Adapters.RingCentral\Bot.Builder.Community.Adapters.RingCentral.csproj", "{042403D4-2D7B-482E-87DD-51B1CFDEC210}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Google.Core", "libraries\Bot.Builder.Community.Adapters.Google.Core\Bot.Builder.Community.Adapters.Google.Core.csproj", "{4E4FAD6B-117D-48A7-BC5D-FACFD415ED47}"
 EndProject
@@ -297,16 +297,16 @@ Global
 		{63AFED39-D4AC-4B1E-94B9-EF58EE687B3D}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
 		{63AFED39-D4AC-4B1E-94B9-EF58EE687B3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{63AFED39-D4AC-4B1E-94B9-EF58EE687B3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{63AFED39-D4AC-4B1E-94B9-EF58EE687B3D}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
-		{63AFED39-D4AC-4B1E-94B9-EF58EE687B3D}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+		{63AFED39-D4AC-4B1E-94B9-EF58EE687B3D}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{63AFED39-D4AC-4B1E-94B9-EF58EE687B3D}.Documentation|Any CPU.Build.0 = Debug|Any CPU
 		{63AFED39-D4AC-4B1E-94B9-EF58EE687B3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63AFED39-D4AC-4B1E-94B9-EF58EE687B3D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E14564ED-C929-4F43-BD1B-46D20DFAAF3A}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
 		{E14564ED-C929-4F43-BD1B-46D20DFAAF3A}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
 		{E14564ED-C929-4F43-BD1B-46D20DFAAF3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E14564ED-C929-4F43-BD1B-46D20DFAAF3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E14564ED-C929-4F43-BD1B-46D20DFAAF3A}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
-		{E14564ED-C929-4F43-BD1B-46D20DFAAF3A}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+		{E14564ED-C929-4F43-BD1B-46D20DFAAF3A}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{E14564ED-C929-4F43-BD1B-46D20DFAAF3A}.Documentation|Any CPU.Build.0 = Debug|Any CPU
 		{E14564ED-C929-4F43-BD1B-46D20DFAAF3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E14564ED-C929-4F43-BD1B-46D20DFAAF3A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{042403D4-2D7B-482E-87DD-51B1CFDEC210}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
