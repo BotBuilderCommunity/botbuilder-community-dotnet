@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Description>This dialog provides the basic implementation for the creation of REST API call dialogs.</Description>
+    <Authors>Bot Builder Community</Authors>
+    <Company>Bot Builder Community</Company>
+    <PackageLicenseUrl>https://github.com/botbuildercommunity/botbuilder-community-dotnet/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/botbuildercommunity/botbuilder-community-dotnet</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/botbuildercommunity/botbuilder-community-dotnet</RepositoryUrl>
+    <PackageTags>bot framework;bot builder;azure bot service;dialogs;adaptivedialogs;rest</PackageTags>
+    <Version>1.0.0</Version>
+    <FileVersion>1.0.0</FileVersion>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Actions\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.8.0-rc0" />
+    <PackageReference Include="Microsoft.Rest.ClientRuntime" Version="2.3.21" />
+  </ItemGroup>
+</Project>
