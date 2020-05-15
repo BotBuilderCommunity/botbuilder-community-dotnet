@@ -18,12 +18,17 @@ namespace Bot.Builder.Community.Adapters.Google.Core
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public static bool ValidateActionProjectId(string authorizationHeader, string actionProjectId)
+        public static bool ValidateActionProjectId(string authorizationHeader, string authorizationValue)
         {
+            if (authorizationHeader == authorizationValue)
+            {
+                return true;
+            }
+
             var payload = new JwtBuilder().Decode(authorizationHeader);
             var payloadJObj = JObject.Parse(payload);
             var aud = (string)payloadJObj["aud"];
-            return aud.ToLowerInvariant() == actionProjectId.ToLowerInvariant();
+            return aud.ToLowerInvariant() == authorizationValue.ToLowerInvariant();
         }
     }
 }

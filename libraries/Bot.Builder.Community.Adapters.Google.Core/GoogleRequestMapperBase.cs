@@ -34,7 +34,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core
             activity.ServiceUrl = Options.ServiceUrl;
             activity.Recipient = new ChannelAccount("", "action");
             activity.Conversation = new ConversationAccount(false, id: $"{request.Conversation.ConversationId}");
-            activity.From = new ChannelAccount(request.GetUserIdFromUserStorage());
+            activity.From = null;//new ChannelAccount(request.GetUserIdFromUserStorage());
             activity.Id = Guid.NewGuid().ToString();
             activity.Timestamp = DateTime.UtcNow;
             activity.Locale = request.User.Locale;
