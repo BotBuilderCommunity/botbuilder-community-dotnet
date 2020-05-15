@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Description>Adapter for v4 of the Bot Builder .NET SDK to allow for a bot to be used for Actions on Google.</Description>
+    <Description>Adapter for v4 of the Bot Builder .NET SDK to allow for a bot to be used for Google Assistant actions (via the Google Actions Conversation Webhook or DialogFlow).</Description>
     <Authors>Bot Builder Community</Authors>
     <Company>Bot Builder Community</Company>
     <PackageLicenseUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/master/LICENSE</PackageLicenseUrl>
@@ -14,21 +14,10 @@
 </RepositoryUrl>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Integration\AspNet.WebApi\**" />
-    <EmbeddedResource Remove="Integration\AspNet.WebApi\**" />
-    <None Remove="Integration\AspNet.WebApi\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="GoogleConversationalSchema.cs.old" />
-  </ItemGroup>
-
-  <ItemGroup>
+	<ItemGroup>
 		<PackageReference Include="JWT" Version="5.0.1" />
-		<PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.4" />
 		<PackageReference Include="Microsoft.Bot.Builder" Version="4.8.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.1.1" />
+		<PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.8.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="2.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Options" Version="2.1.1" />
 		<PackageReference Include="Microsoft.Net.Http.Headers" Version="2.1.1" />
@@ -36,8 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Directives\" />
-    <Folder Include="Middleware\" />
+    <ProjectReference Include="..\Bot.Builder.Community.Adapters.Google.Core\Bot.Builder.Community.Adapters.Google.Core.csproj" />
   </ItemGroup>
 
 </Project>
