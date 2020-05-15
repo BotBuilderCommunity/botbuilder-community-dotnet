@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Security.Authentication;
 using System.Text;
 using System.Threading;
@@ -13,6 +14,7 @@ using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
@@ -64,6 +66,13 @@ namespace Bot.Builder.Community.Adapters.Zoom
                 throw new ArgumentNullException(nameof(bot));
             }
 
+            if (_options.ValidateIncomingZoomRequests &&
+                httpRequest.Headers.TryGetValue("HeaderAuthorization", out StringValues headerAuthorization)
+                && headerAuthorization.FirstOrDefault() != _options.VerificationToken)
+            {
+                throw new AuthenticationException("Failed to validate incoming request. Mismatched verification token.");
+            }
+            
             string body;
             using (var sr = new StreamReader(httpRequest.Body))
             {
@@ -71,12 +80,6 @@ namespace Bot.Builder.Community.Adapters.Zoom
             }
 
             var zoomRequest = JsonConvert.DeserializeObject<ZoomRequest>(body, JsonSerializerSettings);
-
-            if (_options.ValidateIncomingZoomRequests
-                && !ValidationHelper.ValidateRequest(httpRequest, zoomRequest, body, _logger))
-            {
-                throw new AuthenticationException("Failed to validate incoming request.");
-            }
 
             var activity = RequestToActivity(zoomRequest);
 
@@ -123,7 +126,7 @@ namespace Bot.Builder.Community.Adapters.Zoom
 
                     if (clientResponse.IsSuccessful)
                     {
-                        responses.Add(new ResourceResponse() {Id = JObject.Parse(clientResponse.Content)["message_id"].ToString()});
+                        responses.Add(new ResourceResponse() { Id = JObject.Parse(clientResponse.Content)["message_id"].ToString() });
                     }
                     else
                     {

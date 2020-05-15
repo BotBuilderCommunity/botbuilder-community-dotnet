@@ -88,8 +88,8 @@ Below is an example of how you might use this result.
 
 ```csharp
 // Load an adaptive card
-const cardJson = require('./adaptiveCard.json');
-const card = CardFactory.adaptiveCard(cardJson);
+var cardPath = Path.Combine("../Resources/", "adaptiveCard.json");
+var cardJson = File.ReadAllText(cardPath);
 
 // Configure settings - All optional
 var promptSettings = new AdaptiveCardPromptSettings() {
@@ -111,10 +111,15 @@ var adaptiveCardPrompt = new AdaptiveCardPrompt('adaptiveCardPrompt', null, prom
 dialogSet.add(adaptiveCardPrompt);
 
 // Call the prompt
-return await stepContext.prompt('adaptiveCardPrompt');
+return await stepContext.PromptAsync(nameof(AdaptiveCardPrompt), new PromptOptions()
+{
+    Prompt = new Activity { Attachments = new List<Attachment>() { cardAttachment } }
+});
 
 // Use the result
-const result = stepContext.result;
+var result = stepContext.Result as JObject;
+var resultArray = result.Properties().Select(p => $"Key: {p.Name}  |  Value: {p.Value}").ToList();
+var resultString = string.Join("\n", resultArray);
 ```
 
 #### Adaptive Cards
@@ -131,7 +136,7 @@ The Bot Framework provides support for Adaptive Cards.  See the following to lea
 In a `TextPrompt`, the user response is returned in the `Activity.Text` property, which only accepts strings. Because Adaptive Cards can contain multiple inputs, the user response is sent as a JSON object in `Activity.Value`, like so:
 
 ```json
-const activity = {
+{
     [...]
     "value": {
         "inputA": "response A",
@@ -141,4 +146,4 @@ const activity = {
 }
 ```
 
-Because of this, it can be a little difficult to gather user input using an Adaptive Card within a dialog. The `AdaptiveCardPrompt` allows you to do so easily and returns the JSON object user response in `stepContext.result`.
+Because of this, it can be a little difficult to gather user input using an Adaptive Card within a dialog. The `AdaptiveCardPrompt` allows you to do so easily and returns the JSON object user response in `stepContext.Result`.

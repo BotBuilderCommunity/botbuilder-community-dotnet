@@ -135,17 +135,12 @@ Before you can complete the configuration of your Alexa skill, you need to wire 
 
 #### Install the Alexa adapter NuGet packages
 
-Bot.Builder.Community.Adapters.Alexa - 
-https://www.myget.org/feed/botbuilder-community-dotnet/package/nuget/Bot.Builder.Community.Adapters.Alexa/4.8.2-beta0111
+Available via NuGet package [Bot.Builder.Community.Adapters.Alexa](https://www.nuget.org/packages/Bot.Builder.Community.Adapters.Alexa/).
 
-Bot.Builder.Community.Adapters.Alexa.Core - 
-https://www.myget.org/feed/botbuilder-community-dotnet/package/nuget/Bot.Builder.Community.Adapters.Alexa.Core/4.8.2-beta0111
+Install into your project use the following command in the package manager. 
 
-To install into your project use the following command in the package manager.  If you wish to use the Visual Studio package manager, then add https://www.myget.org/F/botbuilder-community-dotnet/api/v3/index.json as an additional package source.
 ```
-    PM> Install-Package Bot.Builder.Community.Adapters.Alexa -Version 4.8.2-beta0111 -Source https://www.myget.org/F/botbuilder-community-dotnet/api/v3/index.json
-    
-        PM> Install-Package Bot.Builder.Community.Adapters.Alexa.Core -Version 4.8.2-beta0111 -Source https://www.myget.org/F/botbuilder-community-dotnet/api/v3/index.json
+    PM> Install-Package Bot.Builder.Community.Adapters.Alexa
 ```
 
 #### Create an Alexa adapter class

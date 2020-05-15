@@ -148,7 +148,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
             if (messageActivities.Any(a => !string.IsNullOrEmpty(a.Speak)))
             {
                 var speakText = string.Join("<break strength=\"strong\"/>", messageActivities
-                    .Select(a => !string.IsNullOrEmpty(a.Speak) ? StripSpeakTag(a.Speak) : NormalizeActivityText(a.TextFormat, a.Text))
+                    .Select(a => !string.IsNullOrEmpty(a.Speak) ? StripSpeakTag(a.Speak) : NormalizeActivityText(a.TextFormat, a.Text, forSsml: true))
                     .Where(s => !string.IsNullOrEmpty(s))
                     .Select(s => s));
 
@@ -156,7 +156,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
             }
 
             activity.Text = string.Join(". ", messageActivities
-                .Select(a => NormalizeActivityText(a.TextFormat, a.Text))
+                .Select(a => NormalizeActivityText(a.TextFormat, a.Text, forSsml: false))
                 .Where(s => !string.IsNullOrEmpty(s))
                 .Select(s => s.Trim(new char[] { ' ', '.' })));
 
@@ -281,7 +281,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
             }
         }
 
-        private string NormalizeActivityText(string textFormat, string text)
+        private string NormalizeActivityText(string textFormat, string text, bool forSsml)
         {
             if (string.IsNullOrWhiteSpace(text))
             {
@@ -308,7 +308,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
                 plainText = string.Empty;
             }
 
-            if (!SecurityElement.IsValidText(plainText))
+            if (forSsml && !SecurityElement.IsValidText(plainText))
             {
                 plainText = SecurityElement.Escape(plainText);
             }
