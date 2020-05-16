@@ -155,7 +155,7 @@ namespace Bot.Builder.Community.Adapters.Alexa
             return response;
         }
 
-        public virtual Activity ProcessOutgoingActivities(List<Activity> activities)
+        public virtual MergedActivityResult ProcessOutgoingActivities(List<Activity> activities)
         {
             return _requestMapper.MergeActivities(activities);
         }
