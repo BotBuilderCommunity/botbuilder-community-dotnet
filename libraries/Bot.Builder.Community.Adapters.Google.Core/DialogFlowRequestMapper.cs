@@ -33,7 +33,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core
                 if (string.IsNullOrEmpty(queryText) || request.QueryResult.Intent.DisplayName.ToLowerInvariant() == "launch")
                 {
                     activity.Type = ActivityTypes.ConversationUpdate;
-                    activity.MembersAdded = new List<ChannelAccount>() { new ChannelAccount() { Id = activity.From.Id } };
+                    activity.MembersAdded = new List<ChannelAccount>() { new ChannelAccount() { Id = activity.From?.Id ?? "anonymous" } };
                     return activity;
                 }
                 activity.Type = ActivityTypes.Message;

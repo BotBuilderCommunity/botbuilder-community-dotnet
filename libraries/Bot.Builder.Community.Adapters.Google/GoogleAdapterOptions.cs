@@ -13,5 +13,6 @@ namespace Bot.Builder.Community.Adapters.Google
         public string ActionProjectId { get; set; }
 
         public bool ValidateIncomingRequests { get; set; } = true;
+        public string DialogFlowAuthorizationHeader { get; set; }
     }
 }

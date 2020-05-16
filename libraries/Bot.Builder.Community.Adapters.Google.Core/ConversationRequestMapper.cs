@@ -57,7 +57,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core
             {
                 activity.Type = ActivityTypes.ConversationUpdate;
                 activity = SetGeneralActivityProperties(activity, request);
-                activity.MembersAdded = new List<ChannelAccount>() { new ChannelAccount() { Id = activity.From.Id } };
+                activity.MembersAdded = new List<ChannelAccount>() { new ChannelAccount() { Id = activity.From?.Id ?? "anonymous" } };
                 return activity;
             }
 

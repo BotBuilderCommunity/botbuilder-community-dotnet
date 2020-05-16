@@ -95,7 +95,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Model.Request
 
         public DateTime LastSeen { get; set; }
 
-        public JObject UserStorage { get; set; }
+        public object UserStorage { get; set; }
 
         public PackageEntitlement[] PackageEntitlements { get; set; }
 

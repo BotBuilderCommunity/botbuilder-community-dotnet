@@ -61,9 +61,16 @@ namespace Bot.Builder.Community.Adapters.Google
                 throw new ArgumentNullException(nameof(bot));
             }
 
-            if (_options.ValidateIncomingRequests && !GoogleAuthorizationHandler.ValidateActionProjectId(httpRequest.Headers["Authorization"], _options.ActionProjectId))
+            if (_options.ValidateIncomingRequests)
             {
-                throw new AuthenticationException("Failed to validate incoming request. Project ID in authentication header did not match project ID in AlexaAdapterOptions");
+                if (!GoogleAuthorizationHandler.ValidateActionProjectId(
+                    httpRequest.Headers["Authorization"],
+                    _options.WebhookType == GoogleWebhookType.Conversation ? _options.ActionProjectId : _options.DialogFlowAuthorizationHeader))
+                {
+                    _logger.LogError("Failed to validate incoming request. Project ID in authentication header did not match project ID in GoogleAdapterOptions.");
+                    throw new AuthenticationException(
+                        "Failed to validate incoming request. Project ID in authentication header did not match project ID in GoogleAdapterOptions");
+                }
             }
 
             string body;
@@ -79,7 +86,7 @@ namespace Bot.Builder.Community.Adapters.Google
             {
                 var dialogFlowRequest = JsonConvert.DeserializeObject<DialogFlowRequest>(body);
                 var requestMapper = new DialogFlowRequestMapper(_requestMapperOptions, _logger);
-                dialogFlowRequest.OriginalDetectIntentRequest.Payload.EnsureUniqueUserIdInUserStorage();
+                //dialogFlowRequest.OriginalDetectIntentRequest.Payload.EnsureUniqueUserIdInUserStorage();
                 activity = requestMapper.RequestToActivity(dialogFlowRequest);
                 var context = await CreateContextAndRunPipelineAsync(bot, cancellationToken, activity);
                 var response = requestMapper.ActivityToResponse(ProcessOutgoingActivities(context.SentActivities), dialogFlowRequest);
@@ -87,13 +94,21 @@ namespace Bot.Builder.Community.Adapters.Google
             }
             else
             {
-                var conversationRequest = JsonConvert.DeserializeObject<ConversationRequest>(body);
-                var requestMapper = new ConversationRequestMapper(_requestMapperOptions, _logger);
-                conversationRequest.EnsureUniqueUserIdInUserStorage();
-                activity = requestMapper.RequestToActivity(conversationRequest);
-                var context = await CreateContextAndRunPipelineAsync(bot, cancellationToken, activity);
-                var response = requestMapper.ActivityToResponse(ProcessOutgoingActivities(context.SentActivities), conversationRequest);
-                responseJson = JsonConvert.SerializeObject(response, JsonSerializerSettings);
+                try
+                {
+                    var conversationRequest = JsonConvert.DeserializeObject<ConversationRequest>(body);
+                    var requestMapper = new ConversationRequestMapper(_requestMapperOptions, _logger);
+                    //conversationRequest.EnsureUniqueUserIdInUserStorage();
+                    activity = requestMapper.RequestToActivity(conversationRequest);
+                    var context = await CreateContextAndRunPipelineAsync(bot, cancellationToken, activity);
+                    var response = requestMapper.ActivityToResponse(ProcessOutgoingActivities(context.SentActivities), conversationRequest);
+                    responseJson = JsonConvert.SerializeObject(response, JsonSerializerSettings);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
             }
             
             httpResponse.ContentType = "application/json;charset=utf-8";

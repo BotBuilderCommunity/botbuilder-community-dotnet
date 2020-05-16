@@ -1,4 +1,4 @@
-﻿# Infobip WhatsApp Adapter for Bot Builder v4 .NET SDK - ***PREVIEW***
+﻿# Infobip WhatsApp Adapter for Bot Builder v4 .NET SDK
 
 ## Build status
 | Branch | Status | Recommended NuGet package version |

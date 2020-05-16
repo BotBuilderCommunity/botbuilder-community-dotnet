@@ -6,7 +6,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Model.Response
     public class ConversationWebhookResponse
     {
         public string ConversationToken { get; set; }
-        public JObject UserStorage { get; set; }
+        public object UserStorage { get; set; }
         public bool? ResetUserStorage { get; set; }
         public bool ExpectUserResponse { get; set; }
         public ExpectedInput[] ExpectedInputs { get; set; }
