@@ -55,6 +55,38 @@ namespace Bot.Builder.Community.Cards.Management
             IdOptions = new DataIdOptions(DataIdTypes.Action),
         };
 
+        public CardManagerMiddleware SetAutoAdaptOutgoingCardActions(bool autoAdaptOutgoingCardActions)
+        {
+            UpdatingOptions.AutoAdaptOutgoingCardActions = autoAdaptOutgoingCardActions;
+            NonUpdatingOptions.AutoAdaptOutgoingCardActions = autoAdaptOutgoingCardActions;
+
+            return this;
+        }
+
+        public CardManagerMiddleware SetAutoApplyIds(bool autoApplyIds)
+        {
+            UpdatingOptions.AutoApplyIds = autoApplyIds;
+            NonUpdatingOptions.AutoApplyIds = autoApplyIds;
+
+            return this;
+        }
+
+        public CardManagerMiddleware SetAutoConvertAdaptiveCards(bool autoConvertAdaptiveCards)
+        {
+            UpdatingOptions.AutoConvertAdaptiveCards = autoConvertAdaptiveCards;
+            NonUpdatingOptions.AutoConvertAdaptiveCards = autoConvertAdaptiveCards;
+
+            return this;
+        }
+
+        public CardManagerMiddleware SetIdOptions(DataIdOptions idOptions)
+        {
+            UpdatingOptions.IdOptions = idOptions;
+            NonUpdatingOptions.IdOptions = idOptions;
+
+            return this;
+        }
+
         public async Task OnTurnAsync(ITurnContext turnContext, NextDelegate next, CancellationToken cancellationToken = default)
         {
             BotAssert.ContextNotNull(turnContext);
