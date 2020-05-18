@@ -38,21 +38,14 @@ namespace Bot.Builder.Community.Cards.Management
 
         public bool HasIdType(string type) => _ids.ContainsKey(type);
 
-        /// <summary>
-        /// Assigns an ID only if the ID type is not already assigned.
-        /// </summary>
-        /// <param name="type">The ID type to potentially assign.</param>
-        /// <param name="id">The ID to potentially assign.</param>
-        /// <returns>
-        /// The ID.
-        /// </returns>
-        public string InitializeId(string type, string id = null) => _ids.InitializeKey(type, id);
-
-        public bool SetExistingId(string type, string id = null) => _ids.SetExistingValue(type, id);
-
         public string Get(string type) => _ids.TryGetValue(type, out var value) ? value : null;
 
-        public string Set(string type, string id = null) => _ids[type] = id;
+        public DataIdOptions Set(string type, string id = null)
+        {
+            _ids[type] = id;
+
+            return this;
+        }
 
         public IDictionary<string, string> GetIds() => new Dictionary<string, string>(_ids);
     }

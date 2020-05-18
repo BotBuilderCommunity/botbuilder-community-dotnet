@@ -66,18 +66,6 @@ namespace Bot.Builder.Community.Cards
             return value;
         }
 
-        internal static bool SetExistingValue<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, TValue value = default)
-        {
-            if (!dict.ContainsKey(key))
-            {
-                return false;
-            }
-
-            dict[key] = value;
-
-            return true;
-        }
-
         internal static bool IsOneOf<T>(this T obj, params T[] these)
         {
             return these.Contains(obj);
