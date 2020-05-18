@@ -20,7 +20,7 @@ namespace Bot.Builder.Community.Cards.Management
 
         public override string Key => GetKey(Name);
 
-        internal static ReadOnlyCollection<string> Types { get; } = Array.AsReadOnly(new[]
+        public static ReadOnlyCollection<string> Types { get; } = Array.AsReadOnly(new[]
         {
             DataIdTypes.Action,
             DataIdTypes.Card,
