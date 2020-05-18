@@ -9,7 +9,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
     internal enum TreeNodeType
     {
         /// <summary>
-        /// Corresponds to <see cref="IEnumerable{}">IEnumerable</see>&lt;<see cref="Microsoft.Bot.Schema.Activity">Activity</see>&gt;.
+        /// Corresponds to <see cref="IEnumerable{T}">IEnumerable</see>&lt;<see cref="Microsoft.Bot.Schema.Activity">Activity</see>&gt;.
         /// </summary>
         Batch,
 
@@ -19,7 +19,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
         Activity,
 
         /// <summary>
-        /// Corresponds to <see cref="IEnumerable{}">IEnumerable</see>&lt;<see cref="Microsoft.Bot.Schema.Attachment">Attachment</see>&gt;.
+        /// Corresponds to <see cref="IEnumerable{T}">IEnumerable</see>&lt;<see cref="Microsoft.Bot.Schema.Attachment">Attachment</see>&gt;.
         /// The name of this node type is not meant to imply that it only works when an activity's
         /// <see cref="Activity.AttachmentLayout">AttachmentLayout</see> property is assigned the value of
         /// <see cref="AttachmentLayoutTypes.Carousel"/>. In this context, a "carousel" is just a set of attachments regardless of layout.
@@ -77,12 +77,12 @@ namespace Bot.Builder.Community.Cards.Management.Tree
         VideoCard,
 
         /// <summary>
-        /// Corresponds to <see cref="IEnumerable{}">IEnumerable</see>&lt;<see cref="object"/>&gt;.
+        /// Corresponds to <see cref="IEnumerable{T}">IEnumerable</see>&lt;<see cref="object"/>&gt;.
         /// </summary>
         SubmitActionList,
 
         /// <summary>
-        /// Corresponds to <see cref="IEnumerable{}">IEnumerable</see>&lt;<see cref="Microsoft.Bot.Schema.CardAction">CardAction</see>&gt;.
+        /// Corresponds to <see cref="IEnumerable{T}">IEnumerable</see>&lt;<see cref="Microsoft.Bot.Schema.CardAction">CardAction</see>&gt;.
         /// </summary>
         CardActionList,
 
