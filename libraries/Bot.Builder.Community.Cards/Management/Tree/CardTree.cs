@@ -131,7 +131,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
 
                             if (reassignChildren)
                             {
-                                action.Value = action.Value.FromJObject(valueJObject);
+                                action.Value = action.Value.FromJObject(valueJObject, true);
                             }
                         }
                         else

@@ -173,6 +173,7 @@ namespace Bot.Builder.Community.Cards.Management
                 && options.IdTrackingStyle == TrackingStyle.TrackEnabled
                 && activities.Any(activity => activity.Type == ActivityTypes.Message))
             {
+                // TODO: Add an equivalent of this for channels with updates
                 await Manager.ClearTrackedIdsAsync(turnContext).ConfigureAwait(false);
             }
 
