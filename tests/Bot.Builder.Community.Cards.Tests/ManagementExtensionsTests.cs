@@ -197,6 +197,7 @@ namespace Bot.Builder.Community.Cards.Tests
                 new CardAction(ActionTypes.MessageBack, text: "Not JSON"),
                 new CardAction(ActionTypes.PostBack, value: "Not JSON", text: "{}"),
                 new CardAction(ActionTypes.MessageBack, value: jObject, text: "{}"),
+                new CardAction(ActionTypes.PostBack, value: new { key = EXTRADATA }),
                 new CardAction(ActionTypes.ImBack, value: new JObject(), text: "{}"),
             });
 
@@ -436,8 +437,18 @@ namespace Bot.Builder.Community.Cards.Tests
             Assert.IsNotNull(actionId);
 
             data = (JObject)videoCard.Buttons[3].Value;
+            actionId = data.GetIdFromActionData(DataIdTypes.Action);
 
-            Assert.AreEqual("{}", videoCard.Buttons[3].Text);
+            Assert.IsTrue(actionIds.Add(actionId));
+            Assert.AreEqual(batchId, data.GetIdFromActionData(DataIdTypes.Batch));
+            Assert.AreEqual(carouselId, data.GetIdFromActionData(DataIdTypes.Carousel));
+            Assert.AreEqual(cardId, data.GetIdFromActionData(DataIdTypes.Card));
+            Assert.IsNotNull(actionId);
+            Assert.AreEqual(EXTRADATA, (string)data["key"]);
+
+            data = (JObject)videoCard.Buttons[4].Value;
+
+            Assert.AreEqual("{}", videoCard.Buttons[4].Text);
             Assert.IsNull(data.GetIdFromActionData(DataIdTypes.Batch));
             Assert.IsNull(data.GetIdFromActionData(DataIdTypes.Carousel));
             Assert.IsNull(data.GetIdFromActionData(DataIdTypes.Card));
@@ -672,7 +683,7 @@ namespace Bot.Builder.Community.Cards.Tests
             var notJson = "Not JSON";
             var json = "{'foo':'bar'}";
             var parsedJson = JObject.Parse(json);
-            var obj = new object();
+            var obj = new { };
             var serializedObj = JsonConvert.SerializeObject(obj);
 
             var actionTypes = new List<string>
