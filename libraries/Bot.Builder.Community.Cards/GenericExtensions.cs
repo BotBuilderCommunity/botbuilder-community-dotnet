@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -113,11 +114,11 @@ namespace Bot.Builder.Community.Cards
             return null;
         }
 
-        internal static T FromJObject<T>(this T input, JObject jObject)
+        internal static T FromJObject<T>(this T input, JObject jObject, bool mustPreserveNewValues = false)
         {
             return (T)(input is string
                 ? JsonConvert.SerializeObject(jObject)
-                : input is JObject
+                : input is JObject || (mustPreserveNewValues && !(input is IEnumerable))
                     ? jObject
                     : jObject.ToObject(input.GetType()));
         }
