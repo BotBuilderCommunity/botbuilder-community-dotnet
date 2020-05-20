@@ -23,7 +23,11 @@ namespace Cards_Library_Sample
 
             Use(new InspectionMiddleware(inspectionState, null, conversationState, credentials));
 
-            Use(new CardManagerMiddleware(cardManager)
+            var cardManagerMiddleware = new CardManagerMiddleware(cardManager);
+
+            cardManagerMiddleware.NonUpdatingOptions.AutoClearEnabledOnSend = false;
+
+            Use(cardManagerMiddleware
                 .SetAutoApplyIds(false)
                 .SetIdOptions(new DataIdOptions(DataId.Types)));
 
