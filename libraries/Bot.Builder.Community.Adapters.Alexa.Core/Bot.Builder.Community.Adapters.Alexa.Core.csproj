@@ -19,7 +19,7 @@
 
 
   <ItemGroup>
-    <PackageReference Include="Alexa.NET" Version="1.13.0" />
+    <PackageReference Include="Alexa.NET" Version="1.13.3" />
     <PackageReference Include="Alexa.NET.CustomerProfile" Version="2.1.1" />
     <PackageReference Include="Microsoft.MarkedNet" Version="1.0.13" />
     <PackageReference Include="Microsoft.Bot.Builder" Version="4.8.0" />
