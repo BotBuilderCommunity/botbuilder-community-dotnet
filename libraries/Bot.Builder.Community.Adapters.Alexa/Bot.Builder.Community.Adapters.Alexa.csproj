@@ -27,8 +27,4 @@
     <PackageReference Include="Microsoft.Net.Http.Headers" Version="2.1.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Bot.Builder.Community.Adapters.Alexa.Core\Bot.Builder.Community.Adapters.Alexa.Core.csproj" />
-  </ItemGroup>
-
 </Project>
