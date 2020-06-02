@@ -160,7 +160,8 @@ namespace Bot.Builder.Community.Adapters.Google.Core
                             }
                         }
                     };
-                    response.ExpectedInputs.First().InputPrompt.RichInitialPrompt.Suggestions = ConvertSuggestedActionsToSuggestionChips(activity)?.ToArray();
+                    response.ExpectedInputs.First().InputPrompt.RichInitialPrompt.Suggestions = ConvertIMAndMessageBackSuggestedActionsToSuggestionChips(activity)?.ToArray();
+                    response.ExpectedInputs.First().InputPrompt.RichInitialPrompt.LinkOutSuggestion = GetLinkOutSuggestionFromActivity(activity);
                     break;
             }
 

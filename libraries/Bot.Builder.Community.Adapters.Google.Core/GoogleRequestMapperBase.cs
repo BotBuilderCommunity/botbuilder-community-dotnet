@@ -202,7 +202,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core
             return query;
         }
 
-        public static List<Suggestion> ConvertSuggestedActionsToSuggestionChips(Activity activity)
+        public static List<Suggestion> ConvertIMAndMessageBackSuggestedActionsToSuggestionChips(Activity activity)
         {
             var suggestions = new List<Suggestion>();
 
@@ -210,11 +210,34 @@ namespace Bot.Builder.Community.Adapters.Google.Core
             {
                 foreach (var suggestion in activity.SuggestedActions.Actions)
                 {
-                    suggestions.Add(new Suggestion { Title = suggestion.Title });
+                    if (suggestion.Type == ActionTypes.ImBack || suggestion.Type == ActionTypes.MessageBack)
+                    {
+                        suggestions.Add(new Suggestion { Title = suggestion.Title });
+                    }
                 }
             }
 
             return suggestions;
+        }
+
+        public static LinkOutSuggestion GetLinkOutSuggestionFromActivity(Activity activity)
+        {
+            var openUrlSuggestedAction = activity.SuggestedActions?.Actions?.Where(a => a.Type == ActionTypes.OpenUrl).FirstOrDefault();
+
+            if(openUrlSuggestedAction == null)
+            {
+                return null;
+            }
+
+            return new LinkOutSuggestion()
+            {
+                DestinationName = openUrlSuggestedAction.Title,
+                OpenUrlAction = new OpenUrlAction()
+                {
+                    Url = openUrlSuggestedAction.Value?.ToString(),
+                    UrlTypeHint = UrlTypeHint.URL_TYPE_HINT_UNSPECIFIED
+                }
+            };
         }
     }
 }
