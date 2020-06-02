@@ -160,19 +160,21 @@ The following two sections describe hwo how to correctly configure your Google A
 
 9. Navigate to the **Fulfilment** tab using the left hand menu.  Use the toggle to enable webhook for your agent.  On this page is also where you will enter the **URL** for your bot's endpoint once you have it (this is how the DialogFlow agent knows to sent incoming requests to your bot). You will need to re-visit this page and update this URL once you have completed configuration of your bot, as detailed later in this article.
 
-![Configure DialogFlow fulfilment](/libraries/Bot.Builder.Community.Adapters.Google/media/dialog-flow-fulfilment.PNG?raw=true)
+![Configure DialogFlow fulfilment](/libraries/Bot.Builder.Community.Adapters.Google/media/dialog-flow-fulfilment.jpg?raw=true)
 
-10. Next you need to configure the Google Assistant integration for your agent, allowing you to call your agent from Google Assistant devices / apps. Select the **Integrations** tab on the left hand menu and then click **Integration settings** under **Google Assistant**.  On the popup dialog, select the 'Launch' intent as the intent to trigger for **Explicit Invocation**.
+10. Here you should also add a header with the name 'Authoization' with a value set to a private secret that you choose. You will use this secret later on when configuring your bot to secure requests to your bot.
+
+11. Next you need to configure the Google Assistant integration for your agent, allowing you to call your agent from Google Assistant devices / apps. Select the **Integrations** tab on the left hand menu and then click **Integration settings** under **Google Assistant**.  On the popup dialog, select the 'Launch' intent as the intent to trigger for **Explicit Invocation**.
 
 ![Configure Google Assistant Integration](/libraries/Bot.Builder.Community.Adapters.Google/media/dialog-flow-configure-assistant-1.PNG?raw=true)
 
-11. You can now also click **MANAGE ASSISTANT APP** to navigate to the console for the Google Action that was created for you automatically when you created your agent. Once there you can click **Decide how your action is invoked**.
+12. You can now also click **MANAGE ASSISTANT APP** to navigate to the console for the Google Action that was created for you automatically when you created your agent. Once there you can click **Decide how your action is invoked**.
 
 ![Configure Google Action Invocaton Link](/libraries/Bot.Builder.Community.Adapters.Google/media/dialog-flow-configure-action-invocation.PNG?raw=true)
 
-12. On the **Invocation** page, you can set the invocation name for your action (which you will need in order to complete configuration of your bot) and also choose other settings such as the voice used. Once you have defined your invocation name and amended any other settings, clikc the **Save** button.
+13. On the **Invocation** page, you can set the invocation name for your action (which you will need in order to complete configuration of your bot) and also choose other settings such as the voice used. Once you have defined your invocation name and amended any other settings, clikc the **Save** button.
 
-13. At this stage, make a note of the Action Project ID, visible in the URL of the console. e.g. https://console.actions.google.com/project/**my-sample-agent-abcde**/overview. You will require this when configuring your bot.
+14. At this stage, make a note of the Action Project ID, visible in the URL of the console. e.g. https://console.actions.google.com/project/**my-sample-agent-abcde**/overview. You will require this when configuring your bot.
 
 ![Configure Google Action Invocaton](/libraries/Bot.Builder.Community.Adapters.Google/media/dialog-flow-configure-action-invocation-2.PNG?raw=true)
 
@@ -260,9 +262,11 @@ You need to set the following properties
 
 * **ActionInvocationName** - replace "YOUR-ACTION-DISPLAY-NAME" with the display name you gave to your action. If using Actions on Google, this will be the name specified in your action package. If using DialogFlow, this is the display name you specified on the **Invocation** details page for your action. 
 
-* **ActionProjectId** - You also need to replace "YOUR-PROJECT-ID" with the ID of your **Actions on Google** project.
+* **ActionProjectId** (only required for Conversations Webhook) - The ID of your **Actions on Google** project.
 
-* **ValidateIncomingRequests** - If set to true, the adapter will use the **ActionProjectId** you have specified to validate that the request being receieved is from your action.  Set this to false for testing purposes if you wish to send request from other sources.
+* **DialogFlowAuthorizationHeader** (only required for DialogFlow) - Set this to the private secret you set within the DialogFlow console when configuring your DialogFlow project.
+
+* **ValidateIncomingRequests** - If set to true, the adapter will use the **ActionProjectId** for Conversations webhook requests, or **DialogFlowAuthorizationHeader** for DialogFlow requests to validate that requests have been receieved from your Google project.
 
 ```csharp
     // Create the Google Adapter
@@ -274,7 +278,8 @@ You need to set the following properties
         return new GoogleAdapterOptions()
         {
             ActionInvocationName = "YOUR-ACTION-DISPLAY-NAME",
-            ActionProjectId = "YOUR-PROJECT-ID"
+            ActionProjectId = "",
+            DialogFlowAuthorizationHeader = "",
             ValidateIncomingRequests = true,
             WebhookType = GoogleWebhookType.Conversation // GoogleWebhookType.DialogFlow
         };

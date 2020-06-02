@@ -38,6 +38,17 @@ namespace Bot.Builder.Community.Samples.Google.Bots
                     await turnContext.SendActivityAsync(activityWithSigninCard, cancellationToken);
                     break;
 
+                case "chips":
+                    var activityWithChips = MessageFactory.Text($"Ok, I included some suggested actions.");
+                    activityWithChips.SuggestedActions = new SuggestedActions(actions: new List<CardAction>
+                    {
+                        new CardAction { Title = "Yes", Type= ActionTypes.ImBack, Value = "Y" },
+                        new CardAction { Title = "No", Type= ActionTypes.ImBack, Value = "N" },
+                        new CardAction { Title = "Click to learn more", Type= ActionTypes.OpenUrl, Value = "http://www.progressive.com" }
+                    });
+                    await turnContext.SendActivityAsync(activityWithChips, cancellationToken);
+                    break;
+
                 case "list":
                     var activityWithListAttachment = MessageFactory.Text($"Ok, I included a list.");
                     var listIntent = GoogleHelperIntentFactory.CreateListIntent(
@@ -123,7 +134,7 @@ namespace Bot.Builder.Community.Samples.Google.Bots
                         },
                         "Table Card Title",
                         "Table card subtitle",
-                        new List<Button>() { new Button() { Title = "Click here", OpenUrlAction = new OpenUrlAction() { Url = "https://www.microsoft.com" }}  });
+                        new List<Button>() { new Button() { Title = "Click here", OpenUrlAction = new OpenUrlAction() { Url = "https://www.microsoft.com" } } });
                     activityWithTableCardAttachment.Attachments.Add(tableCard.ToAttachment());
                     await turnContext.SendActivityAsync(activityWithTableCardAttachment, cancellationToken);
                     break;

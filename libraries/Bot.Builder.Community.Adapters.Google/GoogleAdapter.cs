@@ -93,13 +93,20 @@ namespace Bot.Builder.Community.Adapters.Google
             }
             else
             {
-                var conversationRequest = JsonConvert.DeserializeObject<ConversationRequest>(body);
-                var requestMapper = new ConversationRequestMapper(_requestMapperOptions, _logger);
-                activity = requestMapper.RequestToActivity(conversationRequest);
-                var context = await CreateContextAndRunPipelineAsync(bot, cancellationToken, activity);
-                var response = requestMapper.ActivityToResponse(ProcessOutgoingActivities(context.SentActivities),
-                    conversationRequest);
-                responseJson = JsonConvert.SerializeObject(response, JsonSerializerSettings);
+                try
+                {
+                    var conversationRequest = JsonConvert.DeserializeObject<ConversationRequest>(body);
+                    var requestMapper = new ConversationRequestMapper(_requestMapperOptions, _logger);
+                    activity = requestMapper.RequestToActivity(conversationRequest);
+                    var context = await CreateContextAndRunPipelineAsync(bot, cancellationToken, activity);
+                    var response = requestMapper.ActivityToResponse(ProcessOutgoingActivities(context.SentActivities), conversationRequest);
+                    responseJson = JsonConvert.SerializeObject(response, JsonSerializerSettings);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
             }
 
             httpResponse.ContentType = "application/json;charset=utf-8";
