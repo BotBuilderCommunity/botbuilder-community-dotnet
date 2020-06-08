@@ -1,4 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove('$(MSBuildThisFileDirectory)../', 'Bot.Builder.Community.sln'))\CommonTargets\library.shared.targets" />
+  
   <PropertyGroup>
     <Version Condition=" '$(PackageVersion)' == '' ">4.0.0-local</Version>
     <Version Condition=" '$(PackageVersion)' != '' ">$(PackageVersion)</Version>
@@ -40,8 +42,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-    <PackageReference Include="Microsoft.Bot.Builder" Version="4.9.2" />
-    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.9.2" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="$(Bot_Builder_Version)" />
     <PackageReference Include="Microsoft.Recognizers.Text" Version="1.3.2" />
 		<PackageReference Include="Microsoft.Recognizers.Text.Choice" Version="1.3.2" />
 		<PackageReference Include="Microsoft.Recognizers.Text.DataTypes.TimexExpression" Version="1.3.2" />
