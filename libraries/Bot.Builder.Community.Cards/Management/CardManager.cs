@@ -144,7 +144,7 @@ namespace Bot.Builder.Community.Cards.Management
         // UPDATING METHODS
         // ----------------
 
-        public async Task SaveActivitiesAsync(ITurnContext turnContext, IEnumerable<IMessageActivity> activities, CancellationToken cancellationToken = default)
+        public async Task SaveActivitiesAsync(ITurnContext turnContext, IEnumerable<Activity> activities, CancellationToken cancellationToken = default)
         {
             BotAssert.ContextNotNull(turnContext);
 
@@ -160,7 +160,7 @@ namespace Bot.Builder.Community.Cards.Management
                 if (activity.Id != null)
                 {
                     // Remove any activities with a matching ID so that a duplicate isn't saved when updating
-                    await UnsaveActivityAsync(turnContext, activity.Id, cancellationToken).ConfigureAwait(false); 
+                    await UnsaveActivityAsync(turnContext, activity.Id, cancellationToken).ConfigureAwait(false);
                 }
 
                 if (CardTree.GetIds(activity).Any())
@@ -358,7 +358,7 @@ namespace Bot.Builder.Community.Cards.Management
             await StateAccessor.SetAsync(turnContext, state, cancellationToken).ConfigureAwait(false);
         }
 
-        private async Task UpdateActivityAsync(ITurnContext turnContext, IMessageActivity activity, CancellationToken cancellationToken)
+        private async Task UpdateActivityAsync(ITurnContext turnContext, Activity activity, CancellationToken cancellationToken)
         {
             var ignoreUpdate = turnContext.TurnState.Get<CardManagerTurnState>()?.MiddlewareIgnoreUpdate;
 
@@ -384,7 +384,7 @@ namespace Bot.Builder.Community.Cards.Management
             }
         }
 
-        private async Task DeleteActivityAsync(ITurnContext turnContext, IMessageActivity activity, CancellationToken cancellationToken)
+        private async Task DeleteActivityAsync(ITurnContext turnContext, Activity activity, CancellationToken cancellationToken)
         {
             var ignoreDelete = turnContext.TurnState.Get<CardManagerTurnState>()?.MiddlewareIgnoreDelete;
 
@@ -407,7 +407,7 @@ namespace Bot.Builder.Community.Cards.Management
             await RemoveActivityAsync(turnContext, activity, cancellationToken).ConfigureAwait(false);
         }
 
-        private async Task RemoveActivityAsync(ITurnContext turnContext, IMessageActivity activity, CancellationToken cancellationToken)
+        private async Task RemoveActivityAsync(ITurnContext turnContext, Activity activity, CancellationToken cancellationToken)
         {
             var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
 

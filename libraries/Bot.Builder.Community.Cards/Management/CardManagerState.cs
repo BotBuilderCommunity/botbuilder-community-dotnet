@@ -17,6 +17,6 @@ namespace Bot.Builder.Community.Cards.Management
         public IDictionary<string, ISet<string>> DataIdsByType { get; } = new Dictionary<string, ISet<string>>();
 
         [JsonProperty("savedActivities")]
-        public ISet<IMessageActivity> SavedActivities { get; } = new HashSet<IMessageActivity>();
+        public ISet<Activity> SavedActivities { get; } = new HashSet<Activity>();
     }
 }

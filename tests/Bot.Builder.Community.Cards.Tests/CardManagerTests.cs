@@ -178,7 +178,7 @@ namespace Bot.Builder.Community.Cards.Tests
                 { "foo", "bar" }, // No data ID's
             };
 
-            var activities1 = new List<IMessageActivity>
+            var activities1 = new List<Activity>
             {
                 new Activity
                 {
@@ -211,7 +211,7 @@ namespace Bot.Builder.Community.Cards.Tests
 
             Assert.AreEqual(1, state.SavedActivities.Count, "One activity was saved as multiple activities");
 
-            var activities2 = new List<IMessageActivity>
+            var activities2 = new List<Activity>
             {
                 new Activity(id: "2.0"),
                 new Activity
@@ -310,7 +310,7 @@ namespace Bot.Builder.Community.Cards.Tests
             Assert.IsTrue(state.SavedActivities.Contains(activities2[1]));
             Assert.IsTrue(state.SavedActivities.Contains(activities2[4]));
 
-            var activities3 = new List<IMessageActivity>
+            var activities3 = new List<Activity>
             {
                 new Activity
                 {
@@ -415,7 +415,7 @@ namespace Bot.Builder.Community.Cards.Tests
                 },
             });
 
-            var activity1 = MessageFactory.Carousel(new List<Attachment>
+            var activity1 = (Activity)MessageFactory.Carousel(new List<Attachment>
             {
                 new Attachment
                 {
@@ -606,7 +606,7 @@ namespace Bot.Builder.Community.Cards.Tests
                 },
             });
 
-            var activity2 = MessageFactory.Attachment(new List<Attachment>
+            var activity2 = (Activity)MessageFactory.Attachment(new List<Attachment>
             {
                 new HeroCard(buttons: new List<CardAction>
                 {
