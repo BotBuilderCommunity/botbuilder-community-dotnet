@@ -415,5 +415,8 @@ namespace Bot.Builder.Community.Cards.Management
 
         internal static string GetIdFromActionData(this JObject data, string type = DataIdTypes.Action)
             => data?.GetValue(DataId.GetKey(type)) is JToken id ? id.ToString() : null;
+
+        internal static IEnumerable<DataId> GetIdsFromActionData(this JObject data)
+            => DataId.Types.Select(type => new DataId(type, data.GetIdFromActionData(type))).Where(id => id.Value != null);
     }
 }
