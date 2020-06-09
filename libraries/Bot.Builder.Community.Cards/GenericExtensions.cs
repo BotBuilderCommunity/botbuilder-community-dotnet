@@ -34,7 +34,7 @@ namespace Bot.Builder.Community.Cards
                 return default;
             }
 
-            var state = await (statePropertyAccessor?.GetAsync(turnContext, defaultValueFactory, cancellationToken)).ConfigureAwait(false);
+            var state = await statePropertyAccessor.GetAsync(turnContext, defaultValueFactory, cancellationToken).ConfigureAwait(false);
 
             if (state == null && defaultValueFactory != null)
             {
