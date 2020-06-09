@@ -106,6 +106,8 @@ namespace Bot.Builder.Community.Cards.Management
             var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
 
             state.DataIdsByType.InitializeKey(dataId.Type, new HashSet<string>()).Add(dataId.Value);
+
+            await StateAccessor.SetAsync(turnContext, state, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task ForgetIdAsync(ITurnContext turnContext, DataId dataId, CancellationToken cancellationToken = default)
@@ -123,6 +125,8 @@ namespace Bot.Builder.Community.Cards.Management
             {
                 ids?.Remove(dataId.Value);
             }
+
+            await StateAccessor.SetAsync(turnContext, state, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task ClearTrackedIdsAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
@@ -132,6 +136,8 @@ namespace Bot.Builder.Community.Cards.Management
             var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
 
             state.DataIdsByType.Clear();
+
+            await StateAccessor.SetAsync(turnContext, state, cancellationToken).ConfigureAwait(false);
         }
 
         // ----------------
@@ -162,6 +168,8 @@ namespace Bot.Builder.Community.Cards.Management
                     state.SavedActivities.Add(activity);
                 }
             }
+
+            await StateAccessor.SetAsync(turnContext, state, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task UnsaveActivityAsync(ITurnContext turnContext, string activityId, CancellationToken cancellationToken = default)
@@ -179,6 +187,8 @@ namespace Bot.Builder.Community.Cards.Management
             // We used ToArray because the WhereEnumerableIterator must be copied
             // or else it would throw an exception here
             state.SavedActivities.ExceptWith(activitiesWithMatchingId);
+
+            await StateAccessor.SetAsync(turnContext, state, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task PreserveValuesAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
@@ -344,6 +354,8 @@ namespace Bot.Builder.Community.Cards.Management
                     await UpdateActivityAsync(turnContext, matchedActivity, cancellationToken).ConfigureAwait(false);
                 }
             }
+
+            await StateAccessor.SetAsync(turnContext, state, cancellationToken).ConfigureAwait(false);
         }
 
         private async Task UpdateActivityAsync(ITurnContext turnContext, IMessageActivity activity, CancellationToken cancellationToken)
@@ -400,6 +412,8 @@ namespace Bot.Builder.Community.Cards.Management
             var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
 
             state.SavedActivities.Remove(activity);
+
+            await StateAccessor.SetAsync(turnContext, state, cancellationToken).ConfigureAwait(false);
         }
 
         private async Task<DataMatchResult> GetDataMatchAsync(
