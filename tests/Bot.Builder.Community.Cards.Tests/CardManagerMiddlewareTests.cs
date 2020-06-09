@@ -24,13 +24,13 @@ namespace Bot.Builder.Community.Cards.Tests
 
             await RunTest();
 
-            Assert.IsTrue(shortCircuited);
-            Assert.IsFalse(deleted);
+            Assert.IsTrue(shortCircuited, "Non-updating channel didn't short-circuit");
+            Assert.IsFalse(deleted, "Non-updating channel deleted activity");
 
             await RunTest(middleware => middleware.ChannelsWithMessageUpdates.Add(Channels.Test));
 
-            Assert.IsFalse(shortCircuited);
-            Assert.IsTrue(deleted);
+            Assert.IsFalse(shortCircuited, "Updating channel short-circuited");
+            Assert.IsTrue(deleted, "Updating channel didn't delete activity");
 
             async Task RunTest(Action<CardManagerMiddleware> action = null)
             {
@@ -54,7 +54,6 @@ namespace Bot.Builder.Community.Cards.Tests
 
                 middleware.UpdatingOptions.IdOptions.Set(DataIdTypes.Action, ActionId);
                 middleware.NonUpdatingOptions.IdOptions.Set(DataIdTypes.Action, ActionId);
-
 
                 await new TestFlow(adapter, async (turnContext, cancellationToken) =>
                 {
@@ -98,7 +97,6 @@ namespace Bot.Builder.Community.Cards.Tests
                 // No adaptations take place in the test channel, so we'll use Direct Line as an example
                 adapter.Conversation.ChannelId = Channels.Directline;
 
-
                 await new TestFlow(adapter, async (turnContext, cancellationToken) =>
                 {
                     await turnContext.SendActivityAsync(cardActivity);
@@ -126,7 +124,6 @@ namespace Bot.Builder.Community.Cards.Tests
                 }).ToAttachment());
 
                 middleware.NonUpdatingOptions.AutoApplyIds = autoApplyIds;
-
 
                 await new TestFlow(adapter, async (turnContext, cancellationToken) =>
                 {
@@ -156,7 +153,6 @@ namespace Bot.Builder.Community.Cards.Tests
                 });
 
                 middleware.NonUpdatingOptions.AutoConvertAdaptiveCards = autoConvertAdaptiveCards;
-
 
                 await new TestFlow(adapter, async (turnContext, cancellationToken) =>
                 {
@@ -190,7 +186,6 @@ namespace Bot.Builder.Community.Cards.Tests
 
             middleware.NonUpdatingOptions.IdTrackingStyle = TrackingStyle.TrackDisabled;
             middleware.NonUpdatingOptions.IdOptions.Set(DataIdTypes.Action, ActionId);
-
 
             await new TestFlow(adapter, async (turnContext, cancellationToken) =>
             {
@@ -233,7 +228,6 @@ namespace Bot.Builder.Community.Cards.Tests
                 ResourceResponse response = null;
 
                 middleware.ChannelsWithMessageUpdates.Add(Channels.Test);
-
 
                 await new TestFlow(adapter, async (turnContext, cancellationToken) =>
                 {
@@ -285,7 +279,6 @@ namespace Bot.Builder.Community.Cards.Tests
                 ResourceResponse response = null;
 
                 middleware.ChannelsWithMessageUpdates.Add(Channels.Test);
-
 
                 await new TestFlow(adapter, async (turnContext, cancellationToken) =>
                 {
