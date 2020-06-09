@@ -11,10 +11,10 @@ namespace Cards_Library_Sample.Bots
 {
     internal class CardsLibraryBot : ActivityHandler
     {
-        private const string DemoDisableActions = "Demo: disable actions";
-        private const string DemoDisableCards = "Demo: disable cards";
-        private const string DemoDisableCarousels = "Demo: disable carousels";
-        private const string DemoDisableBatch = "Demo: disable batch";
+        private const string DemoDisableActions = "Disable actions";
+        private const string DemoDisableCards = "Disable cards";
+        private const string DemoDisableCarousels = "Disable carousels";
+        private const string DemoDisableBatch = "Disable batch";
 
         public ConversationState ConversationState { get; }
 
@@ -84,7 +84,7 @@ namespace Cards_Library_Sample.Bots
                     new ThumbnailCard
                     {
                         Title = "Thumbnail Card 1",
-                        Subtitle = "Cards library",
+                        Subtitle = $"Cards library demo: {idType}",
                         Text = "Go ahead and try clicking these buttons to see what gets disabled.",
                         Images = new List<CardImage>
                         {
@@ -95,7 +95,7 @@ namespace Cards_Library_Sample.Bots
                     new ThumbnailCard
                     {
                         Title = "Thumbnail Card 2",
-                        Subtitle = "Cards library",
+                        Subtitle = $"Cards library demo: {idType}",
                         Text = "Try clicking these ones too.",
                         Images = new List<CardImage>
                         {
