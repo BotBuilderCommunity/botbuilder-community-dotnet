@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <Reference Include="Bot.Builder.Community.Cards">
-      <HintPath>..\..\libraries\Bot.Builder.Community.Cards\bin\Release\netstandard2.0\Bot.Builder.Community.Cards.dll</HintPath>
+      <HintPath>..\..\libraries\Bot.Builder.Community.Cards\bin\Debug\netstandard2.0\Bot.Builder.Community.Cards.dll</HintPath>
     </Reference>
   </ItemGroup>
 

@@ -26,7 +26,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alexa Adapter Sample", "sam
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zoom Adapter Sample", "samples\Zoom Adapter Sample\Zoom Adapter Sample.csproj", "{D5F5BFB0-CDEC-4980-9EBB-864724B6B2B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cards Library Sample", "samples\Cards Library Sample\Cards Library Sample.csproj", "{272CCEF9-4DB1-4AC4-9616-CB6E4DDC436F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cards Library Sample", "samples\Cards Library Sample\Cards Library Sample.csproj", "{272CCEF9-4DB1-4AC4-9616-CB6E4DDC436F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
