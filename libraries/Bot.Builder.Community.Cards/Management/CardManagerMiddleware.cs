@@ -140,7 +140,7 @@ namespace Bot.Builder.Community.Cards.Management
                     }
                 }
 
-                if (shouldDelete && incomingIds.Count > 0)
+                if (shouldDelete && incomingIds.Count() > 0)
                 {
                     // If there are multiple ID types in use,
                     // just delete the one that represents the largest scope
