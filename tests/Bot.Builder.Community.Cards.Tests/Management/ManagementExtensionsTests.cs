@@ -11,7 +11,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Bot.Builder.Community.Cards.Tests
+namespace Bot.Builder.Community.Cards.Tests.Management
 {
     [TestClass]
     public class ManagementExtensionsTests
