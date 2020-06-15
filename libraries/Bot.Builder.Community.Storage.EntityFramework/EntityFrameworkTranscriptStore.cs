@@ -88,7 +88,7 @@ namespace Bot.Builder.Community.Storage.EntityFramework
         /// <param name="continuationToken">Continuatuation token to page through results. (Id of last record returned)</param>
         /// <param name="startDate">Earliest time to include.</param>
         /// <returns>PagedResult of activities.</returns>
-        public async Task<PagedResult<IActivity>> GetTranscriptActivitiesAsync(string channelId, string conversationId, string continuationToken = null, DateTimeOffset startDate = default(DateTimeOffset))
+        public Task<PagedResult<IActivity>> GetTranscriptActivitiesAsync(string channelId, string conversationId, string continuationToken = null, DateTimeOffset startDate = default(DateTimeOffset))
         {
             if (string.IsNullOrEmpty(channelId))
             {
@@ -136,7 +136,7 @@ namespace Bot.Builder.Community.Storage.EntityFramework
                 }
             }
 
-            return pagedResult;
+            return Task.FromResult(pagedResult);
         }
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace Bot.Builder.Community.Storage.EntityFramework
         /// <param name="channelId">Channel Id.</param>
         /// <param name="continuationToken">Continuatuation token to page through results.</param>
         /// <returns>A <see cref="Task"/> A task that represents the work queued to execute.</returns>
-        public async Task<PagedResult<TranscriptInfo>> ListTranscriptsAsync(string channelId, string continuationToken = null)
+        public Task<PagedResult<TranscriptInfo>> ListTranscriptsAsync(string channelId, string continuationToken = null)
         {
             if (string.IsNullOrEmpty(channelId))
             {
@@ -195,7 +195,7 @@ namespace Bot.Builder.Community.Storage.EntityFramework
                 }
             }
 
-            return pagedResult;
+            return Task.FromResult(pagedResult);
         }
 
         /// <summary>

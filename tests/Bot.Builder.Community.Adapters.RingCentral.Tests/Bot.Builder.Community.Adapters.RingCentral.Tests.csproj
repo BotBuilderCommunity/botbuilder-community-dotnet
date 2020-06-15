@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -19,17 +18,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="TestData\ActionMessageCreate.json" />
+    <EmbeddedResource Include="TestData\ImplementationInfoRequest.json" />
     <EmbeddedResource Include="TestData\InterventionOpened.json" />
+    <EmbeddedResource Include="TestData\SourceSDKContentImported.json" />
     <EmbeddedResource Include="TestData\UnspecificSourceContentImported.json" />
     <EmbeddedResource Include="TestData\WhatsAppContentImportedNoBody.json" />
     <EmbeddedResource Include="TestData\WhatsAppContentImportedAgentRequest.json" />
     <EmbeddedResource Include="TestData\WhatsAppContentImported.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="TestData\ActionMessageCreate.json" />
-    <EmbeddedResource Include="TestData\SourceSDKContentImported.json" />
-    <EmbeddedResource Include="TestData\ImplementationInfoRequest.json" />
+    <EmbeddedResource Include="TestData\WhatsAppContentReplied.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -45,10 +42,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="TestData\WhatsAppContentReplied.json" />
   </ItemGroup>
 
   <ItemGroup>
