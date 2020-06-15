@@ -26,15 +26,15 @@ namespace Bot.Builder.Community.Adapters.RingCentral.Handoff
 
             if (botRequested)
             {
-                return await Task.FromResult(HandoffTarget.Bot);
+                return await Task.FromResult(HandoffTarget.Bot).ConfigureAwait(false);
             }
 
             if (agentRequested)
             {
-                return await Task.FromResult(HandoffTarget.Agent);
+                return await Task.FromResult(HandoffTarget.Agent).ConfigureAwait(false);
             }
 
-            return await Task.FromResult(HandoffTarget.None);
+            return await Task.FromResult(HandoffTarget.None).ConfigureAwait(false);
         }
     }
 }

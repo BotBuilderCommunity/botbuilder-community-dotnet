@@ -148,7 +148,7 @@ namespace Bot.Builder.Community.Adapters.RingCentral
             _ = request ?? throw new ArgumentNullException(nameof(request));
             _ = response ?? throw new ArgumentNullException(nameof(response));
 
-            var payloadType = await GetTypedRingCentralPayloadAsync(request.Body);
+            var payloadType = await GetTypedRingCentralPayloadAsync(request.Body).ConfigureAwait(false);
 
             switch (payloadType)
             {
@@ -157,14 +157,14 @@ namespace Bot.Builder.Community.Adapters.RingCentral
                         var metadata = ringCentralEngageEvent.Events.FirstOrDefault()?.Resource?.Metadata;
                         if (ringCentralEngageEvent.Events.FirstOrDefault().Type.Equals(RingCentralEventDescription.ContentImported, StringComparison.InvariantCultureIgnoreCase))
                         {
-                            var newMessageActivity = await GetActivityFromRingCentralEventAsync(ringCentralEngageEvent, response);
+                            var newMessageActivity = await GetActivityFromRingCentralEventAsync(ringCentralEngageEvent, response).ConfigureAwait(false);
 
                             if (newMessageActivity == null)
                             {
                                 break;
                             }
 
-                            var handoffRequestStatus = await _handoffRequestRecognizer.RecognizeHandoffRequestAsync(newMessageActivity);
+                            var handoffRequestStatus = await _handoffRequestRecognizer.RecognizeHandoffRequestAsync(newMessageActivity).ConfigureAwait(false);
 
                             // Bot requsted or bot in charge (not agent), return an activity             
                             if (handoffRequestStatus == HandoffTarget.Bot
@@ -193,8 +193,8 @@ namespace Bot.Builder.Community.Adapters.RingCentral
                                         async (ITurnContext turnContext, CancellationToken cancellationToken) =>
                                         {
                                             MicrosoftAppCredentials.TrustServiceUrl(conversationRef.ServiceUrl);
-                                            await turnContext.SendActivityAsync(humanActivity);
-                                        }, default);
+                                            await turnContext.SendActivityAsync(humanActivity).ConfigureAwait(false);
+                                        }, default).ConfigureAwait(false);
 
                                     object res = new
                                     {
@@ -204,7 +204,7 @@ namespace Bot.Builder.Community.Adapters.RingCentral
                                     var rbody = JsonSerializer.Serialize(res);
 
                                     response.StatusCode = (int)HttpStatusCode.OK;
-                                    await response.WriteAsync(rbody);
+                                    await response.WriteAsync(rbody).ConfigureAwait(false);
 
                                     return new Tuple<RingCentralHandledEvent, Activity>(RingCentralHandledEvent.Action, humanActivity);
                                 }
@@ -308,7 +308,7 @@ namespace Bot.Builder.Community.Adapters.RingCentral
 
             // Use RingCentral Client Source SDK as we need to pass the specific actions above
             // to allow an operator to take over the conversations
-            await _ringCentralClient.SendAsync(request);
+            await _ringCentralClient.SendAsync(request).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -337,7 +337,7 @@ namespace Bot.Builder.Community.Adapters.RingCentral
                         body: activity.Text,
                         sourceId: sourceId,
                         _private: 1,
-                        inReplyToId: activity.From.Id);
+                        inReplyToId: activity.From.Id).ConfigureAwait(false);
 
                     return content.Id;
                 }
@@ -395,7 +395,7 @@ namespace Bot.Builder.Community.Adapters.RingCentral
             var threadsApi = GetThreadsApi();
             await threadsApi.CategorizeThreadAsyncWithHttpInfo(
                 thread.Id,
-                new Collection<string>(mergedCategoryIds));
+                new Collection<string>(mergedCategoryIds)).ConfigureAwait(false);
         }
 
         public async Task<rcModels.Thread> GetThreadByIdAsync(string threadId)
@@ -404,7 +404,7 @@ namespace Bot.Builder.Community.Adapters.RingCentral
 
             var threadsApi = GetThreadsApi();
             
-            var thread = await threadsApi.GetThreadAsync(threadId);
+            var thread = await threadsApi.GetThreadAsync(threadId).ConfigureAwait(false);
 
             if (thread == null)
             {
@@ -419,7 +419,7 @@ namespace Bot.Builder.Community.Adapters.RingCentral
         {
             var threadsApi = GetThreadsApi();
 
-            var matchingThreads = await threadsApi.GetAllThreadsAsync($"foreign_id:'{foreignThreadId}'");
+            var matchingThreads = await threadsApi.GetAllThreadsAsync($"foreign_id:'{foreignThreadId}'").ConfigureAwait(false);
             var thread = matchingThreads.Records.FirstOrDefault();
 
             if (thread == null)
@@ -501,7 +501,7 @@ namespace Bot.Builder.Community.Adapters.RingCentral
             var rcResponseBody = JsonSerializer.Serialize(rcResponse);
 
             response.StatusCode = (int)HttpStatusCode.OK;
-            await response.WriteAsync(rcResponseBody);
+            await response.WriteAsync(rcResponseBody).ConfigureAwait(false);
             return ringCentralActivity;
         }
 
@@ -517,7 +517,7 @@ namespace Bot.Builder.Community.Adapters.RingCentral
             _ = payload ?? throw new ArgumentNullException(nameof(payload));
 
             using var ms = new MemoryStream();
-            await payload.CopyToAsync(ms);
+            await payload.CopyToAsync(ms).ConfigureAwait(false);
             ms.Position = 0;
             if (ms.Length == 0)
             {
