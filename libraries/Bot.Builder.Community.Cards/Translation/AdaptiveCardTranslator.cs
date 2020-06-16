@@ -52,12 +52,12 @@ namespace Bot.Builder.Community.Cards.Translation
 
             if (string.IsNullOrEmpty(targetLocale))
             {
-                throw new ArgumentException("message", nameof(targetLocale));
+                throw new ArgumentNullException(nameof(targetLocale));
             }
 
             if (string.IsNullOrEmpty(translatorKey))
             {
-                throw new ArgumentException("message", nameof(translatorKey));
+                throw new ArgumentNullException(nameof(translatorKey));
             }
 
             return await TranslateAsync(
