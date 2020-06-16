@@ -5,7 +5,6 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Bot.Builder.Community.Cards.Management;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -24,26 +23,6 @@ namespace Bot.Builder.Community.Cards.Translation
 
         public static AdaptiveCardTranslatorSettings DefaultSettings => new AdaptiveCardTranslatorSettings
         {
-            IsArrayElementTranslatable = arrayContainer => (arrayContainer as JProperty)?.Name == "inlines",
-            IsValueTranslatable = valueContainer =>
-            {
-                if (valueContainer is null)
-                {
-                    return false;
-                }
-
-                var elementType = valueContainer["type"];
-                var parent = valueContainer.Parent;
-                var grandparent = parent?.Parent;
-
-                // value should be translated in facts, imBack (for MS Teams), and Input.Text,
-                // and ignored in Input.Date and Input.Time and Input.Toggle and Input.ChoiceSet and Input.Choice
-                return (elementType?.Type == JTokenType.String
-                        && elementType.IsOneOf("Input.Text", "imBack"))
-                    || (elementType == null
-                        && (grandparent as JProperty)?.Name == "facts"
-                        && parent.Type == JTokenType.Array);
-            },
             PropertiesToTranslate = new[] { "text", "altText", "fallbackText", "displayText", "title", "placeholder", "data" },
         };
 
@@ -224,7 +203,7 @@ namespace Bot.Builder.Community.Cards.Translation
 
                             // container is assumed to be a JObject because it's the parent of a JProperty in this case
                             if (settings.PropertiesToTranslate?.Contains(propertyName) == true
-                                || (propertyName == "value" && settings.IsValueTranslatable(container as JObject)))
+                                || (propertyName == "value" && IsValueTranslatable(container as JObject)))
                             {
                                 shouldTranslate = true;
                             }
@@ -234,7 +213,7 @@ namespace Bot.Builder.Community.Cards.Translation
                         // If the string is in an array...
                         case JTokenType.Array:
 
-                            if (settings.IsArrayElementTranslatable(container))
+                            if (IsArrayElementTranslatable(container))
                             {
                                 shouldTranslate = true;
                             }
@@ -250,6 +229,28 @@ namespace Bot.Builder.Community.Cards.Translation
             }
 
             return tokens;
+        }
+
+        private static bool IsArrayElementTranslatable(JContainer arrayContainer) => (arrayContainer as JProperty)?.Name == "inlines";
+
+        private static bool IsValueTranslatable(JObject valueContainer)
+        {
+            if (valueContainer is null)
+            {
+                return false;
+            }
+
+            var elementType = valueContainer["type"];
+            var parent = valueContainer.Parent;
+            var grandparent = parent?.Parent;
+
+            // value should be translated in facts, imBack (for MS Teams), and Input.Text,
+            // and ignored in Input.Date and Input.Time and Input.Toggle and Input.ChoiceSet and Input.Choice
+            return (elementType?.Type == JTokenType.String
+                    && elementType.IsOneOf("Input.Text", "imBack"))
+                || (elementType == null
+                    && (grandparent as JProperty)?.Name == "facts"
+                    && parent.Type == JTokenType.Array);
         }
     }
 }
