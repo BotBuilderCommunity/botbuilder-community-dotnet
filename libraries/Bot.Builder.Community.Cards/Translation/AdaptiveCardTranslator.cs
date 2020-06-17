@@ -53,11 +53,6 @@ namespace Bot.Builder.Community.Cards.Translation
             AdaptiveCardTranslatorSettings settings = null,
             CancellationToken cancellationToken = default)
         {
-            if (card == null)
-            {
-                throw new ArgumentNullException(nameof(card));
-            }
-
             if (config is null)
             {
                 throw new ArgumentNullException(nameof(config));
@@ -80,11 +75,6 @@ namespace Bot.Builder.Community.Cards.Translation
             AdaptiveCardTranslatorSettings settings = null,
             CancellationToken cancellationToken = default)
         {
-            if (card == null)
-            {
-                throw new ArgumentNullException(nameof(card));
-            }
-
             if (string.IsNullOrWhiteSpace(subscriptionKey))
             {
                 throw new ArgumentNullException(nameof(subscriptionKey));
@@ -133,11 +123,6 @@ namespace Bot.Builder.Community.Cards.Translation
             AdaptiveCardTranslatorSettings settings = null,
             CancellationToken cancellationToken = default)
         {
-            if (card == null)
-            {
-                throw new ArgumentNullException(nameof(card));
-            }
-
             if (translateOneAsync is null)
             {
                 throw new ArgumentNullException(nameof(translateOneAsync));
@@ -175,6 +160,7 @@ namespace Bot.Builder.Community.Cards.Translation
                     nameof(card));
 
             var tokens = GetTokensToTranslate(cardJObject, settings ?? DefaultSettings);
+
             var translations = await translateManyAsync(
                 tokens.Select(Convert.ToString).ToList(),
                 cancellationToken).ConfigureAwait(false);
@@ -201,11 +187,6 @@ namespace Bot.Builder.Community.Cards.Translation
             T card,
             CancellationToken cancellationToken = default)
         {
-            if (card == null)
-            {
-                throw new ArgumentNullException(nameof(card));
-            }
-
             return await TranslateAsync(
                 card,
                 MicrosoftTranslatorConfig,
@@ -218,11 +199,6 @@ namespace Bot.Builder.Community.Cards.Translation
             string targetLocale,
             CancellationToken cancellationToken = default)
         {
-            if (card == null)
-            {
-                throw new ArgumentNullException(nameof(card));
-            }
-
             return await TranslateAsync(
                 card,
                 targetLocale,
