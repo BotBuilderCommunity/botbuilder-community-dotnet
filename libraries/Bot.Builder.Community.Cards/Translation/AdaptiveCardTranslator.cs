@@ -40,7 +40,17 @@ namespace Bot.Builder.Community.Cards.Translation
 
         public static AdaptiveCardTranslatorSettings DefaultSettings => new AdaptiveCardTranslatorSettings
         {
-            PropertiesToTranslate = new[] { "text", "altText", "fallbackText", "displayText", "title", "placeholder", "data" },
+            PropertiesToTranslate = new[]
+            {
+                "value",
+                "text",
+                "altText",
+                "fallbackText",
+                "displayText",
+                "title",
+                "placeholder",
+                "data",
+            },
         };
 
         public AdaptiveCardTranslatorSettings Settings { get; set; } = DefaultSettings;
@@ -233,7 +243,7 @@ namespace Bot.Builder.Community.Cards.Translation
 
                             // container is assumed to be a JObject because it's the parent of a JProperty in this case
                             if (settings.PropertiesToTranslate?.Contains(propertyName) == true
-                                || (propertyName == "value" && IsValueTranslatable(container as JObject)))
+                                && (propertyName != "value" || IsValueTranslatable(container as JObject)))
                             {
                                 shouldTranslate = true;
                             }
