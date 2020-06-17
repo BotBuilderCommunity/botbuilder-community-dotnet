@@ -13,12 +13,29 @@ namespace Bot.Builder.Community.Cards.Translation
 {
     public class AdaptiveCardTranslator
     {
-        private const string HOST = "https://api.cognitive.microsofttranslator.com";
-        private static readonly Lazy<HttpClient> _lazyClient = new Lazy<HttpClient>();
+        private const string MicrosoftTranslatorKey = "MicrosoftTranslatorKey";
+        private const string MicrosoftTranslatorLocale = "MicrosoftTranslatorLocale";
+        private const string MicrosoftTranslatorEndpoint = "MicrosoftTranslatorEndpoint";
+        private const string DefaultBaseAddress = "https://api.cognitive.microsofttranslator.com";
+
+        private static readonly Lazy<HttpClient> _lazyClient = new Lazy<HttpClient>(() => new HttpClient
+        {
+            BaseAddress = new Uri(DefaultBaseAddress),
+        });
 
         public AdaptiveCardTranslator(IConfiguration configuration)
         {
-            TranslatorKey = configuration[nameof(TranslatorKey)];
+            MicrosoftTranslatorConfig = new MicrosoftTranslatorConfig(
+                configuration[MicrosoftTranslatorKey],
+                configuration[MicrosoftTranslatorLocale]);
+
+            if (configuration[MicrosoftTranslatorEndpoint] is string endpoint)
+            {
+                MicrosoftTranslatorConfig.HttpClient = new HttpClient
+                {
+                    BaseAddress = new Uri(endpoint),
+                };
+            }
         }
 
         public static AdaptiveCardTranslatorSettings DefaultSettings => new AdaptiveCardTranslatorSettings
@@ -28,20 +45,11 @@ namespace Bot.Builder.Community.Cards.Translation
 
         public AdaptiveCardTranslatorSettings Settings { get; set; } = DefaultSettings;
 
-        public string TargetLocale { get; set; }
-
-        /// <summary>
-        /// Sets the key used for the Cognitive Services translator API.
-        /// </summary>
-        /// <value>
-        /// The key used for the Cognitive Services translator API.
-        /// </value>
-        public string TranslatorKey { internal get; set; }
+        public MicrosoftTranslatorConfig MicrosoftTranslatorConfig { get; set; }
 
         public static async Task<T> TranslateAsync<T>(
             T card,
-            string targetLocale,
-            string translatorKey,
+            MicrosoftTranslatorConfig config,
             AdaptiveCardTranslatorSettings settings = null,
             CancellationToken cancellationToken = default)
         {
@@ -50,14 +58,41 @@ namespace Bot.Builder.Community.Cards.Translation
                 throw new ArgumentNullException(nameof(card));
             }
 
-            if (string.IsNullOrEmpty(targetLocale))
+            if (config is null)
             {
-                throw new ArgumentNullException(nameof(targetLocale));
+                throw new ArgumentNullException(nameof(config));
             }
 
-            if (string.IsNullOrEmpty(translatorKey))
+            return await TranslateAsync(
+                card,
+                config.TargetLocale,
+                config.SubscriptionKey,
+                config.HttpClient,
+                settings,
+                cancellationToken).ConfigureAwait(false);
+        }
+
+        public static async Task<T> TranslateAsync<T>(
+            T card,
+            string targetLocale,
+            string subscriptionKey,
+            HttpClient httpClient = null,
+            AdaptiveCardTranslatorSettings settings = null,
+            CancellationToken cancellationToken = default)
+        {
+            if (card == null)
             {
-                throw new ArgumentNullException(nameof(translatorKey));
+                throw new ArgumentNullException(nameof(card));
+            }
+
+            if (string.IsNullOrWhiteSpace(subscriptionKey))
+            {
+                throw new ArgumentNullException(nameof(subscriptionKey));
+            }
+
+            if (string.IsNullOrWhiteSpace(targetLocale))
+            {
+                throw new ArgumentNullException(nameof(targetLocale));
             }
 
             return await TranslateAsync(
@@ -70,13 +105,15 @@ namespace Bot.Builder.Community.Cards.Translation
 
                     using (var request = new HttpRequestMessage())
                     {
-                        var uri = $"{HOST}/translate?api-version=3.0&to={targetLocale}";
+                        var client = httpClient ?? _lazyClient.Value;
+                        var uri = $"/translate?api-version=3.0&to={targetLocale}";
+
                         request.Method = HttpMethod.Post;
                         request.RequestUri = new Uri(uri);
                         request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
-                        request.Headers.Add("Ocp-Apim-Subscription-Key", translatorKey);
+                        request.Headers.Add("Ocp-Apim-Subscription-Key", subscriptionKey);
 
-                        var response = await _lazyClient.Value.SendAsync(request, innerCancellationToken).ConfigureAwait(false);
+                        var response = await client.SendAsync(request, innerCancellationToken).ConfigureAwait(false);
 
                         response.EnsureSuccessStatusCode();
 
@@ -160,27 +197,44 @@ namespace Bot.Builder.Community.Cards.Translation
             return card.FromJObject(cardJObject);
         }
 
-        public async Task<T> TranslateAsync<T>(T card, CancellationToken cancellationToken = default)
+        public async Task<T> TranslateAsync<T>(
+            T card,
+            CancellationToken cancellationToken = default)
         {
             if (card == null)
             {
                 throw new ArgumentNullException(nameof(card));
             }
 
-            return await TranslateAsync(card, TargetLocale, TranslatorKey, Settings, cancellationToken).ConfigureAwait(false);
+            return await TranslateAsync(
+                card,
+                MicrosoftTranslatorConfig,
+                Settings,
+                cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<T> TranslateAsync<T>(T card, string targetLocale, CancellationToken cancellationToken = default)
+        public async Task<T> TranslateAsync<T>(
+            T card,
+            string targetLocale,
+            CancellationToken cancellationToken = default)
         {
             if (card == null)
             {
                 throw new ArgumentNullException(nameof(card));
             }
 
-            return await TranslateAsync(card, targetLocale, TranslatorKey, Settings, cancellationToken).ConfigureAwait(false);
+            return await TranslateAsync(
+                card,
+                targetLocale,
+                MicrosoftTranslatorConfig.SubscriptionKey,
+                MicrosoftTranslatorConfig.HttpClient,
+                Settings,
+                cancellationToken).ConfigureAwait(false);
         }
 
-        private static List<JToken> GetTokensToTranslate(JObject cardJObject, AdaptiveCardTranslatorSettings settings)
+        private static List<JToken> GetTokensToTranslate(
+            JObject cardJObject,
+            AdaptiveCardTranslatorSettings settings)
         {
             var tokens = new List<JToken>();
 
