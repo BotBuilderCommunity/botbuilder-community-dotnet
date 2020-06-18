@@ -9,12 +9,12 @@ namespace Bot.Builder.Community.Cards
     {
         private static readonly string[] InputTypes = new[]
         {
-            "Input.Text",
-            "Input.Number",
-            "Input.Date",
-            "Input.Time",
-            "Input.Toggle",
-            "Input.ChoiceSet"
+            AdaptiveInputTypes.ChoiceSet,
+            AdaptiveInputTypes.Date,
+            AdaptiveInputTypes.Number,
+            AdaptiveInputTypes.Text,
+            AdaptiveInputTypes.Time,
+            AdaptiveInputTypes.Toggle,
         };
 
         internal static IEnumerable<JToken> NonDataDescendants(JContainer container) =>
