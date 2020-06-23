@@ -83,8 +83,8 @@ namespace Cards_Library_Sample.Bots
                 {
                     new ThumbnailCard
                     {
-                        Title = "Thumbnail Card 1",
-                        Subtitle = $"Cards library demo: {idType}",
+                        Title = $"Cards library demo: {idType}",
+                        Subtitle = "Thumbnail Card 1",
                         Text = "Go ahead and try clicking these buttons to see what gets disabled.",
                         Images = new List<CardImage>
                         {
@@ -94,8 +94,8 @@ namespace Cards_Library_Sample.Bots
                     }.ToAttachment(),
                     new ThumbnailCard
                     {
-                        Title = "Thumbnail Card 2",
-                        Subtitle = $"Cards library demo: {idType}",
+                        Title = $"Cards library demo: {idType}",
+                        Subtitle = "Thumbnail Card 2",
                         Text = "Try clicking these ones too.",
                         Images = new List<CardImage>
                         {
@@ -138,7 +138,7 @@ namespace Cards_Library_Sample.Bots
 
             var card = new HeroCard
             {
-                Text = "Please select an option (these options will not be disabled)",
+                Text = "Please select a demo (these options will not be disabled)",
                 Buttons = options.Select(option => new CardAction(ActionTypes.ImBack, option, value: option)).ToList(),
             };
 
