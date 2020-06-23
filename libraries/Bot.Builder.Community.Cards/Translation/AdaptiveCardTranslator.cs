@@ -17,11 +17,12 @@ namespace Bot.Builder.Community.Cards.Translation
         private const string MicrosoftTranslatorKey = "MicrosoftTranslatorKey";
         private const string MicrosoftTranslatorLocale = "MicrosoftTranslatorLocale";
         private const string MicrosoftTranslatorEndpoint = "MicrosoftTranslatorEndpoint";
-        private const string DefaultBaseAddress = "https://api.cognitive.microsofttranslator.com";
 
-        private static readonly Lazy<HttpClient> _lazyClient = new Lazy<HttpClient>(() => new HttpClient
+        private static readonly Uri DefaultBaseAddress = new Uri("https://api.cognitive.microsofttranslator.com");
+
+        private static readonly Lazy<HttpClient> LazyClient = new Lazy<HttpClient>(() => new HttpClient
         {
-            BaseAddress = new Uri(DefaultBaseAddress),
+            BaseAddress = DefaultBaseAddress,
         });
 
         public AdaptiveCardTranslator(IConfiguration configuration)
@@ -39,6 +40,7 @@ namespace Bot.Builder.Community.Cards.Translation
             }
         }
 
+        // TODO: Move AdaptiveCardTranslator.DefaultSettings to AdaptiveCardTranslatorSettings.Default
         public static AdaptiveCardTranslatorSettings DefaultSettings => new AdaptiveCardTranslatorSettings
         {
             PropertiesToTranslate = new[]
@@ -106,11 +108,11 @@ namespace Bot.Builder.Community.Cards.Translation
 
                     using (var request = new HttpRequestMessage())
                     {
-                        var client = httpClient ?? _lazyClient.Value;
-                        var uri = $"/translate?api-version=3.0&to={targetLocale}";
+                        var client = httpClient ?? LazyClient.Value;
+                        var baseUri = client.BaseAddress ?? DefaultBaseAddress;
 
                         request.Method = HttpMethod.Post;
-                        request.RequestUri = new Uri(uri);
+                        request.RequestUri = new Uri(baseUri, $"translate?api-version=3.0&to={targetLocale}");
                         request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
                         request.Headers.Add("Ocp-Apim-Subscription-Key", subscriptionKey);
 
@@ -166,9 +168,20 @@ namespace Bot.Builder.Community.Cards.Translation
                 throw new ArgumentNullException(nameof(translateManyAsync));
             }
 
-            var cardJObject = card.ToJObject(true) ?? throw new ArgumentException(
-                    "The Adaptive Card must be convertible to a JObject.",
+            JObject cardJObject;
+
+            if (card is JObject jObject)
+            {
+                // If the card is already a JObject then we want to make sure
+                // it gets copied instead of modified in place
+                cardJObject = (JObject)jObject.DeepClone();
+            }
+            else
+            {
+                cardJObject = card.ToJObject(true) ?? throw new ArgumentException(
+                    "The Adaptive Card is not an appropriate type or is serialized incorrectly.",
                     nameof(card));
+            }
 
             var tokens = GetTokensToTranslate(cardJObject, settings ?? DefaultSettings);
 

@@ -6,12 +6,10 @@ namespace Bot.Builder.Community.Cards.Translation
     {
         public MicrosoftTranslatorConfig(string subscriptionKey, string targetLocale = null, HttpClient httpClient = null)
         {
-            HttpClient = httpClient;
             SubscriptionKey = subscriptionKey;
             TargetLocale = targetLocale;
+            HttpClient = httpClient;
         }
-
-        public HttpClient HttpClient { get; set; }
 
         /// <summary>
         /// Sets the key used for the Cognitive Services translator API.
@@ -22,5 +20,7 @@ namespace Bot.Builder.Community.Cards.Translation
         public string SubscriptionKey { internal get; set; }
 
         public string TargetLocale { get; set; }
+
+        public HttpClient HttpClient { get; set; }
     }
 }
