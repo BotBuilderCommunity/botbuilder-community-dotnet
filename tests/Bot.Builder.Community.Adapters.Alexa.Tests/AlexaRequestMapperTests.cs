@@ -55,6 +55,127 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
         }
 
         [Fact]
+        public void IntentRequestMappedReturnsLocale()
+        {
+            // arrange
+            var skillRequest = new SkillRequest
+            {
+                Request = new IntentRequest()
+                {
+                    Locale = "en-US",
+                    Intent = new Intent()
+                    {
+                        Slots = new Dictionary<string, Slot>()
+                        {
+                            { "phrase", new Slot() }
+                        }
+                    }
+                },
+                Context = new Context
+                {
+                    System = new AlexaSystem() { Application = new Application(), User = new User() }
+                },
+                Session = new Session()
+                {
+                    User = new User()
+                }
+            };
+
+
+            // act
+            var alexaMapper = new AlexaRequestMapper();
+            var result = alexaMapper.RequestToActivity(skillRequest);
+
+            // assert
+            Assert.Equal("en-US", result.Locale);
+        }
+
+        [Fact]
+        public void LaunchRequestMappedReturnsNull()
+        {
+            // arrange
+            var skillRequest = new SkillRequest
+            {
+                Request = new LaunchRequest() {},
+                Context = new Context
+                {
+                    System = new AlexaSystem() { Application = new Application(), User = new User() }
+                },
+                Session = new Session()
+                {
+                    User = new User()
+                }
+            };
+
+
+            // act
+            var alexaMapper = new AlexaRequestMapper();
+            var result = alexaMapper.RequestToActivity(skillRequest);
+
+            // assert
+            Assert.Null(result.Locale);
+        }
+
+        [Fact]
+        public void IntentRequestMappedReturnsNull()
+        {
+            // arrange
+            var skillRequest = new SkillRequest
+            {
+                Request = new IntentRequest() { Intent = new Intent() 
+                    { 
+                        Slots = new Dictionary<string, Slot>()
+                        {
+                            { "phrase", new Slot() }
+                        }
+                    }
+                },
+                Context = new Context
+                {
+                    System = new AlexaSystem() { Application = new Application(), User = new User() }
+                },
+                Session = new Session()
+                {
+                    User = new User()
+                }
+            };
+
+
+            // act
+            var alexaMapper = new AlexaRequestMapper();
+            var result = alexaMapper.RequestToActivity(skillRequest);
+
+            // assert
+            Assert.Null(result.Locale);
+        }
+
+        [Fact]
+        public void LaunchRequestMappedReturnsLocale()
+        {
+            // arrange
+            var skillRequest = new SkillRequest
+            {
+                Request = new LaunchRequest() {Locale = "en-US"},
+                Context = new Context
+                {
+                    System = new AlexaSystem() {Application = new Application(), User = new User()}
+                },
+                Session = new Session()
+                {
+                    User = new User()
+                }
+            };
+
+
+            // act
+            var alexaMapper = new AlexaRequestMapper();
+            var result = alexaMapper.RequestToActivity(skillRequest);
+
+            // assert
+            Assert.Equal("en-US", result.Locale);
+        }
+
+        [Fact]
         public void MergeActivitiesReturnIdenticalSingleActivityNoSsml()
         {
             const string text = "This is the single activity";
