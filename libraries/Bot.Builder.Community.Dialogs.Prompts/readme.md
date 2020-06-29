@@ -15,8 +15,12 @@ Currently the following Prompts are available;
 | Prompt | Description |
 | ------ | ------ |
 | [Number with Unit](#number-with-unit-prompt) | Prompt a user for Currency, Temperature, Age, Dimension (distance). |
-| [Number with Type](#number-with-Type-prompt) | Prompt a user for Ordinal, Temperature, Percentage,NumberRange,Number |
-| [Phone Number](#Phone-Number-prompt) | Prompt a user for PhoneNumber |
+| [Number with Type](#number-with-Type-prompt) | Prompt a user for Ordinal, Temperature, Percentage,NumberRange,Number. |
+| [Phone Number](#Phone-Number-prompt) | Prompt a user for PhoneNumber. |
+| [SocialMedia](#Social-Medial-prompt) | Prompt a user for find mention,Hashtag. |
+| [Email](#Email-prompt) | Prompt a user for Email. |
+| [Guid](#Guid-prompt) | Prompt a user for Guid. |
+| [InternetProtocol] (#Internet-Type-prompt) | Prompt a user for IpAddress,Url. |
 | [Adaptive Card](#adaptive-card-prompt) | Prompt a user using an Adaptive Card. |
 
 ### Installation
@@ -194,7 +198,7 @@ Below is an example of how you might use this result.
 
 ```
 
-#### Phone Number
+#### Phone Number prompt
 
 The PhoneNumberPrompt will extract a phone number from a message from the user;
 
@@ -221,7 +225,147 @@ For example, if a user enters "my phone number is +91XXXXXXXXX" when you are usi
 
 ```cs
 
-		var phonenumberPromptResult = (string)results.Result;
-		await turnContext.SendActivityAsync(MessageFactory.Text($"Bot received Value: {phonenumberPromptResult}"), cancellationToken);
+	var phonenumberPromptResult = (string)results.Result;
+	await turnContext.SendActivityAsync(MessageFactory.Text($"Bot received Value: {phonenumberPromptResult}"), cancellationToken);
+
+```
+
+#### Social Medial prompt
+
+The SocialMediaPrompt will extract one of the following types based on which SocialMediaPromptType enum value is passed in:
+
+* Mention
+* Hashtag
+
+To use the Prompt, create a new instance of the Prompt, specifying the type of Prompt (e.g. Hashtag) using the second parameter.
+Once you have created the instance of your Prompt, you can add it to your list of dialogs (e.g. within a ComponentDialog).
+
+```cs
+
+		var hashMediaPrompt = new SocialMediaPrompt(nameof(SocialMediaPrompt), SocialMediaPromptType.Hashtag, defaultLocale: Culture.English);
+```
+
+Then, you can call the bot by specifying your PromptOptions and calling PromptAsync.
+
+```cs
+
+		var options = new PromptOptions 
+		{ 
+			Prompt = new Activity { Type = ActivityTypes.Message, Text = "What are some of your favorite trends" } 
+		};
+		await dc.PromptAsync(nameof(SocialMediaPrompt), options, cancellationToken);
+
+```
+
+The Prompt will return a result as string.
+For example, if a user enters "Trends? Does #WM35 count?" when you are using the SocialMediaPrompt prompt type, the resulting Hashtag is "#WM35"
+
+```cs
+
+	var hashResult = (string)results.Result;
+	await turnContext.SendActivityAsync(MessageFactory.Text($"Bot received HashTag: {hashResult}"), cancellationToken);
+
+```
+
+#### Email prompt
+
+The EmailPrompt will extract an email address from a message from the user.
+
+To use the Prompt, create a new instance of the Prompt , Once you have created the instance of your Prompt, you can add it to your list of dialogs (e.g. within a ComponentDialog).
+
+```cs
+
+		var numberPrompt = new EmailPrompt(nameof(EmailPrompt), defaultLocale: Culture.English);
+```
+
+Then, you can call the bot by specifying your PromptOptions and calling PromptAsync.
+
+```cs
+
+		var options = new PromptOptions 
+		{ 
+			Prompt = new Activity { Type = ActivityTypes.Message, Text = "Hey send your email." } 
+		};
+		await dc.PromptAsync(nameof(EmailPrompt), options, cancellationToken);
+
+```
+
+The Prompt will return a result as string.
+For example, if a user enters "my email is bot@botbuilder-community.com" when you are using the Email prompt type, the resulting Email is "bot@botbuilder-community.com"
+
+```cs
+
+	var emailpromptresult = (string)results.Result;
+	await turnContext.SendActivityAsync(MessageFactory.Text($"Bot received Value: {emailpromptresult}"), cancellationToken);
+
+```
+
+#### Guid prompt
+
+The GuidPrompt will extract a GUID from a message from the user.
+
+To use the Prompt, create a new instance of the Prompt , Once you have created the instance of your Prompt, you can add it to your list of dialogs (e.g. within a ComponentDialog).
+
+```cs
+
+		var numberPrompt = new GuidPrompt(nameof(GuidPrompt), defaultLocale: Culture.English);
+```
+
+Then, you can call the bot by specifying your PromptOptions and calling PromptAsync.
+
+```cs
+
+		var options = new PromptOptions 
+		{ 
+			Prompt = new Activity { Type = ActivityTypes.Message, Text = "Send your azure id" } 
+		};
+		await dc.PromptAsync(nameof(GuidPrompt), options, cancellationToken);
+
+```
+
+The Prompt will return a result as string.
+For example, if a user enters "my azure id is 7d7b0205-9411-4a29-89ac-b9cd905886fa" when you are using the Guid prompt type, the resulting Guid is "7d7b0205-9411-4a29-89ac-b9cd905886fa"
+
+```cs
+
+	var guidresult = (string)results.Result;
+	await turnContext.SendActivityAsync(MessageFactory.Text($"Bot received Value: {guidresult}"), cancellationToken);
+
+```
+
+#### Internet-Type-prompt
+
+The InternetTypePrompt will extract one of the following types based on which InternetTypePromptType enum value is passed in:
+
+* IpAddress
+* Url
+
+To use the Prompt, create a new instance of the Prompt, specifying the type of Prompt (e.g. IpAddress) using the second parameter.
+Once you have created the instance of your Prompt, you can add it to your list of dialogs (e.g. within a ComponentDialog).
+
+```cs
+
+		var internetAddressPrompt = new InternetProtocolPrompt(nameof(InternetProtocolPrompt), InternetProtocolPromptType.IpAddress, defaultLocale: Culture.English);
+```
+
+Then, you can call the bot by specifying your PromptOptions and calling PromptAsync.
+
+```cs
+
+		var options = new PromptOptions 
+		{ 
+			Prompt = new Activity { Type = ActivityTypes.Message, Text = "send your pc ip address" } 
+		};
+		await dc.PromptAsync(nameof(SocialMediaPrompt), options, cancellationToken);
+
+```
+
+The Prompt will return a result as string.
+For example, if a user enters "my ip address is 192.0.0.1" when you are using the InternetTypePrompt prompt type, the resulting IpAddress is "192.0.0.1"
+
+```cs
+
+	var internetResult = (string)results.Result;
+	await turnContext.SendActivityAsync(MessageFactory.Text($"Bot received ip address: {internetResult}"), cancellationToken);
 
 ```
