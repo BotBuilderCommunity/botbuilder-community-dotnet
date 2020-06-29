@@ -20,7 +20,7 @@ Currently the following Prompts are available;
 | [SocialMedia](#Social-Medial-prompt) | Prompt a user for find mention,Hashtag. |
 | [Email](#Email-prompt) | Prompt a user for Email. |
 | [Guid](#Guid-prompt) | Prompt a user for Guid. |
-| [Internet with Protocol] (#internet-with-protocol-prompt) | Prompt a user for IpAddress,Url. |
+| [Internet with Protocol](#internet-with-protocol-prompt) | Prompt a user for IpAddress,Url. |
 | [Adaptive Card](#adaptive-card-prompt) | Prompt a user using an Adaptive Card. |
 
 ### Installation
