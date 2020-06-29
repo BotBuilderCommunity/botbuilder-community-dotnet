@@ -15,6 +15,7 @@ Currently the following Prompts are available;
 | Prompt | Description |
 | ------ | ------ |
 | [Number with Unit](#number-with-unit-prompt) | Prompt a user for Currency, Temperature, Age, Dimension (distance). |
+| [Number with Type](#number-with-Type-prompt) | Prompt a user for Ordinal, Temperature, Percentage,NumberRange,Number |
 | [Adaptive Card](#adaptive-card-prompt) | Prompt a user using an Adaptive Card. |
 
 ### Installation
@@ -147,3 +148,47 @@ In a `TextPrompt`, the user response is returned in the `Activity.Text` property
 ```
 
 Because of this, it can be a little difficult to gather user input using an Adaptive Card within a dialog. The `AdaptiveCardPrompt` allows you to do so easily and returns the JSON object user response in `stepContext.Result`.
+
+#### Number with Type Prompt
+
+The Number with Type Prompt allows you to prompt for the following types of number;
+
+* Ordinal
+* Percentage
+* NumberRange
+* Number
+
+Internally the Prompt uses the [Microsoft Text Recognizers](https://github.com/Microsoft/Recognizers-Text/tree/master/.NET) NumberWithType recognizer.
+
+To use the Prompt, create a new instance of the Prompt, specifying the type of Prompt (e.g. Ordinal) using the second parameter.
+Once you have created the instance of your Prompt, you can add it to your list of dialogs (e.g. within a ComponentDialog).
+
+```cs
+
+            var numberPrompt = new NumberWithTypePrompt("OrdinalPrompt", 
+								NumberWithTypePromptType.Ordinal, defaultLocale: Culture.English);
+
+```
+
+Then, you can call the bot by specifying your PromptOptions and calling PromptAsync.
+
+```cs
+
+			var options = new PromptOptions 
+				{ 
+					Prompt = new Activity { Type = ActivityTypes.Message, Text = "Enter a Ordinal number Info." } 
+				};
+            await dc.PromptAsync("OrdinalPrompt", options, cancellationToken);
+
+```
+
+The Prompt will return a NumberWithTypeResult object. This object contains a Value (dynamic) and a Text (string). 
+For example, if a user enters "one millionth" when you are using the Ordinal prompt type, the resulting NumberWithTypeResult object will have Value: "1000000", Text: "one millionth".
+Below is an example of how you might use this result.
+
+```cs
+
+			var OrdinalPromptResult = (NumberWithTypeResult)results.Result;
+			await turnContext.SendActivityAsync(MessageFactory.Text($"Bot received Value: {OrdinalPromptResult.Value}, Text: {OrdinalPromptResult.Text}"), cancellationToken);
+
+```
