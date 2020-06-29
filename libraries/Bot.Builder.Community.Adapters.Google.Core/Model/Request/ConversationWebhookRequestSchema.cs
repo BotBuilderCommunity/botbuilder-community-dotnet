@@ -10,8 +10,14 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Model.Request
         public Surface Surface { get; set; }
         public Input[] Inputs { get; set; }
         public User User { get; set; }
+        public Device Device { get; set; }
         public Conversation Conversation { get; set; }
         public AvailableSurface[] AvailableSurfaces { get; set; }
+    }
+
+    public class Device
+    {
+        public Location Location { get; set; }
     }
 
     public class Surface
