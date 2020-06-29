@@ -1,4 +1,5 @@
 using Bot.Builder.Community.Cards.Management;
+using Bot.Builder.Community.Cards.Translation;
 using Cards_Library_Sample.Bots;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,6 +28,9 @@ namespace Cards_Library_Sample
 
             // Create the card manager. The card manager middleware depends on this.
             services.AddSingleton<CardManager, CardManager<ConversationState>>();
+
+            // Create the Adaptive Card translator
+            services.AddSingleton<AdaptiveCardTranslator>();
 
             // Create the Bot Framework Adapter with middleware.
             services.AddSingleton<IBotFrameworkHttpAdapter, AdapterWithMiddleware>();

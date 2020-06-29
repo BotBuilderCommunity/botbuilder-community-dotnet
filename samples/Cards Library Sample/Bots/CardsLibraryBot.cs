@@ -1,4 +1,6 @@
-﻿using Bot.Builder.Community.Cards.Management;
+﻿using AdaptiveCards;
+using Bot.Builder.Community.Cards.Management;
+using Bot.Builder.Community.Cards.Translation;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json.Linq;
@@ -15,12 +17,16 @@ namespace Cards_Library_Sample.Bots
         private const string DemoDisableCards = "Disable cards";
         private const string DemoDisableCarousels = "Disable carousels";
         private const string DemoDisableBatch = "Disable batch";
+        private const string DemoTranslateCards = "Translate cards";
 
         public ConversationState ConversationState { get; }
 
-        public CardsLibraryBot(ConversationState conversationState)
+        public AdaptiveCardTranslator Translator { get; }
+
+        public CardsLibraryBot(ConversationState conversationState, AdaptiveCardTranslator adaptiveCardTranslator)
         {
             ConversationState = conversationState;
+            Translator = adaptiveCardTranslator;
         }
 
         protected override async Task OnMembersAddedAsync(
@@ -38,9 +44,64 @@ namespace Cards_Library_Sample.Bots
         {
             if (turnContext.GetIncomingActionData() is object incomingData)
             {
-                await turnContext.SendActivityAsync(
-                    $"Thank you for choosing {JObject.FromObject(incomingData)["label"]}!",
-                    cancellationToken: cancellationToken);
+                var jObject = JObject.FromObject(incomingData);
+
+                switch (jObject["behavior"].ToString())
+                {
+                    case "translate":
+
+                        var language = jObject["language"]?.ToString();
+                        var card = CreateAdaptiveCard();
+
+                        if (string.IsNullOrWhiteSpace(Translator.MicrosoftTranslatorConfig.SubscriptionKey))
+                        {
+                            if (string.IsNullOrWhiteSpace(language))
+                            {
+                                language = "Undefined";
+                            }
+
+                            Task<string> translateOne(string text, CancellationToken ct)
+                            {
+                                return Task.FromResult($"{language}: {text}");
+                            }
+
+                            card = await AdaptiveCardTranslator.TranslateAsync(card, translateOne, cancellationToken: cancellationToken);
+
+                            await turnContext.SendActivityAsync("No subscription key was configured, so the card has been modified without a translation.");
+                        }
+                        else
+                        {
+                            if (string.IsNullOrWhiteSpace(language))
+                            {
+                                card = await Translator.TranslateAsync(card, cancellationToken);
+                            }
+                            else
+                            {
+                                card = await Translator.TranslateAsync(card, language, cancellationToken);
+                            }
+                        }
+
+                        // There's no need to convert the card to a JObject
+                        // since the library will do that for us
+                        await turnContext.SendActivityAsync(MessageFactory.Attachment(new Attachment
+                        {
+                            ContentType = AdaptiveCard.ContentType,
+                            Content = card,
+                        }), cancellationToken);
+
+                        break;
+
+                    default:
+
+                        if (jObject["label"] is JToken label)
+                        {
+                            await turnContext.SendActivityAsync(
+                                $"Thank you for choosing {label}!",
+                                cancellationToken: cancellationToken);
+                        }
+
+                        break;
+                }
             }
             else
             {
@@ -58,6 +119,9 @@ namespace Cards_Library_Sample.Bots
                     case DemoDisableBatch:
                         await ShowSampleBatch(turnContext, DataIdTypes.Batch, cancellationToken);
                         break;
+                    case DemoTranslateCards:
+                        await ShowTranslationSample(turnContext, cancellationToken);
+                        break;
                     default:
                         await ShowMenu(turnContext, cancellationToken);
                         break;
@@ -66,6 +130,66 @@ namespace Cards_Library_Sample.Bots
 
             // The card manager will not work if its state is not saved
             await ConversationState.SaveChangesAsync(turnContext, cancellationToken: cancellationToken);
+        }
+
+        private static AdaptiveCard CreateAdaptiveCard() => new AdaptiveCard("1.0")
+        {
+            Body = new List<AdaptiveElement>
+            {
+                new AdaptiveTextBlock
+                {
+                    Text = "Cards library demo",
+                    Size = AdaptiveTextSize.ExtraLarge,
+                    Weight = AdaptiveTextWeight.Bolder,
+                    Wrap = true,
+                },
+                new AdaptiveTextBlock
+                {
+                    Text = "Adaptive Card translation",
+                    Size = AdaptiveTextSize.Large,
+                    Weight = AdaptiveTextWeight.Bolder,
+                    Wrap = true,
+                },
+                new AdaptiveTextBlock
+                {
+                    Text = "Go ahead and try typing a language tag here (example: pt-br)",
+                    Wrap = true,
+                },
+                // TODO: Use a choice set instead of text
+                new AdaptiveTextInput
+                {
+                    Id = "language",
+                },
+                new AdaptiveTextBlock
+                {
+                    Text = "Then click the button to see what happens!",
+                    Wrap = true,
+                },
+            },
+            Actions = new List<AdaptiveAction>
+            {
+                new AdaptiveSubmitAction
+                {
+                    Title = "Translate",
+                    Data = new
+                    {
+                        behavior = "translate",
+                    },
+                }
+            },
+        };
+
+        private async Task ShowTranslationSample(ITurnContext turnContext, CancellationToken cancellationToken)
+        {
+            var card = CreateAdaptiveCard();
+
+            // There's no need to convert the card to a JObject
+            // since the library will do that for us
+            await turnContext.SendActivityAsync(MessageFactory.Attachment(new Attachment
+            {
+                ContentType = AdaptiveCard.ContentType,
+                Content = card,
+            }), cancellationToken);
         }
 
         private async Task ShowSampleBatch(ITurnContext turnContext, string idType, CancellationToken cancellationToken = default)
@@ -134,6 +258,7 @@ namespace Cards_Library_Sample.Bots
                 DemoDisableCards,
                 DemoDisableCarousels,
                 DemoDisableBatch,
+                DemoTranslateCards,
             };
 
             var card = new HeroCard
