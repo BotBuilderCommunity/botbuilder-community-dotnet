@@ -17,7 +17,7 @@ namespace Bot.Builder.Community.Cards.Translation
         /// <value>
         /// The key used for the Cognitive Services translator API.
         /// </value>
-        public string SubscriptionKey { internal get; set; }
+        public string SubscriptionKey { get; set; }
 
         public string TargetLocale { get; set; }
 
