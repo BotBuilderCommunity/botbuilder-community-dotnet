@@ -108,45 +108,49 @@ namespace Bot.Builder.Community.Cards.Management
             {
                 var incomingIds = data.GetIdsFromActionData();
 
-                if (isTracking)
+                // Actions should not be disabled if they have no data ID's
+                if (incomingIds.Count() > 0)
                 {
-                    // Whether we should proceed by default depends on the ID-tracking style
-                    shouldProceed = options.IdTrackingStyle == TrackingStyle.TrackDisabled;
-
-                    var state = await Manager.GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
-
-                    foreach (var incomingId in incomingIds)
+                    if (isTracking)
                     {
-                        state.DataIdsByType.TryGetValue(incomingId.Type, out var trackedSet);
+                        // Whether we should proceed by default depends on the ID-tracking style
+                        shouldProceed = options.IdTrackingStyle == TrackingStyle.TrackDisabled;
 
-                        var setContainsId = trackedSet?.Contains(incomingId.Value) == true;
+                        var state = await Manager.GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
 
-                        if (setContainsId)
+                        foreach (var incomingId in incomingIds)
                         {
-                            // Proceed if the presence of the ID indicates that the ID is enabled (opt-in logic),
-                            // short-circuit if the presence of the ID indicates that the ID is disabled (opt-out logic)
-                            shouldProceed = options.IdTrackingStyle == TrackingStyle.TrackEnabled;
-                        }
+                            state.DataIdsByType.TryGetValue(incomingId.Type, out var trackedSet);
 
-                        if (options.AutoDisableOnAction)
-                        {
-                            // This might disable an already-disabled ID but that's okay
-                            await Manager.DisableIdAsync(
-                                turnContext,
-                                incomingId,
-                                options.IdTrackingStyle,
-                                cancellationToken).ConfigureAwait(false);
+                            var setContainsId = trackedSet?.Contains(incomingId.Value) == true;
+
+                            if (setContainsId)
+                            {
+                                // Proceed if the presence of the ID indicates that the ID is enabled (opt-in logic),
+                                // short-circuit if the presence of the ID indicates that the ID is disabled (opt-out logic)
+                                shouldProceed = options.IdTrackingStyle == TrackingStyle.TrackEnabled;
+                            }
+
+                            if (options.AutoDisableOnAction)
+                            {
+                                // This might disable an already-disabled ID but that's okay
+                                await Manager.DisableIdAsync(
+                                    turnContext,
+                                    incomingId,
+                                    options.IdTrackingStyle,
+                                    cancellationToken).ConfigureAwait(false);
+                            }
                         }
                     }
-                }
 
-                if (shouldDelete && incomingIds.Count() > 0)
-                {
-                    // If there are multiple ID types in use,
-                    // just delete the one that represents the largest scope
-                    var type = DataId.Types.ElementAtOrDefault(incomingIds.Max(id => DataId.Types.IndexOf(id.Type)));
+                    if (shouldDelete)
+                    {
+                        // If there are multiple ID types in use,
+                        // just delete the one that represents the largest scope
+                        var type = DataId.Types.ElementAtOrDefault(incomingIds.Max(id => DataId.Types.IndexOf(id.Type)));
 
-                    await Manager.DeleteActionSourceAsync(turnContext, type, cancellationToken).ConfigureAwait(false);
+                        await Manager.DeleteActionSourceAsync(turnContext, type, cancellationToken).ConfigureAwait(false);
+                    }
                 }
             }
 
