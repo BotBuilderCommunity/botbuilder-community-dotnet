@@ -16,6 +16,7 @@ Currently the following Prompts are available;
 | ------ | ------ |
 | [Number with Unit](#number-with-unit-prompt) | Prompt a user for Currency, Temperature, Age, Dimension (distance). |
 | [Number with Type](#number-with-Type-prompt) | Prompt a user for Ordinal, Temperature, Percentage,NumberRange,Number |
+| [Phone Number](#Phone-Number-prompt) | Prompt a user for PhoneNumber |
 | [Adaptive Card](#adaptive-card-prompt) | Prompt a user using an Adaptive Card. |
 
 ### Installation
@@ -165,8 +166,8 @@ Once you have created the instance of your Prompt, you can add it to your list o
 
 ```cs
 
-            var numberPrompt = new NumberWithTypePrompt("OrdinalPrompt", 
-								NumberWithTypePromptType.Ordinal, defaultLocale: Culture.English);
+		var numberPrompt = new NumberWithTypePrompt("OrdinalPrompt", 
+							NumberWithTypePromptType.Ordinal, defaultLocale: Culture.English);
 
 ```
 
@@ -174,11 +175,11 @@ Then, you can call the bot by specifying your PromptOptions and calling PromptAs
 
 ```cs
 
-			var options = new PromptOptions 
-				{ 
-					Prompt = new Activity { Type = ActivityTypes.Message, Text = "Enter a Ordinal number Info." } 
-				};
-            await dc.PromptAsync("OrdinalPrompt", options, cancellationToken);
+		var options = new PromptOptions 
+			{ 
+				Prompt = new Activity { Type = ActivityTypes.Message, Text = "Enter a Ordinal number Info." } 
+			};
+		await dc.PromptAsync("OrdinalPrompt", options, cancellationToken);
 
 ```
 
@@ -188,7 +189,39 @@ Below is an example of how you might use this result.
 
 ```cs
 
-			var OrdinalPromptResult = (NumberWithTypeResult)results.Result;
-			await turnContext.SendActivityAsync(MessageFactory.Text($"Bot received Value: {OrdinalPromptResult.Value}, Text: {OrdinalPromptResult.Text}"), cancellationToken);
+		var OrdinalPromptResult = (NumberWithTypeResult)results.Result;
+		await turnContext.SendActivityAsync(MessageFactory.Text($"Bot received Value: {OrdinalPromptResult.Value}, Text: {OrdinalPromptResult.Text}"), cancellationToken);
+
+```
+
+#### Phone Number
+
+The PhoneNumberPrompt will extract a phone number from a message from the user;
+
+To use the Prompt, create a new instance of the Prompt , Once you have created the instance of your Prompt, you can add it to your list of dialogs (e.g. within a ComponentDialog).
+```cs
+
+		var numberPrompt = new PhoneNumberPrompt(nameof(PhoneNumberPrompt), defaultLocale: Culture.English);
+```
+
+Then, you can call the bot by specifying your PromptOptions and calling PromptAsync.
+
+```cs
+
+		var options = new PromptOptions 
+		{ 
+			Prompt = new Activity { Type = ActivityTypes.Message, Text = "Hey send your phone number." } 
+		};
+		await dc.PromptAsync(nameof(PhoneNumberPrompt), options, cancellationToken);
+
+```
+
+The Prompt will return a result as string.
+For example, if a user enters "my phone number is +91XXXXXXXXX" when you are using the PhoneNumber prompt type, the resulting phonenumber is "+91XXXXXXXXX"
+
+```cs
+
+		var phonenumberPromptResult = (string)results.Result;
+		await turnContext.SendActivityAsync(MessageFactory.Text($"Bot received Value: {phonenumberPromptResult}"), cancellationToken);
 
 ```
