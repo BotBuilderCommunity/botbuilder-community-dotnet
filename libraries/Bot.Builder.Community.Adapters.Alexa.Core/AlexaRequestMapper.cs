@@ -232,7 +232,6 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
             var activity = Activity.CreateMessageActivity() as Activity;
             activity = SetGeneralActivityProperties(activity, skillRequest);
             activity.Text = intentRequest.Intent.Slots[_options.DefaultIntentSlotName].Value;
-            activity.Locale = intentRequest.Locale;
             return activity;
         }
 
@@ -296,6 +295,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
             activity.Conversation = new ConversationAccount(isGroup: false, id: skillRequest.Session?.SessionId ?? skillRequest.Request.RequestId);
             activity.Timestamp = skillRequest.Request.Timestamp.ToUniversalTime();
             activity.ChannelData = skillRequest;
+            activity.Locale = skillRequest.Request.Locale;
 
             return activity;
         }
