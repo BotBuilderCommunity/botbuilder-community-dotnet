@@ -20,7 +20,7 @@ Currently the following Prompts are available;
 | [SocialMedia](#Social-Medial-prompt) | Prompt a user for find mention,Hashtag. |
 | [Email](#Email-prompt) | Prompt a user for Email. |
 | [Guid](#Guid-prompt) | Prompt a user for Guid. |
-| [Internet with Protocol](#internet-with-protocol-prompt) | Prompt a user for IpAddress,Url. |
+| [InternetProtocol](#internet-protocol-prompt) | Prompt a user for IpAddress,Url. |
 | [Adaptive Card](#adaptive-card-prompt) | Prompt a user using an Adaptive Card. |
 
 ### Installation
@@ -333,7 +333,7 @@ For example, if a user enters "my azure id is 7d7b0205-9411-4a29-89ac-b9cd905886
 
 ```
 
-#### Internet with Protocol Prompt
+#### Internet Protocol Prompt
 
 The InternetTypePrompt will extract one of the following types based on which InternetTypePromptType enum value is passed in:
 
