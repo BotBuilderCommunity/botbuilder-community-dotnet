@@ -193,8 +193,8 @@ Below is an example of how you might use this result.
 
 ```cs
 
-		var OrdinalPromptResult = (NumberWithTypeResult)results.Result;
-		await turnContext.SendActivityAsync(MessageFactory.Text($"Bot received Value: {OrdinalPromptResult.Value}, Text: {OrdinalPromptResult.Text}"), cancellationToken);
+	var OrdinalPromptResult = (NumberWithTypeResult)results.Result;
+	await turnContext.SendActivityAsync(MessageFactory.Text($"Bot received Value: {OrdinalPromptResult.Value}, Text: {OrdinalPromptResult.Text}"), cancellationToken);
 
 ```
 
@@ -242,7 +242,7 @@ Once you have created the instance of your Prompt, you can add it to your list o
 
 ```cs
 
-		var hashMediaPrompt = new SocialMediaPrompt(nameof(SocialMediaPrompt), SocialMediaPromptType.Hashtag, defaultLocale: Culture.English);
+	var hashMediaPrompt = new SocialMediaPrompt(nameof(SocialMediaPrompt), SocialMediaPromptType.Hashtag, defaultLocale: Culture.English);
 ```
 
 Then, you can call the bot by specifying your PromptOptions and calling PromptAsync.
@@ -275,7 +275,7 @@ To use the Prompt, create a new instance of the Prompt , Once you have created t
 
 ```cs
 
-		var numberPrompt = new EmailPrompt(nameof(EmailPrompt), defaultLocale: Culture.English);
+	var numberPrompt = new EmailPrompt(nameof(EmailPrompt), defaultLocale: Culture.English);
 ```
 
 Then, you can call the bot by specifying your PromptOptions and calling PromptAsync.
@@ -333,7 +333,7 @@ For example, if a user enters "my azure id is 7d7b0205-9411-4a29-89ac-b9cd905886
 
 ```
 
-#### Internet-Type-prompt
+#### Internet Type prompt
 
 The InternetTypePrompt will extract one of the following types based on which InternetTypePromptType enum value is passed in:
 
@@ -345,7 +345,7 @@ Once you have created the instance of your Prompt, you can add it to your list o
 
 ```cs
 
-		var internetAddressPrompt = new InternetProtocolPrompt(nameof(InternetProtocolPrompt), InternetProtocolPromptType.IpAddress, defaultLocale: Culture.English);
+	var internetAddressPrompt = new InternetProtocolPrompt(nameof(InternetProtocolPrompt), InternetProtocolPromptType.IpAddress, defaultLocale: Culture.English);
 ```
 
 Then, you can call the bot by specifying your PromptOptions and calling PromptAsync.
