@@ -191,6 +191,7 @@ namespace Bot.Builder.Community.Cards.Management
             await StateAccessor.SetAsync(turnContext, state, cancellationToken).ConfigureAwait(false);
         }
 
+        // TODO: Incorporate value preservation into other updates made to Adaptive Cards
         public async Task PreserveValuesAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
         {
             BotAssert.ContextNotNull(turnContext);

@@ -21,6 +21,7 @@ namespace Bot.Builder.Community.Cards.Management
 
         public IList<string> ChannelsWithMessageUpdates { get; } = new List<string> { Channels.Msteams, Channels.Skype, Channels.Slack, Channels.Telegram };
 
+        // TODO: Combine UpdatingOptions and NonUpdatingOptions into one property
         public CardManagerMiddlewareOptions UpdatingOptions { get; set; } = GetDefaultUpdatingOptions();
 
         public CardManagerMiddlewareOptions NonUpdatingOptions { get; set; } = GetDefaultNonUpdatingOptions();

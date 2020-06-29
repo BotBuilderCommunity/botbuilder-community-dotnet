@@ -6,6 +6,7 @@ namespace Bot.Builder.Community.Cards.Management
 {
     /// <summary>
     /// This class defines ID types with progressively increasing scope sizes.
+    /// // TODO: Change name to DataIdScopes
     /// </summary>
     public static class DataIdTypes
     {
