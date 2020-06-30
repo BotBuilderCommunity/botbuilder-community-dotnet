@@ -15,7 +15,7 @@ namespace Bot.Builder.Community.Recognizers.Fuzzy
             _fuzzyRecognizerOptions = fuzzyRecognizerOptions ?? new FuzzyRecognizerOptions();
         }
 
-        public async Task<FuzzyRecognizerResult> Recognize(IEnumerable<string> choices, string utterance)
+        public Task<FuzzyRecognizerResult> Recognize(IEnumerable<string> choices, string utterance)
         {
             if (string.IsNullOrEmpty(utterance))
                 throw new ArgumentNullException(nameof(utterance));
@@ -23,7 +23,7 @@ namespace Bot.Builder.Community.Recognizers.Fuzzy
             if (choices == null)
                 throw new ArgumentNullException(nameof(choices));
 
-            return FindAllMatches(choices, utterance, _fuzzyRecognizerOptions);
+            return Task.FromResult(FindAllMatches(choices, utterance, _fuzzyRecognizerOptions));
         }
 
         private static FuzzyRecognizerResult FindAllMatches(IEnumerable<string> choices, string utterance, FuzzyRecognizerOptions options)
