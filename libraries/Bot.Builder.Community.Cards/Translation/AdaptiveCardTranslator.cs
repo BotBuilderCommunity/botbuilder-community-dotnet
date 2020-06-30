@@ -31,7 +31,9 @@ namespace Bot.Builder.Community.Cards.Translation
                 configuration[MicrosoftTranslatorKey],
                 configuration[MicrosoftTranslatorLocale]);
 
-            if (configuration[MicrosoftTranslatorEndpoint] is string endpoint)
+            var endpoint = configuration[MicrosoftTranslatorEndpoint];
+
+            if (!string.IsNullOrWhiteSpace(endpoint))
             {
                 MicrosoftTranslatorConfig.HttpClient = new HttpClient
                 {
