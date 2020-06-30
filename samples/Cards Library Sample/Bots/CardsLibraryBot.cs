@@ -46,7 +46,7 @@ namespace Cards_Library_Sample.Bots
             {
                 var jObject = JObject.FromObject(incomingData);
 
-                switch (jObject["behavior"].ToString())
+                switch (jObject["behavior"]?.ToString())
                 {
                     case "translate":
 
