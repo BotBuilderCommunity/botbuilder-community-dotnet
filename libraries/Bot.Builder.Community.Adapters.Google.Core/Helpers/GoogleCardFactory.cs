@@ -18,7 +18,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Helpers
                     Title = title,
                     Subtitle = subtitle,
                     FormattedText = formattedText,
-                    Buttons = buttons.ToArray(),
+                    Buttons = buttons?.ToArray(),
                     Image = image,
                     Display = displayOptions
                 }

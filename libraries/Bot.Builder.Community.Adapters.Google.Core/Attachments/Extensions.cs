@@ -22,6 +22,8 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Attachments
                     return CreateAttachment(mediaResponse, GoogleAttachmentContentTypes.MediaResponse);
                 case BasicCard basicCard:
                     return CreateAttachment(basicCard, GoogleAttachmentContentTypes.BasicCard);
+                case BrowsingCarousel browsingCarousel:
+                    return CreateAttachment(browsingCarousel, GoogleAttachmentContentTypes.BrowsingCarousel);
                 default:
                     return null;
             }
@@ -43,6 +45,8 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Attachments
                     return CreateAttachment(permissionsIntent, GoogleAttachmentContentTypes.PermissionsIntent);
                 case PlaceLocationIntent placeLocationIntent:
                     return CreateAttachment(placeLocationIntent, GoogleAttachmentContentTypes.PlaceLocationIntent);
+                case NewSurfaceIntent newSurfaceIntent:
+                    return CreateAttachment(newSurfaceIntent, GoogleAttachmentContentTypes.NewSurfaceIntent);
                 default:
                     return null;
             }
