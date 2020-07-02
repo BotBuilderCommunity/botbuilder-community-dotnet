@@ -16,5 +16,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Attachments
         public const string CarouselIntent = "application/vhd.bfgoogle.carousel";
         public const string DateTimeIntent = "application/vhd.bfgoogle.datetime";
         public const string ConfirmationIntent = "application/vhd.bfgoogle.confirm";
+        public const string NewSurfaceIntent = "application/vhd.bfgoogle.newsurface";
+        public const string BrowsingCarousel = "application/vhd.bfgoogle.browsingcarousel";
     }
 }

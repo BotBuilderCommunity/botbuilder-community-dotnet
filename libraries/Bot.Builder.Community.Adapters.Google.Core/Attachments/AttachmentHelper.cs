@@ -41,6 +41,9 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Attachments
                     case GoogleAttachmentContentTypes.TableCard:
                         Convert<TableCard>(attachment);
                         break;
+                    case GoogleAttachmentContentTypes.BrowsingCarousel:
+                        Convert<BrowsingCarousel>(attachment);
+                        break;
                     case GoogleAttachmentContentTypes.CarouselIntent:
                         Convert<CarouselIntent>(attachment);
                         break;
@@ -58,6 +61,12 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Attachments
                         break;
                     case GoogleAttachmentContentTypes.ConfirmationIntent:
                         Convert<ConfirmationIntent>(attachment);
+                        break;
+                    case GoogleAttachmentContentTypes.NewSurfaceIntent:
+                        Convert<NewSurfaceIntent>(attachment);
+                        break;
+                    case GoogleAttachmentContentTypes.SigninIntent:
+                        Convert<SigninIntent>(attachment);
                         break;
                 }
             }
