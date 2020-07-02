@@ -613,13 +613,13 @@ namespace Bot.Builder.Community.Dialogs.FormFlow.Advanced
             return prompter.Prompt(state, _field, MessageActivityHelper.GetSanitizedTextInput(input));
         }
 
-        public async Task<StepResult> ProcessAsync(DialogContext context, T state, FormState form, IMessageActivity input, IEnumerable<TermMatch> matches)
+        public Task<StepResult> ProcessAsync(DialogContext context, T state, FormState form, IMessageActivity input, IEnumerable<TermMatch> matches)
         {
             var value = matches.First().Value;
             form.StepState = null;
             form.SetPhase((bool)value ? StepPhase.Completed : StepPhase.Ready);
             var next = _field.Next(value, state);
-            return new StepResult(true, next, feedback: null, prompt: null);
+            return Task.FromResult(new StepResult(true, next, feedback: null, prompt: null));
         }
 
         public async Task<bool> DefineAsync(T state)
@@ -759,7 +759,7 @@ namespace Bot.Builder.Community.Dialogs.FormFlow.Advanced
             return new Prompter<T>(template, _field.Form, _field.Prompt.Recognizer, _fields).Prompt(state, _field, MessageActivityHelper.GetSanitizedTextInput(input));
         }
 
-        public async Task<StepResult> ProcessAsync(DialogContext context, T state, FormState form, IMessageActivity input, IEnumerable<TermMatch> matches)
+        public Task<StepResult> ProcessAsync(DialogContext context, T state, FormState form, IMessageActivity input, IEnumerable<TermMatch> matches)
         {
             NextStep next;
             form.Next = null;
@@ -772,7 +772,7 @@ namespace Bot.Builder.Community.Dialogs.FormFlow.Advanced
             {
                 next = new NextStep(new string[] { (string)val });
             }
-            return new StepResult(true, next, feedback: null, prompt: null);
+            return Task.FromResult(new StepResult(true, next, feedback: null, prompt: null));
         }
 
         public Task<bool> DefineAsync(T state)
