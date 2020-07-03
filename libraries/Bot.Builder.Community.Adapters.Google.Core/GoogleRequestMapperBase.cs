@@ -144,6 +144,18 @@ namespace Bot.Builder.Community.Adapters.Google.Core
                 };
             }
 
+            if (activity?.Attachments?.FirstOrDefault(a =>
+                    a.ContentType == GoogleAttachmentContentTypes.NewSurfaceIntent) != null)
+            {
+                return new ProcessHelperIntentAttachmentsResult()
+                {
+                    Intent = ProcessSystemIntentAttachment<NewSurfaceIntent>(
+                        GoogleAttachmentContentTypes.NewSurfaceIntent,
+                        activity),
+                    AllowAdditionalInputPrompt = true
+                };
+            }
+
             return new ProcessHelperIntentAttachmentsResult()
             {
                 Intent = null
@@ -181,6 +193,10 @@ namespace Bot.Builder.Community.Adapters.Google.Core
             var mediaItem = ProcessResponseItemAttachment<MediaResponse>(GoogleAttachmentContentTypes.MediaResponse, activity);
             if (mediaItem != null)
                 responseItems.Add(mediaItem);
+
+            var browsingCarousel = ProcessResponseItemAttachment<BrowsingCarousel>(GoogleAttachmentContentTypes.BrowsingCarousel, activity);
+            if (browsingCarousel != null)
+                responseItems.Add(browsingCarousel);
 
             return responseItems;
         }
