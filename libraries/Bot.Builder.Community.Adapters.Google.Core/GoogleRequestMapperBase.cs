@@ -182,6 +182,20 @@ namespace Bot.Builder.Community.Adapters.Google.Core
 
             activity.ConvertAttachmentContent();
 
+            var heroCardAttachment = activity.Attachments?.FirstOrDefault(att => att.ContentType == "application/vnd.microsoft.card.hero");
+            if (heroCardAttachment?.Content is HeroCard heroCard)
+            {
+                var imageUrl = heroCard.Images?.FirstOrDefault()?.Url;
+                var buttons = new List<Button>();
+                if (heroCard.Buttons != null)
+                {
+                    buttons.AddRange(heroCard.Buttons.Select(heroCardButton => new Button() {Title = heroCardButton.Title, OpenUrlAction = new OpenUrlAction() {Url = heroCardButton.Value?.ToString()}}));
+                }
+
+                var basicCard = GoogleCardFactory.CreateBasicCard(heroCard.Title, heroCard.Subtitle, heroCard.Text, buttons, imageUrl != null ? new Image { Url = imageUrl } : null);
+                responseItems.Add(basicCard);
+            }
+            
             var basicCardItem = ProcessResponseItemAttachment<BasicCard>(GoogleAttachmentContentTypes.BasicCard, activity);
             if (basicCardItem != null)
                 responseItems.Add(basicCardItem);
