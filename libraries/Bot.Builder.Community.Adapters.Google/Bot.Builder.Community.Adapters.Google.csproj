@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Bot.Builder.Community.Adapter.ActionsSDK.Core\Bot.Builder.Community.Adapter.ActionsSDK.Core.csproj" />
     <ProjectReference Include="..\Bot.Builder.Community.Adapters.Google.Core\Bot.Builder.Community.Adapters.Google.Core.csproj" />
   </ItemGroup>
 

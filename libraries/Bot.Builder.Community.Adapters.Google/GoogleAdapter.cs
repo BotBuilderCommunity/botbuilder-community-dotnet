@@ -6,6 +6,8 @@ using System.Security.Authentication;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Bot.Builder.Community.Adapter.ActionsSDK.Core;
+using Bot.Builder.Community.Adapter.ActionsSDK.Core.Model;
 using Bot.Builder.Community.Adapters.Google.Core;
 using Bot.Builder.Community.Adapters.Google.Core.Helpers;
 using Bot.Builder.Community.Adapters.Google.Core.Model.Request;
@@ -32,12 +34,19 @@ namespace Bot.Builder.Community.Adapters.Google
         private readonly GoogleAdapterOptions _options;
         private readonly ILogger _logger;
         private readonly GoogleRequestMapperOptions _requestMapperOptions;
+        private readonly ActionsSdkRequestMapperOptions _actionsSdkRequestMapperOptions;
 
         public GoogleAdapter(GoogleAdapterOptions options = null, ILogger logger = null)
         {
             _options = options ?? new GoogleAdapterOptions();
             _logger = logger ?? NullLogger.Instance;
+
             _requestMapperOptions = new GoogleRequestMapperOptions()
+            {
+                ActionInvocationName = _options.ActionInvocationName,
+                ShouldEndSessionByDefault = _options.ShouldEndSessionByDefault
+            };
+            _actionsSdkRequestMapperOptions = new ActionsSdkRequestMapperOptions()
             {
                 ActionInvocationName = _options.ActionInvocationName,
                 ShouldEndSessionByDefault = _options.ShouldEndSessionByDefault
@@ -61,7 +70,7 @@ namespace Bot.Builder.Community.Adapters.Google
                 throw new ArgumentNullException(nameof(bot));
             }
 
-            if (_options.ValidateIncomingRequests)
+            if (_options.ValidateIncomingRequests  && _options.WebhookType != GoogleWebhookType.ActionsSdk)
             {
                 if (!GoogleAuthorizationHandler.ValidateActionProjectId(
                     httpRequest.Headers["Authorization"],
@@ -80,35 +89,37 @@ namespace Bot.Builder.Community.Adapters.Google
             }
 
             Activity activity;
-            string responseJson;
+            string responseJson = string.Empty;
+            TurnContextEx context;
 
-            if (_options.WebhookType == GoogleWebhookType.DialogFlow)
+            switch (_options.WebhookType)
             {
-                var dialogFlowRequest = JsonConvert.DeserializeObject<DialogFlowRequest>(body);
-                var requestMapper = new DialogFlowRequestMapper(_requestMapperOptions, _logger);
-                activity = requestMapper.RequestToActivity(dialogFlowRequest);
-                var context = await CreateContextAndRunPipelineAsync(bot, cancellationToken, activity);
-                var response = requestMapper.ActivityToResponse(ProcessOutgoingActivities(context.SentActivities), dialogFlowRequest);
-                responseJson = JsonConvert.SerializeObject(response, JsonSerializerSettings);
-            }
-            else
-            {
-                try
-                {
+                case GoogleWebhookType.DialogFlow:
+                    var dialogFlowRequest = JsonConvert.DeserializeObject<DialogFlowRequest>(body);
+                    var dialogFlowRequestMapper = new DialogFlowRequestMapper(_requestMapperOptions, _logger);
+                    activity = dialogFlowRequestMapper.RequestToActivity(dialogFlowRequest);
+                    context = await CreateContextAndRunPipelineAsync(bot, cancellationToken, activity);
+                    var dialogFlowResponse = dialogFlowRequestMapper.ActivityToResponse(ProcessOutgoingActivities(context.SentActivities), dialogFlowRequest);
+                    responseJson = JsonConvert.SerializeObject(dialogFlowResponse, JsonSerializerSettings);
+                    break;
+                case GoogleWebhookType.Conversation:
                     var conversationRequest = JsonConvert.DeserializeObject<ConversationRequest>(body);
                     var requestMapper = new ConversationRequestMapper(_requestMapperOptions, _logger);
                     activity = requestMapper.RequestToActivity(conversationRequest);
-                    var context = await CreateContextAndRunPipelineAsync(bot, cancellationToken, activity);
-                    var response = requestMapper.ActivityToResponse(ProcessOutgoingActivities(context.SentActivities), conversationRequest);
-                    responseJson = JsonConvert.SerializeObject(response, JsonSerializerSettings);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    throw;
-                }
+                    context = await CreateContextAndRunPipelineAsync(bot, cancellationToken, activity);
+                    var conversationWebhookResponse = requestMapper.ActivityToResponse(ProcessOutgoingActivities(context.SentActivities), conversationRequest);
+                    responseJson = JsonConvert.SerializeObject(conversationWebhookResponse, JsonSerializerSettings);
+                    break;
+                case GoogleWebhookType.ActionsSdk:
+                    var actionsSdkRequest = JsonConvert.DeserializeObject<ActionsSdkRequest>(body);
+                    var actionsSdkRequestMapper = new ActionsSdkRequestMapper(_actionsSdkRequestMapperOptions, _logger);
+                    activity = actionsSdkRequestMapper.RequestToActivity(actionsSdkRequest);
+                    context = await CreateContextAndRunPipelineAsync(bot, cancellationToken, activity);
+                    var actionsSdkResponse = actionsSdkRequestMapper.ActivityToResponse(ProcessOutgoingActivities(context.SentActivities), actionsSdkRequest);
+                    responseJson = JsonConvert.SerializeObject(actionsSdkResponse, JsonSerializerSettings);
+                    break;
             }
-
+            
             httpResponse.ContentType = "application/json;charset=utf-8";
             httpResponse.StatusCode = (int)HttpStatusCode.OK;
 

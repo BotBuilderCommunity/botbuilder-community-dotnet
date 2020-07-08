@@ -1,12 +1,12 @@
-﻿using Bot.Builder.Community.Adapters.Google.Core.Model.Response;
-using Microsoft.Bot.Builder;
+﻿using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Bot.Builder.Community.Adapters.Google.Core.Attachments;
-using Bot.Builder.Community.Adapters.Google.Core.Helpers;
-using Bot.Builder.Community.Adapters.Google.Core.Model.SystemIntents;
+using Bot.Builder.Community.Adapter.ActionsSDK.Core.Attachments;
+using Bot.Builder.Community.Adapter.ActionsSDK.Core.Helpers;
+using Bot.Builder.Community.Adapter.ActionsSDK.Core.Model;
+using Bot.Builder.Community.Adapter.ActionsSDK.Core.Model.ContentItems;
 
 namespace Bot.Builder.Community.Samples.Google.Bots
 {
@@ -26,13 +26,17 @@ namespace Bot.Builder.Community.Samples.Google.Bots
 
                 case "card":
                     var activityWithCard = MessageFactory.Text($"Ok, I included a simple card.");
-                    var basicCard = GoogleCardFactory.CreateBasicCard("card title", "card subtitle", "some text for the content");
-                    activityWithCard.Attachments.Add(basicCard.ToAttachment());
+                    var card = ContentItemFactory.CreateCard("card title", "card subtitle", new Link()
+                    {
+                        Name = "Microsoft", 
+                        Open = new OpenUrl() { Url = "https://www.microsoft.com"}
+                    });
+                    activityWithCard.Attachments.Add(card.ToAttachment());
                     await turnContext.SendActivityAsync(activityWithCard, cancellationToken);
                     break;
 
                 case "signin":
-                    var activityWithSigninCard = MessageFactory.Text($"Ok, I included a simple card.");
+                    var activityWithSigninCard = MessageFactory.Text($"Ok, I included a signin card.");
                     var signinCard = new SigninCard();
                     activityWithSigninCard.Attachments.Add(signinCard.ToAttachment());
                     await turnContext.SendActivityAsync(activityWithSigninCard, cancellationToken);
@@ -50,92 +54,227 @@ namespace Bot.Builder.Community.Samples.Google.Bots
                     break;
 
                 case "list":
-                    var activityWithListAttachment = MessageFactory.Text($"Ok, I included a list.");
-                    var listIntent = GoogleHelperIntentFactory.CreateListIntent(
-                            "List title",
-                            new List<OptionItem>()
+                    var activityWithListAttachment = MessageFactory.Text($"This is a list.");
+                    var list = new ListContentItem()
+                    {
+                        Title = "InternalList title",
+                        Subtitle = "InternalList subtitle",
+                        Items = new List<ListItem>()
+                        {
+                            new ListItem()
                             {
-                                new OptionItem(
-                                    "List item 1",
-                                    "This is the List Item 1 description",
-                                    new OptionItemInfo() {Key = "Item1", Synonyms = new List<string>() {"first"}},
-                                    new OptionItemImage()
+                                Key = "ITEM_1",
+                                Synonyms = new List<string>() { "Item 1", "First item" },
+                                Item = new EntryDisplay()
+                                {
+                                    Title = "Item #1",
+                                    Description = "Description of Item #1",
+                                    Image = new Image()
                                     {
-                                        AccessibilityText = "Item 1 image",
-                                        Url = "https://storage.googleapis.com/actionsresources/logo_assistant_2x_64dp.png"
-                                    }),
-                                new OptionItem(
-                                    "List item 2",
-                                    "This is the List Item 2 description",
-                                    new OptionItemInfo() {Key = "Item2", Synonyms = new List<string>() {"second"}},
-                                    new OptionItemImage()
+                                        Url = "https://developers.google.com/assistant/assistant_96.png",
+                                        Height = 0,
+                                        Width = 0,
+                                        Alt = "Google Assistant logo"
+                                    }
+                                }
+                            },
+                            new ListItem()
+                            {
+                                Key = "ITEM_2",
+                                Synonyms = new List<string>() { "Item 2", "Second item" },
+                                Item = new EntryDisplay()
+                                {
+                                    Title = "Item #2",
+                                    Description = "Description of Item #2",
+                                    Image = new Image()
                                     {
-                                        AccessibilityText = "Item 2 image",
-                                        Url = "https://storage.googleapis.com/actionsresources/logo_assistant_2x_64dp.png"
-                                    })
-                            });
-                    activityWithListAttachment.Attachments.Add(listIntent.ToAttachment());
+                                        Url = "https://developers.google.com/assistant/assistant_96.png",
+                                        Height = 0,
+                                        Width = 0,
+                                        Alt = "Google Assistant logo"
+                                    }
+                                }
+                            },
+                            new ListItem()
+                            {
+                                Key = "ITEM_3",
+                                Synonyms = new List<string>() { "Item 3", "Third item" },
+                                Item = new EntryDisplay()
+                                {
+                                    Title = "Item #3",
+                                    Description = "Description of Item #3",
+                                    Image = new Image()
+                                    {
+                                        Url = "https://developers.google.com/assistant/assistant_96.png",
+                                        Height = 0,
+                                        Width = 0,
+                                        Alt = "Google Assistant logo"
+                                    }
+                                }
+                            },
+                            new ListItem()
+                            {
+                                Key = "ITEM_4",
+                                Synonyms = new List<string>() { "Item 4", "Fourth item" },
+                                Item = new EntryDisplay()
+                                {
+                                    Title = "Item #4",
+                                    Description = "Description of Item #4",
+                                    Image = new Image()
+                                    {
+                                        Url = "https://developers.google.com/assistant/assistant_96.png",
+                                        Height = 0,
+                                        Width = 0,
+                                        Alt = "Google Assistant logo"
+                                    }
+                                }
+                            },
+                        }
+                    };
+                    activityWithListAttachment.Attachments.Add(list.ToAttachment());
                     await turnContext.SendActivityAsync(activityWithListAttachment, cancellationToken);
                     break;
 
-                case "carousel":
-                    var activityWithCarouselAttachment = MessageFactory.Text($"Ok, I included a carousel.");
-                    var carouselIntent = GoogleHelperIntentFactory.CreateCarouselIntent(
-                        "List title",
-                        new List<OptionItem>()
+                case "collection":
+                    var activityWithCollectionAttachment = MessageFactory.Text($"Ok, I included a collection.");
+                    var collection = new CollectionContentItem()
+                    {
+                        Title = "InternalList title",
+                        Subtitle = "InternalList subtitle",
+                        Items = new List<CollectionItem>()
                         {
-                            new OptionItem(
-                                "List item 1",
-                                "This is the List Item 1 description",
-                                new OptionItemInfo() {Key = "Item1", Synonyms = new List<string>() {"first"}},
-                                new OptionItemImage()
+                            new CollectionItem()
+                            {
+                                Key = "ITEM_1",
+                                Synonyms = new List<string>() { "Item 1", "First item" },
+                                Item = new EntryDisplay()
                                 {
-                                    AccessibilityText = "Item 1 image",
-                                    Url = "https://storage.googleapis.com/actionsresources/logo_assistant_2x_64dp.png"
-                                }),
-                            new OptionItem(
-                                "List item 2",
-                                "This is the List Item 2 description",
-                                new OptionItemInfo() {Key = "Item2", Synonyms = new List<string>() {"second"}},
-                                new OptionItemImage()
-                                {
-                                    AccessibilityText = "Item 2 image",
-                                    Url = "https://storage.googleapis.com/actionsresources/logo_assistant_2x_64dp.png"
-                                })
-                        });
-                    activityWithCarouselAttachment.Attachments.Add(carouselIntent.ToAttachment());
-                    await turnContext.SendActivityAsync(activityWithCarouselAttachment, cancellationToken);
-                    break;
-
-                case "table":
-                    var activityWithTableCardAttachment = MessageFactory.Text($"Ok, I included a table card.");
-                    var tableCard = GoogleCardFactory.CreateTableCard(
-                        new List<ColumnProperties>()
-                        {
-                            new ColumnProperties() { Header = "Column 1" },
-                            new ColumnProperties() { Header = "Column 2" }
-                        },
-                        new List<Row>()
-                        {
-                            new Row() {
-                                Cells = new List<Cell>
-                                {
-                                    new Cell { Text = "Row 1, Item 1" },
-                                    new Cell { Text = "Row 1, Item 2" }
+                                    Title = "Item #1",
+                                    Description = "Description of Item #1",
+                                    Image = new Image()
+                                    {
+                                        Url = "https://developers.google.com/assistant/assistant_96.png",
+                                        Height = 0,
+                                        Width = 0,
+                                        Alt = "Google Assistant logo"
+                                    }
                                 }
                             },
-                            new Row() {
-                                Cells = new List<Cell>
+                            new CollectionItem()
+                            {
+                                Key = "ITEM_2",
+                                Synonyms = new List<string>() { "Item 2", "Second item" },
+                                Item = new EntryDisplay()
                                 {
-                                    new Cell { Text = "Row 2, Item 1" },
-                                    new Cell { Text = "Row 2, Item 2" }
+                                    Title = "Item #2",
+                                    Description = "Description of Item #2",
+                                    Image = new Image()
+                                    {
+                                        Url = "https://developers.google.com/assistant/assistant_96.png",
+                                        Height = 0,
+                                        Width = 0,
+                                        Alt = "Google Assistant logo"
+                                    }
+                                }
+                            },
+                            new CollectionItem()
+                            {
+                                Key = "ITEM_3",
+                                Synonyms = new List<string>() { "Item 3", "Third item" },
+                                Item = new EntryDisplay()
+                                {
+                                    Title = "Item #3",
+                                    Description = "Description of Item #3",
+                                    Image = new Image()
+                                    {
+                                        Url = "https://developers.google.com/assistant/assistant_96.png",
+                                        Height = 0,
+                                        Width = 0,
+                                        Alt = "Google Assistant logo"
+                                    }
+                                }
+                            },
+                            new CollectionItem()
+                            {
+                                Key = "ITEM_4",
+                                Synonyms = new List<string>() { "Item 4", "Fourth item" },
+                                Item = new EntryDisplay()
+                                {
+                                    Title = "Item #4",
+                                    Description = "Description of Item #4",
+                                    Image = new Image()
+                                    {
+                                        Url = "https://developers.google.com/assistant/assistant_96.png",
+                                        Height = 0,
+                                        Width = 0,
+                                        Alt = "Google Assistant logo"
+                                    }
+                                }
+                            },
+                        }
+                    };
+                    activityWithCollectionAttachment.Attachments.Add(collection.ToAttachment());
+                    await turnContext.SendActivityAsync(activityWithCollectionAttachment, cancellationToken);
+                    break;
+
+                //case "carousel":
+                //    var activityWithCarouselAttachment = MessageFactory.Text($"Ok, I included a carousel.");
+                //    var carouselIntent = GoogleHelperIntentFactory.CreateCarouselIntent(
+                //        "InternalList title",
+                //        new InternalList<OptionItem>()
+                //        {
+                //            new OptionItem(
+                //                "InternalList item 1",
+                //                "This is the InternalList Item 1 description",
+                //                new OptionItemInfo() {Key = "Item1", Synonyms = new InternalList<string>() {"first"}},
+                //                new OptionItemImage()
+                //                {
+                //                    AccessibilityText = "Item 1 image",
+                //                    Url = "https://storage.googleapis.com/actionsresources/logo_assistant_2x_64dp.png"
+                //                }),
+                //            new OptionItem(
+                //                "InternalList item 2",
+                //                "This is the InternalList Item 2 description",
+                //                new OptionItemInfo() {Key = "Item2", Synonyms = new InternalList<string>() {"second"}},
+                //                new OptionItemImage()
+                //                {
+                //                    AccessibilityText = "Item 2 image",
+                //                    Url = "https://storage.googleapis.com/actionsresources/logo_assistant_2x_64dp.png"
+                //                })
+                //        });
+                //    activityWithCarouselAttachment.Attachments.Add(carouselIntent.ToAttachment());
+                //    await turnContext.SendActivityAsync(activityWithCarouselAttachment, cancellationToken);
+                //    break;
+
+                case "table":
+                    var activityWithTableCardAttachment = MessageFactory.Text($"Ok, I included a table.");
+                    var table = ContentItemFactory.CreateTable(
+                        new List<TableColumn>()
+                        {
+                            new TableColumn() { Header = "Column 1" },
+                            new TableColumn() { Header = "Column 2" }
+                        },
+                        new List<TableRow>()
+                        {
+                            new TableRow() {
+                                Cells = new List<TableCell>
+                                {
+                                    new TableCell { Text = "Row 1, Item 1" },
+                                    new TableCell { Text = "Row 1, Item 2" }
+                                }
+                            },
+                            new TableRow() {
+                                Cells = new List<TableCell>
+                                {
+                                    new TableCell { Text = "Row 2, Item 1" },
+                                    new TableCell { Text = "Row 2, Item 2" }
                                 }
                             }
                         },
                         "Table Card Title",
                         "Table card subtitle",
-                        new List<Button>() { new Button() { Title = "Click here", OpenUrlAction = new OpenUrlAction() { Url = "https://www.microsoft.com" } } });
-                    activityWithTableCardAttachment.Attachments.Add(tableCard.ToAttachment());
+                        new Link { Name = "Microsoft", Open = new OpenUrl() { Url = "https://www.microsoft.com" } });
+                    activityWithTableCardAttachment.Attachments.Add(table.ToAttachment());
                     await turnContext.SendActivityAsync(activityWithTableCardAttachment, cancellationToken);
                     break;
             }
