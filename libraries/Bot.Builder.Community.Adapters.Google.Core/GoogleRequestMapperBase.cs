@@ -274,13 +274,23 @@ namespace Bot.Builder.Community.Adapters.Google.Core
         {
             var imageUrl = heroCard.Images?.FirstOrDefault()?.Url;
             var buttons = new List<Button>();
-            if (heroCard.Buttons != null)
+
+            var heroCardButtons = heroCard.Buttons
+                .Where(b => b.Type == ActionTypes.OpenUrl && b.Value is string buttonValue && buttonValue.StartsWith("http", StringComparison.InvariantCultureIgnoreCase))
+                .ToList();
+
+            if (heroCardButtons?.FirstOrDefault() is CardAction button)
             {
-                buttons.AddRange(heroCard.Buttons.Select(heroCardButton => new Button()
+                if (heroCardButtons.Count() > 1)
                 {
-                    Title = heroCardButton.Title,
-                    OpenUrlAction = new OpenUrlAction() { Url = heroCardButton.Value?.ToString() }
-                }));
+                    Logger.LogWarning("Only one 'button' is supported on Google basic card, using first button");
+                }
+
+                buttons.Add(new Button()
+                {
+                    Title = button.Title,
+                    OpenUrlAction = new OpenUrlAction() { Url = button.Value as string }
+                });
             }
 
             return GoogleCardFactory.CreateBasicCard(heroCard.Title, heroCard.Subtitle, heroCard.Text,  buttons, imageUrl != null ? new Image { Url = imageUrl } : null);
