@@ -182,35 +182,35 @@ namespace Bot.Builder.Community.Adapters.Google.Core
 
             activity.ConvertAttachmentContent();
 
-            var heroCardAttachment = activity.Attachments?.FirstOrDefault(att => att.ContentType == "application/vnd.microsoft.card.hero");
-            if (heroCardAttachment?.Content is HeroCard heroCard)
+            var bfCard = activity.Attachments?.FirstOrDefault(a => a.ContentType == HeroCard.ContentType);
+
+            if (bfCard != null)
             {
-                var imageUrl = heroCard.Images?.FirstOrDefault()?.Url;
-                var buttons = new List<Button>();
-                if (heroCard.Buttons != null)
+                switch (bfCard.Content)
                 {
-                    buttons.AddRange(heroCard.Buttons.Select(heroCardButton => new Button() {Title = heroCardButton.Title, OpenUrlAction = new OpenUrlAction() {Url = heroCardButton.Value?.ToString()}}));
+                    case HeroCard heroCard:
+                        responseItems.Add(CreateGoogleCardFromHeroCard(heroCard));
+                        break;
                 }
-
-                var basicCard = GoogleCardFactory.CreateBasicCard(heroCard.Title, heroCard.Subtitle, heroCard.Text, buttons, imageUrl != null ? new Image { Url = imageUrl } : null);
-                responseItems.Add(basicCard);
             }
-            
-            var basicCardItem = ProcessResponseItemAttachment<BasicCard>(GoogleAttachmentContentTypes.BasicCard, activity);
-            if (basicCardItem != null)
-                responseItems.Add(basicCardItem);
+            else
+            {
+                var basicCardItem = ProcessResponseItemAttachment<BasicCard>(GoogleAttachmentContentTypes.BasicCard, activity);
+                if (basicCardItem != null)
+                    responseItems.Add(basicCardItem);
 
-            var tableCardItem = ProcessResponseItemAttachment<TableCard>(GoogleAttachmentContentTypes.TableCard, activity);
-            if (tableCardItem != null)
-                responseItems.Add(tableCardItem);
+                var tableCardItem = ProcessResponseItemAttachment<TableCard>(GoogleAttachmentContentTypes.TableCard, activity);
+                if (tableCardItem != null)
+                    responseItems.Add(tableCardItem);
 
-            var mediaItem = ProcessResponseItemAttachment<MediaResponse>(GoogleAttachmentContentTypes.MediaResponse, activity);
-            if (mediaItem != null)
-                responseItems.Add(mediaItem);
+                var mediaItem = ProcessResponseItemAttachment<MediaResponse>(GoogleAttachmentContentTypes.MediaResponse, activity);
+                if (mediaItem != null)
+                    responseItems.Add(mediaItem);
 
-            var browsingCarousel = ProcessResponseItemAttachment<BrowsingCarousel>(GoogleAttachmentContentTypes.BrowsingCarousel, activity);
-            if (browsingCarousel != null)
-                responseItems.Add(browsingCarousel);
+                var browsingCarousel = ProcessResponseItemAttachment<BrowsingCarousel>(GoogleAttachmentContentTypes.BrowsingCarousel, activity);
+                if (browsingCarousel != null)
+                    responseItems.Add(browsingCarousel);
+            }
 
             return responseItems;
         }
@@ -268,6 +268,22 @@ namespace Bot.Builder.Community.Adapters.Google.Core
                     UrlTypeHint = UrlTypeHint.URL_TYPE_HINT_UNSPECIFIED
                 }
             };
+        }
+
+        private BasicCard CreateGoogleCardFromHeroCard(HeroCard heroCard)
+        {
+            var imageUrl = heroCard.Images?.FirstOrDefault()?.Url;
+            var buttons = new List<Button>();
+            if (heroCard.Buttons != null)
+            {
+                buttons.AddRange(heroCard.Buttons.Select(heroCardButton => new Button()
+                {
+                    Title = heroCardButton.Title,
+                    OpenUrlAction = new OpenUrlAction() { Url = heroCardButton.Value?.ToString() }
+                }));
+            }
+
+            return GoogleCardFactory.CreateBasicCard(heroCard.Title, heroCard.Subtitle, heroCard.Text,  buttons, imageUrl != null ? new Image { Url = imageUrl } : null);
         }
     }
 }
