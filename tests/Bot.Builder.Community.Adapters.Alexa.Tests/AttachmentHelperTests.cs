@@ -5,7 +5,6 @@ using Alexa.NET.Response;
 using Alexa.NET.Response.Directive;
 using Alexa.NET.Response.Directive.Templates.Types;
 using Bot.Builder.Community.Adapters.Alexa.Core.Attachments;
-using Bot.Builder.Community.Adapters.Alexa.Core.Helpers;
 using Bot.Builder.Community.Adapters.Alexa.Tests.Helpers;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json.Linq;

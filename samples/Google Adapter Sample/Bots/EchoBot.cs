@@ -3,10 +3,10 @@ using Microsoft.Bot.Schema;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Bot.Builder.Community.Adapter.ActionsSDK.Core.Attachments;
-using Bot.Builder.Community.Adapter.ActionsSDK.Core.Helpers;
-using Bot.Builder.Community.Adapter.ActionsSDK.Core.Model;
-using Bot.Builder.Community.Adapter.ActionsSDK.Core.Model.ContentItems;
+using Bot.Builder.Community.Adapters.ActionsSDK.Core.Attachments;
+using Bot.Builder.Community.Adapters.ActionsSDK.Core.Helpers;
+using Bot.Builder.Community.Adapters.ActionsSDK.Core.Model;
+using Bot.Builder.Community.Adapters.ActionsSDK.Core.Model.ContentItems;
 
 namespace Bot.Builder.Community.Samples.Google.Bots
 {

@@ -26,4 +26,14 @@
     <PackageReference Include="Microsoft.Bot.Builder" Version="$(Bot_Builder_Version)" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <ProjectReference Include="..\Bot.Builder.Community.Adapters.Shared\Bot.Builder.Community.Adapters.Shared.csproj" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="Helpers\" />
+  </ItemGroup>
+
 </Project>

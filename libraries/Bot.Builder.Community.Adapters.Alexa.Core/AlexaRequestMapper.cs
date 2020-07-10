@@ -8,7 +8,7 @@ using Alexa.NET.Request;
 using Alexa.NET.Request.Type;
 using Alexa.NET.Response;
 using Bot.Builder.Community.Adapters.Alexa.Core.Attachments;
-using Bot.Builder.Community.Adapters.Alexa.Core.Helpers;
+using Bot.Builder.Community.Adapters.Shared;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -348,7 +348,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
             }
             else if (textFormat.Equals(TextFormatTypes.Markdown, StringComparison.Ordinal))
             {
-                plainText = AlexaMarkdownToPlaintextRenderer.Render(text);
+                plainText = MarkdownToPlaintextRenderer.Render(text);
             }
             else // xml format or other unknown and unsupported format.
             {

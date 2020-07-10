@@ -9,6 +9,7 @@ using Bot.Builder.Community.Adapters.Google.Core.Model;
 using Bot.Builder.Community.Adapters.Google.Core.Model.Request;
 using Bot.Builder.Community.Adapters.Google.Core.Model.Response;
 using Bot.Builder.Community.Adapters.Google.Core.Model.SystemIntents;
+using Bot.Builder.Community.Adapters.Shared;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -45,7 +46,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core
 
         public static Activity MergeActivities(IList<Activity> activities)
         {
-            return MappingHelper.MergeActivities(activities);
+            return ActivityMappingHelper.MergeActivities(activities);
         }
 
         public ProcessHelperIntentAttachmentsResult ProcessHelperIntentAttachments(Activity activity)
