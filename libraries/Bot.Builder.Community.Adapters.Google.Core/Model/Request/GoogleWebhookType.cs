@@ -3,7 +3,6 @@
     public enum GoogleWebhookType
     {
         DialogFlow,
-        Conversation,
-        ActionsSdk
+        Conversation
     }
 }

@@ -32,11 +32,11 @@ namespace Bot.Builder.Community.Samples.Google
             {
                 return new GoogleAdapterOptions()
                 {
-                    ActionInvocationName = "new helper",
-                    ActionProjectId = "new-action-e43a1",
+                    ActionInvocationName = "adapter helper",
+                    ActionProjectId = "",
                     ShouldEndSessionByDefault = false,
                     ValidateIncomingRequests = true,
-                    WebhookType = GoogleWebhookType.ActionsSdk
+                    WebhookType = GoogleWebhookType.Conversation
                 };
             });
 
