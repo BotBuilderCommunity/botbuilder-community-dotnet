@@ -8,7 +8,7 @@ using Bot.Builder.Community.Adapters.ActionsSDK.Core.Helpers;
 using Bot.Builder.Community.Adapters.ActionsSDK.Core.Model;
 using Bot.Builder.Community.Adapters.ActionsSDK.Core.Model.ContentItems;
 
-namespace Bot.Builder.Community.Samples.Google.Bots
+namespace Bot.Builder.Community.Samples.ActionsSdk.Bots
 {
     public class EchoBot : ActivityHandler
     {
@@ -39,7 +39,7 @@ namespace Bot.Builder.Community.Samples.Google.Bots
                     var channelData = (ActionsSdkRequest)turnContext.Activity.ChannelData;
                     if (channelData.User.AccountLinkingStatus == "LINKED")
                     {
-                        await turnContext.SendActivityAsync("You're already signed in!");
+                        await turnContext.SendActivityAsync("You're already signed in!", cancellationToken: cancellationToken);
                     }
                     else
                     {
@@ -225,35 +225,6 @@ namespace Bot.Builder.Community.Samples.Google.Bots
                     activityWithCollectionAttachment.Attachments.Add(collection.ToAttachment());
                     await turnContext.SendActivityAsync(activityWithCollectionAttachment, cancellationToken);
                     break;
-
-                //case "carousel":
-                //    var activityWithCarouselAttachment = MessageFactory.Text($"Ok, I included a carousel.");
-                //    var carouselIntent = GoogleHelperIntentFactory.CreateCarouselIntent(
-                //        "InternalList title",
-                //        new InternalList<OptionItem>()
-                //        {
-                //            new OptionItem(
-                //                "InternalList item 1",
-                //                "This is the InternalList Item 1 description",
-                //                new OptionItemInfo() {Key = "Item1", Synonyms = new InternalList<string>() {"first"}},
-                //                new OptionItemImage()
-                //                {
-                //                    AccessibilityText = "Item 1 image",
-                //                    Url = "https://storage.googleapis.com/actionsresources/logo_assistant_2x_64dp.png"
-                //                }),
-                //            new OptionItem(
-                //                "InternalList item 2",
-                //                "This is the InternalList Item 2 description",
-                //                new OptionItemInfo() {Key = "Item2", Synonyms = new InternalList<string>() {"second"}},
-                //                new OptionItemImage()
-                //                {
-                //                    AccessibilityText = "Item 2 image",
-                //                    Url = "https://storage.googleapis.com/actionsresources/logo_assistant_2x_64dp.png"
-                //                })
-                //        });
-                //    activityWithCarouselAttachment.Attachments.Add(carouselIntent.ToAttachment());
-                //    await turnContext.SendActivityAsync(activityWithCarouselAttachment, cancellationToken);
-                //    break;
 
                 case "table":
                     var activityWithTableCardAttachment = MessageFactory.Text($"Ok, I included a table.");

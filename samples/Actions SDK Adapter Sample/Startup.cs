@@ -1,7 +1,5 @@
 ﻿using Bot.Builder.Community.Adapters.ActionsSDK;
-using Bot.Builder.Community.Adapters.Google;
-using Bot.Builder.Community.Adapters.Google.Core.Model.Request;
-using Bot.Builder.Community.Samples.Google.Bots;
+using Bot.Builder.Community.Samples.ActionsSdk.Bots;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +8,7 @@ using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Bot.Builder.Community.Samples.Google
+namespace Bot.Builder.Community.Samples.ActionsSdk
 {
     public class Startup
     {
@@ -31,8 +29,8 @@ namespace Bot.Builder.Community.Samples.Google
 
             services.AddSingleton(sp => new ActionsSdkAdapterOptions()
             {
-                ActionInvocationName = "new adapter",
-                ActionProjectId = "new-action-e43a1",
+                ActionInvocationName = "<YOUR INVOCATION NAME>",
+                ActionProjectId = "",
                 ShouldEndSessionByDefault = false,
             });
 

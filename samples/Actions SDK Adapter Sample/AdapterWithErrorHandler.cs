@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Bot.Builder.Community.Samples.Google
+namespace Bot.Builder.Community.Samples.ActionsSdk
 {
     public class AdapterWithErrorHandler : BotFrameworkHttpAdapter
     {

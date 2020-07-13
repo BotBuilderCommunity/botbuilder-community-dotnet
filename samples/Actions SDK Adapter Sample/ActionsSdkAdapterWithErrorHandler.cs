@@ -1,12 +1,11 @@
 ﻿using Bot.Builder.Community.Adapters.ActionsSDK;
-using Bot.Builder.Community.Adapters.Google;
 using Microsoft.Extensions.Logging;
 
-namespace Bot.Builder.Community.Samples.Google
+namespace Bot.Builder.Community.Samples.ActionsSdk
 {
     public class ActionsSdkAdapterWithErrorHandler : ActionsSdkAdapter
     {
-        public ActionsSdkAdapterWithErrorHandler(ILogger<GoogleAdapter> logger, ActionsSdkAdapterOptions adapterOptions)
+        public ActionsSdkAdapterWithErrorHandler(ILogger<ActionsSdkAdapter> logger, ActionsSdkAdapterOptions adapterOptions)
             : base(adapterOptions, logger)
         {
             OnTurnError = async (turnContext, exception) =>
