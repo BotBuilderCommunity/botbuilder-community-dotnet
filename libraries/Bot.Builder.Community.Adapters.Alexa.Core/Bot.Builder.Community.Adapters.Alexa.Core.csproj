@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove('$(MSBuildThisFileDirectory)../', 'Bot.Builder.Community.sln'))\CommonTargets\library.shared.targets" />
 
   <PropertyGroup>
@@ -18,6 +18,12 @@
     <WarningsAsErrors />
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Helpers\**" />
+    <EmbeddedResource Remove="Helpers\**" />
+    <None Remove="Helpers\**" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Alexa.NET" Version="1.13.3" />
@@ -29,11 +35,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Bot.Builder.Community.Adapters.Shared\Bot.Builder.Community.Adapters.Shared.csproj" />
-  </ItemGroup>
-
-
-  <ItemGroup>
-    <Folder Include="Helpers\" />
   </ItemGroup>
 
 </Project>

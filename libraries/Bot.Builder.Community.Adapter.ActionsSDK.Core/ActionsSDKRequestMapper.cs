@@ -101,7 +101,7 @@ namespace Bot.Builder.Community.Adapters.ActionsSDK.Core
             activity.ServiceUrl = _options.ServiceUrl;
             activity.Recipient = new ChannelAccount("", "action");
             activity.Conversation = new ConversationAccount(false, id: $"{request.Session.Id}");
-            activity.From = null;
+            activity.From = new ChannelAccount($"{request.Session.Id}_user");
             activity.Id = Guid.NewGuid().ToString();
             activity.Timestamp = DateTime.UtcNow;
             activity.Locale = request.User.Locale;
@@ -247,7 +247,7 @@ namespace Bot.Builder.Community.Adapters.ActionsSDK.Core
 
         public ContentItem ProcessContentItemAttachment<T>(string contentType, Activity activity) where T : ContentItem
         {
-            return activity.Attachments?
+            return activity?.Attachments?
                 .Where(a => a.ContentType == contentType)
                 .Select(a => (T)a.Content).FirstOrDefault();
         }
