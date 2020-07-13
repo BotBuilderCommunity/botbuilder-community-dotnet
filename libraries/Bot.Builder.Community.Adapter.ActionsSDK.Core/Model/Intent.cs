@@ -7,7 +7,7 @@ namespace Bot.Builder.Community.Adapters.ActionsSDK.Core.Model
     {
         public string Name { get; set; }
 
-        public Dictionary<string, JObject> Params { get; set; }
+        public JObject Params { get; set; }
 
         public string Query { get; set; }
     }

@@ -9,16 +9,18 @@ using Bot.Builder.Community.Adapters.Shared;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using Newtonsoft.Json.Linq;
 
 namespace Bot.Builder.Community.Adapters.ActionsSDK.Core
 {
     public class ActionsSdkRequestMapper
     {
+        private readonly ActionsSdkRequestMapperOptions _options;
+        private readonly ILogger _logger;
+
         public ActionsSdkRequestMapper(ActionsSdkRequestMapperOptions options = null, ILogger logger = null)
         {
-            Options = options ?? new ActionsSdkRequestMapperOptions();
-            Logger = logger ?? NullLogger.Instance;
+            _options = options ?? new ActionsSdkRequestMapperOptions();
+            _logger = logger ?? NullLogger.Instance;
         }
 
         public Activity RequestToActivity(ActionsSdkRequest request)
@@ -27,6 +29,7 @@ namespace Bot.Builder.Community.Adapters.ActionsSDK.Core
 
             var actionIntent = request.Intent.Name;
 
+            // Handle system intents
             switch (actionIntent?.ToLowerInvariant())
             {
                 case "actions.intent.media_status_finished":
@@ -39,22 +42,42 @@ namespace Bot.Builder.Community.Adapters.ActionsSDK.Core
                     activity.Name = actionIntent;
                     activity.Value = request;
                     return activity;
-                case "actions.intent.sign_in":
-                    //activity.Type = ActivityTypes.Event;
-                    //activity = SetGeneralActivityProperties(activity, request);
-                    //activity.Name = actionIntent;
-                    //var signinStatusArgument = request.Inputs.First()?.Arguments?.Where(a => a.Name == "SIGN_IN").FirstOrDefault();
-                    //var argumentExtension = signinStatusArgument?.Extension;
-                    //activity.Value = argumentExtension?["status"];
-                    //return activity;
                 case "actions.intent.cancel":
                     activity = Activity.CreateEndOfConversationActivity() as Activity;
                     activity = SetGeneralActivityProperties(activity, request);
                     return activity;
             }
 
-            var text = StripInvocation(request.Intent.Query, Options.ActionInvocationName);
+            // Handle special case handlers that are part of our model
+            switch (request.Handler.Name)
+            {
+                case "accountlinkingcompleted":
+                    activity.Type = ActivityTypes.Event;
+                    activity = SetGeneralActivityProperties(activity, request);
+                    activity.Name = "AccountLinking";
+                    activity.Value = "Completed";
+                    return activity;
+                case "accountlinkingcancelled":
+                    activity.Type = ActivityTypes.Event;
+                    activity = SetGeneralActivityProperties(activity, request);
+                    activity.Name = "AccountLinking";
+                    activity.Value = "Cancelled";
+                    return activity;
+                case "accountlinkingerror":
+                    activity.Type = ActivityTypes.Event;
+                    activity = SetGeneralActivityProperties(activity, request);
+                    activity.Name = "AccountLinking";
+                    activity.Value = "Error";
+                    return activity;
+            }
 
+            // If not handled system intent / special case handler, proceed with
+            // handling user query, starting with stripping the invocation name
+            var text = StripInvocation(request.Intent.Query, _options.ActionInvocationName);
+
+            // If the query is empty at this point, we can assume that a user
+            // has invoked the action without indicating an intent and we send
+            // a conversation update
             if (string.IsNullOrEmpty(text))
             {
                 activity.Type = ActivityTypes.ConversationUpdate;
@@ -63,6 +86,8 @@ namespace Bot.Builder.Community.Adapters.ActionsSDK.Core
                 return activity;
             }
 
+            // We have text from a user query after we have stripped the invocation name / standard text
+            // so we send this as a message activity
             activity.Type = ActivityTypes.Message;
             activity = SetGeneralActivityProperties(activity, request);
             activity.Text = text;
@@ -72,8 +97,8 @@ namespace Bot.Builder.Community.Adapters.ActionsSDK.Core
         public Activity SetGeneralActivityProperties(Activity activity, ActionsSdkRequest request)
         {
             activity.DeliveryMode = DeliveryModes.ExpectReplies;
-            activity.ChannelId = Options.ChannelId;
-            activity.ServiceUrl = Options.ServiceUrl;
+            activity.ChannelId = _options.ChannelId;
+            activity.ServiceUrl = _options.ServiceUrl;
             activity.Recipient = new ChannelAccount("", "action");
             activity.Conversation = new ConversationAccount(false, id: $"{request.Session.Id}");
             activity.From = null;
@@ -102,7 +127,7 @@ namespace Bot.Builder.Community.Adapters.ActionsSDK.Core
             response.Session = new Session()
             {
                 Id = activity.Conversation.Id,
-                Params = new Dictionary<string, JObject>(),
+                Params = null,
                 LanguageCode = string.Empty
             };
 
@@ -188,7 +213,7 @@ namespace Bot.Builder.Community.Adapters.ActionsSDK.Core
             if (activity.InputHint == null || activity.InputHint == InputHints.AcceptingInput)
             {
                 activity.InputHint =
-                    Options.ShouldEndSessionByDefault ? InputHints.IgnoringInput : InputHints.ExpectingInput;
+                    _options.ShouldEndSessionByDefault ? InputHints.IgnoringInput : InputHints.ExpectingInput;
             }
 
             // check if we should be listening for more input from the user
@@ -214,9 +239,6 @@ namespace Bot.Builder.Community.Adapters.ActionsSDK.Core
 
             return response;
         }
-
-        public ActionsSdkRequestMapperOptions Options { get; set; }
-        public ILogger Logger;
 
         public static Activity MergeActivities(IList<Activity> activities)
         {
@@ -270,12 +292,9 @@ namespace Bot.Builder.Community.Adapters.ActionsSDK.Core
         {
             if (!string.IsNullOrEmpty(query) && !string.IsNullOrEmpty(invocationName))
             {
-                invocationName = invocationName.ToLowerInvariant();
-                query = query.ToLowerInvariant();
-
                 if (query.Contains(invocationName))
                 {
-                    var newStartPosition = query.IndexOf(invocationName, StringComparison.Ordinal);
+                    var newStartPosition = query.IndexOf(invocationName, StringComparison.OrdinalIgnoreCase);
                     query = query.Substring(newStartPosition + invocationName.Length);
                 }
             }
@@ -311,8 +330,8 @@ namespace Bot.Builder.Community.Adapters.ActionsSDK.Core
             {
                 card.Card.Image = new Image()
                 {
-                    Url = heroCard.Images.FirstOrDefault().Url,
-                    Alt = heroCard.Images.FirstOrDefault().Alt,
+                    Url = heroCard.Images?.FirstOrDefault()?.Url,
+                    Alt = heroCard.Images?.FirstOrDefault()?.Alt,
                 };
             }
 

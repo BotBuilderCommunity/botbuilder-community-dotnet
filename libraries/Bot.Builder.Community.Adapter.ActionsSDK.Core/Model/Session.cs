@@ -7,7 +7,7 @@ namespace Bot.Builder.Community.Adapters.ActionsSDK.Core.Model
     {
         public string Id { get; set; }
 
-        public Dictionary<string, JObject> Params { get; set; }
+        public JObject Params { get; set; }
 
         public List<TypeOverride> TypeOverrides { get; set; }
 
