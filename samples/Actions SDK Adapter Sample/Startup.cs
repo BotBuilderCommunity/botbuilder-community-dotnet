@@ -1,4 +1,5 @@
-﻿using Bot.Builder.Community.Adapters.Google;
+﻿using Bot.Builder.Community.Adapters.ActionsSDK;
+using Bot.Builder.Community.Adapters.Google;
 using Bot.Builder.Community.Adapters.Google.Core.Model.Request;
 using Bot.Builder.Community.Samples.Google.Bots;
 using Microsoft.AspNetCore.Builder;
@@ -28,19 +29,14 @@ namespace Bot.Builder.Community.Samples.Google
             // Create the Bot Framework Adapter with error handling enabled.
             services.AddSingleton<IBotFrameworkHttpAdapter, AdapterWithErrorHandler>();
 
-            services.AddSingleton(sp =>
+            services.AddSingleton(sp => new ActionsSdkAdapterOptions()
             {
-                return new GoogleAdapterOptions()
-                {
-                    ActionInvocationName = "my awesome action",
-                    //ActionProjectId = "YOUR-GOOGLE-ACTION-ID",
-                    ShouldEndSessionByDefault = false,
-                    ValidateIncomingRequests = false,
-                    WebhookType = GoogleWebhookType.Conversation
-                };
+                ActionInvocationName = "new adapter",
+                ActionProjectId = "new-action-e43a1",
+                ShouldEndSessionByDefault = false,
             });
 
-            services.AddSingleton<GoogleAdapter, GoogleAdapterWithErrorHandler>();
+            services.AddSingleton<ActionsSdkAdapter, ActionsSdkAdapterWithErrorHandler>();
             
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
             services.AddTransient<IBot, EchoBot>();

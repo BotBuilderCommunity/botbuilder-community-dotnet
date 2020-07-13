@@ -12,13 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\libraries\Bot.Builder.Community.Adapter.ActionsSDK.Core\Bot.Builder.Community.Adapters.ActionsSDK.Core.csproj" />
-    <ProjectReference Include="..\..\libraries\Bot.Builder.Community.Adapters.ActionsSDK\Bot.Builder.Community.Adapters.ActionsSDK.csproj" />
-    <ProjectReference Include="..\..\libraries\Bot.Builder.Community.Adapters.Google.Core\Bot.Builder.Community.Adapters.Google.Core.csproj" />
-    <ProjectReference Include="..\..\libraries\Bot.Builder.Community.Adapters.Google\Bot.Builder.Community.Adapters.Google.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
