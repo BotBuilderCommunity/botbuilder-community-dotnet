@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
+using Alexa.NET.ConnectionTasks.Inputs;
 using Alexa.NET.Request;
 using Alexa.NET.Request.Type;
 using Alexa.NET.Response;
@@ -569,6 +571,53 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
 
             Assert.NotNull(skillResponse.Response.Card);
             Assert.Equal(typeof(LinkAccountCard), skillResponse.Response.Card.GetType());
+        }
+
+        [Fact]
+        public void TaskRequest()
+        {
+            var request = new LaunchRequest
+            {
+                Locale = "en-US",
+                RequestId = "amzn1.echo-api.request.00000000-0000-0000-0000-000000000000",
+                Type = "LaunchRequest",
+                Timestamp = DateTime.Now,
+                Task = new LaunchRequestTask
+                {
+                    Name = "AMAZON.PrintPDF",
+                    Version = "1",
+                    Input = new PrintPdfV1
+                    {
+                        Title = "Flywheel",
+                        Description = "Flywheel",
+                        Url = "http://www.example.com/flywheel.pdf"
+                    }
+                }
+            };
+
+            var skillRequest = new SkillRequest
+            {
+                Request = request,
+                Context = new Context
+                {
+                    System = new AlexaSystem() { Application = new Application(), User = new User() }
+                },
+                Session = new Session()
+                {
+                    User = new User()
+                }
+            };
+
+            var alexaMapper = new AlexaRequestMapper();
+            var result = alexaMapper.RequestToActivity(skillRequest);
+
+            JsonConvert.SerializeObject(result,
+                            Newtonsoft.Json.Formatting.None,
+                            new JsonSerializerSettings
+                            {
+                                NullValueHandling = NullValueHandling.Ignore,
+                                Formatting = Formatting.Indented
+                            });
         }
 
         private static void VerifyIntentRequest(SkillRequest skillRequest, IActivity activity, AlexaRequestMapperOptions mapperOptions)

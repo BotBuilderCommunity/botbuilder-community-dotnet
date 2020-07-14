@@ -9,9 +9,38 @@ namespace Bot.Builder.Community.Adapters.Shared
     public static class SharedAttachmentHelper
     {
         /// <summary>
+        /// Convert the attachment Content to the type T or throw a ValidationException if that is not possible.
+        /// </summary>
+        /// <remarks>
+        /// If this method is called then the Attachment.ContentType is assumed to be a well-known type. If conversion fails, for any reason, then we want to let the
+        /// developer know there is an issue by throwing a ValidationException. If the type is not a well-known type then this method will not be called and the attachment 
+        /// will not be converted (it will be ignored).
+        /// </remarks>
+        public static void Convert<T>(Attachment attachment)
+        {
+            try
+            {
+                attachment.Content = attachment.ContentAs<T>();
+            }
+            catch (Exception ex)
+            {
+                throw new ValidationException($"Failed to convert Attachment with ContentType {attachment?.ContentType} to {typeof(T).Name}", ex);
+            }
+        }
+
+        public static Attachment CreateAttachment<T>(T card, string contentType)
+        {
+            return new Attachment
+            {
+                Content = JObject.FromObject(card, new JsonSerializer() { NullValueHandling = NullValueHandling.Ignore }),
+                ContentType = contentType,
+            };
+        }
+
+        /// <summary>
         /// Convert the Attachment Content field to the given type. An exception is thrown if the conversion fails.
         /// </summary>
-        public static T ContentAs<T>(this Attachment attachment)
+        private static T ContentAs<T>(this Attachment attachment)
         {
             if (attachment == null)
                 throw new ArgumentNullException(nameof(attachment));
@@ -37,27 +66,6 @@ namespace Bot.Builder.Community.Adapters.Shared
                 return JsonConvert.DeserializeObject<T>((string)attachment.Content);
             }
             return (T)((JObject)attachment.Content).ToObject<T>();
-        }
-
-        public static void Convert<T>(Attachment attachment)
-        {
-            try
-            {
-                attachment.Content = attachment.ContentAs<T>();
-            }
-            catch (JsonException ex)
-            {
-                throw new ValidationException($"Failed to convert Attachment with ContentType {attachment?.ContentType} to {typeof(T).Name}", ex);
-            }
-        }
-
-        public static Attachment CreateAttachment<T>(T card, string contentType)
-        {
-            return new Attachment
-            {
-                Content = JObject.FromObject(card, new JsonSerializer() { NullValueHandling = NullValueHandling.Ignore }),
-                ContentType = contentType,
-            };
         }
     }
 }
