@@ -23,7 +23,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Helpers
             var activity = messageActivities.Last();
             var endWithPeriod = activity.Text?.TrimEnd().EndsWith(".") ?? false;
 
-            if (messageActivities.Any(a => !String.IsNullOrEmpty(a.Speak)))
+            if (messageActivities.Any(a => !String.IsNullOrEmpty(a.Speak))) 
             {
                 var speakText = String.Join("<break strength=\"strong\"/>", messageActivities
                     .Select(a => !String.IsNullOrEmpty(a.Speak) ? StripSpeakTag(a.Speak) : NormalizeActivityText(a.TextFormat, a.Text))
