@@ -88,7 +88,7 @@ namespace Bot.Builder.Community.Adapters.Google
                 var requestMapper = new DialogFlowRequestMapper(_requestMapperOptions, _logger);
                 activity = requestMapper.RequestToActivity(dialogFlowRequest);
                 var context = await CreateContextAndRunPipelineAsync(bot, cancellationToken, activity);
-                var response = requestMapper.ActivityToResponse(await ProcessOutgoingActivitiesAsync(context.SentActivities, context), dialogFlowRequest);
+                var response = requestMapper.ActivityToResponse(await ProcessOutgoingActivitiesAsync(context.SentActivities, context).ConfigureAwait(false), dialogFlowRequest);
                 responseJson = JsonConvert.SerializeObject(response, JsonSerializerSettings);
             }
             else
@@ -99,7 +99,7 @@ namespace Bot.Builder.Community.Adapters.Google
                     var requestMapper = new ConversationRequestMapper(_requestMapperOptions, _logger);
                     activity = requestMapper.RequestToActivity(conversationRequest);
                     var context = await CreateContextAndRunPipelineAsync(bot, cancellationToken, activity);
-                    var response = requestMapper.ActivityToResponse(await ProcessOutgoingActivitiesAsync(context.SentActivities, context), conversationRequest);
+                    var response = requestMapper.ActivityToResponse(await ProcessOutgoingActivitiesAsync(context.SentActivities, context).ConfigureAwait(false), conversationRequest);
                     responseJson = JsonConvert.SerializeObject(response, JsonSerializerSettings);
                 }
                 catch (Exception e)
