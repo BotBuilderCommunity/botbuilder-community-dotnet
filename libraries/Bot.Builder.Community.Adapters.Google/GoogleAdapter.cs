@@ -88,7 +88,7 @@ namespace Bot.Builder.Community.Adapters.Google
                 var requestMapper = new DialogFlowRequestMapper(_requestMapperOptions, _logger);
                 activity = requestMapper.RequestToActivity(dialogFlowRequest);
                 var context = await CreateContextAndRunPipelineAsync(bot, cancellationToken, activity);
-                var response = requestMapper.ActivityToResponse(ProcessOutgoingActivities(context.SentActivities, context).Result, dialogFlowRequest);
+                var response = requestMapper.ActivityToResponse(await ProcessOutgoingActivitiesAsync(context.SentActivities, context), dialogFlowRequest);
                 responseJson = JsonConvert.SerializeObject(response, JsonSerializerSettings);
             }
             else
@@ -99,7 +99,7 @@ namespace Bot.Builder.Community.Adapters.Google
                     var requestMapper = new ConversationRequestMapper(_requestMapperOptions, _logger);
                     activity = requestMapper.RequestToActivity(conversationRequest);
                     var context = await CreateContextAndRunPipelineAsync(bot, cancellationToken, activity);
-                    var response = requestMapper.ActivityToResponse(ProcessOutgoingActivities(context.SentActivities, context).Result, conversationRequest);
+                    var response = requestMapper.ActivityToResponse(await ProcessOutgoingActivitiesAsync(context.SentActivities, context), conversationRequest);
                     responseJson = JsonConvert.SerializeObject(response, JsonSerializerSettings);
                 }
                 catch (Exception e)
@@ -146,7 +146,7 @@ namespace Bot.Builder.Community.Adapters.Google
             throw new NotImplementedException();
         }
 
-        public virtual Task<Activity> ProcessOutgoingActivities(List<Activity> activities, ITurnContext turnContext)
+        public virtual Task<Activity> ProcessOutgoingActivitiesAsync(List<Activity> activities, ITurnContext turnContext)
         {
             return Task.FromResult(MappingHelper.MergeActivities(activities));
         }
