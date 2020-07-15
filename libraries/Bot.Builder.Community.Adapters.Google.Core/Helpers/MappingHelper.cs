@@ -32,10 +32,10 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Helpers
                 activity.Speak = $"<speak>{speakText}</speak>";
             }
 
-            activity.Text = String.Join(". ", messageActivities
+            activity.Text = String.Join(" ", messageActivities
                 .Select(a => NormalizeActivityText(a.TextFormat, a.Text))
                 .Where(s => !String.IsNullOrEmpty(s))
-                .Select(s => s.Trim(new char[] { ' ', '.' })));
+                .Select(s => s.TrimEnd(' ')));
 
             activity.Attachments = messageActivities.Where(x => x.Attachments != null).SelectMany(x => x.Attachments).ToList();
 
