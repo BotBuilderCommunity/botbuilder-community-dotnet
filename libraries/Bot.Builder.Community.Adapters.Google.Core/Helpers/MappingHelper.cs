@@ -21,6 +21,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Helpers
             }
 
             var activity = messageActivities.Last();
+            var endWithPeriod = activity.Text?.TrimEnd().EndsWith(".") ?? false;
 
             if (messageActivities.Any(a => !String.IsNullOrEmpty(a.Speak)))
             {
@@ -36,6 +37,11 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Helpers
                 .Select(a => NormalizeActivityText(a.TextFormat, a.Text))
                 .Where(s => !String.IsNullOrEmpty(s))
                 .Select(s => s.TrimEnd(' ')));
+
+            if (activity.Text.EndsWith(".") && !endWithPeriod)
+            {
+                activity.Text = activity.Text.TrimEnd('.');
+            }
 
             activity.Attachments = messageActivities.Where(x => x.Attachments != null).SelectMany(x => x.Attachments).ToList();
 

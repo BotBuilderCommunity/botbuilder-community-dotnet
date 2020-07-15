@@ -71,7 +71,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Helpers
 
         public static bool EndsWithPunctuation(this string utterance)
         {
-            var punctuation = new String[] { ".", "!", "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", "/", ":", ";", "<", "=", ">", "?", "@", "[", "]", "^", "`", "{", "|", "}", "~" };
+            var punctuation = new String[] { ".", "!", ",", "-", ":", ";", "?" };
             return punctuation.Any(ext => utterance.TrimEnd().EndsWith(ext));
         }
     }
