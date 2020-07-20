@@ -144,6 +144,18 @@ namespace Bot.Builder.Community.Adapters.Google.Core
                 };
             }
 
+            if (activity?.Attachments?.FirstOrDefault(a =>
+                    a.ContentType == GoogleAttachmentContentTypes.NewSurfaceIntent) != null)
+            {
+                return new ProcessHelperIntentAttachmentsResult()
+                {
+                    Intent = ProcessSystemIntentAttachment<NewSurfaceIntent>(
+                        GoogleAttachmentContentTypes.NewSurfaceIntent,
+                        activity),
+                    AllowAdditionalInputPrompt = false
+                };
+            }
+
             return new ProcessHelperIntentAttachmentsResult()
             {
                 Intent = null
@@ -170,17 +182,35 @@ namespace Bot.Builder.Community.Adapters.Google.Core
 
             activity.ConvertAttachmentContent();
 
-            var basicCardItem = ProcessResponseItemAttachment<BasicCard>(GoogleAttachmentContentTypes.BasicCard, activity);
-            if (basicCardItem != null)
-                responseItems.Add(basicCardItem);
+            var bfCard = activity.Attachments?.FirstOrDefault(a => a.ContentType == HeroCard.ContentType);
 
-            var tableCardItem = ProcessResponseItemAttachment<TableCard>(GoogleAttachmentContentTypes.TableCard, activity);
-            if (tableCardItem != null)
-                responseItems.Add(tableCardItem);
+            if (bfCard != null)
+            {
+                switch (bfCard.Content)
+                {
+                    case HeroCard heroCard:
+                        responseItems.Add(CreateGoogleCardFromHeroCard(heroCard));
+                        break;
+                }
+            }
+            else
+            {
+                var basicCardItem = ProcessResponseItemAttachment<BasicCard>(GoogleAttachmentContentTypes.BasicCard, activity);
+                if (basicCardItem != null)
+                    responseItems.Add(basicCardItem);
 
-            var mediaItem = ProcessResponseItemAttachment<MediaResponse>(GoogleAttachmentContentTypes.MediaResponse, activity);
-            if (mediaItem != null)
-                responseItems.Add(mediaItem);
+                var tableCardItem = ProcessResponseItemAttachment<TableCard>(GoogleAttachmentContentTypes.TableCard, activity);
+                if (tableCardItem != null)
+                    responseItems.Add(tableCardItem);
+
+                var mediaItem = ProcessResponseItemAttachment<MediaResponse>(GoogleAttachmentContentTypes.MediaResponse, activity);
+                if (mediaItem != null)
+                    responseItems.Add(mediaItem);
+
+                var browsingCarousel = ProcessResponseItemAttachment<BrowsingCarousel>(GoogleAttachmentContentTypes.BrowsingCarousel, activity);
+                if (browsingCarousel != null)
+                    responseItems.Add(browsingCarousel);
+            }
 
             return responseItems;
         }
@@ -202,7 +232,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core
             return query;
         }
 
-        public static List<Suggestion> ConvertSuggestedActionsToSuggestionChips(Activity activity)
+        public static List<Suggestion> ConvertIMAndMessageBackSuggestedActionsToSuggestionChips(Activity activity)
         {
             var suggestions = new List<Suggestion>();
 
@@ -210,11 +240,60 @@ namespace Bot.Builder.Community.Adapters.Google.Core
             {
                 foreach (var suggestion in activity.SuggestedActions.Actions)
                 {
-                    suggestions.Add(new Suggestion { Title = suggestion.Title });
+                    if (suggestion.Type == ActionTypes.ImBack || suggestion.Type == ActionTypes.MessageBack)
+                    {
+                        suggestions.Add(new Suggestion { Title = suggestion.Title });
+                    }
                 }
             }
 
             return suggestions;
+        }
+
+        public static LinkOutSuggestion GetLinkOutSuggestionFromActivity(Activity activity)
+        {
+            var openUrlSuggestedAction = activity.SuggestedActions?.Actions?.Where(a => a.Type == ActionTypes.OpenUrl).FirstOrDefault();
+
+            if(openUrlSuggestedAction == null)
+            {
+                return null;
+            }
+
+            return new LinkOutSuggestion()
+            {
+                DestinationName = openUrlSuggestedAction.Title,
+                OpenUrlAction = new OpenUrlAction()
+                {
+                    Url = openUrlSuggestedAction.Value?.ToString(),
+                    UrlTypeHint = UrlTypeHint.URL_TYPE_HINT_UNSPECIFIED
+                }
+            };
+        }
+
+        private BasicCard CreateGoogleCardFromHeroCard(HeroCard heroCard)
+        {
+            var imageUrl = heroCard.Images?.FirstOrDefault()?.Url;
+            var buttons = new List<Button>();
+
+            var heroCardButtons = heroCard.Buttons
+                .Where(b => b.Type == ActionTypes.OpenUrl && b.Value is string buttonValue && buttonValue.StartsWith("http", StringComparison.InvariantCultureIgnoreCase))
+                .ToList();
+
+            if (heroCardButtons?.FirstOrDefault() is CardAction button)
+            {
+                if (heroCardButtons.Count() > 1)
+                {
+                    Logger.LogWarning("Only one 'button' is supported on Google basic card, using first button");
+                }
+
+                buttons.Add(new Button()
+                {
+                    Title = button.Title,
+                    OpenUrlAction = new OpenUrlAction() { Url = button.Value as string }
+                });
+            }
+
+            return GoogleCardFactory.CreateBasicCard(heroCard.Title, heroCard.Subtitle, heroCard.Text,  buttons, imageUrl != null ? new Image { Url = imageUrl } : null);
         }
     }
 }

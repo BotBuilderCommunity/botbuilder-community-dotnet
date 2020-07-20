@@ -125,7 +125,8 @@ namespace Bot.Builder.Community.Adapters.Google.Core
 
             response.Payload.Google.RichResponse = new RichResponse()
             {
-                Items = responseItems.ToArray()
+                Items = responseItems.ToArray(),
+                LinkOutSuggestion = GetLinkOutSuggestionFromActivity(activity)
             };
 
             // ensure InputHint is set as required for response
@@ -144,7 +145,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core
                 case InputHints.ExpectingInput:
                     response.Payload.Google.ExpectUserResponse = true;
 
-                    var suggestionChips = ConvertSuggestedActionsToSuggestionChips(activity);
+                    var suggestionChips = ConvertIMAndMessageBackSuggestedActionsToSuggestionChips(activity);
                     if (suggestionChips.Any())
                     {
                         response.Payload.Google.RichResponse.Suggestions = suggestionChips.ToArray();

@@ -58,19 +58,19 @@ namespace Bot.Builder.Community.Adapters.RingCentral.Middleware
 
             if (turnContext.Activity.Type == ActivityTypes.Message && !isFromRingCentral)
             {
-                await _ringCentralClient.SendActivityToRingCentralAsync(turnContext.Activity);
+                await _ringCentralClient.SendActivityToRingCentralAsync(turnContext.Activity).ConfigureAwait(false);
 
-                var handoffRequestState = await _handoffRequestRecognizer.RecognizeHandoffRequestAsync(turnContext.Activity);
+                var handoffRequestState = await _handoffRequestRecognizer.RecognizeHandoffRequestAsync(turnContext.Activity).ConfigureAwait(false);
 
                 if (handoffRequestState != HandoffTarget.None)
                 {
                     string foreignThreadId = RingCentralSdkHelper.BuildForeignThreadIdFromActivity(turnContext.Activity);
-                    var thread = await _ringCentralClient.GetThreadByForeignThreadIdAsync(foreignThreadId);
+                    var thread = await _ringCentralClient.GetThreadByForeignThreadIdAsync(foreignThreadId).ConfigureAwait(false);
 
                     if (thread != null)
                     {
-                        await _ringCentralClient.HandoffConversationControlToAsync(handoffRequestState, thread);
-                        await turnContext.SendActivityAsync($"Transfer to {handoffRequestState.ToString()} has been initiated.");
+                        await _ringCentralClient.HandoffConversationControlToAsync(handoffRequestState, thread).ConfigureAwait(false);
+                        await turnContext.SendActivityAsync($"Transfer to {handoffRequestState.ToString()} has been initiated.").ConfigureAwait(false);
 
                         if (handoffRequestState == HandoffTarget.Bot)
                         {
@@ -107,7 +107,7 @@ namespace Bot.Builder.Community.Adapters.RingCentral.Middleware
                 // Send out messages from the bot to RingCentral
                 if (activity.Type == ActivityTypes.Message)
                 {
-                    await _ringCentralClient.SendActivityToRingCentralAsync(activity);
+                    await _ringCentralClient.SendActivityToRingCentralAsync(activity).ConfigureAwait(false);
                 }
             }
             return responses;

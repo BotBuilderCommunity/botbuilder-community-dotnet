@@ -8,7 +8,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Helpers
 {
     public static class GoogleCardFactory
     {
-        public static BasicCard CreateBasicCard(string title, string subtitle, string formattedText)
+        public static BasicCard CreateBasicCard(string title, string subtitle, string formattedText, List<Button> buttons = null, Image image = null, ImageDisplayOptions? displayOptions = null)
         {
             return new BasicCard()
             {
@@ -17,7 +17,10 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Helpers
 
                     Title = title,
                     Subtitle = subtitle,
-                    FormattedText = formattedText
+                    FormattedText = formattedText,
+                    Buttons = buttons?.ToArray(),
+                    Image = image,
+                    Display = displayOptions
                 }
             };
         }

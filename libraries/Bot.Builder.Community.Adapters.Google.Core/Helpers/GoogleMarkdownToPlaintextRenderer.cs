@@ -1,4 +1,6 @@
-﻿using Microsoft.MarkedNet;
+﻿using System;
+using System.Linq;
+using Microsoft.MarkedNet;
 
 namespace Bot.Builder.Community.Adapters.Google.Core.Helpers
 {
@@ -57,7 +59,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Helpers
                 return $"{body.Trim().TrimEnd(',')}. ";
             }
             public override string ListItem(string text) => $"{ListItemMarker}{text}, ";
-            public override string Paragraph(string text) => string.Concat(text.Replace("\n", " ").TrimEnd('.'), ". ");
+            public override string Paragraph(string text) => string.Concat(text.Replace("\n", " ").TrimEnd('.'), !EndsWithPunctuation(text) ? ". " : " ");
             public override string Strong(string text) => text;
             public override string Table(string header, string body) => string.Empty;
             public override string TableCell(string content, TableCellFlags flags) => string.Empty;
@@ -65,6 +67,12 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Helpers
             public override string Text(string text) => text.TrimEnd('.');
             public override string Preprocess(string text) => text.Trim();
             public override string Postprocess(string text) => text.Trim();
+        }
+
+        public static bool EndsWithPunctuation(this string utterance)
+        {
+            var punctuation = new String[] { ".", "!", ",", "-", ":", ";", "?" };
+            return punctuation.Any(ext => utterance.TrimEnd().EndsWith(ext));
         }
     }
 }

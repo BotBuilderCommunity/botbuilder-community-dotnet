@@ -86,10 +86,9 @@ namespace Bot.Builder.Community.Adapters.Google
             {
                 var dialogFlowRequest = JsonConvert.DeserializeObject<DialogFlowRequest>(body);
                 var requestMapper = new DialogFlowRequestMapper(_requestMapperOptions, _logger);
-                //dialogFlowRequest.OriginalDetectIntentRequest.Payload.EnsureUniqueUserIdInUserStorage();
                 activity = requestMapper.RequestToActivity(dialogFlowRequest);
                 var context = await CreateContextAndRunPipelineAsync(bot, cancellationToken, activity);
-                var response = requestMapper.ActivityToResponse(ProcessOutgoingActivities(context.SentActivities), dialogFlowRequest);
+                var response = requestMapper.ActivityToResponse(await ProcessOutgoingActivitiesAsync(context.SentActivities, context).ConfigureAwait(false), dialogFlowRequest);
                 responseJson = JsonConvert.SerializeObject(response, JsonSerializerSettings);
             }
             else
@@ -98,10 +97,9 @@ namespace Bot.Builder.Community.Adapters.Google
                 {
                     var conversationRequest = JsonConvert.DeserializeObject<ConversationRequest>(body);
                     var requestMapper = new ConversationRequestMapper(_requestMapperOptions, _logger);
-                    //conversationRequest.EnsureUniqueUserIdInUserStorage();
                     activity = requestMapper.RequestToActivity(conversationRequest);
                     var context = await CreateContextAndRunPipelineAsync(bot, cancellationToken, activity);
-                    var response = requestMapper.ActivityToResponse(ProcessOutgoingActivities(context.SentActivities), conversationRequest);
+                    var response = requestMapper.ActivityToResponse(await ProcessOutgoingActivitiesAsync(context.SentActivities, context).ConfigureAwait(false), conversationRequest);
                     responseJson = JsonConvert.SerializeObject(response, JsonSerializerSettings);
                 }
                 catch (Exception e)
@@ -110,7 +108,7 @@ namespace Bot.Builder.Community.Adapters.Google
                     throw;
                 }
             }
-            
+
             httpResponse.ContentType = "application/json;charset=utf-8";
             httpResponse.StatusCode = (int)HttpStatusCode.OK;
 
@@ -148,9 +146,9 @@ namespace Bot.Builder.Community.Adapters.Google
             throw new NotImplementedException();
         }
 
-        public virtual Activity ProcessOutgoingActivities(List<Activity> activities)
+        public virtual Task<Activity> ProcessOutgoingActivitiesAsync(List<Activity> activities, ITurnContext turnContext)
         {
-            return MappingHelper.MergeActivities(activities);
+            return Task.FromResult(MappingHelper.MergeActivities(activities));
         }
         
         public override Task<ResourceResponse[]> SendActivitiesAsync(ITurnContext turnContext, Activity[] activities, CancellationToken cancellationToken)
