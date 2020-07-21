@@ -119,7 +119,7 @@ namespace Bot.Builder.Community.Adapters.ActionsSDK.Core
             {
                 response.Scene = new Scene()
                 {
-                    Next = new NextScene() { Name = "ListPrompt" }
+                    Next = new NextScene() { Name = "Prompt" }
                 };
                 return response;
             }
@@ -230,7 +230,7 @@ namespace Bot.Builder.Community.Adapters.ActionsSDK.Core
                         {
                             Next = new NextScene()
                             {
-                                Name = "ListPrompt"
+                                Name = "Prompt"
                             }
                         };
                     response.Prompt.Suggestions = ConvertImAndMessageBackSuggestedActionsToSuggestionChips(activity);
