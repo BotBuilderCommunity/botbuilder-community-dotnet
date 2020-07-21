@@ -153,7 +153,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core
                     Intent = ProcessSystemIntentAttachment<NewSurfaceIntent>(
                         GoogleAttachmentContentTypes.NewSurfaceIntent,
                         activity),
-                    AllowAdditionalInputPrompt = true
+                    AllowAdditionalInputPrompt = false
                 };
             }
 
