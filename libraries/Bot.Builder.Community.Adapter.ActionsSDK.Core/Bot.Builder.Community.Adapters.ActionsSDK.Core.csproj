@@ -2,8 +2,17 @@
 	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove('$(MSBuildThisFileDirectory)../', 'Bot.Builder.Community.sln'))\CommonTargets\library.shared.targets" />
 
 	<PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<Description>Core package containing request / response mapper, and helper methods for when using Bot Builder .NET Google Actions SDK Adapter to allow for a bot to be used for Google actions.</Description>
+		<RepositoryUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/</RepositoryUrl>
+		<Authors>Gary Pretty</Authors>
+		<Company>Bot Builder Community</Company>
+		<PackageLicenseUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/master/LICENSE</PackageLicenseUrl>
+		<PackageProjectUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/libraries/Bot.Builder.Community.Adapters.ActionsSDK</PackageProjectUrl>
+		<Version>1.0.0</Version>
+		<FileVersion>1.0.0</FileVersion>
+		<AssemblyVersion>1.0.0</AssemblyVersion>
+	</PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Bot.Schema" Version="$(Bot_Builder_Version)" />

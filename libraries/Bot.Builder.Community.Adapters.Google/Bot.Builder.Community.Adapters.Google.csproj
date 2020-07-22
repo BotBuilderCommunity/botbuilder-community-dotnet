@@ -3,7 +3,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Description>Adapter for v4 of the Bot Builder .NET SDK to allow for a bot to be used for Google Assistant actions (via the Google Actions Conversation Webhook or DialogFlow).</Description>
+    <Description>Google legacy Actions SDK and DialogFlow Adapter for v4 of the Bot Builder .NET SDK to allow for a bot to be used for Google Assistant.</Description>
     <Authors>Bot Builder Community</Authors>
     <Company>Bot Builder Community</Company>
     <PackageLicenseUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/master/LICENSE</PackageLicenseUrl>
