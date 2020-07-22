@@ -14,4 +14,8 @@
     <PackageReference Include="Microsoft.Rest.ClientRuntime" Version="2.3.21" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Bot.Builder.Community.Adapters.Shared\Bot.Builder.Community.Adapters.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

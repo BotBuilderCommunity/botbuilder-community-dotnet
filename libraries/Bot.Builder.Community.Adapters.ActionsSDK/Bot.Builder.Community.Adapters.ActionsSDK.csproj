@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove('$(MSBuildThisFileDirectory)../', 'Bot.Builder.Community.sln'))\CommonTargets\library.shared.targets" />
+
+	<PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+	<ItemGroup>
+	  <Compile Remove="action\**" />
+	  <Compile Remove="media\**" />
+	  <EmbeddedResource Remove="action\**" />
+	  <EmbeddedResource Remove="media\**" />
+	  <None Remove="action\**" />
+	  <None Remove="media\**" />
+	</ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="$(Bot_Builder_Version)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Bot.Builder.Community.Adapter.ActionsSDK.Core\Bot.Builder.Community.Adapters.ActionsSDK.Core.csproj" />
+  </ItemGroup>
+
+</Project>

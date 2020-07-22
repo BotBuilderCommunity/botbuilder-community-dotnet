@@ -92,6 +92,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommonTargets", "CommonTarg
 		CommonTargets\library.shared.targets = CommonTargets\library.shared.targets
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.ActionsSDK.Core", "libraries\Bot.Builder.Community.Adapter.ActionsSDK.Core\Bot.Builder.Community.Adapters.ActionsSDK.Core.csproj", "{58EF2CAF-5B27-476B-A9C7-BB6A8D8B470B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.ActionsSDK", "libraries\Bot.Builder.Community.Adapters.ActionsSDK\Bot.Builder.Community.Adapters.ActionsSDK.csproj", "{22EBD054-1CBC-4832-9D90-4F243570CB54}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Shared", "libraries\Bot.Builder.Community.Adapters.Shared\Bot.Builder.Community.Adapters.Shared.csproj", "{87220934-70D0-4BE7-8ED3-C403281CCCFD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug - NuGet Packages|Any CPU = Debug - NuGet Packages|Any CPU
@@ -354,6 +360,30 @@ Global
 		{7856219A-3537-4F81-86A8-4CB020BD2B9A}.Documentation|Any CPU.Build.0 = Debug|Any CPU
 		{7856219A-3537-4F81-86A8-4CB020BD2B9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7856219A-3537-4F81-86A8-4CB020BD2B9A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58EF2CAF-5B27-476B-A9C7-BB6A8D8B470B}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{58EF2CAF-5B27-476B-A9C7-BB6A8D8B470B}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{58EF2CAF-5B27-476B-A9C7-BB6A8D8B470B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58EF2CAF-5B27-476B-A9C7-BB6A8D8B470B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58EF2CAF-5B27-476B-A9C7-BB6A8D8B470B}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{58EF2CAF-5B27-476B-A9C7-BB6A8D8B470B}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{58EF2CAF-5B27-476B-A9C7-BB6A8D8B470B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58EF2CAF-5B27-476B-A9C7-BB6A8D8B470B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22EBD054-1CBC-4832-9D90-4F243570CB54}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{22EBD054-1CBC-4832-9D90-4F243570CB54}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{22EBD054-1CBC-4832-9D90-4F243570CB54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22EBD054-1CBC-4832-9D90-4F243570CB54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22EBD054-1CBC-4832-9D90-4F243570CB54}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{22EBD054-1CBC-4832-9D90-4F243570CB54}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{22EBD054-1CBC-4832-9D90-4F243570CB54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22EBD054-1CBC-4832-9D90-4F243570CB54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87220934-70D0-4BE7-8ED3-C403281CCCFD}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{87220934-70D0-4BE7-8ED3-C403281CCCFD}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{87220934-70D0-4BE7-8ED3-C403281CCCFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87220934-70D0-4BE7-8ED3-C403281CCCFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87220934-70D0-4BE7-8ED3-C403281CCCFD}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{87220934-70D0-4BE7-8ED3-C403281CCCFD}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{87220934-70D0-4BE7-8ED3-C403281CCCFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87220934-70D0-4BE7-8ED3-C403281CCCFD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -396,6 +426,9 @@ Global
 		{0F8ADFCE-3E91-4F85-BC0B-4B0A5C98797C} = {BF310E8A-8DA1-441F-90E9-DE0E66553048}
 		{6356EF6A-406B-4B2E-A229-C1D042C2FCF6} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
 		{7856219A-3537-4F81-86A8-4CB020BD2B9A} = {BF310E8A-8DA1-441F-90E9-DE0E66553048}
+		{58EF2CAF-5B27-476B-A9C7-BB6A8D8B470B} = {BF310E8A-8DA1-441F-90E9-DE0E66553048}
+		{22EBD054-1CBC-4832-9D90-4F243570CB54} = {BF310E8A-8DA1-441F-90E9-DE0E66553048}
+		{87220934-70D0-4BE7-8ED3-C403281CCCFD} = {BF310E8A-8DA1-441F-90E9-DE0E66553048}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FE3B75E-BA2B-45BC-BBF0-DDA8BA10C4F0}
