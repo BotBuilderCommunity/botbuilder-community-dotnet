@@ -21,8 +21,9 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Helpers
             }
 
             var activity = messageActivities.Last();
+            var endWithPeriod = activity.Text?.TrimEnd().EndsWith(".") ?? false;
 
-            if (messageActivities.Any(a => !String.IsNullOrEmpty(a.Speak)))
+            if (messageActivities.Any(a => !String.IsNullOrEmpty(a.Speak))) 
             {
                 var speakText = String.Join("<break strength=\"strong\"/>", messageActivities
                     .Select(a => !String.IsNullOrEmpty(a.Speak) ? StripSpeakTag(a.Speak) : NormalizeActivityText(a.TextFormat, a.Text))
@@ -32,10 +33,15 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Helpers
                 activity.Speak = $"<speak>{speakText}</speak>";
             }
 
-            activity.Text = String.Join(". ", messageActivities
+            activity.Text = String.Join(" ", messageActivities
                 .Select(a => NormalizeActivityText(a.TextFormat, a.Text))
                 .Where(s => !String.IsNullOrEmpty(s))
-                .Select(s => s.Trim(new char[] { ' ', '.' })));
+                .Select(s => s.TrimEnd(' ')));
+
+            if (activity.Text.EndsWith(".") && !endWithPeriod)
+            {
+                activity.Text = activity.Text.TrimEnd('.');
+            }
 
             activity.Attachments = messageActivities.Where(x => x.Attachments != null).SelectMany(x => x.Attachments).ToList();
 
