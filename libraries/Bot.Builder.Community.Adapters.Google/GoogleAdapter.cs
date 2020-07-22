@@ -82,10 +82,9 @@ namespace Bot.Builder.Community.Adapters.Google
             }
 
             Activity activity;
-            string responseJson = string.Empty;
-            TurnContextEx context;
+            string responseJson;
 
-            switch (_options.WebhookType)
+            if (_options.WebhookType == GoogleWebhookType.DialogFlow)
             {
                 case GoogleWebhookType.DialogFlow:
                     var dialogFlowRequest = JsonConvert.DeserializeObject<DialogFlowRequest>(body);
@@ -142,7 +141,7 @@ namespace Bot.Builder.Community.Adapters.Google
             throw new NotImplementedException();
         }
 
-        public virtual Activity ProcessOutgoingActivities(List<Activity> activities)
+        public virtual Task<Activity> ProcessOutgoingActivitiesAsync(List<Activity> activities, ITurnContext turnContext)
         {
             return ActivityMappingHelper.MergeActivities(activities);
         }

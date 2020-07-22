@@ -299,7 +299,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
             // is included and one activity where it is not, to ensure the stripping / wrapping
             // of the speak tag is handled correctly.
             var firstActivity = MessageFactory.Text("This is the first activity.", "This is<break strength=\"strong\"/>the first activity SSML");
-            var secondActivity = MessageFactory.Text("This is the second activity.", "<speak>This is the second activity SSML</speak>");
+            var secondActivity = MessageFactory.Text("This is the second activity", "<speak>This is the second activity SSML</speak>");
 
             var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { firstActivity, secondActivity });
 
@@ -370,7 +370,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
 
             var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { firstActivity, secondActivity });
 
-            Assert.Equal("This is the first activity. Heading 1. This is another paragraph. Item 1, Item 2, Item 3. Heading 2. 1. Item 1, 2. Item 2, 3. Item 3. More info visit our web site www.microsoft.com. This is the second activity",
+            Assert.Equal("This is the first activity. Heading 1. This is another paragraph. Item 1, Item 2, Item 3. Heading 2. 1. Item 1, 2. Item 2, 3. Item 3. More info visit our web site www.microsoft.com. This is the second activity.",
                 processActivityResult.MergedActivity.Text);
 
             Assert.Equal("<speak>This is<break strength=\"strong\"/>the first activity SSML<break strength=\"strong\"/>This is the second activity SSML</speak>",
