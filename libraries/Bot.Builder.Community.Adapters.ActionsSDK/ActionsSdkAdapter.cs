@@ -71,7 +71,7 @@ namespace Bot.Builder.Community.Adapters.ActionsSDK
             var actionsSdkRequestMapper = new ActionsSdkRequestMapper(_actionsSdkRequestMapperOptions, _logger);
             var activity = actionsSdkRequestMapper.RequestToActivity(actionsSdkRequest);
             var context = await CreateContextAndRunPipelineAsync(bot, cancellationToken, activity);
-            var actionsSdkResponse = actionsSdkRequestMapper.ActivityToResponse(ProcessOutgoingActivities(context.SentActivities), actionsSdkRequest);
+            var actionsSdkResponse = actionsSdkRequestMapper.ActivityToResponse(await ProcessOutgoingActivitiesAsync(context.SentActivities, context), actionsSdkRequest);
             var responseJson = JsonConvert.SerializeObject(actionsSdkResponse, JsonSerializerSettings);
             
             httpResponse.ContentType = "application/json;charset=utf-8";
@@ -111,9 +111,9 @@ namespace Bot.Builder.Community.Adapters.ActionsSDK
             throw new NotImplementedException();
         }
 
-        public virtual Activity ProcessOutgoingActivities(List<Activity> activities)
+        public virtual Task<Activity> ProcessOutgoingActivitiesAsync(List<Activity> activities, ITurnContext turnContext)
         {
-            return ActivityMappingHelper.MergeActivities(activities);
+            return Task.FromResult(ActivityMappingHelper.MergeActivities(activities));
         }
 
         public override Task<ResourceResponse[]> SendActivitiesAsync(ITurnContext turnContext, Activity[] activities, CancellationToken cancellationToken)

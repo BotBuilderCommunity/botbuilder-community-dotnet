@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Bot.Builder.Community.Adapters.Zoom.Attachments
 {
-    public static class Extensions
+    public static class AttachmentExtensions
     {
         public static Attachment ToAttachment(this BodyItem bodyItem)
         {

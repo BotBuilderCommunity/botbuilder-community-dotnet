@@ -30,7 +30,7 @@ namespace Bot.Builder.Community.Samples.ActionsSdk
             services.AddSingleton(sp => new ActionsSdkAdapterOptions()
             {
                 ActionInvocationName = "<YOUR INVOCATION NAME>",
-                ActionProjectId = "",
+                ActionProjectId = "<YOUR ACTION PROJECT ID>",
                 ShouldEndSessionByDefault = false,
             });
 

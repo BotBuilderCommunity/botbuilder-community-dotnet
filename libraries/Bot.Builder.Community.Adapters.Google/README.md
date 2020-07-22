@@ -1,4 +1,6 @@
-# Google Adapter for Bot Builder v4 .NET SDK
+# Google legacy Actions SDK and DialogFlow Adapter for Bot Builder v4 .NET SDK
+
+> **This adapter works with the legacy Google Actions SDK and DialogFlow. A new adapter supporting the [latest Actions SDK](https://developers.google.com/assistant/conversational/overview) can be found [here](../Bot.Builder.Community.Adapters.ActionsSDK).**
 
 ## Build status
 | Branch | Status | Recommended NuGet package version |
@@ -35,7 +37,7 @@ Install into your project use the following command in the package manager.
 
 ## Sample
 
-Sample bot, showing examples of Google specific functionality using the current preview is available [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/feature/google-adapter-refactor/samples/Google%20Adapter%20Sample).
+A Sample bot with examples of specific functionality for the legacy Actions SDK and DialogFLow (such as sending cards, lists etc.) is available [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/samples/Google%20Adapter%20Sample).
 
 ## Usage
 

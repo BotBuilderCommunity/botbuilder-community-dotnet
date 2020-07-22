@@ -8,7 +8,7 @@ namespace Bot.Builder.Community.Samples.ActionsSdk.Controllers
     // This ASP Controller is created to handle a request. Dependency Injection will provide the Adapter and IBot
     // implementation at runtime. Multiple different IBot implementations running at different endpoints can be
     // achieved by specifying a more specific type for the bot constructor argument.
-    [Route("api/google")]
+    [Route("api/actionssdk")]
     [ApiController]
     public class GoogleController : ControllerBase
     {

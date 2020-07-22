@@ -15,6 +15,12 @@
 </RepositoryUrl>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="media\**" />
+    <EmbeddedResource Remove="media\**" />
+    <None Remove="media\**" />
+  </ItemGroup>
+
 	<ItemGroup>
 		<PackageReference Include="JWT" Version="5.0.1" />
 		<PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="$(Bot_Builder_Version)" />
