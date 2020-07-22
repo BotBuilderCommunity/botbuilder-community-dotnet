@@ -15,6 +15,6 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Model.Response
         public string FormattedText { get; set; }
         public Image Image { get; set; }
         public Button[] Buttons { get; set; }
-        public ImageDisplayOptions? Display { get; set; }
+        public ImageDisplayOptions? ImageDisplayOptions { get; set; }
     }
 }
