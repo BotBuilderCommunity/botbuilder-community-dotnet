@@ -1,0 +1,27 @@
+﻿{
+  "type": "AdaptiveCard",
+  "version": "1.0",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "Thanks! When do you want to book it?"
+    },
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "Input.Date",
+          "id": "dateTimeValue",
+          "value": "2020-05-10"
+        }
+      ]
+    }
+  ],
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "actions": [
+    {
+      "type": "Action.Submit",
+      "title": "Next"
+    }
+  ]
+}
