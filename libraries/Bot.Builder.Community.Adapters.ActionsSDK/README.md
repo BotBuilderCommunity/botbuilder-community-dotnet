@@ -142,7 +142,7 @@ public class ActionsSdkController : ControllerBase
     private readonly ActionsSdkAdapter Adapter;
     private readonly IBot Bot;
 
-    public GoogleController(ActionsSdkAdapter adapter, IBot bot)
+    public ActionsSdkController(ActionsSdkAdapter adapter, IBot bot)
     { 
         Adapter = adapter;
         Bot = bot;
@@ -188,6 +188,7 @@ You need to set the following properties
         {
             ActionInvocationName = "YOUR-ACTION-DISPLAY-NAME",
             ActionProjectId = "",
+            ShouldEndSessionByDefault = false
         };
     });
 ```
