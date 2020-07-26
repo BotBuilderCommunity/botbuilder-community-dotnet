@@ -1,0 +1,17 @@
+handlers:
+- name: no_match
+- name: no_match3
+- name: no_match2
+- name: no_input
+- name: no_input3
+- name: no_input2
+- name: cancel
+- name: main
+- name: option
+- name: accountlinkingnotverified
+- name: accountlinkingcompleted
+- name: accountlinkingerror
+- name: accountlinkingcancelled
+httpsEndpoint:
+  baseUrl: https://www.urltoyourbot.com/api/actionssdk/
+  endpointApiVersion: 2

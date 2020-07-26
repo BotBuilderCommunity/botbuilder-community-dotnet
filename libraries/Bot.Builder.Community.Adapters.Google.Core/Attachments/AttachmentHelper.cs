@@ -1,6 +1,7 @@
 ﻿using System;
 using Bot.Builder.Community.Adapters.Google.Core.Model.Response;
 using Bot.Builder.Community.Adapters.Google.Core.Model.SystemIntents;
+using Bot.Builder.Community.Adapters.Shared;
 using Microsoft.Bot.Schema;
 using Microsoft.Rest;
 using Newtonsoft.Json;
@@ -27,95 +28,49 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Attachments
                 switch (attachment.ContentType)
                 {
                     case HeroCard.ContentType:
-                        Convert<HeroCard>(attachment);
+                        SharedAttachmentHelper.Convert<HeroCard>(attachment);
                         break;
                     case SigninCard.ContentType:
-                        Convert<SigninCard>(attachment);
+                        SharedAttachmentHelper.Convert<SigninCard>(attachment);
                         break;
                     case GoogleAttachmentContentTypes.BasicCard:
-                        Convert<BasicCard>(attachment);
+                        SharedAttachmentHelper.Convert<BasicCard>(attachment);
                         break;
                     case GoogleAttachmentContentTypes.MediaResponse:
-                        Convert<MediaResponse>(attachment);
+                        SharedAttachmentHelper.Convert<MediaResponse>(attachment);
                         break;
                     case GoogleAttachmentContentTypes.TableCard:
-                        Convert<TableCard>(attachment);
+                        SharedAttachmentHelper.Convert<TableCard>(attachment);
                         break;
                     case GoogleAttachmentContentTypes.BrowsingCarousel:
-                        Convert<BrowsingCarousel>(attachment);
+                        SharedAttachmentHelper.Convert<BrowsingCarousel>(attachment);
                         break;
                     case GoogleAttachmentContentTypes.CarouselIntent:
-                        Convert<CarouselIntent>(attachment);
+                        SharedAttachmentHelper.Convert<CarouselIntent>(attachment);
                         break;
                     case GoogleAttachmentContentTypes.ListIntent:
-                        Convert<ListIntent>(attachment);
+                        SharedAttachmentHelper.Convert<ListIntent>(attachment);
                         break;
                     case GoogleAttachmentContentTypes.DateTimeIntent:
-                        Convert<DateTimeIntent>(attachment);
+                        SharedAttachmentHelper.Convert<DateTimeIntent>(attachment);
                         break;
                     case GoogleAttachmentContentTypes.PermissionsIntent:
-                        Convert<PermissionsIntent>(attachment);
+                        SharedAttachmentHelper.Convert<PermissionsIntent>(attachment);
                         break;
                     case GoogleAttachmentContentTypes.PlaceLocationIntent:
-                        Convert<PlaceLocationIntent>(attachment);
+                        SharedAttachmentHelper.Convert<PlaceLocationIntent>(attachment);
                         break;
                     case GoogleAttachmentContentTypes.ConfirmationIntent:
-                        Convert<ConfirmationIntent>(attachment);
+                        SharedAttachmentHelper.Convert<ConfirmationIntent>(attachment);
                         break;
                     case GoogleAttachmentContentTypes.NewSurfaceIntent:
-                        Convert<NewSurfaceIntent>(attachment);
+                        SharedAttachmentHelper.Convert<NewSurfaceIntent>(attachment);
                         break;
                     case GoogleAttachmentContentTypes.SigninIntent:
-                        Convert<SigninIntent>(attachment);
+                        SharedAttachmentHelper.Convert<SigninIntent>(attachment);
                         break;
                 }
             }
-        }
-
-        private static void Convert<T>(Attachment attachment)
-        {
-            try
-            {
-                attachment.Content = attachment.ContentAs<T>();
-            }
-            catch (JsonException ex)
-            {
-                throw new ValidationException($"Failed to convert Google Attachment with ContentType {attachment?.ContentType} to {typeof(T).Name}", ex);
-            }
-            catch
-            {
-            }
-        }
-
-        /// <summary>
-        /// Convert the Attachment Content field to the given type. An exception is thrown if the conversion fails.
-        /// </summary>
-        public static T ContentAs<T>(this Attachment attachment)
-        {
-            if (attachment == null)
-                throw new ArgumentNullException(nameof(attachment));
-
-            if (attachment.Content == null)
-            {
-                return default;
-            }
-            if (typeof(T).IsValueType)
-            {
-                return (T)System.Convert.ChangeType(attachment.Content, typeof(T));
-            }
-            if (attachment.Content is T)
-            {
-                return (T)attachment.Content;
-            }
-            if (typeof(T) == typeof(byte[]))
-            {
-                return (T)(object)System.Convert.FromBase64String(attachment.Content.ToString());
-            }
-            if (attachment.Content is string)
-            {
-                return JsonConvert.DeserializeObject<T>((string)attachment.Content);
-            }
-            return (T)((JObject)attachment.Content).ToObject<T>();
         }
     }
 }

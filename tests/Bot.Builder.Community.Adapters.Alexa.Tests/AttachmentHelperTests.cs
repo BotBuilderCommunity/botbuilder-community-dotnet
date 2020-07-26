@@ -5,7 +5,6 @@ using Alexa.NET.Response;
 using Alexa.NET.Response.Directive;
 using Alexa.NET.Response.Directive.Templates.Types;
 using Bot.Builder.Community.Adapters.Alexa.Core.Attachments;
-using Bot.Builder.Community.Adapters.Alexa.Core.Helpers;
 using Bot.Builder.Community.Adapters.Alexa.Tests.Helpers;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json.Linq;
@@ -46,6 +45,23 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
         }
 
         [Fact]
+        public void ConvertAttachmentContentTypeUnsupportedDoesNothing()
+        {
+            var activity = new Activity
+            {
+                Attachments = new List<Attachment> { new TestAttachment { ContentType = "application/vnd.nocompany.test", Content = new ChannelAccount { Id = "caid" } } }
+            };
+            activity.ConvertAttachmentContent();
+
+            Assert.Equal(typeof(TestAttachment), activity.Attachments[0].GetType());
+
+            var anonymizedActivity = ActivityHelper.GetAnonymizedActivity(activity);
+
+            anonymizedActivity.ConvertAttachmentContent();
+            Assert.Equal(typeof(JObject), anonymizedActivity.Attachments[0].Content.GetType());
+        }
+
+        [Fact]
         public void ConvertAttachmentAlexaSimpleCard() =>
             VerifyAttachmentContentConversion<SimpleCard>(new SimpleCard
             {
@@ -75,10 +91,10 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
 
         [Fact]
         public void NonSupportedAttachmentCardIsIgnored() =>
-            VerifyAttachmentContentConversion<NonSupportedCard>(new NonSupportedCard
+            Assert.Throws<Microsoft.Rest.ValidationException>(() => VerifyAttachmentContentConversion<NonSupportedCard>(new NonSupportedCard
             {
                 Value = "non-supported card value"
-            }.ToAttachment(), false);
+            }.ToAttachment(), false));
 
         [Fact]
         public void ConvertAttachmentAudioPlayerPlayDirective() =>
