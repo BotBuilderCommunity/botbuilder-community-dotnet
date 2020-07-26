@@ -75,6 +75,28 @@ Update the appsettings.json with the correct values:
 }
 ```
 
+### Create Teams App
+
+Now that the bot is ready, we can create our new Microsoft Teams application using the Teams App Studio. Within there we well connect our Bot Channels Registration service we created earlier and also add a messaging extension command with the name **createTaskModule** exactly as we have used in our EchoBot.cs:
+
+![Create Teams app](https://bisser.io/images/061-09.png)
+
+From the Bots section, make sure to add personal, team and group as a scope so users can use your messaging extension in 1:1 & group chats and teams conversations.
+
+In order to create the messaging extension correctly, you'll need to select the same bot as before and then add a new command like this:
+
+![Create Teams app](https://bisser.io/images/061-10.png)
+
+![Create Teams app](https://bisser.io/images/061-11.png)
+
+![Create Teams app](https://bisser.io/images/061-12.png)
+
+From the Domains and permissions section also add token.botframework.com to the list of valid domains to make authentication work:
+
+![Create Teams app](https://bisser.io/images/061-13.png)
+
+Now you can run the bot and then install the Teams app.
+
 ### Run Bot
 
 - In a terminal, navigate to `Bot.Builder.Community.Samples.Teams`
