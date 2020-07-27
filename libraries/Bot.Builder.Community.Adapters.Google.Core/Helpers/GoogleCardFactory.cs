@@ -20,7 +20,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core.Helpers
                     FormattedText = formattedText,
                     Buttons = buttons?.ToArray(),
                     Image = image,
-                    Display = displayOptions
+                    ImageDisplayOptions = displayOptions
                 }
             };
         }
