@@ -1,0 +1,60 @@
+﻿{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.0",
+  "body": [
+    {
+      "speak": "Tom's Pie is a Pizza restaurant which is rated 9.3 by customers.",
+      "type": "ColumnSet",
+      "columns": [
+        {
+          "type": "Column",
+          "width": 2,
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "One of our favorites"
+            },
+            {
+              "type": "TextBlock",
+              "text": "Express Wash",
+              "weight": "Bolder",
+              "size": "ExtraLarge",
+              "spacing": "None"
+            },
+            {
+              "type": "TextBlock",
+              "text": "$25.00",
+              "size": "Medium",
+              "wrap": true,
+              "maxLines": 3
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "width": 1,
+          "items": [
+            {
+              "type": "Image",
+              "url": "https://images.unsplash.com/photo-1575844611398-2a68400b437c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1352&q=80",
+              "size": "auto"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.OpenUrl",
+      "title": "More Info",
+      "url": "https://www.github.com/botbuildercommunity/"
+    },
+    {
+      "type": "Action.Submit",
+      "title": "Select",
+      "data": "Express Wash"
+    }
+  ]
+}
