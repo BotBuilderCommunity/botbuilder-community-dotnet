@@ -19,13 +19,18 @@ namespace Cards_Library_Sample.Bots
         private const string DemoDisableBatch = "Disable batch";
         private const string DemoTranslateCards = "Translate cards";
 
+        private const string BehaviorTranslate = "translate";
+
         public ConversationState ConversationState { get; }
+
+        public CardManager CardManager { get; }
 
         public AdaptiveCardTranslator Translator { get; }
 
-        public CardsLibraryBot(ConversationState conversationState, AdaptiveCardTranslator adaptiveCardTranslator)
+        public CardsLibraryBot(ConversationState conversationState, CardManager cardManager, AdaptiveCardTranslator adaptiveCardTranslator)
         {
             ConversationState = conversationState;
+            CardManager = cardManager;
             Translator = adaptiveCardTranslator;
         }
 
@@ -48,10 +53,10 @@ namespace Cards_Library_Sample.Bots
 
                 switch (jObject["behavior"]?.ToString())
                 {
-                    case "translate":
+                    case BehaviorTranslate:
 
                         var language = jObject["language"]?.ToString();
-                        var card = CreateAdaptiveCard();
+                        var card = CreateTranslationCard();
 
                         if (string.IsNullOrWhiteSpace(Translator.MicrosoftTranslatorConfig.SubscriptionKey))
                         {
@@ -132,7 +137,7 @@ namespace Cards_Library_Sample.Bots
             await ConversationState.SaveChangesAsync(turnContext, cancellationToken: cancellationToken);
         }
 
-        private static AdaptiveCard CreateAdaptiveCard() => new AdaptiveCard("1.0")
+        private static AdaptiveCard CreateTranslationCard() => new AdaptiveCard("1.0")
         {
             Body = new List<AdaptiveElement>
             {
@@ -173,7 +178,7 @@ namespace Cards_Library_Sample.Bots
                     Title = "Translate",
                     Data = new
                     {
-                        behavior = "translate",
+                        behavior = BehaviorTranslate,
                     },
                 }
             },
@@ -181,7 +186,7 @@ namespace Cards_Library_Sample.Bots
 
         private async Task ShowTranslationSample(ITurnContext turnContext, CancellationToken cancellationToken)
         {
-            var card = CreateAdaptiveCard();
+            var card = CreateTranslationCard();
 
             // There's no need to convert the card to a JObject
             // since the library will do that for us
