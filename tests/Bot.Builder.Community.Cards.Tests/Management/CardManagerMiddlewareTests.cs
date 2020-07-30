@@ -47,13 +47,13 @@ namespace Bot.Builder.Community.Cards.Tests.Management
 
                 var actionActivity = new Activity(value: new JObject
                 {
-                    { DataId.GetKey(DataIdTypes.Action), ActionId }
+                    { DataId.GetKey(DataIdScopes.Action), ActionId }
                 });
 
                 action?.Invoke(middleware);
 
-                middleware.UpdatingOptions.IdOptions.Set(DataIdTypes.Action, ActionId);
-                middleware.NonUpdatingOptions.IdOptions.Set(DataIdTypes.Action, ActionId);
+                middleware.UpdatingOptions.IdOptions.Set(DataIdScopes.Action, ActionId);
+                middleware.NonUpdatingOptions.IdOptions.Set(DataIdScopes.Action, ActionId);
 
                 await new TestFlow(adapter, async (turnContext, cancellationToken) =>
                 {
@@ -181,11 +181,11 @@ namespace Bot.Builder.Community.Cards.Tests.Management
 
             var actionActivity = new Activity(value: new JObject
             {
-                { DataId.GetKey(DataIdTypes.Action), ActionId }
+                { DataId.GetKey(DataIdScopes.Action), ActionId }
             });
 
             middleware.NonUpdatingOptions.IdTrackingStyle = TrackingStyle.TrackDisabled;
-            middleware.NonUpdatingOptions.IdOptions.Set(DataIdTypes.Action, ActionId);
+            middleware.NonUpdatingOptions.IdOptions.Set(DataIdScopes.Action, ActionId);
 
             await new TestFlow(adapter, async (turnContext, cancellationToken) =>
             {
@@ -197,7 +197,7 @@ namespace Bot.Builder.Community.Cards.Tests.Management
                 var state = await accessor.GetNotNullAsync(turnContext, () => new CardManagerState());
 
                 await turnContext.SendActivityAsync(
-                    $"Tracked: {(state.DataIdsByType.TryGetValue(DataIdTypes.Action, out var set) ? set.Contains(ActionId) : false)}");
+                    $"Tracked: {(state.DataIdsByScope.TryGetValue(DataIdScopes.Action, out var set) ? set.Contains(ActionId) : false)}");
             })
                 .Send("hi")
                     .AssertReply(cardActivity, EqualityComparer<IActivity>.Default)

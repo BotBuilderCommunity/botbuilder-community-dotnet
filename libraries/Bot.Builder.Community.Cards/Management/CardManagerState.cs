@@ -13,8 +13,8 @@ namespace Bot.Builder.Community.Cards.Management
         /// <value>
         /// The keys are data ID types and the values are the ID values.
         /// </value>
-        [JsonProperty("dataIdsByType")]
-        public IDictionary<string, ISet<string>> DataIdsByType { get; } = new Dictionary<string, ISet<string>>();
+        [JsonProperty("dataIdsByScope")]
+        public IDictionary<string, ISet<string>> DataIdsByScope { get; } = new Dictionary<string, ISet<string>>();
 
         [JsonProperty("savedActivities")]
         public ISet<Activity> SavedActivities { get; } = new HashSet<Activity>();

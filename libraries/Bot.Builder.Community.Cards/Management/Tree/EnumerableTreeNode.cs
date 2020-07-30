@@ -5,7 +5,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
     internal class EnumerableTreeNode<T> : TreeNode<IEnumerable<T>, T>
         where T : class
     {
-        public EnumerableTreeNode(TreeNodeType childNodeType, string idType)
+        public EnumerableTreeNode(TreeNodeType childNodeType, string idScope)
             : base((value, next) =>
             {
                 foreach (var child in value)
@@ -18,7 +18,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 return value;
             })
         {
-            IdType = idType;
+            IdScope = idScope;
         }
     }
 }

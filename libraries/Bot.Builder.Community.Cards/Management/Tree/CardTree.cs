@@ -27,7 +27,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
         private static readonly Dictionary<TreeNodeType, ITreeNode> _tree = new Dictionary<TreeNodeType, ITreeNode>
         {
             {
-                TreeNodeType.Batch, new EnumerableTreeNode<IMessageActivity>(TreeNodeType.Activity, DataIdTypes.Batch)
+                TreeNodeType.Batch, new EnumerableTreeNode<IMessageActivity>(TreeNodeType.Activity, DataIdScopes.Batch)
             },
             {
                 TreeNodeType.Activity, new TreeNode<IMessageActivity, IEnumerable<Attachment>>((activity, next) =>
@@ -39,7 +39,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 })
             },
             {
-                TreeNodeType.Carousel, new EnumerableTreeNode<Attachment>(TreeNodeType.Attachment, DataIdTypes.Carousel)
+                TreeNodeType.Carousel, new EnumerableTreeNode<Attachment>(TreeNodeType.Attachment, DataIdScopes.Carousel)
             },
             {
                 TreeNodeType.Attachment, new TreeNode<Attachment, object>((attachment, next) =>
@@ -100,10 +100,10 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 TreeNodeType.VideoCard, new RichCardTreeNode<VideoCard>(card => card.Buttons)
             },
             {
-                TreeNodeType.SubmitActionList, new EnumerableTreeNode<object>(TreeNodeType.SubmitAction, DataIdTypes.Card)
+                TreeNodeType.SubmitActionList, new EnumerableTreeNode<object>(TreeNodeType.SubmitAction, DataIdScopes.Card)
             },
             {
-                TreeNodeType.CardActionList, new EnumerableTreeNode<CardAction>(TreeNodeType.CardAction, DataIdTypes.Card)
+                TreeNodeType.CardActionList, new EnumerableTreeNode<CardAction>(TreeNodeType.CardAction, DataIdScopes.Card)
             },
             {
                 TreeNodeType.SubmitAction, new TreeNode<object, JObject>((action, next) =>
@@ -151,13 +151,13 @@ namespace Bot.Builder.Community.Cards.Management.Tree
             {
                 TreeNodeType.ActionData, new TreeNode<JObject, DataId>((data, next) =>
                 {
-                    foreach (var type in DataId.Types)
+                    foreach (var scope in DataId.Scopes)
                     {
-                        var id = data.GetIdFromActionData(type);
+                        var id = data.GetIdFromActionData(scope);
 
                         if (id != null)
                         {
-                            next(new DataId(type, id), TreeNodeType.Id);
+                            next(new DataId(scope, id), TreeNodeType.Id);
                         }
                     }
 
@@ -254,7 +254,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
         internal static void ApplyIds<TEntry>(TEntry entryValue, DataIdOptions options = null, TreeNodeType? entryType = null)
             where TEntry : class
         {
-            options = options ?? new DataIdOptions(DataIdTypes.Action);
+            options = options ?? new DataIdOptions(DataIdScopes.Action);
 
             var modifiedOptions = options.Clone();
 
@@ -282,15 +282,15 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                         });
                     }
 
-                    if (node.IdType is string idType)
+                    if (node.IdScope is string idScope)
                     {
-                        if (options.HasIdType(idType))
+                        if (options.HasIdScope(idScope))
                         {
-                            var id = options.Get(idType);
+                            var id = options.Get(idScope);
 
                             if (id is null)
                             {
-                                modifiedOptions.Set(idType, DataId.GenerateValue(idType));
+                                modifiedOptions.Set(idScope, DataId.GenerateValue(idScope));
                             }
                         }
                     }

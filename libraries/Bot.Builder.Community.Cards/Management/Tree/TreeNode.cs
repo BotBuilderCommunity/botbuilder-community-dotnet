@@ -23,7 +23,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
             ChildCaller = (value, next, reassignChildren) => childCaller(value, next);
         }
 
-        public string IdType { get; set; }
+        public string IdScope { get; set; }
 
         private ChildCallerDelegate<TValue, TChild> ChildCaller { get; }
 

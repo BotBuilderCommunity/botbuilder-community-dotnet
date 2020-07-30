@@ -38,7 +38,7 @@ namespace Bot.Builder.Community.Cards.Management
             AutoSaveActivitiesOnSend = true,
             AutoSeparateAttachmentsOnSend = true,
             IdTrackingStyle = TrackingStyle.None,
-            IdOptions = new DataIdOptions(DataIdTypes.Action),
+            IdOptions = new DataIdOptions(DataIdScopes.Action),
         };
 
         public static CardManagerMiddlewareOptions GetDefaultNonUpdatingOptions() => new CardManagerMiddlewareOptions
@@ -53,7 +53,7 @@ namespace Bot.Builder.Community.Cards.Management
             AutoSaveActivitiesOnSend = false,
             AutoSeparateAttachmentsOnSend = false,
             IdTrackingStyle = TrackingStyle.TrackEnabled,
-            IdOptions = new DataIdOptions(DataIdTypes.Action),
+            IdOptions = new DataIdOptions(DataIdScopes.Action),
         };
 
         public CardManagerMiddleware SetAutoAdaptOutgoingCardActions(bool autoAdaptOutgoingCardActions)
@@ -121,7 +121,7 @@ namespace Bot.Builder.Community.Cards.Management
 
                         foreach (var incomingId in incomingIds)
                         {
-                            state.DataIdsByType.TryGetValue(incomingId.Type, out var trackedSet);
+                            state.DataIdsByScope.TryGetValue(incomingId.Scope, out var trackedSet);
 
                             var setContainsId = trackedSet?.Contains(incomingId.Value) == true;
 
@@ -146,11 +146,10 @@ namespace Bot.Builder.Community.Cards.Management
 
                     if (shouldDelete)
                     {
-                        // If there are multiple ID types in use,
-                        // just delete the one that represents the largest scope
-                        var type = DataId.Types.ElementAtOrDefault(incomingIds.Max(id => DataId.Types.IndexOf(id.Type)));
+                        // If there are multiple ID scopes in use, just delete the one with the largest range
+                        var scope = DataId.Scopes.ElementAtOrDefault(incomingIds.Max(id => DataId.Scopes.IndexOf(id.Scope)));
 
-                        await Manager.DeleteActionSourceAsync(turnContext, type, cancellationToken).ConfigureAwait(false);
+                        await Manager.DeleteActionSourceAsync(turnContext, scope, cancellationToken).ConfigureAwait(false);
                     }
                 }
             }

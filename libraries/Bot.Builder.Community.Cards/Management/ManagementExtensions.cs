@@ -105,6 +105,7 @@ namespace Bot.Builder.Community.Cards.Management
             });
         }
 
+        // TODO: Expose more methods to apply ID's to more tree nodes
         public static void ApplyIdsToBatch(this IEnumerable<IMessageActivity> activities, DataIdOptions options = null)
         {
             if (activities is null)
@@ -387,18 +388,18 @@ namespace Bot.Builder.Community.Cards.Management
         {
             foreach (var kvp in options.GetIds())
             {
-                var type = kvp.Key;
+                var scope = kvp.Key;
 
-                if (options.Overwrite || data.GetIdFromActionData(type) is null)
+                if (options.Overwrite || data.GetIdFromActionData(scope) is null)
                 {
                     var id = kvp.Value;
 
                     if (id is null)
                     {
-                        if (type == DataIdTypes.Action)
+                        if (scope == DataIdScopes.Action)
                         {
                             // Only generate an ID for the action
-                            id = DataId.GenerateValue(DataIdTypes.Action);
+                            id = DataId.GenerateValue(DataIdScopes.Action);
                         }
                         else
                         {
@@ -408,15 +409,15 @@ namespace Bot.Builder.Community.Cards.Management
                         }
                     }
 
-                    data[DataId.GetKey(type)] = id;
+                    data[DataId.GetKey(scope)] = id;
                 }
             }
         }
 
-        internal static string GetIdFromActionData(this JObject data, string type = DataIdTypes.Action)
-            => data?.GetValue(DataId.GetKey(type)) is JToken id ? id.ToString() : null;
+        internal static string GetIdFromActionData(this JObject data, string scope = DataIdScopes.Action)
+            => data?.GetValue(DataId.GetKey(scope)) is JToken id ? id.ToString() : null;
 
         internal static IEnumerable<DataId> GetIdsFromActionData(this JObject data)
-            => DataId.Types.Select(type => new DataId(type, data.GetIdFromActionData(type))).Where(id => id.Value != null);
+            => DataId.Scopes.Select(scope => new DataId(scope, data.GetIdFromActionData(scope))).Where(id => id.Value != null);
     }
 }

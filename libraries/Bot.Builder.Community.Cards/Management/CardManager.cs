@@ -105,7 +105,7 @@ namespace Bot.Builder.Community.Cards.Management
 
             var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
 
-            state.DataIdsByType.InitializeKey(dataId.Type, new HashSet<string>()).Add(dataId.Value);
+            state.DataIdsByScope.InitializeKey(dataId.Scope, new HashSet<string>()).Add(dataId.Value);
 
             await StateAccessor.SetAsync(turnContext, state, cancellationToken).ConfigureAwait(false);
         }
@@ -121,7 +121,7 @@ namespace Bot.Builder.Community.Cards.Management
 
             var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
 
-            if (state.DataIdsByType.TryGetValue(dataId.Type, out var ids))
+            if (state.DataIdsByScope.TryGetValue(dataId.Scope, out var ids))
             {
                 ids?.Remove(dataId.Value);
             }
@@ -135,7 +135,7 @@ namespace Bot.Builder.Community.Cards.Management
 
             var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
 
-            state.DataIdsByType.Clear();
+            state.DataIdsByScope.Clear();
 
             await StateAccessor.SetAsync(turnContext, state, cancellationToken).ConfigureAwait(false);
         }
@@ -230,24 +230,24 @@ namespace Bot.Builder.Community.Cards.Management
             }
         }
 
-        public async Task DeleteActionSourceAsync(ITurnContext turnContext, string dataIdType, CancellationToken cancellationToken = default)
+        public async Task DeleteActionSourceAsync(ITurnContext turnContext, string dataIdScope, CancellationToken cancellationToken = default)
         {
             // TODO: Provide a way to delete elements by specifying an ID that's not in the incoming action data
 
             BotAssert.ContextNotNull(turnContext);
 
-            if (string.IsNullOrEmpty(dataIdType))
+            if (string.IsNullOrEmpty(dataIdScope))
             {
-                throw new ArgumentNullException(nameof(dataIdType));
+                throw new ArgumentNullException(nameof(dataIdScope));
             }
 
             var state = await GetStateAsync(turnContext, cancellationToken).ConfigureAwait(false);
 
-            if (dataIdType == DataIdTypes.Batch)
+            if (dataIdScope == DataIdScopes.Batch)
             {
-                if (turnContext.GetIncomingActionData().ToJObject().GetIdFromActionData(DataIdTypes.Batch) is string batchId)
+                if (turnContext.GetIncomingActionData().ToJObject().GetIdFromActionData(DataIdScopes.Batch) is string batchId)
                 {
-                    var toDelete = new DataId(DataIdTypes.Batch, batchId);
+                    var toDelete = new DataId(DataIdScopes.Batch, batchId);
 
                     // Iterate over a copy of the set so the original can be modified
                     foreach (var activity in state.SavedActivities.ToList())
@@ -271,7 +271,7 @@ namespace Bot.Builder.Community.Cards.Management
                 // TODO: Provide options for how to determine emptiness when cascading deletion
                 // (e.g. when a card has no more actions rather than only when the card is completely empty)
 
-                if (dataIdType == DataIdTypes.Action && matchedActivity != null && matchedAttachment != null && matchedAction != null)
+                if (dataIdScope == DataIdScopes.Action && matchedActivity != null && matchedAttachment != null && matchedAction != null)
                 {
                     if (matchedAttachment.ContentType.EqualsCI(ContentTypes.AdaptiveCard))
                     {
@@ -293,7 +293,7 @@ namespace Bot.Builder.Community.Cards.Management
                                 && adaptiveCard.GetValue(AdaptiveProperties.Actions).IsNullishOrEmpty())
                             {
                                 // If the card is now empty, execute the next if block to delete it
-                                dataIdType = DataIdTypes.Card;
+                                dataIdScope = DataIdScopes.Card;
                             }
                         }
                     }
@@ -326,13 +326,13 @@ namespace Bot.Builder.Community.Cards.Management
                                 && string.IsNullOrWhiteSpace(heroCard.Text))
                             {
                                 // If the card is now empty, execute the next if block to delete it
-                                dataIdType = DataIdTypes.Card;
+                                dataIdScope = DataIdScopes.Card;
                             }
                         }
                     }
                 }
 
-                if (dataIdType == DataIdTypes.Card && matchedActivity != null && matchedAttachment != null)
+                if (dataIdScope == DataIdScopes.Card && matchedActivity != null && matchedAttachment != null)
                 {
                     matchedActivity.Attachments.Remove(matchedAttachment);
 
@@ -342,11 +342,11 @@ namespace Bot.Builder.Community.Cards.Management
                     if (string.IsNullOrWhiteSpace(matchedActivity.Text) && !matchedActivity.Attachments.Any())
                     {
                         // If the activity is now empty, execute the next if block to delete it
-                        dataIdType = DataIdTypes.Carousel;
+                        dataIdScope = DataIdScopes.Carousel;
                     }
                 }
 
-                if (dataIdType == DataIdTypes.Carousel && matchedActivity != null)
+                if (dataIdScope == DataIdScopes.Carousel && matchedActivity != null)
                 {
                     await DeleteActivityAsync(turnContext, matchedActivity, cancellationToken).ConfigureAwait(false);
                 }

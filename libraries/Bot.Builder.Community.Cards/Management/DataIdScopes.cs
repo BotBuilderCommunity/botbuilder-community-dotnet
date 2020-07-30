@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Bot.Builder;
+﻿using Microsoft.Bot.Builder;
 
 namespace Bot.Builder.Community.Cards.Management
 {
     /// <summary>
-    /// This class defines ID types with progressively increasing scope sizes.
-    /// // TODO: Change name to DataIdScopes
+    /// This class defines ID scopes with progressively increasing sizes.
     /// </summary>
-    public static class DataIdTypes
+    public static class DataIdScopes
     {
         /// <summary>
         /// An action ID should be globally unique and not found in different actions.

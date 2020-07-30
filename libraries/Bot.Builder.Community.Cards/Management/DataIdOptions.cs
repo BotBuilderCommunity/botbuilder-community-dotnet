@@ -10,20 +10,20 @@ namespace Bot.Builder.Community.Cards.Management
 
         public DataIdOptions(bool overwrite = false) => Overwrite = overwrite;
 
-        public DataIdOptions(string type, bool overwrite = false)
-            : this(overwrite) => _ids.Add(type, null);
+        public DataIdOptions(string scope, bool overwrite = false)
+            : this(overwrite) => _ids.Add(scope, null);
 
-        public DataIdOptions(IEnumerable<string> types, bool overwrite = false)
+        public DataIdOptions(IEnumerable<string> scopes, bool overwrite = false)
             : this(overwrite)
         {
-            if (types is null)
+            if (scopes is null)
             {
-                throw new ArgumentNullException(nameof(types));
+                throw new ArgumentNullException(nameof(scopes));
             }
 
-            foreach (var type in types.Distinct())
+            foreach (var scope in scopes.Distinct())
             {
-                _ids.Add(type, null);
+                _ids.Add(scope, null);
             }
         }
 
@@ -36,13 +36,13 @@ namespace Bot.Builder.Community.Cards.Management
 
         public IEnumerable<string> GetIdTypes() => new HashSet<string>(_ids.Keys);
 
-        public bool HasIdType(string type) => _ids.ContainsKey(type);
+        public bool HasIdScope(string scope) => _ids.ContainsKey(scope);
 
-        public string Get(string type) => _ids.TryGetValue(type, out var value) ? value : null;
+        public string Get(string scope) => _ids.TryGetValue(scope, out var value) ? value : null;
 
-        public DataIdOptions Set(string type, string id = null)
+        public DataIdOptions Set(string scope, string id = null)
         {
-            _ids[type] = id;
+            _ids[scope] = id;
 
             return this;
         }

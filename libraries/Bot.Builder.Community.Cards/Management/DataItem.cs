@@ -22,12 +22,12 @@ namespace Bot.Builder.Community.Cards.Management
 
         /// <summary>
         /// Gets the backing field for both the <see cref="Key"/> property and the
-        /// <see cref="DataId.Type"/> property so that <see cref="DataId"/> doesn't have
+        /// <see cref="DataId.Scope"/> property so that <see cref="DataId"/> doesn't have
         /// an unused field for its overridden <see cref="DataId.Key">Key</see> property.
         /// </summary>
         /// <value>
         /// The backing field for both the <see cref="Key"/> property and
-        /// the <see cref="DataId.Type"/> property.
+        /// the <see cref="DataId.Scope"/> property.
         /// </value>
         protected string Name { get; }
 
