@@ -29,7 +29,7 @@ namespace Cards_Library_Sample
 
             Use(cardManagerMiddleware
                 .SetAutoApplyIds(false)
-                .SetIdOptions(new DataIdOptions(DataId.Types)));
+                .SetIdOptions(new DataIdOptions(DataId.Scopes)));
 
             OnTurnError = async (turnContext, exception) =>
             {

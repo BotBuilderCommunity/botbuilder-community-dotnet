@@ -113,16 +113,16 @@ namespace Cards_Library_Sample.Bots
                 switch (turnContext.Activity.Text)
                 {
                     case DemoDisableActions:
-                        await ShowSampleBatch(turnContext, DataIdTypes.Action, cancellationToken);
+                        await ShowSampleBatch(turnContext, DataIdScopes.Action, cancellationToken);
                         break;
                     case DemoDisableCards:
-                        await ShowSampleBatch(turnContext, DataIdTypes.Card, cancellationToken);
+                        await ShowSampleBatch(turnContext, DataIdScopes.Card, cancellationToken);
                         break;
                     case DemoDisableCarousels:
-                        await ShowSampleBatch(turnContext, DataIdTypes.Carousel, cancellationToken);
+                        await ShowSampleBatch(turnContext, DataIdScopes.Carousel, cancellationToken);
                         break;
                     case DemoDisableBatch:
-                        await ShowSampleBatch(turnContext, DataIdTypes.Batch, cancellationToken);
+                        await ShowSampleBatch(turnContext, DataIdScopes.Batch, cancellationToken);
                         break;
                     case DemoTranslateCards:
                         await ShowTranslationSample(turnContext, cancellationToken);
@@ -197,7 +197,7 @@ namespace Cards_Library_Sample.Bots
             }), cancellationToken);
         }
 
-        private async Task ShowSampleBatch(ITurnContext turnContext, string idType, CancellationToken cancellationToken = default)
+        private async Task ShowSampleBatch(ITurnContext turnContext, string idScope, CancellationToken cancellationToken = default)
         {
             static CardAction ToButton(string label) => new CardAction
             {
@@ -212,7 +212,7 @@ namespace Cards_Library_Sample.Bots
                 {
                     new ThumbnailCard
                     {
-                        Title = $"Cards library demo: {idType}",
+                        Title = $"Cards library demo: {idScope}",
                         Subtitle = "Thumbnail Card 1",
                         Text = "Go ahead and try clicking these buttons to see what gets disabled.",
                         Images = new List<CardImage>
@@ -223,7 +223,7 @@ namespace Cards_Library_Sample.Bots
                     }.ToAttachment(),
                     new ThumbnailCard
                     {
-                        Title = $"Cards library demo: {idType}",
+                        Title = $"Cards library demo: {idScope}",
                         Subtitle = "Thumbnail Card 2",
                         Text = "Try clicking these ones too.",
                         Images = new List<CardImage>
@@ -250,7 +250,7 @@ namespace Cards_Library_Sample.Bots
                 }),
             };
 
-            batch.ApplyIdsToBatch(new DataIdOptions(idType));
+            batch.ApplyIdsToBatch(new DataIdOptions(idScope));
 
             await turnContext.SendActivitiesAsync(batch, cancellationToken);
         }
