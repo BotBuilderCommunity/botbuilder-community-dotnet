@@ -38,8 +38,8 @@ namespace Bot.Builder.Community.Cards.Management
 
         public bool Equals(DataId other) => Scope == other?.Scope && Value == other?.Value;
 
-        internal static string GetKey(string type) => $"{Prefixes.DataIdKey}{type}";
+        internal static string GetKey(string scope) => $"{Prefixes.DataIdKey}{scope}";
 
-        internal static string GenerateValue(string type) => $"{type}-{Guid.NewGuid()}";
+        internal static string GenerateValue(string scope) => $"{scope}-{Guid.NewGuid()}";
     }
 }
