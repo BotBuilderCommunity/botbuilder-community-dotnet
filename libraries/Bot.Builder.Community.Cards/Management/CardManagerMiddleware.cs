@@ -121,7 +121,7 @@ namespace Bot.Builder.Community.Cards.Management
 
                         foreach (var incomingId in incomingIds)
                         {
-                            state.DataIdsByScope.TryGetValue(incomingId.Scope, out var trackedSet);
+                            state.DataIdsByScope.TryGetValue(incomingId.Key, out var trackedSet);
 
                             var setContainsId = trackedSet?.Contains(incomingId.Value) == true;
 
@@ -147,7 +147,7 @@ namespace Bot.Builder.Community.Cards.Management
                     if (shouldDelete)
                     {
                         // If there are multiple ID scopes in use, just delete the one with the largest range
-                        var scope = DataId.Scopes.ElementAtOrDefault(incomingIds.Max(id => DataId.Scopes.IndexOf(id.Scope)));
+                        var scope = DataId.Scopes.ElementAtOrDefault(incomingIds.Max(id => DataId.Scopes.IndexOf(id.Key)));
 
                         await Manager.DeleteActionSourceAsync(turnContext, scope, cancellationToken).ConfigureAwait(false);
                     }

@@ -157,8 +157,8 @@ namespace Bot.Builder.Community.Cards.Tests.Management
 
             var jObject = new JObject();
 
-            var json = $"{{'{DataId.GetKey(DataIdScopes.Card)}': '{CARDID}',"
-                         + $" '{DataId.GetKey(DataIdScopes.Carousel)}': '{CAROUSELID}'}}";
+            var json = $"{{'{PropertyNames.LibraryData}': {{'{DataIdScopes.Card}': '{CARDID}',"
+                         + $" '{DataIdScopes.Carousel}': '{CAROUSELID}'}}}}";
 
             var animationCard = new AnimationCard();
 
@@ -226,8 +226,8 @@ namespace Bot.Builder.Community.Cards.Tests.Management
                     {
                         Data = new Dictionary<string, object>
                         {
-                            { DataId.GetKey(DataIdScopes.Action), ACTIONID },
-                        },
+                            { DataIdScopes.Action, ACTIONID },
+                        }.WrapLibraryData(),
                     },
                     new AdaptiveShowCardAction
                     {
@@ -462,9 +462,9 @@ namespace Bot.Builder.Community.Cards.Tests.Management
                     {
                         Data = new Dictionary<string, object>
                         {
-                            { DataId.GetKey(DataIdScopes.Batch), BATCHID },
-                            { DataId.GetKey(DataIdScopes.Action), ACTIONID },
-                        }
+                            { DataIdScopes.Batch, BATCHID },
+                            { DataIdScopes.Action, ACTIONID },
+                        }.WrapLibraryData(),
                     }
                 }
             }.ToJObject();
@@ -595,8 +595,8 @@ namespace Bot.Builder.Community.Cards.Tests.Management
                     {
                         Data = new Dictionary<string, string>
                         {
-                            { DataId.GetKey(DataIdScopes.Action), ACTIONID },
-                        },
+                            { DataIdScopes.Action, ACTIONID },
+                        }.WrapLibraryData(),
                     },
                 },
             };
@@ -614,18 +614,18 @@ namespace Bot.Builder.Community.Cards.Tests.Management
                     {
                         new CardAction(ActionTypes.PostBack, value: new Dictionary<string, string>
                         {
-                            { DataId.GetKey(DataIdScopes.Card), CARDID },
-                        }),
+                            { DataIdScopes.Card, CARDID },
+                        }.WrapLibraryData()),
                     }).ToAttachment(),
                     new Attachment
                     {
-                        ContentType = ContentTypes.AdaptiveCard,
+                        ContentType = ContentTypes.AdaptiveCard, // Content does not match content type
                         Content = new AudioCard(buttons: new List<CardAction>
                         {
                             new CardAction(ActionTypes.PostBack, value: new Dictionary<string, string>
                             {
-                                { DataId.GetKey(DataIdScopes.Card), CARDID2 },
-                            }),
+                                { DataIdScopes.Card, CARDID2 },
+                            }.WrapLibraryData()),
                         }),
                     },
                     new Attachment
@@ -635,8 +635,8 @@ namespace Bot.Builder.Community.Cards.Tests.Management
                         {
                             new CardAction(ActionTypes.PostBack, value: new Dictionary<string, string>
                             {
-                                { DataId.GetKey(DataIdScopes.Card), CAROUSELID },
-                            }),
+                                { DataIdScopes.Card, CAROUSELID },
+                            }.WrapLibraryData()),
                         }),
                     },
                 }),
@@ -644,18 +644,18 @@ namespace Bot.Builder.Community.Cards.Tests.Management
                 {
                     new CardAction(ActionTypes.ImBack, value: new Dictionary<string, string>
                     {
-                        { DataId.GetKey(DataIdScopes.Carousel), CAROUSELID2 },
-                    }),
+                        { DataIdScopes.Carousel, CAROUSELID2 },
+                    }.WrapLibraryData()),
                     new CardAction(ActionTypes.PostBack, value: new Dictionary<string, string>
                     {
-                        { DataId.GetKey(DataIdScopes.Action), ACTIONID2 },
-                        { DataId.GetKey(DataIdScopes.Batch), BATCHID },
-                    }),
+                        { DataIdScopes.Action, ACTIONID2 },
+                        { DataIdScopes.Batch, BATCHID },
+                    }.WrapLibraryData()),
                     new CardAction(ActionTypes.MessageBack, value: new Dictionary<string, string>
                     {
-                        { DataId.GetKey(DataIdScopes.Action), ACTIONID },
-                        { DataId.GetKey(DataIdScopes.Batch), BATCHID2 },
-                    }),
+                        { DataIdScopes.Action, ACTIONID },
+                        { DataIdScopes.Batch, BATCHID2 },
+                    }.WrapLibraryData()),
                 }).ToAttachment()),
             };
 
@@ -663,14 +663,14 @@ namespace Bot.Builder.Community.Cards.Tests.Management
 
             Assert.AreSame(adaptiveCard, batch[0].Attachments[0].Content, "Adaptive Card reference was broken");
             Assert.AreEqual(5, ids.Count);
-            Assert.IsTrue(ids.Contains(new DataId(DataIdScopes.Action, ACTIONID)));
-            Assert.IsTrue(ids.Contains(new DataId(DataIdScopes.Action, ACTIONID2)));
-            Assert.IsTrue(ids.Contains(new DataId(DataIdScopes.Card, CARDID)));
-            Assert.IsFalse(ids.Contains(new DataId(DataIdScopes.Card, CARDID2)));
-            Assert.IsFalse(ids.Contains(new DataId(DataIdScopes.Carousel, CAROUSELID)));
-            Assert.IsFalse(ids.Contains(new DataId(DataIdScopes.Carousel, CAROUSELID2)));
-            Assert.IsTrue(ids.Contains(new DataId(DataIdScopes.Batch, BATCHID)));
-            Assert.IsTrue(ids.Contains(new DataId(DataIdScopes.Batch, BATCHID2)));
+            Assert.IsTrue(ids.Contains(new DataItem(DataIdScopes.Action, ACTIONID)));
+            Assert.IsTrue(ids.Contains(new DataItem(DataIdScopes.Action, ACTIONID2)));
+            Assert.IsTrue(ids.Contains(new DataItem(DataIdScopes.Card, CARDID)));
+            Assert.IsFalse(ids.Contains(new DataItem(DataIdScopes.Card, CARDID2)));
+            Assert.IsFalse(ids.Contains(new DataItem(DataIdScopes.Carousel, CAROUSELID)));
+            Assert.IsFalse(ids.Contains(new DataItem(DataIdScopes.Carousel, CAROUSELID2)));
+            Assert.IsTrue(ids.Contains(new DataItem(DataIdScopes.Batch, BATCHID)));
+            Assert.IsTrue(ids.Contains(new DataItem(DataIdScopes.Batch, BATCHID2)));
 
             batch = null;
 

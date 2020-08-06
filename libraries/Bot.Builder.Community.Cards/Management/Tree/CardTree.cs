@@ -56,7 +56,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 })
             },
             {
-                TreeNodeType.AdaptiveCard, new TreeNode<object, IEnumerable<JObject>>((card, next) =>
+                TreeNodeType.AdaptiveCard, new TreeNode<object, IEnumerable<object>>((card, next) =>
                 {
                     // Return the new object after it's been converted to a JObject and back
                     // so that the attachment node can assign it back to the Content property
@@ -105,7 +105,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 TreeNodeType.CardActionList, new EnumerableTreeNode<CardAction>(TreeNodeType.CardAction, DataIdScopes.Card)
             },
             {
-                TreeNodeType.SubmitAction, new TreeNode<object, JObject>((action, next) =>
+                TreeNodeType.SubmitAction, new TreeNode<object, object>((action, next) =>
                 {
                     // If the entry point was the Adaptive Card or higher
                     // then the action will already be a JObject
@@ -120,7 +120,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 })
             },
             {
-                TreeNodeType.CardAction, new TreeNode<CardAction, JObject>((action, next, reassignChildren) =>
+                TreeNodeType.CardAction, new TreeNode<CardAction, object>((action, next, reassignChildren) =>
                 {
                     if (action.Type == ActionTypes.MessageBack || action.Type == ActionTypes.PostBack)
                     {
@@ -148,23 +148,37 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 })
             },
             {
-                TreeNodeType.ActionData, new TreeNode<JObject, DataId>((data, next) =>
+                TreeNodeType.ActionData, new TreeNode<object, object>((data, next) =>
                 {
-                    foreach (var scope in DataId.Scopes)
+                    if (data.ToJObject() is JObject jObject)
                     {
-                        var id = data.GetIdFromActionData(scope);
-
-                        if (id != null)
-                        {
-                            next(new DataId(scope, id), TreeNodeType.Id);
-                        }
+                        next(jObject[PropertyNames.LibraryData], TreeNodeType.LibraryData);
                     }
 
                     return data;
                 })
             },
             {
-                TreeNodeType.Id, new TreeNode<DataId, object>((id, _) => id)
+                TreeNodeType.LibraryData, new TreeNode<object, DataItem>((data, next) =>
+                {
+                    if (data.ToJObject() is JObject jObject)
+                    {
+                        foreach (var scope in DataId.Scopes)
+                        {
+                            var id = jObject[scope]?.ToString();
+
+                            if (id != null)
+                            {
+                                next(new DataItem(scope, id), TreeNodeType.Id);
+                            }
+                        }
+            	    }
+
+                    return data;
+                })
+            },
+            {
+                TreeNodeType.Id, new TreeNode<DataItem, object>()
             },
         };
 
@@ -296,14 +310,14 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 });
         }
 
-        internal static ISet<DataId> GetIds<TEntry>(TEntry entryValue, TreeNodeType? entryType = null)
+        internal static ISet<DataItem> GetIds<TEntry>(TEntry entryValue, TreeNodeType? entryType = null)
             where TEntry : class
         {
-            var ids = new HashSet<DataId>();
+            var ids = new HashSet<DataItem>();
 
             Recurse(
                 entryValue,
-                (DataId dataId) =>
+                (DataItem dataId) =>
                 {
                     ids.Add(dataId);
                 }, entryType);

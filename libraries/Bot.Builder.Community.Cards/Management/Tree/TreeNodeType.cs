@@ -101,7 +101,12 @@ namespace Bot.Builder.Community.Cards.Management.Tree
         ActionData,
 
         /// <summary>
-        /// Corresponds to <see cref="DataId"/>.
+        /// Corresponds to <see cref="object"/>, because cards library data can be deserialized as a <see cref="JObject"/> or a custom type.
+        /// </summary>
+        LibraryData,
+
+        /// <summary>
+        /// Corresponds to <see cref="DataItem"/>.
         /// </summary>
         Id,
     }

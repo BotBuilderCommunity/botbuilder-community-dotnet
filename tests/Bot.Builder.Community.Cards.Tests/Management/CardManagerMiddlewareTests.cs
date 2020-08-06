@@ -47,7 +47,10 @@ namespace Bot.Builder.Community.Cards.Tests.Management
 
                 var actionActivity = new Activity(value: new JObject
                 {
-                    { DataId.GetKey(DataIdScopes.Action), ActionId }
+                    {
+                        PropertyNames.LibraryData,
+                        new JObject { { DataIdScopes.Action, ActionId } }
+                    },
                 });
 
                 action?.Invoke(middleware);
@@ -181,7 +184,10 @@ namespace Bot.Builder.Community.Cards.Tests.Management
 
             var actionActivity = new Activity(value: new JObject
             {
-                { DataId.GetKey(DataIdScopes.Action), ActionId }
+                {
+                    PropertyNames.LibraryData,
+                    new JObject { { DataIdScopes.Action, ActionId } }
+                },
             });
 
             middleware.NonUpdatingOptions.IdTrackingStyle = TrackingStyle.TrackDisabled;
@@ -197,7 +203,7 @@ namespace Bot.Builder.Community.Cards.Tests.Management
                 var state = await accessor.GetNotNullAsync(turnContext, () => new CardManagerState());
 
                 await turnContext.SendActivityAsync(
-                    $"Tracked: {(state.DataIdsByScope.TryGetValue(DataIdScopes.Action, out var set) ? set.Contains(ActionId) : false)}");
+                    $"Tracked: {state.DataIdsByScope.TryGetValue(DataIdScopes.Action, out var set) && set.Contains(ActionId)}");
             })
                 .Send("hi")
                     .AssertReply(cardActivity, EqualityComparer<IActivity>.Default)

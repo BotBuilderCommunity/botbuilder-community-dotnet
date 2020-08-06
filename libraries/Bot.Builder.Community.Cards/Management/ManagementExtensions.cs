@@ -116,7 +116,7 @@ namespace Bot.Builder.Community.Cards.Management
             CardTree.ApplyIds(activities, options);
         }
 
-        public static ISet<DataId> GetIdsFromBatch(this IEnumerable<IMessageActivity> activities)
+        public static ISet<DataItem> GetIdsFromBatch(this IEnumerable<IMessageActivity> activities)
         {
             if (activities is null)
             {
@@ -384,40 +384,50 @@ namespace Bot.Builder.Community.Cards.Management
             return incomingData;
         }
 
-        internal static void ApplyIdsToActionData(this JObject data, DataIdOptions options)
+        internal static void ApplyIdsToActionData(this JObject actionData, DataIdOptions options)
         {
-            foreach (var kvp in options.GetIds())
+            var ids = options.GetIds();
+
+            if (ids.Any())
             {
-                var scope = kvp.Key;
-
-                if (options.Overwrite || data.GetIdFromActionData(scope) is null)
+                if (!(actionData[PropertyNames.LibraryData] is JObject libraryData))
                 {
-                    var id = kvp.Value;
+                    actionData[PropertyNames.LibraryData] = libraryData = new JObject();
+                }
 
-                    if (id is null)
+                foreach (var kvp in ids)
+                {
+                    var scope = kvp.Key;
+
+                    if (options.Overwrite || !libraryData.ContainsKey(scope))
                     {
-                        if (scope == DataIdScopes.Action)
-                        {
-                            // Only generate an ID for the action
-                            id = DataId.GenerateValue(DataIdScopes.Action);
-                        }
-                        else
-                        {
-                            // If any other ID's are null,
-                            // don't apply them to the data
-                            continue;
-                        }
-                    }
+                        var id = kvp.Value;
 
-                    data[DataId.GetKey(scope)] = id;
+                        if (id is null)
+                        {
+                            if (scope == DataIdScopes.Action)
+                            {
+                                // Only generate an ID for the action
+                                id = DataId.GenerateValue(DataIdScopes.Action);
+                            }
+                            else
+                            {
+                                // If any other ID's are null,
+                                // don't apply them to the data
+                                continue;
+                            }
+                        }
+
+                        libraryData[scope] = id;
+                    }
                 }
             }
         }
 
-        internal static string GetIdFromActionData(this JObject data, string scope = DataIdScopes.Action)
-            => data?.GetValue(DataId.GetKey(scope)) is JToken id ? id.ToString() : null;
+        internal static string GetIdFromActionData(this JObject actionData, string scope = DataIdScopes.Action)
+            => actionData?[PropertyNames.LibraryData] is JObject libraryData ? libraryData[scope]?.ToString() : null;
 
-        internal static IEnumerable<DataId> GetIdsFromActionData(this JObject data)
-            => DataId.Scopes.Select(scope => new DataId(scope, data.GetIdFromActionData(scope))).Where(id => id.Value != null);
+        internal static IEnumerable<DataItem> GetIdsFromActionData(this JObject data)
+            => DataId.Scopes.Select(scope => new DataItem(scope, data.GetIdFromActionData(scope))).Where(id => id.Value != null);
     }
 }

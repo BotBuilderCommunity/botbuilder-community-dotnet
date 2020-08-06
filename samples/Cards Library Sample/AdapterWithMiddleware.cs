@@ -29,7 +29,13 @@ namespace Cards_Library_Sample
 
             Use(cardManagerMiddleware
                 .SetAutoApplyIds(false)
-                .SetIdOptions(new DataIdOptions(DataId.Scopes)));
+                .SetIdOptions(new DataIdOptions(new[]
+                {
+                    DataIdScopes.Action,
+                    DataIdScopes.Card,
+                    DataIdScopes.Carousel,
+                    DataIdScopes.Batch,
+                })));
 
             OnTurnError = async (turnContext, exception) =>
             {
