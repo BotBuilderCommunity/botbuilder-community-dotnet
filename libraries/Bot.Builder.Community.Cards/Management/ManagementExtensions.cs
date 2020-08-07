@@ -116,7 +116,7 @@ namespace Bot.Builder.Community.Cards.Management
             CardTree.ApplyIds(activities, options);
         }
 
-        public static ISet<DataItem> GetIdsFromBatch(this IEnumerable<IMessageActivity> activities)
+        public static ISet<DataId> GetIdsFromBatch(this IEnumerable<IMessageActivity> activities)
         {
             if (activities is null)
             {
@@ -427,7 +427,7 @@ namespace Bot.Builder.Community.Cards.Management
         internal static string GetIdFromActionData(this JObject actionData, string scope = DataIdScopes.Action)
             => actionData?[PropertyNames.LibraryData] is JObject libraryData ? libraryData[scope]?.ToString() : null;
 
-        internal static IEnumerable<DataItem> GetIdsFromActionData(this JObject data)
-            => DataId.Scopes.Select(scope => new DataItem(scope, data.GetIdFromActionData(scope))).Where(id => id.Value != null);
+        internal static IEnumerable<DataId> GetIdsFromActionData(this JObject data)
+            => DataId.Scopes.Select(scope => new DataId(scope, data.GetIdFromActionData(scope))).Where(id => id.Value != null);
     }
 }

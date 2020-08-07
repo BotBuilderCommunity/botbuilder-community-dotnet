@@ -48,7 +48,7 @@ namespace Bot.Builder.Community.Cards.Management
 
         public async Task EnableIdAsync(
             ITurnContext turnContext,
-            DataItem dataId,
+            DataId dataId,
             TrackingStyle style = TrackingStyle.TrackEnabled,
             CancellationToken cancellationToken = default)
         {
@@ -72,7 +72,7 @@ namespace Bot.Builder.Community.Cards.Management
 
         public async Task DisableIdAsync(
             ITurnContext turnContext,
-            DataItem dataId,
+            DataId dataId,
             TrackingStyle style = TrackingStyle.TrackEnabled,
             CancellationToken cancellationToken = default)
         {
@@ -94,7 +94,7 @@ namespace Bot.Builder.Community.Cards.Management
             }
         }
 
-        public async Task TrackIdAsync(ITurnContext turnContext, DataItem dataId, CancellationToken cancellationToken = default)
+        public async Task TrackIdAsync(ITurnContext turnContext, DataId dataId, CancellationToken cancellationToken = default)
         {
             BotAssert.ContextNotNull(turnContext);
 
@@ -110,7 +110,7 @@ namespace Bot.Builder.Community.Cards.Management
             await StateAccessor.SetAsync(turnContext, state, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task ForgetIdAsync(ITurnContext turnContext, DataItem dataId, CancellationToken cancellationToken = default)
+        public async Task ForgetIdAsync(ITurnContext turnContext, DataId dataId, CancellationToken cancellationToken = default)
         {
             BotAssert.ContextNotNull(turnContext);
 
@@ -247,7 +247,7 @@ namespace Bot.Builder.Community.Cards.Management
             {
                 if (turnContext.GetIncomingActionData().ToJObject().GetIdFromActionData(DataIdScopes.Batch) is string batchId)
                 {
-                    var toDelete = new DataItem(DataIdScopes.Batch, batchId);
+                    var toDelete = new DataId(DataIdScopes.Batch, batchId);
 
                     // Iterate over a copy of the set so the original can be modified
                     foreach (var activity in state.SavedActivities.ToList())

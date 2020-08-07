@@ -663,14 +663,14 @@ namespace Bot.Builder.Community.Cards.Tests.Management
 
             Assert.AreSame(adaptiveCard, batch[0].Attachments[0].Content, "Adaptive Card reference was broken");
             Assert.AreEqual(5, ids.Count);
-            Assert.IsTrue(ids.Contains(new DataItem(DataIdScopes.Action, ACTIONID)));
-            Assert.IsTrue(ids.Contains(new DataItem(DataIdScopes.Action, ACTIONID2)));
-            Assert.IsTrue(ids.Contains(new DataItem(DataIdScopes.Card, CARDID)));
-            Assert.IsFalse(ids.Contains(new DataItem(DataIdScopes.Card, CARDID2)));
-            Assert.IsFalse(ids.Contains(new DataItem(DataIdScopes.Carousel, CAROUSELID)));
-            Assert.IsFalse(ids.Contains(new DataItem(DataIdScopes.Carousel, CAROUSELID2)));
-            Assert.IsTrue(ids.Contains(new DataItem(DataIdScopes.Batch, BATCHID)));
-            Assert.IsTrue(ids.Contains(new DataItem(DataIdScopes.Batch, BATCHID2)));
+            Assert.IsTrue(ids.Contains(new DataId(DataIdScopes.Action, ACTIONID)));
+            Assert.IsTrue(ids.Contains(new DataId(DataIdScopes.Action, ACTIONID2)));
+            Assert.IsTrue(ids.Contains(new DataId(DataIdScopes.Card, CARDID)));
+            Assert.IsFalse(ids.Contains(new DataId(DataIdScopes.Card, CARDID2)));
+            Assert.IsFalse(ids.Contains(new DataId(DataIdScopes.Carousel, CAROUSELID)));
+            Assert.IsFalse(ids.Contains(new DataId(DataIdScopes.Carousel, CAROUSELID2)));
+            Assert.IsTrue(ids.Contains(new DataId(DataIdScopes.Batch, BATCHID)));
+            Assert.IsTrue(ids.Contains(new DataId(DataIdScopes.Batch, BATCHID2)));
 
             batch = null;
 

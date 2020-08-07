@@ -35,7 +35,7 @@ namespace Bot.Builder.Community.Cards.Tests.Management
         {
             var manager = CreateManager();
             var turnContext = CreateTurnContext();
-            var dataId = new DataItem(DataIdScopes.Action, "action ID");
+            var dataId = new DataId(DataIdScopes.Action, "action ID");
 
             Assert.IsNull(await manager.StateAccessor.GetAsync(turnContext));
 
@@ -46,7 +46,7 @@ namespace Bot.Builder.Community.Cards.Tests.Management
 
             Assert.AreEqual(dataId.Value, actionIds.Single());
 
-            await manager.EnableIdAsync(turnContext, new DataItem(DataIdScopes.Action, "different action ID"), TrackingStyle.TrackDisabled);
+            await manager.EnableIdAsync(turnContext, new DataId(DataIdScopes.Action, "different action ID"), TrackingStyle.TrackDisabled);
 
             Assert.AreEqual(dataId.Value, actionIds.Single());
 
@@ -63,7 +63,7 @@ namespace Bot.Builder.Community.Cards.Tests.Management
         {
             var manager = CreateManager();
             var turnContext = CreateTurnContext();
-            var dataId = new DataItem(DataIdScopes.Card, "card ID");
+            var dataId = new DataId(DataIdScopes.Card, "card ID");
 
             Assert.IsNull(await manager.StateAccessor.GetAsync(turnContext));
 
@@ -74,7 +74,7 @@ namespace Bot.Builder.Community.Cards.Tests.Management
 
             Assert.AreEqual(dataId.Value, actionIds.Single());
 
-            await manager.DisableIdAsync(turnContext, new DataItem(DataIdScopes.Card, "different card ID"));
+            await manager.DisableIdAsync(turnContext, new DataId(DataIdScopes.Card, "different card ID"));
 
             Assert.AreEqual(dataId.Value, actionIds.Single());
 
@@ -91,7 +91,7 @@ namespace Bot.Builder.Community.Cards.Tests.Management
         {
             var manager = CreateManager();
             var turnContext = CreateTurnContext();
-            var dataId = new DataItem(DataIdScopes.Carousel, "carousel ID");
+            var dataId = new DataId(DataIdScopes.Carousel, "carousel ID");
 
             Assert.IsNull(await manager.StateAccessor.GetAsync(turnContext));
 
@@ -111,7 +111,7 @@ namespace Bot.Builder.Community.Cards.Tests.Management
         {
             var manager = CreateManager();
             var turnContext = CreateTurnContext();
-            var dataId = new DataItem(DataIdScopes.Batch, "batch ID");
+            var dataId = new DataId(DataIdScopes.Batch, "batch ID");
 
             Assert.IsNull(await manager.StateAccessor.GetAsync(turnContext));
 
@@ -123,7 +123,7 @@ namespace Bot.Builder.Community.Cards.Tests.Management
 
             var actionIds = state.DataIdsByScope[DataIdScopes.Batch] = new HashSet<string> { dataId.Value };
 
-            await manager.ForgetIdAsync(turnContext, new DataItem(DataIdScopes.Batch, "different batch ID"));
+            await manager.ForgetIdAsync(turnContext, new DataId(DataIdScopes.Batch, "different batch ID"));
 
             Assert.AreEqual(dataId.Value, actionIds.Single());
 

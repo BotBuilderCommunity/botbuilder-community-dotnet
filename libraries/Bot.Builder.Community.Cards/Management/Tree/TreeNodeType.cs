@@ -106,7 +106,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
         LibraryData,
 
         /// <summary>
-        /// Corresponds to <see cref="DataItem"/>.
+        /// Corresponds to <see cref="DataId"/>.
         /// </summary>
         Id,
     }

@@ -159,7 +159,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 })
             },
             {
-                TreeNodeType.LibraryData, new TreeNode<object, DataItem>((data, next) =>
+                TreeNodeType.LibraryData, new TreeNode<object, DataId>((data, next) =>
                 {
                     if (data.ToJObject() is JObject jObject)
                     {
@@ -169,7 +169,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
 
                             if (id != null)
                             {
-                                next(new DataItem(scope, id), TreeNodeType.Id);
+                                next(new DataId(scope, id), TreeNodeType.Id);
                             }
                         }
             	    }
@@ -178,7 +178,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 })
             },
             {
-                TreeNodeType.Id, new TreeNode<DataItem, object>()
+                TreeNodeType.Id, new TreeNode<DataId, object>()
             },
         };
 
@@ -310,14 +310,14 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 });
         }
 
-        internal static ISet<DataItem> GetIds<TEntry>(TEntry entryValue, TreeNodeType? entryType = null)
+        internal static ISet<DataId> GetIds<TEntry>(TEntry entryValue, TreeNodeType? entryType = null)
             where TEntry : class
         {
-            var ids = new HashSet<DataItem>();
+            var ids = new HashSet<DataId>();
 
             Recurse(
                 entryValue,
-                (DataItem dataId) =>
+                (DataId dataId) =>
                 {
                     ids.Add(dataId);
                 }, entryType);
@@ -329,6 +329,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 where TExit : class
             => child is JToken jToken && !typeof(JToken).IsAssignableFrom(typeof(TExit)) ? jToken.ToObject<TExit>() : child as TExit;
 
+        // TODO: Require explicit node types and stop checking types at runtime
         private static ITreeNode GetNode<T>(TreeNodeType? nodeType)
         {
             var t = typeof(T);
@@ -346,7 +347,9 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 {
                     var possibleNodeTValue = possibleNode.GetTValue();
 
-                    if (possibleNodeTValue.IsAssignableFrom(t) && possibleNodeTValue != typeof(object) && possibleNodeTValue != typeof(IEnumerable<object>))
+                    if (possibleNodeTValue.IsAssignableFrom(t) &&
+                        possibleNodeTValue != typeof(object) &&
+                        possibleNodeTValue != typeof(IEnumerable<object>))
                     {
                         matchingNodes.Add(possibleNode);
                     }
