@@ -157,7 +157,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
             var speakFields = new List<string>();
             var textFields = new List<string>();
             var attachments = new List<Attachment>();
-            var endWithPeriod = activities.Last().Text?.TrimEnd().EndsWith(".") ?? false;
+            var endWithPeriod = activities.LastOrDefault(a => !string.IsNullOrEmpty(a.Text))?.Text?.TrimEnd().EndsWith(".") ?? false;
 
             foreach (var activity in activities)
             {

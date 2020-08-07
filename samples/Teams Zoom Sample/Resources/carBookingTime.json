@@ -1,0 +1,27 @@
+﻿{
+  "type": "AdaptiveCard",
+  "version": "1.0",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "What is your preferred time slot?"
+    },
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "Input.Time",
+          "id": "dateTimeValue",
+          "value": "22:18"
+        }
+      ]
+    }
+  ],
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "actions": [
+    {
+      "type": "Action.Submit",
+      "title": "Next"
+    }
+  ]
+}
