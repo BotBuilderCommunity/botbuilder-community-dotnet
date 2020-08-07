@@ -309,6 +309,24 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
         }
 
         [Fact]
+        public void MergeActivitiesReturnsCorrectlyInconsistentPeriods()
+        {
+            var alexaAdapter = new AlexaRequestMapper();
+
+            // Note: The input activities deliberately have an activity where the speak tag
+            // is included and one activity where it is not, to ensure the stripping / wrapping
+            // of the speak tag is handled correctly.
+            var firstActivity = MessageFactory.Text("This is the first activity.", "This is<break strength=\"strong\"/>the first activity SSML");
+            var secondActivity = MessageFactory.Attachment(new HeroCard("test", "test").ToAttachment()) as Activity;
+
+            var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { firstActivity, secondActivity });
+
+            Assert.Equal("<speak>This is<break strength=\"strong\"/>the first activity SSML</speak>", processActivityResult.MergedActivity.Speak);
+            Assert.Equal("This is the first activity.", processActivityResult.MergedActivity.Text);
+            Assert.False(processActivityResult.EndOfConversationFlagged);
+        }
+
+        [Fact]
         public void MergeActivitiesWithEndOfConversationOnly()
         {
             var alexaAdapter = new AlexaRequestMapper();

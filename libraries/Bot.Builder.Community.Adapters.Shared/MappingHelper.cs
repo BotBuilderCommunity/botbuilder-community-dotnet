@@ -20,7 +20,7 @@ namespace Bot.Builder.Community.Adapters.Shared
             }
 
             var activity = messageActivities.Last();
-            var endWithPeriod = activity.Text?.TrimEnd().EndsWith(".") ?? false;
+            var endWithPeriod = activities.LastOrDefault(a => !string.IsNullOrEmpty(a.Text))?.Text?.TrimEnd().EndsWith(".") ?? false;
 
             if (messageActivities.Any(a => !String.IsNullOrEmpty(a.Speak))) 
             {
