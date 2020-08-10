@@ -13,10 +13,10 @@ namespace Cards_Library_Sample.Bots
 {
     internal class CardsLibraryBot : ActivityHandler
     {
-        private const string DemoDisableActions = "Disable actions";
-        private const string DemoDisableCards = "Disable cards";
-        private const string DemoDisableCarousels = "Disable carousels";
-        private const string DemoDisableBatch = "Disable batch";
+        private const string DemoDeactivateActions = "Deactivate actions";
+        private const string DemoDeactivateCards = "Deactivate cards";
+        private const string DemoDeactivateCarousels = "Deactivate carousels";
+        private const string DemoDeactivateBatch = "Deactivate batch";
         private const string DemoTranslateCards = "Translate cards";
 
         private const string BehaviorTranslate = "translate";
@@ -112,17 +112,17 @@ namespace Cards_Library_Sample.Bots
             {
                 switch (turnContext.Activity.Text)
                 {
-                    case DemoDisableActions:
-                        await ShowSampleBatch(turnContext, DataIdScopes.Action, cancellationToken);
+                    case DemoDeactivateActions:
+                        await ShowDeactivationSample(turnContext, DataIdScopes.Action, cancellationToken);
                         break;
-                    case DemoDisableCards:
-                        await ShowSampleBatch(turnContext, DataIdScopes.Card, cancellationToken);
+                    case DemoDeactivateCards:
+                        await ShowDeactivationSample(turnContext, DataIdScopes.Card, cancellationToken);
                         break;
-                    case DemoDisableCarousels:
-                        await ShowSampleBatch(turnContext, DataIdScopes.Carousel, cancellationToken);
+                    case DemoDeactivateCarousels:
+                        await ShowDeactivationSample(turnContext, DataIdScopes.Carousel, cancellationToken);
                         break;
-                    case DemoDisableBatch:
-                        await ShowSampleBatch(turnContext, DataIdScopes.Batch, cancellationToken);
+                    case DemoDeactivateBatch:
+                        await ShowDeactivationSample(turnContext, DataIdScopes.Batch, cancellationToken);
                         break;
                     case DemoTranslateCards:
                         await ShowTranslationSample(turnContext, cancellationToken);
@@ -197,14 +197,16 @@ namespace Cards_Library_Sample.Bots
             }), cancellationToken);
         }
 
-        private async Task ShowSampleBatch(ITurnContext turnContext, string idScope, CancellationToken cancellationToken = default)
+        private async Task ShowDeactivationSample(ITurnContext turnContext, string idScope, CancellationToken cancellationToken = default)
         {
-            static CardAction ToButton(string label) => new CardAction
-            {
-                Type = ActionTypes.PostBack,
-                Title = label,
-                Value = new { label },
-            };
+            static IList<CardAction> MakeButtons(IEnumerable<string> labels) =>
+                labels.Select((string label) =>
+                    new CardAction
+                    {
+                        Type = ActionTypes.PostBack,
+                        Title = label,
+                        Value = new { label },
+                    }).ToList();
 
             var batch = new IMessageActivity[]
             {
@@ -212,40 +214,40 @@ namespace Cards_Library_Sample.Bots
                 {
                     new ThumbnailCard
                     {
-                        Title = $"Cards library demo: {idScope}",
+                        Title = $"Deactivate-{idScope} demo",
                         Subtitle = "Thumbnail Card 1",
-                        Text = "Go ahead and try clicking these buttons to see what gets disabled.",
+                        Text = $"If you click a button then the {idScope} will get disabled or deleted.",
                         Images = new List<CardImage>
                         {
                             new CardImage("https://sec.ch9.ms/ch9/7ff5/e07cfef0-aa3b-40bb-9baa-7c9ef8ff7ff5/buildreactionbotframework_960.jpg")
                         },
-                        Buttons = (new[] { "Hello World", "Get Started", "Help" }).Select(ToButton).ToList()
+                        Buttons = MakeButtons(new[] { "Hello World", "Get Started", "Help" })
                     }.ToAttachment(),
                     new ThumbnailCard
                     {
-                        Title = $"Cards library demo: {idScope}",
+                        Title = $"Deactivate-{idScope} demo",
                         Subtitle = "Thumbnail Card 2",
                         Text = "Try clicking these ones too.",
                         Images = new List<CardImage>
                         {
                             new CardImage("https://sec.ch9.ms/ch9/7ff5/e07cfef0-aa3b-40bb-9baa-7c9ef8ff7ff5/buildreactionbotframework_960.jpg")
                         },
-                        Buttons = (new[] { "More Information", "Try Again", "Cancel" }).Select(ToButton).ToList()
+                        Buttons = MakeButtons(new[] { "More Information", "Try Again", "Cancel" })
                     }.ToAttachment(),
                 }),
                 MessageFactory.Carousel(new Attachment[]
                 {
                     new HeroCard
                     {
-                        Buttons = (new[] { "Second Carousel", "Same Batch" }).Select(ToButton).ToList()
+                        Buttons = MakeButtons(new[] { "Second Carousel", "Same Batch" })
                     }.ToAttachment(),
                     new HeroCard
                     {
-                        Buttons = (new[] { "More Buttons", "More Disabling" }).Select(ToButton).ToList()
+                        Buttons = MakeButtons(new[] { "More Buttons", "More Disabling" })
                     }.ToAttachment(),
                     new HeroCard
                     {
-                        Buttons = (new[] { "Go Back", "Submit" }).Select(ToButton).ToList()
+                        Buttons = MakeButtons(new[] { "Go Back", "Submit" })
                     }.ToAttachment(),
                 }),
             };
@@ -259,16 +261,16 @@ namespace Cards_Library_Sample.Bots
         {
             var options = new string[]
             {
-                DemoDisableActions,
-                DemoDisableCards,
-                DemoDisableCarousels,
-                DemoDisableBatch,
+                DemoDeactivateActions,
+                DemoDeactivateCards,
+                DemoDeactivateCarousels,
+                DemoDeactivateBatch,
                 DemoTranslateCards,
             };
 
             var card = new HeroCard
             {
-                Text = "Please select a demo (these options will not be disabled)",
+                Text = "Please select a demo (these options will not be deactivated)",
                 Buttons = options.Select(option => new CardAction(ActionTypes.ImBack, option, value: option)).ToList(),
             };
 
