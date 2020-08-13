@@ -262,7 +262,6 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 {
                     processIntermediateNode?.Invoke(childNode);
 
-                    // CallChildAsync will be executed immediately even though it's not awaited
                     modifiedChild = childNode.CallChild(child, Next, reassignChildren);
                 }
 
@@ -284,12 +283,13 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                     nameof(data));
             }
 
+            var action = merge
+                ? new Action<JObject>(libraryData => libraryData.Merge(dataJObject))
+                : new Action<JObject>(libraryData => libraryData.Replace(dataJObject));
+
             Recurse(
                 entryValue,
-                (JObject libraryData) =>
-                {
-                    libraryData.Merge(dataJObject);
-                },
+                action,
                 entryType,
                 TreeNodeType.LibraryData,
                 true);
