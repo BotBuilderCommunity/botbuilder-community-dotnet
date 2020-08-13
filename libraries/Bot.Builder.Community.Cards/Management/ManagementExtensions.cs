@@ -105,7 +105,7 @@ namespace Bot.Builder.Community.Cards.Management
             });
         }
 
-        public static void MergeLibraryData(this IEnumerable<IMessageActivity> activities, object data)
+        public static void SetLibraryData(this IEnumerable<IMessageActivity> activities, object data, bool merge = false)
         {
             if (activities is null)
             {
@@ -117,7 +117,7 @@ namespace Bot.Builder.Community.Cards.Management
                 throw new ArgumentNullException(nameof(data));
             }
 
-            CardTree.MergeLibraryData(activities, data);
+            CardTree.SetLibraryData(activities, data, TreeNodeType.Batch, merge);
         }
 
         // TODO: Expose more methods to apply ID's to more tree nodes

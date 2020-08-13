@@ -274,7 +274,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
             return entryNode.CallChild(entryValue, Next, reassignChildren) as TEntry;
         }
 
-        internal static void MergeLibraryData<TEntry>(TEntry entryValue, object data, TreeNodeType? entryType = null)
+        internal static void SetLibraryData<TEntry>(TEntry entryValue, object data, TreeNodeType? entryType = null, bool merge = false)
             where TEntry : class
         {
             if (!(data.ToJObject(true) is JObject dataJObject))
