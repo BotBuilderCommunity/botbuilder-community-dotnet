@@ -487,8 +487,7 @@ namespace Bot.Builder.Community.Cards.Management
                                         }
                                     },
                                     TreeNodeType.AdaptiveCard,
-                                    TreeNodeType.SubmitAction,
-                                    true);
+                                    TreeNodeType.SubmitAction);
                             }
                         }
                     }

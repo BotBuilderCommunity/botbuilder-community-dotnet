@@ -105,14 +105,21 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 TreeNodeType.CardActionList, new EnumerableTreeNode<CardAction>(TreeNodeType.CardAction, DataIdScopes.Card)
             },
             {
-                TreeNodeType.SubmitAction, new TreeNode<object, object>((action, next) =>
+                TreeNodeType.SubmitAction, new TreeNode<object, object>((action, next, reassignChildren) =>
                 {
                     // If the entry point was the Adaptive Card or higher
                     // then the action will already be a JObject
                     return action.ToJObjectAndBack(
                         actionJObject =>
                         {
-                            if (actionJObject.GetValue(AdaptiveProperties.Data) is JObject data)
+                            // We need to create a "data" object in the submit action
+                            // if there isn't one already
+                            if (reassignChildren && actionJObject[AdaptiveProperties.Data].IsNullish())
+                            {
+                                actionJObject[AdaptiveProperties.Data] = new JObject();
+                            }
+
+                            if (actionJObject[AdaptiveProperties.Data] is JObject data)
                             {
                                 next(data, TreeNodeType.ActionData);
                             }
@@ -148,20 +155,25 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 })
             },
             {
-                TreeNodeType.ActionData, new TreeNode<object, object>((data, next) =>
+                TreeNodeType.ActionData, new TreeNode<object, object>((data, next, reassignChildren) =>
                 {
-                    if (data.ToJObject() is JObject jObject)
+                    return data.ToJObjectAndBack(jObject =>
                     {
-                        next(jObject[PropertyNames.LibraryData], TreeNodeType.LibraryData);
-                    }
+                        // We need to create a library data object in the action data
+                        // if there isn't one already
+                        if (reassignChildren && jObject[PropertyNames.LibraryData].IsNullish())
+                        {
+                            jObject[PropertyNames.LibraryData] = new JObject();
+                        }
 
-                    return data;
+                        next(jObject[PropertyNames.LibraryData], TreeNodeType.LibraryData);
+                    });
                 })
             },
             {
                 TreeNodeType.LibraryData, new TreeNode<object, DataId>((data, next) =>
                 {
-                    if (data.ToJObject() is JObject jObject)
+                    return data.ToJObjectAndBack(jObject =>
                     {
                         foreach (var scope in DataId.Scopes)
                         {
@@ -172,9 +184,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                                 next(new DataId(scope, id), TreeNodeType.Id);
                             }
                         }
-            	    }
-
-                    return data;
+                    });
                 })
             },
             {
@@ -202,7 +212,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
         /// <param name="reassignChildren">True if each child should be reassigned to its parent during recursion
         /// (which breaks Adaptive Card attachment content references when they get converted to a
         /// <see cref="JObject"/> and back), false if each original reference should remain.</param>
-        /// <param name="processIntermediateValue">A delegate to execute on each node during recursion.</param>
+        /// <param name="processIntermediateNode">A delegate to execute on each node during recursion.</param>
         /// <returns>The possibly-modified entry value. This is needed if a new object was created
         /// to modify the value, such as when an Adaptive Card is converted to a <see cref="JObject"/>.</returns>
         internal static TEntry Recurse<TEntry, TExit>(
@@ -211,7 +221,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 TreeNodeType? entryType = null,
                 TreeNodeType? exitType = null,
                 bool reassignChildren = false,
-                Action<object, ITreeNode> processIntermediateValue = null)
+                Action<ITreeNode> processIntermediateNode = null)
             where TEntry : class
             where TExit : class
         {
@@ -250,7 +260,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 }
                 else
                 {
-                    processIntermediateValue?.Invoke(child, childNode);
+                    processIntermediateNode?.Invoke(childNode);
 
                     // CallChildAsync will be executed immediately even though it's not awaited
                     modifiedChild = childNode.CallChild(child, Next, reassignChildren);
@@ -259,9 +269,30 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 return reassignChildren ? modifiedChild : child;
             }
 
-            processIntermediateValue?.Invoke(entryValue, entryNode);
+            processIntermediateNode?.Invoke(entryNode);
 
             return entryNode.CallChild(entryValue, Next, reassignChildren) as TEntry;
+        }
+
+        internal static void MergeLibraryData<TEntry>(TEntry entryValue, object data, TreeNodeType? entryType = null)
+            where TEntry : class
+        {
+            if (!(data.ToJObject(true) is JObject dataJObject))
+            {
+                throw new ArgumentException(
+                    "The data is not an appropriate type or is serialized incorrectly.",
+                    nameof(data));
+            }
+
+            Recurse(
+                entryValue,
+                (JObject libraryData) =>
+                {
+                    libraryData.Merge(dataJObject);
+                },
+                entryType,
+                TreeNodeType.LibraryData,
+                true);
         }
 
         internal static void ApplyIds<TEntry>(TEntry entryValue, DataIdOptions options = null, TreeNodeType? entryType = null)
@@ -280,21 +311,8 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 entryType,
                 TreeNodeType.ActionData,
                 true,
-                (value, node) =>
+                node =>
                 {
-                    if (node == _tree[TreeNodeType.SubmitAction])
-                    {
-                        // We need to create a "data" object in the submit action
-                        // if there isn't one already
-                        value = value.ToJObjectAndBack(submitAction =>
-                        {
-                            if (submitAction.GetValue(AdaptiveProperties.Data).IsNullish())
-                            {
-                                submitAction.SetValue(AdaptiveProperties.Data, new JObject());
-                            }
-                        });
-                    }
-
                     if (node.IdScope is string idScope)
                     {
                         if (options.HasIdScope(idScope))

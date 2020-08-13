@@ -105,6 +105,21 @@ namespace Bot.Builder.Community.Cards.Management
             });
         }
 
+        public static void MergeLibraryData(this IEnumerable<IMessageActivity> activities, object data)
+        {
+            if (activities is null)
+            {
+                throw new ArgumentNullException(nameof(activities));
+            }
+
+            if (data is null)
+            {
+                throw new ArgumentNullException(nameof(data));
+            }
+
+            CardTree.MergeLibraryData(activities, data);
+        }
+
         // TODO: Expose more methods to apply ID's to more tree nodes
         public static void ApplyIdsToBatch(this IEnumerable<IMessageActivity> activities, DataIdOptions options = null)
         {
@@ -424,8 +439,12 @@ namespace Bot.Builder.Community.Cards.Management
             }
         }
 
+        internal static T GetLibraryValueFromActionData<T>(this JObject actionData, string key)
+            => actionData?[PropertyNames.LibraryData] is JObject libraryData
+                && libraryData[key]?.ToObject<object>() is T result ? result : default;
+
         internal static string GetIdFromActionData(this JObject actionData, string scope = DataIdScopes.Action)
-            => actionData?[PropertyNames.LibraryData] is JObject libraryData ? libraryData[scope]?.ToString() : null;
+            => actionData?.GetLibraryValueFromActionData<string>(scope);
 
         internal static IEnumerable<DataId> GetIdsFromActionData(this JObject data)
             => DataId.Scopes.Select(scope => new DataId(scope, data.GetIdFromActionData(scope))).Where(id => id.Value != null);
