@@ -276,7 +276,9 @@ namespace Bot.Builder.Community.Cards.Management.Tree
         internal static void SetLibraryData<TEntry>(TEntry entryValue, object data, TreeNodeType? entryType = null, bool merge = false)
             where TEntry : class
         {
-            if (!(data.ToJObject(true) is JObject dataJObject))
+            var dataJObject = data.ToJObject(true);
+
+            if (dataJObject == null && data != null)
             {
                 throw new ArgumentException(
                     "The data is not an appropriate type or is serialized incorrectly.",

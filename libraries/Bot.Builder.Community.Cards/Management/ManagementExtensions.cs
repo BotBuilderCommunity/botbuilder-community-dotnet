@@ -105,16 +105,11 @@ namespace Bot.Builder.Community.Cards.Management
             });
         }
 
-        public static void SetLibraryData(this IEnumerable<IMessageActivity> activities, object data, bool merge = false)
+        public static void SetLibraryData(this IEnumerable<IMessageActivity> activities, IDictionary<string, object> data, bool merge = false)
         {
             if (activities is null)
             {
                 throw new ArgumentNullException(nameof(activities));
-            }
-
-            if (data is null)
-            {
-                throw new ArgumentNullException(nameof(data));
             }
 
             CardTree.SetLibraryData(activities, data, TreeNodeType.Batch, merge);
