@@ -11,7 +11,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Bot.Builder.Community.Cards.Tests.Management
+namespace Bot.Builder.Community.Cards.Tests.Management.ManagementExtensions
 {
     [TestClass]
     public class ManagementExtensionsTests
@@ -829,7 +829,7 @@ namespace Bot.Builder.Community.Cards.Tests.Management
 
             Assert.AreEqual(channels.Count, batch.Count);
 
-            int activityIndex = 0;
+            var activityIndex = 0;
 
             void CheckChannelActions(
                 string channelId,
