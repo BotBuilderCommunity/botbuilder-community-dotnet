@@ -55,7 +55,7 @@ You could create in the project an `appsettings.json` file to set the MessageBir
 }
 ```
 
-### Wiring up the Infobip adapter in your bot
+### Wiring up the MessageBird adapter in your bot
 
 After you completed the configuration of your MessageBird adapter, you need to wire up the MessageBird adapter into your bot.
 
@@ -87,7 +87,7 @@ Create a new class that inherits from the ***MessageBirdAdapter*** class. This c
 You will also need to add the following using statements.
 
 ```cs
-  using Bot.Builder.Community.Adapters.Infobip;
+  using Bot.Builder.Community.Adapters.MessageBird;
   using Microsoft.Extensions.Logging;
 ```
 
@@ -132,7 +132,7 @@ Add the following line into the ***ConfigureServices*** method within your Start
   //Add dependencies for MessageBird Adapter
   services.AddSingleton<MessageBirdAdapterOptions>();
 
-  // Add Infobip Adapter with the error handler
+  // Add MessageBird Adapter with the error handler
   services.AddSingleton<MessageBirdAdapter, MessageBirdAdapterWithErrorHandler>();
 
 ```
