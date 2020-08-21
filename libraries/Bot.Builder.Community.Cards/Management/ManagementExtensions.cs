@@ -105,14 +105,22 @@ namespace Bot.Builder.Community.Cards.Management
             });
         }
 
-        public static void SetLibraryData(this IEnumerable<IMessageActivity> activities, IDictionary<string, object> data, bool merge = false)
+        // TODO: Expose more methods to set behaviors in more tree nodes
+        public static void SetActionBehavior(this IEnumerable<IMessageActivity> activities, string name, object value)
         {
             if (activities is null)
             {
                 throw new ArgumentNullException(nameof(activities));
             }
 
-            CardTree.SetLibraryData(activities, data, TreeNodeType.Batch, merge);
+            if (name is null)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+
+            var jToken = value is null ? null : JToken.FromObject(value);
+
+            CardTree.SetLibraryData(activities, new JObject { { name, jToken } }, TreeNodeType.Batch, true);
         }
 
         // TODO: Expose more methods to apply ID's to more tree nodes
