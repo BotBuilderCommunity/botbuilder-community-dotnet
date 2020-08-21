@@ -46,7 +46,7 @@ Sample bot, showing examples of Infobip specific functionality is available [her
 * [Wiring up the Infobip adapter in your bot](#wiring-up-the-infobip-adapter-in-your-bot)
 * [Incoming Whatsapp message requests to Bot Framework Activity mapping](#incoming-whatsapp-message-requests-to-bot-framework-activity-mapping) - Learn how incoming request types are handled by the adapter and the activities received by your bot.
 * [Outgoing Bot Framework Activity to Infobip Whatsapp message mapping](#outgoing-bot-framework-activity-to-infobip-whatsapp-message-mapping) - Learn how outgoing Bot Framework activities are handled by the adapter.
-* [Callback data](#calback-data) - The following sections will demonstrate how to send and receive Whatsapp messages using the Infobip adapter, by walking you through modifying the EchoBot sample.
+* [Callback data](#calback-data)
 * [Useful links](#useful-links)
 
 ### Prerequisites

@@ -46,12 +46,10 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Rest.Tests.Fakes
                 RequestUri = new Uri(url),
             };
 
-            var dcState = dc.GetState();
-
             // Set content
             if (Content != null)
             {
-                this._httpRequest.Content = new StringContent(this.Content.GetValue(dcState));
+                this._httpRequest.Content = new StringContent(this.Content.GetValue(dc.State));
             }
 
             // Set Headers
@@ -65,7 +63,7 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Rest.Tests.Fakes
 
             if (this.ResultProperty != null)
             {
-                dcState.SetValue(this.ResultProperty.GetValue(dcState), result);
+                dc.State.SetValue(this.ResultProperty.GetValue(dc.State), result);
             }
 
             // return the actionResult as the result of this operation

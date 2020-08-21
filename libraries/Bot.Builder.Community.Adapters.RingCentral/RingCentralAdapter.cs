@@ -62,7 +62,7 @@ namespace Bot.Builder.Community.Adapters.RingCentral
                     var hasChannelData = turnContext.Activity.TryGetChannelData<RingCentralChannelData>(out var channelData);
                     if (hasChannelData)
                     {
-                        var resourceId = await _ringCentralClient.SendContentToRingCentralAsync(activity, channelData.SourceId);
+                        var resourceId = await _ringCentralClient.SendContentToRingCentralAsync(activity, channelData.SourceId).ConfigureAwait(false);
                         responses.Add(new ResourceResponse() { Id = resourceId });
                     }
                     else
@@ -114,13 +114,13 @@ namespace Bot.Builder.Community.Adapters.RingCentral
             }
             else
             {
-                (ringCentralRequestType, activity) = await _ringCentralClient.GetActivityFromRingCentralRequestAsync(this, _botAdapter, httpRequest, httpResponse);
+                (ringCentralRequestType, activity) = await _ringCentralClient.GetActivityFromRingCentralRequestAsync(this, _botAdapter, httpRequest, httpResponse).ConfigureAwait(false);
             }
 
             switch (ringCentralRequestType)
             {
                 case RingCentralHandledEvent.VerifyWebhook:
-                    await _ringCentralClient.VerifyWebhookAsync(httpRequest, httpResponse, cancellationToken);
+                    await _ringCentralClient.VerifyWebhookAsync(httpRequest, httpResponse, cancellationToken).ConfigureAwait(false);
                     break;
                 case RingCentralHandledEvent.Intervention:
                 case RingCentralHandledEvent.Action:
@@ -138,18 +138,18 @@ namespace Bot.Builder.Community.Adapters.RingCentral
                         // Process messages created by any subscribed RingCentral source configured using a Webhook
                         if (activity != null)
                         {
-                            var handoffRequestStatus = await _handoffRequestRecognizer.RecognizeHandoffRequestAsync(activity);
+                            var handoffRequestStatus = await _handoffRequestRecognizer.RecognizeHandoffRequestAsync(activity).ConfigureAwait(false);
 
                             // Bot or Agent request -> Re-Categorize
                             if (handoffRequestStatus != HandoffTarget.None)
                             {
                                 var channelData = activity.GetChannelData<RingCentralChannelData>();
                                 var threadId = channelData.ThreadId;
-                                var thread = await _ringCentralClient.GetThreadByIdAsync(threadId);
+                                var thread = await _ringCentralClient.GetThreadByIdAsync(threadId).ConfigureAwait(false);
 
                                 if (thread != null)
                                 {
-                                    await _ringCentralClient.HandoffConversationControlToAsync(handoffRequestStatus, thread);
+                                    await _ringCentralClient.HandoffConversationControlToAsync(handoffRequestStatus, thread).ConfigureAwait(false);
                                 }
                                 else
                                 {

@@ -59,16 +59,20 @@ namespace Bot.Builder.Community.Dialogs.Location
             LocationResourceManager resourceManager = null) : base(dialogId)
         {
             resourceManager = resourceManager ?? new LocationResourceManager();
+            FavoritesManager favoritesManager = null;
 
-            if (!options.HasFlag(LocationOptions.SkipFavorites) && state == null)
+            if (!options.HasFlag(LocationOptions.SkipFavorites))
             {
-                throw new ArgumentNullException(nameof(state),
-                    "If LocationOptions.SkipFavorites is not used then BotState object must be " +
-                    "provided to allow for storing / retrieval of favorites");
-            }
+                if (state == null)
+                {
+                    throw new ArgumentNullException(nameof(state),
+                        "If LocationOptions.SkipFavorites is not used then BotState object must be " +
+                        "provided to allow for storing / retrieval of favorites");
+                }
 
-            var favoriteLocations = state.CreateProperty<List<FavoriteLocation>>($"{nameof(LocationDialog)}.Favorites");
-            var favoritesManager = new FavoritesManager(favoriteLocations);
+                var favoriteLocations = state.CreateProperty<List<FavoriteLocation>>($"{nameof(LocationDialog)}.Favorites");
+                favoritesManager = new FavoritesManager(favoriteLocations);
+            }
 
             IGeoSpatialService geoSpatialService;
             if (useAzureMaps)

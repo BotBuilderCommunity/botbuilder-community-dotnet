@@ -1,4 +1,6 @@
-# Google Adapter for Bot Builder v4 .NET SDK
+# Google legacy Actions SDK and DialogFlow Adapter for Bot Builder v4 .NET SDK
+
+> **This adapter works with the legacy Google Actions SDK and DialogFlow. A new adapter supporting the [latest Actions SDK](https://developers.google.com/assistant/conversational/overview) can be found [here](../Bot.Builder.Community.Adapters.ActionsSDK).**
 
 ## Build status
 | Branch | Status | Recommended NuGet package version |
@@ -35,7 +37,7 @@ Install into your project use the following command in the package manager.
 
 ## Sample
 
-Sample bot, showing examples of Google specific functionality using the current preview is available [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/feature/google-adapter-refactor/samples/Google%20Adapter%20Sample).
+A Sample bot with examples of specific functionality for the legacy Actions SDK and DialogFLow (such as sending cards, lists etc.) is available [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/samples/Google%20Adapter%20Sample).
 
 ## Usage
 
@@ -160,7 +162,7 @@ The following two sections describe hwo how to correctly configure your Google A
 
 9. Navigate to the **Fulfilment** tab using the left hand menu.  Use the toggle to enable webhook for your agent.  On this page is also where you will enter the **URL** for your bot's endpoint once you have it (this is how the DialogFlow agent knows to sent incoming requests to your bot). You will need to re-visit this page and update this URL once you have completed configuration of your bot, as detailed later in this article.
 
-![Configure DialogFlow fulfilment](/libraries/Bot.Builder.Community.Adapters.Google/media/dialog-flow-fulfilment.PNG?raw=true)
+![Configure DialogFlow fulfilment](/libraries/Bot.Builder.Community.Adapters.Google/media/dialog-flow-fulfilment.jpg?raw=true)
 
 10. Here you should also add a header with the name 'Authoization' with a value set to a private secret that you choose. You will use this secret later on when configuring your bot to secure requests to your bot.
 
@@ -264,7 +266,7 @@ You need to set the following properties
 
 * **ActionProjectId** (only required for Conversations Webhook) - The ID of your **Actions on Google** project.
 
-* **DialogFlowAuthorizationHeader** (only required for DialogFlow) - Set this to the private secret you set within the DialogFlow console when configuring your DiaogFlow project.
+* **DialogFlowAuthorizationHeader** (only required for DialogFlow) - Set this to the private secret you set within the DialogFlow console when configuring your DialogFlow project.
 
 * **ValidateIncomingRequests** - If set to true, the adapter will use the **ActionProjectId** for Conversations webhook requests, or **DialogFlowAuthorizationHeader** for DialogFlow requests to validate that requests have been receieved from your Google project.
 
