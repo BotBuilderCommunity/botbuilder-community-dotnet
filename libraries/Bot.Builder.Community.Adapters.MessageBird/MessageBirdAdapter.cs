@@ -37,7 +37,7 @@ namespace Bot.Builder.Community.Adapters.MessageBird
 
         public MessageBirdAdapter(MessageBirdAdapterOptions options = null, ILogger logger = null)
         {
-            _options = options ?? throw new ArgumentNullException(nameof(options));//new MessageBirdAdapterOptions();
+            _options = options ?? throw new ArgumentNullException(nameof(options));
             _logger = logger ?? NullLogger.Instance;
 
             if (_options.UseWhatsAppSandbox)
@@ -82,25 +82,14 @@ namespace Bot.Builder.Community.Adapters.MessageBird
 
             ToActivityConverter _ac = new ToActivityConverter(_options, _logger);
             var messageBirdRequest = JsonConvert.DeserializeObject<MessageBirdWebhookPayload>(body);
-            var activities = _ac.Convert(messageBirdRequest); //actionsSdkRequestMapper.RequestToActivity(actionsSdkRequest);
+            var activities = _ac.Convert(messageBirdRequest); 
             foreach (var activity in activities)
             {
-                //using (var context = new TurnContextEx(this, activity))
-                //{
-                //    await RunPipelineAsync(context, bot.OnTurnAsync, cancellationToken).ConfigureAwait(false);
-                //}
                 using (var context = new TurnContext(this, activity))
                 {
                     await RunPipelineAsync(context, bot.OnTurnAsync, cancellationToken).ConfigureAwait(false);
                 }
             }
-            //var responseJson = JsonConvert.SerializeObject(messageBirdRequest, JsonSerializerSettings);
-
-            //httpResponse.ContentType = "application/json;charset=utf-8";
-            //httpResponse.StatusCode = (int)HttpStatusCode.OK;
-
-            //var responseData = Encoding.UTF8.GetBytes(responseJson);
-            //await httpResponse.Body.WriteAsync(responseData, 0, responseData.Length, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task ContinueConversationAsync(ConversationReference reference, BotCallbackHandler logic, CancellationToken cancellationToken)
@@ -160,19 +149,5 @@ namespace Bot.Builder.Community.Adapters.MessageBird
 
             }
         }
-
-        //private async Task<TurnContextEx> CreateContextAndRunPipelineAsync(IBot bot, CancellationToken cancellationToken, Activity[] activities)
-        //{
-        //    foreach (var activity in activities)
-        //    {
-        //        using (var context = new TurnContextEx(this,activity))
-        //        {
-        //            await RunPipelineAsync(context, bot.OnTurnAsync, cancellationToken).ConfigureAwait(false);
-        //        }
-        //    }
-        //    //var context = new TurnContextEx(this, activity);
-        //    //await RunPipelineAsync(context, bot.OnTurnAsync, cancellationToken).ConfigureAwait(false);
-        //    //return context;
-        //}
     }
 }
