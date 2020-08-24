@@ -1,0 +1,45 @@
+CREATE TABLE [dbo].[BotDataEntity](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[RealId] [varchar](1024) NOT NULL UNIQUE,
+	[Document] [nvarchar](max) NOT NULL,
+	[CreatedTime] [datetimeoffset](7) Not NULL,
+	[TimeStamp] [datetimeoffset](7) Not NULL,
+ CONSTRAINT [PK_BotDataEntity] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[BotDataEntity] ADD  DEFAULT (getutcdate()) FOR [CreatedTime]
+GO
+ALTER TABLE [dbo].[BotDataEntity] ADD  DEFAULT (getutcdate()) FOR [TimeStamp]
+GO
+
+CREATE TABLE [dbo].[TranscriptEntity](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Channel] [varchar](256) NOT NULL,
+	[Conversation] [varchar](1024) NOT NULL,
+    [Activity] [nvarchar](max) NOT NULL,
+	[TimeStamp] [datetimeoffset](7) NOT NULL,
+ CONSTRAINT [PK_TranscriptEntity] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY])
+GO
+CREATE NONCLUSTERED INDEX [IX_TranscriptChannel] ON [dbo].[TranscriptEntity]
+(
+	[Channel] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+CREATE NONCLUSTERED INDEX [IX_TranscriptTimeStamp] ON [dbo].[TranscriptEntity]
+(
+	[TimeStamp] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+CREATE NONCLUSTERED INDEX [IX_TranscriptConversation] ON [dbo].[TranscriptEntity]
+(
+	[Conversation] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[TranscriptEntity] ADD  DEFAULT (getutcdate()) FOR [TimeStamp]
+GO
