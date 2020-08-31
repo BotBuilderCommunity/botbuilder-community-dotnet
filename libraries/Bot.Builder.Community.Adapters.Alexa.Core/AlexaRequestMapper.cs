@@ -152,6 +152,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
             }
 
             var mergedActivityResult = new MergedActivityResult();
+            bool mergedActivityEndsWithPeriod = false;
 
             bool hasSpeakField = false;
             var speakFields = new List<string>();
@@ -170,6 +171,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
                 {
                     case ActivityTypes.Message:
                         mergedActivityResult.MergedActivity = activity;
+
                         if (!string.IsNullOrEmpty(activity.Speak))
                         {
                             hasSpeakField = true;
@@ -185,6 +187,8 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
                             var text = NormalizeActivityText(activity.TextFormat, activity.Text, forSsml: false);
                             if (!string.IsNullOrEmpty(text))
                             {
+                                mergedActivityEndsWithPeriod = activity.Text?.TrimEnd().EndsWith(".") ?? false;
+
                                 textFields.Add(text.Trim(new char[] { ' ' }));
                             }
                         }
@@ -210,7 +214,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
                 mergedActivityResult.MergedActivity.Text = string.Join(" ", textFields);
                 mergedActivityResult.MergedActivity.Attachments = attachments;
 
-                if (mergedActivityResult.MergedActivity.Text.EndsWith(".") && !endWithPeriod)
+                if (mergedActivityResult.MergedActivity.Text.EndsWith(".") && !mergedActivityEndsWithPeriod)
                 {
                     mergedActivityResult.MergedActivity.Text = mergedActivityResult.MergedActivity.Text.TrimEnd('.');
                 }

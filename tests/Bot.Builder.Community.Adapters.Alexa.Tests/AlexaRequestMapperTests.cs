@@ -275,6 +275,32 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
         }
 
         [Fact]
+        public void MergeActivitiesTextWithPeriodAndEmptyText()
+        {
+            var alexaAdapter = new AlexaRequestMapper();
+            var firstActivity = MessageFactory.Text("This is the first activity.");
+            var secondActivity = MessageFactory.Text("");
+
+            var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { firstActivity, secondActivity });
+
+            // We want to preserve the period here even though it is merged with empty text.
+            Assert.Equal("This is the first activity.", processActivityResult.MergedActivity.Text);
+        }
+
+        [Fact]
+        public void MergeActivitiesTextWithNoPeriodAndEmptyText()
+        {
+            var alexaAdapter = new AlexaRequestMapper();
+            var firstActivity = MessageFactory.Text("This is the first activity");
+            var secondActivity = MessageFactory.Text("");
+
+            var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { firstActivity, secondActivity });
+
+            // We want to preserve the missing period here even though it is merged with empty text.
+            Assert.Equal("This is the first activity", processActivityResult.MergedActivity.Text);
+        }
+
+        [Fact]
         public void MergeActivitiesIgnoresNonMessageActivities()
         {
             var alexaAdapter = new AlexaRequestMapper();

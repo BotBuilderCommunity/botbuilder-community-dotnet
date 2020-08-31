@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using Bot.Builder.Community.Adapters.Google.Core.Attachments;
 using Bot.Builder.Community.Adapters.Google.Core.Helpers;
 using Bot.Builder.Community.Adapters.Google.Core.Model;
