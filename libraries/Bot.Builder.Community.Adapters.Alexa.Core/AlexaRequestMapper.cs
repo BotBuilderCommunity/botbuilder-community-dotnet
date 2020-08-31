@@ -19,8 +19,8 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
 {
     public class AlexaRequestMapper
     {
-        private AlexaRequestMapperOptions _options;
-        private ILogger _logger;
+        private readonly AlexaRequestMapperOptions _options;
+        private readonly ILogger _logger;
 
         public AlexaRequestMapper(AlexaRequestMapperOptions options = null, ILogger logger = null)
         {
@@ -59,9 +59,9 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
 
                         return RequestToEventActivity(skillRequest);
                     }
-                case LaunchRequest launchRequest:
+                case LaunchRequest _:
                     return RequestToConversationUpdateActivity(skillRequest);
-                case SessionEndedRequest sessionEndedRequest:
+                case SessionEndedRequest _:
                     return RequestToEndOfConversationActivity(skillRequest);
                 default:
                     return RequestToEventActivity(skillRequest);
@@ -158,6 +158,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
             var speakFields = new List<string>();
             var textFields = new List<string>();
             var attachments = new List<Attachment>();
+            var endWithPeriod = activities.LastOrDefault(a => !string.IsNullOrEmpty(a.Text))?.Text?.TrimEnd().EndsWith(".") ?? false;
 
             foreach (var activity in activities)
             {
