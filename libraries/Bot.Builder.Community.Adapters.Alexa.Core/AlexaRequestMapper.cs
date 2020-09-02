@@ -9,6 +9,7 @@ using Alexa.NET.Request.Type;
 using Alexa.NET.Response;
 using Bot.Builder.Community.Adapters.Alexa.Core.Attachments;
 using Bot.Builder.Community.Adapters.Shared;
+using Bot.Builder.Community.Adapters.Shared.Attachments;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -19,6 +20,8 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
 {
     public class AlexaRequestMapper
     {
+        private static readonly AttachmentConverter _attachmentConverter = DefaultAlexaAttachmentConverter.CreateDefault();
+
         private readonly AlexaRequestMapperOptions _options;
         private readonly ILogger _logger;
 
@@ -405,7 +408,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
         /// <param name="response">The SkillResponse to be modified based on the attachments on the Activity object.</param>
         private void ProcessActivityAttachments(Activity activity, SkillResponse response)
         {
-           activity.ConvertAttachmentContent();
+            _attachmentConverter.ConvertAttachments(activity);
 
             var bfCard = activity.Attachments?.FirstOrDefault(a => a.ContentType == HeroCard.ContentType || a.ContentType == SigninCard.ContentType);
 

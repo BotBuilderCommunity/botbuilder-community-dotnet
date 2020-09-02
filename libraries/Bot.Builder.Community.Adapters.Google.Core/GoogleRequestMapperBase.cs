@@ -8,6 +8,7 @@ using Bot.Builder.Community.Adapters.Google.Core.Model.Request;
 using Bot.Builder.Community.Adapters.Google.Core.Model.Response;
 using Bot.Builder.Community.Adapters.Google.Core.Model.SystemIntents;
 using Bot.Builder.Community.Adapters.Shared;
+using Bot.Builder.Community.Adapters.Shared.Attachments;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -17,6 +18,8 @@ namespace Bot.Builder.Community.Adapters.Google.Core
 {
     public abstract class GoogleRequestMapperBase
     {
+        protected static readonly AttachmentConverter _attachmentConverter = DefaultGoogleAttachmentConverter.CreateDefault();
+
         public GoogleRequestMapperOptions Options { get; set; }
         public ILogger Logger;
 
@@ -179,7 +182,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core
         {
             var responseItems = new List<ResponseItem>();
 
-            activity.ConvertAttachmentContent();
+            _attachmentConverter.ConvertAttachments(activity);
 
             var bfCard = activity.Attachments?.FirstOrDefault(a => a.ContentType == HeroCard.ContentType);
 

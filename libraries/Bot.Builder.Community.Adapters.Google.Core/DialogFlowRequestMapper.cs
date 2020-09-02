@@ -89,7 +89,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core
                 return response;
             }
 
-            activity.ConvertAttachmentContent();
+            _attachmentConverter.ConvertAttachments(activity);
 
             var simpleResponse = new SimpleResponse
             {

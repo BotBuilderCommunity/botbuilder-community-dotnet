@@ -6,6 +6,7 @@ using Bot.Builder.Community.Adapters.ActionsSDK.Core.Helpers;
 using Bot.Builder.Community.Adapters.ActionsSDK.Core.Model;
 using Bot.Builder.Community.Adapters.ActionsSDK.Core.Model.ContentItems;
 using Bot.Builder.Community.Adapters.Shared;
+using Bot.Builder.Community.Adapters.Shared.Attachments;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -14,6 +15,8 @@ namespace Bot.Builder.Community.Adapters.ActionsSDK.Core
 {
     public class ActionsSdkRequestMapper
     {
+        private static readonly AttachmentConverter _attachmentConverter = DefaultActionsSdkAttachmentConverter.CreateDefault();
+
         private readonly ActionsSdkRequestMapperOptions _options;
         private readonly ILogger _logger;
 
@@ -256,7 +259,7 @@ namespace Bot.Builder.Community.Adapters.ActionsSDK.Core
         {
             var contentItems = new List<ContentItem>();
 
-            activity.ConvertAttachmentContent();
+            _attachmentConverter.ConvertAttachments(activity);
 
             var bfCard = activity.Attachments?.FirstOrDefault(a => a.ContentType == HeroCard.ContentType);
 

@@ -1,8 +1,6 @@
 ﻿using Alexa.NET.Response;
-using Bot.Builder.Community.Adapters.Shared;
+using Bot.Builder.Community.Adapters.Shared.Attachments;
 using Microsoft.Bot.Schema;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Bot.Builder.Community.Adapters.Alexa.Core.Attachments
 {
