@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using AdaptiveCards;
 using Bot.Builder.Community.Adapters.Shared.Attachments;
 using Bot.Builder.Community.Adapters.Shared.Tests.TestUtilities;
 using Microsoft.Bot.Schema;
 using Microsoft.Rest;
 using Xunit;
 
-namespace Bot.Builder.Community.Adapters.Shared.Tests
+namespace Bot.Builder.Community.Adapters.Shared.Tests.Attachments
 {
     public class AttachmentConverterTests
     {
@@ -13,8 +14,9 @@ namespace Bot.Builder.Community.Adapters.Shared.Tests
         public void AttachmentConverterCorrectDefaults()
         {
             var converter = new AttachmentConverter();
-            Assert.Equal(1, converter.Converters.Count);
+            Assert.Equal(2, converter.Converters.Count);
             Assert.IsType<CardAttachmentConverter>(converter.Converters[0]);
+            Assert.IsType<AdaptiveCardAttachmentConverter>(converter.Converters[1]);
         }
 
         [Fact]
@@ -59,6 +61,26 @@ namespace Bot.Builder.Community.Adapters.Shared.Tests
 
             // Throw stopped processing at 1st card.
             Assert.IsNotType<HeroCard>(activity.Attachments[1].Content);
+        }
+
+        [Fact]
+        public void ConvertFromTwoConverters()
+        {
+            var activity = CreateActivity(new HeroCard().ToAttachment(), new AdaptiveCard(AdaptiveCard.KnownSchemaVersion).ToAttachment());
+
+            Assert.IsType<HeroCard>(activity.Attachments[0].Content);
+            Assert.IsType<AdaptiveCard>(activity.Attachments[1].Content);
+
+            activity = activity.Anonymize();
+
+            Assert.IsNotType<HeroCard>(activity.Attachments[0].Content);
+            Assert.IsNotType<AdaptiveCard>(activity.Attachments[1].Content);
+
+            var converter = new AttachmentConverter(useDefaults: true);
+            converter.ConvertAttachments(activity);
+
+            Assert.IsType<HeroCard>(activity.Attachments[0].Content);
+            Assert.IsType<AdaptiveCard>(activity.Attachments[1].Content);
         }
 
         private Activity CreateActivity(params Attachment[] attachments)

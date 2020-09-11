@@ -9,9 +9,12 @@ namespace Bot.Builder.Community.Adapters.Shared.Attachments
         /// <summary>
         /// These are the default converters. All adapters should use these converters.
         /// </summary>
-        private static readonly IReadOnlyList<IAttachmentConverter> _defaultAttachmentConverters = new[]
+        private static readonly IReadOnlyList<IAttachmentConverter> _defaultAttachmentConverters = new IAttachmentConverter[]
         {
-            new CardAttachmentConverter()
+            new CardAttachmentConverter(),
+
+            // Important: Converting Adaptive cards can throw exceptions. Be sure to test your cards before sending.
+            new AdaptiveCardAttachmentConverter()
         };
 
         private readonly List<IAttachmentConverter> _converters = new List<IAttachmentConverter>();
