@@ -53,12 +53,23 @@ namespace Bot.Builder.Community.Adapters.Shared
             {
                 var speakSsmlDoc = XDocument.Parse(speakText);
                 
-                if (speakSsmlDoc.Root != null && speakSsmlDoc.Root.Name.ToString().ToLowerInvariant() == "speak")
+                if (speakSsmlDoc.Root != null && speakSsmlDoc.Root.Name.LocalName.ToLowerInvariant() == "speak")
                 {
                     using (var reader = speakSsmlDoc.Root.CreateReader())
                     {
                         reader.MoveToContent();
-                        return reader.ReadInnerXml();
+                        speakText = reader.ReadInnerXml();
+                    }
+                }
+
+                speakSsmlDoc = XDocument.Parse(speakText);
+
+                if (speakSsmlDoc.Root != null && speakSsmlDoc.Root.Name.LocalName.ToLowerInvariant() == "voice")
+                {
+                    using (var reader = speakSsmlDoc.Root.CreateReader())
+                    {
+                        reader.MoveToContent();
+                        speakText = reader.ReadInnerXml();
                     }
                 }
 

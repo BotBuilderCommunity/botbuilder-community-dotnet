@@ -96,8 +96,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core
                 Content = new SimpleResponseContent
                 {
                     DisplayText = activity.Text,
-                    Ssml = activity.Speak,
-                    TextToSpeech = activity.Text
+                    Ssml = activity.Speak
                 }
             };
 

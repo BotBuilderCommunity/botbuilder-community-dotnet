@@ -178,7 +178,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
                         if (!string.IsNullOrEmpty(activity.Speak))
                         {
                             hasSpeakField = true;
-                            speakFields.Add(StripSpeakTag(activity.Speak));
+                            speakFields.Add(ActivityMappingHelper.StripSpeakTag(activity.Speak));
                         }
                         else if (!string.IsNullOrEmpty(activity.Text))
                         {
@@ -312,34 +312,6 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
             activity.Locale = skillRequest.Request.Locale;
 
             return activity;
-        }
-
-        /// <summary>
-        /// Checks a string to see if it is XML and if the outer tag is a speak tag
-        /// indicating it is SSML.  If an outer speak tag is found, the inner XML is
-        /// returned, otherwise the original string is returned
-        /// </summary>
-        /// <param name="speakText">String to be checked for an outer speak XML tag and stripped if found</param>
-        private string StripSpeakTag(string speakText)
-        {
-            try
-            {
-                var speakSsmlDoc = XDocument.Parse(speakText);
-                if (speakSsmlDoc != null && speakSsmlDoc.Root.Name.ToString().ToLowerInvariant() == "speak")
-                {
-                    using (var reader = speakSsmlDoc.Root.CreateReader())
-                    {
-                        reader.MoveToContent();
-                        return reader.ReadInnerXml();
-                    }
-                }
-
-                return speakText;
-            }
-            catch (XmlException)
-            {
-                return speakText;
-            }
         }
 
         private string NormalizeActivityText(string textFormat, string text, bool forSsml)

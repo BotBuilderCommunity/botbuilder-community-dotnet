@@ -22,7 +22,7 @@ namespace Bot.Builder.Community.Adapters.Shared.Attachments
                 { ReceiptCard.ContentType, x => Convert<ReceiptCard>(x) },
                 { SigninCard.ContentType, x => Convert<SigninCard>(x) },
                 { ThumbnailCard.ContentType, x => Convert<ThumbnailCard>(x) },
-                { VideoCard.ContentType, x => Convert<VideoCard>(x) },
+                { VideoCard.ContentType, x => Convert<VideoCard>(x) }
             };
         }
 

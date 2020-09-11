@@ -88,7 +88,6 @@ namespace Bot.Builder.Community.Adapters.Google.Core
                 {
                     DisplayText = activity.Text,
                     Ssml = activity.Speak,
-                    TextToSpeech = activity.Text
                 }
             };
 

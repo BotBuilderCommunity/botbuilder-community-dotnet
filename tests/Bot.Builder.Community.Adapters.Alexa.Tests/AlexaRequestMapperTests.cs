@@ -209,6 +209,22 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
         }
 
         [Fact]
+        public void MergeActivitiesReturnsSingleActivityWithComplexSpeakSsmlTag()
+        {
+            const string text = "Microsoft Ignite will take place online";
+            const string ssml = "<speak version=\"1.0\" xmlns=\"http://www.w3.org/2001/10/synthesis\" xml:lang=\"en-US\"><voice name=\"en-US-AriaNeural\">Microsoft Ignite will take place online</voice></speak>";
+
+            var alexaAdapter = new AlexaRequestMapper();
+            var inputActivity = MessageFactory.Text(text, ssml);
+
+            var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { inputActivity });
+
+            Assert.Equal(text, processActivityResult.MergedActivity.Text);
+            // When removing the speak tag the serializer adds the missing space at the end of the xml element. This doesn't matter for rendering in Alexa so it is fine.
+            Assert.Equal("<speak>Microsoft Ignite will take place online</speak>", processActivityResult.MergedActivity.Speak);
+        }
+
+        [Fact]
         public void MergeActivitiesReturnsSingleActivityAddingSpeakSsmlTag()
         {
             const string text = "This is the single activity";
