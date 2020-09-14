@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security;
 using System.Xml;
 using System.Xml.Linq;
+using AdaptiveCards;
 using Alexa.NET.Request;
 using Alexa.NET.Request.Type;
 using Alexa.NET.Response;
@@ -98,15 +99,18 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
                 return response;
             }
 
+            // Grab any adaptive card attachment to get fallback speak property
+            var adaptiveCardAttachment = activity.Attachments.FirstOrDefault(a => a.ContentType == AdaptiveCard.ContentType)?.Content as AdaptiveCard;
+
             if (!string.IsNullOrEmpty(activity.Speak))
             {
                 response.Response.OutputSpeech = new SsmlOutputSpeech(activity.Speak);
             }
             else
-            {
-                response.Response.OutputSpeech = new PlainTextOutputSpeech(activity.Text);
+            { 
+                response.Response.OutputSpeech = new PlainTextOutputSpeech(adaptiveCardAttachment?.Speak ?? activity.Text);
             }
-
+            
             ProcessActivityAttachments(activity, response);
 
             if (ShouldSetEndSession(response))
