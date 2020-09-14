@@ -36,7 +36,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core
             activity.ServiceUrl = Options.ServiceUrl;
             activity.Recipient = new ChannelAccount("", "action");
             activity.Conversation = new ConversationAccount(false, id: $"{request.Conversation.ConversationId}");
-            activity.From = null;//new ChannelAccount(request.GetUserIdFromUserStorage());
+            activity.From = new ChannelAccount(GetOrSetUserId(request));
             activity.Id = Guid.NewGuid().ToString();
             activity.Timestamp = DateTime.UtcNow;
             activity.Locale = request.User.Locale;
@@ -270,6 +270,29 @@ namespace Bot.Builder.Community.Adapters.Google.Core
                     UrlTypeHint = UrlTypeHint.URL_TYPE_HINT_UNSPECIFIED
                 }
             };
+        }
+
+        public static string GetOrSetUserId(ConversationRequest request)
+        {
+            if (request.User.UserVerificationStatus != "VERIFIED")
+            {
+                request.User.UserStorage = request.Conversation.ConversationId;
+                return request.Conversation.ConversationId;
+            }
+
+            if (!string.IsNullOrEmpty(request.User.UserStorage.ToString()))
+            {
+                Guid.TryParse(request.User.UserStorage.ToString(), out Guid currentUserId);
+
+                if (currentUserId != Guid.Empty)
+                {
+                    return currentUserId.ToString();
+                }
+            }
+            
+            var newUserId = Guid.NewGuid();
+            request.User.UserStorage = newUserId;
+            return newUserId.ToString();
         }
 
         private BasicCard CreateGoogleCardFromHeroCard(HeroCard heroCard)

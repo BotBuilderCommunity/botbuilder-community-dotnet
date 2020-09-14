@@ -1,4 +1,5 @@
-﻿using Microsoft.Bot.Schema;
+﻿using AdaptiveCards;
+using Microsoft.Bot.Schema;
 
 namespace Bot.Builder.Community.Adapters.Shared.Tests.TestUtilities
 {
@@ -9,6 +10,8 @@ namespace Bot.Builder.Community.Adapters.Shared.Tests.TestUtilities
         #region Missing from Bot Builder Sdk
 
         public static Attachment ToAttachment(this OAuthCard card) => CreateAttachment(card, OAuthCard.ContentType);
+
+        public static Attachment ToAttachment(this AdaptiveCard card) => CreateAttachment(card, AdaptiveCard.ContentType);
 
         #endregion Missing from Bot Builder Sdk
 
