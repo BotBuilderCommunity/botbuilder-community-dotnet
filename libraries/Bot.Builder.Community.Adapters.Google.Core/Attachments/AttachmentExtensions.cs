@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Bot.Builder.Community.Adapters.Google.Core.Model.Response;
+﻿using Bot.Builder.Community.Adapters.Google.Core.Model.Response;
 using Bot.Builder.Community.Adapters.Google.Core.Model.SystemIntents;
-using Bot.Builder.Community.Adapters.Shared;
+using Bot.Builder.Community.Adapters.Shared.Attachments;
 using Microsoft.Bot.Schema;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using BasicCard = Bot.Builder.Community.Adapters.Google.Core.Model.Response.BasicCard;
 
 namespace Bot.Builder.Community.Adapters.Google.Core.Attachments

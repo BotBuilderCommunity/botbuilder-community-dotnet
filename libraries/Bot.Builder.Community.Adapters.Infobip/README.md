@@ -36,7 +36,7 @@ PM> Install-Package Bot.Builder.Community.Adapters.Infobip
 ````
 ## Sample
 
-Sample bot, showing examples of Infobip specific functionality is available [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/samples/Infobip%20Adapter%20Sample).
+Sample bot, showing examples of Infobip specific functionality is available [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/Infobip%20Adapter%20Sample).
 
 
 ## Usage
