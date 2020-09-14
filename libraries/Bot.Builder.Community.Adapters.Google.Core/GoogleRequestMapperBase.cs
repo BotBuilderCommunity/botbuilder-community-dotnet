@@ -280,7 +280,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core
                 return request.Conversation.ConversationId;
             }
 
-            if (!string.IsNullOrEmpty(request.User.UserStorage.ToString()))
+            if (!string.IsNullOrEmpty(request.User.UserStorage?.ToString()))
             {
                 Guid.TryParse(request.User.UserStorage.ToString(), out Guid currentUserId);
 
