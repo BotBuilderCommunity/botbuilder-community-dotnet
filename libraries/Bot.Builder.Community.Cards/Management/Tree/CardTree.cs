@@ -297,6 +297,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 true);
         }
 
+        // TODO: Rename "apply" to "set"
         internal static void ApplyIds<TEntry>(TEntry entryValue, DataIdOptions options = null, TreeNodeType? entryType = null)
             where TEntry : class
         {

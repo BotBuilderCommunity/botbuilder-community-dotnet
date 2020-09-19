@@ -45,13 +45,7 @@ namespace Bot.Builder.Community.Cards.Tests.Management
                     new CardAction(ActionTypes.PostBack, value: new object()),
                 }).ToAttachment());
 
-                var actionActivity = new Activity(value: new JObject
-                {
-                    {
-                        PropertyNames.LibraryData,
-                        new JObject { { DataIdScopes.Action, ActionId } }
-                    },
-                });
+                var actionActivity = new Activity(value: new JObject { { DataIdScopes.Action, ActionId } }.WrapLibraryData());
 
                 action?.Invoke(middleware);
 
@@ -182,13 +176,7 @@ namespace Bot.Builder.Community.Cards.Tests.Management
                 new CardAction(ActionTypes.PostBack, value: new object()),
             }).ToAttachment());
 
-            var actionActivity = new Activity(value: new JObject
-            {
-                {
-                    PropertyNames.LibraryData,
-                    new JObject { { DataIdScopes.Action, ActionId } }
-                },
-            });
+            var actionActivity = new Activity(value: new JObject { { DataIdScopes.Action, ActionId } }.WrapLibraryData());
 
             middleware.NonUpdatingOptions.IdTrackingStyle = TrackingStyle.TrackDisabled;
             middleware.NonUpdatingOptions.IdOptions.Set(DataIdScopes.Action, ActionId);
@@ -319,10 +307,113 @@ namespace Bot.Builder.Community.Cards.Tests.Management
             }
         }
 
-        private UserState CreateUserState() => new UserState(new MemoryStorage());
+        [TestMethod]
+        public async Task AutoDeactivate_DisablesWhenTrue() => await TestAutoDeactivate(false, true, false);
 
-        private CardManager CreateManager() => new CardManager(CreateUserState());
+        [TestMethod]
+        public async Task AutoDeactivate_DoesNotDisableWhenFalse() => await TestAutoDeactivate(false, false, true);
 
-        private CardManagerMiddleware CreateMiddleware() => new CardManagerMiddleware(CreateManager());
+        [TestMethod]
+        public async Task AutoDeactivate_DisablesWhenDefault() => await TestAutoDeactivate(false, null, true);
+
+        [TestMethod]
+        public async Task AutoDeactivate_DoesNotDisableWhenDefault() => await TestAutoDeactivate(false, null, false);
+
+        [TestMethod]
+        public async Task AutoDeactivate_DeletesWhenTrue() => await TestAutoDeactivate(true, true, false);
+
+        [TestMethod]
+        public async Task AutoDeactivate_DoesNotDeleteWhenFalse() => await TestAutoDeactivate(true, false, true);
+
+        [TestMethod]
+        public async Task AutoDeactivate_DeletesWhenDefault() => await TestAutoDeactivate(true, null, true);
+
+        [TestMethod]
+        public async Task AutoDeactivate_DoesNotDeleteWhenDefault() => await TestAutoDeactivate(true, null, false);
+
+        private static async Task TestAutoDeactivate(
+            bool useChannelWithMessageUpdates,
+            bool? autoDeactivateInAction,
+            bool autoDeactivateInOptions)
+        {
+            const string ActionId = "action ID";
+
+            var botState = CreateUserState();
+            var accessor = botState.CreateProperty<CardManagerState>(nameof(CardManagerState));
+            var middleware = new CardManagerMiddleware(new CardManager(botState));
+            var adapter = new TestAdapter().Use(middleware);
+            var expectedToDeactivate = autoDeactivateInAction == true || (autoDeactivateInAction != false && autoDeactivateInOptions);
+            var expectedInStateBefore = !useChannelWithMessageUpdates;
+            var expectedInQueueBefore = true;
+            var expectedInStateAfter = !(useChannelWithMessageUpdates || expectedToDeactivate);
+            var expectedInQueueAfter = !(useChannelWithMessageUpdates && expectedToDeactivate);
+            var isInState = false;
+            var isInQueue = false;
+            var activitiesProcessed = 0;
+
+            var cardActivity = MessageFactory.Attachment(new HeroCard(buttons: new List<CardAction>
+            {
+                new CardAction(ActionTypes.PostBack, value: new Dictionary<string, object>
+                {
+                    { Behaviors.AutoDeactivate, autoDeactivateInAction },
+                }.WrapLibraryData()),
+            }).ToAttachment());
+
+            var actionActivity = new Activity(value: new JObject
+            {
+                { Behaviors.AutoDeactivate, autoDeactivateInAction },
+                { DataIdScopes.Action, ActionId },
+            }.WrapLibraryData());
+
+            if (useChannelWithMessageUpdates)
+            {
+                middleware.ChannelsWithMessageUpdates.Add(Channels.Test);
+                middleware.UpdatingOptions.IdOptions.Set(DataIdScopes.Action, ActionId);
+                middleware.UpdatingOptions.AutoDeleteOnAction = autoDeactivateInOptions;
+            }
+            else
+            {
+                middleware.NonUpdatingOptions.IdOptions.Set(DataIdScopes.Action, ActionId);
+                middleware.NonUpdatingOptions.AutoDisableOnAction = autoDeactivateInOptions;
+                middleware.NonUpdatingOptions.AutoClearEnabledOnSend = false;
+            }
+
+            void AssertCard(bool expected, bool useState) => Assert.AreEqual(
+                    expected,
+                    useState ? isInState : isInQueue,
+                    $"Card activity {(expected ? "wasn't" : "was")} found in {(useState ? "state" : "queue")}");
+
+            await new TestFlow(adapter, async (turnContext, cancellationToken) =>
+            {
+                if (turnContext.Activity.Value == null)
+                {
+                    await turnContext.SendActivityAsync(cardActivity);
+                }
+
+                var state = await accessor.GetNotNullAsync(turnContext, () => new CardManagerState());
+
+                isInState = state.DataIdsByScope.TryGetValue(DataIdScopes.Action, out var set) && set.Contains(ActionId);
+                isInQueue = adapter.ActiveQueue.Contains(cardActivity);
+
+                activitiesProcessed++;
+
+                await botState.SaveChangesAsync(turnContext);
+            })
+                .Send("hi")
+                    .Do(() => AssertCard(expectedInStateBefore, true))
+                    .Do(() => AssertCard(expectedInQueueBefore, false))
+                .Send(actionActivity)
+                    .Do(() => AssertCard(expectedInStateAfter, true))
+                    .Do(() => AssertCard(expectedInQueueAfter, false))
+                .StartTestAsync();
+
+            Assert.AreEqual(2, activitiesProcessed);
+        }
+
+        private static UserState CreateUserState() => new UserState(new MemoryStorage());
+
+        private static CardManager CreateManager() => new CardManager(CreateUserState());
+
+        private static CardManagerMiddleware CreateMiddleware() => new CardManagerMiddleware(CreateManager());
     }
 }
