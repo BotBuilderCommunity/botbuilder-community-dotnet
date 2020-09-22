@@ -308,10 +308,10 @@ namespace Bot.Builder.Community.Cards.Tests.Management
         }
 
         [TestMethod]
-        public async Task AutoDeactivate_DisablesWhenTrue() => await TestAutoDeactivate(false, true, false);
+        public async Task AutoDeactivate_DisablesWhenOn() => await TestAutoDeactivate(false, BehaviorSwitch.On, false);
 
         [TestMethod]
-        public async Task AutoDeactivate_DoesNotDisableWhenFalse() => await TestAutoDeactivate(false, false, true);
+        public async Task AutoDeactivate_DoesNotDisableWhenOff() => await TestAutoDeactivate(false, BehaviorSwitch.Off, true);
 
         [TestMethod]
         public async Task AutoDeactivate_DisablesWhenDefault() => await TestAutoDeactivate(false, null, true);
@@ -320,10 +320,10 @@ namespace Bot.Builder.Community.Cards.Tests.Management
         public async Task AutoDeactivate_DoesNotDisableWhenDefault() => await TestAutoDeactivate(false, null, false);
 
         [TestMethod]
-        public async Task AutoDeactivate_DeletesWhenTrue() => await TestAutoDeactivate(true, true, false);
+        public async Task AutoDeactivate_DeletesWhenOn() => await TestAutoDeactivate(true, BehaviorSwitch.On, false);
 
         [TestMethod]
-        public async Task AutoDeactivate_DoesNotDeleteWhenFalse() => await TestAutoDeactivate(true, false, true);
+        public async Task AutoDeactivate_DoesNotDeleteWhenOff() => await TestAutoDeactivate(true, BehaviorSwitch.Off, true);
 
         [TestMethod]
         public async Task AutoDeactivate_DeletesWhenDefault() => await TestAutoDeactivate(true, null, true);
@@ -333,7 +333,7 @@ namespace Bot.Builder.Community.Cards.Tests.Management
 
         private static async Task TestAutoDeactivate(
             bool useChannelWithMessageUpdates,
-            bool? autoDeactivateInAction,
+            string autoDeactivateInAction,
             bool autoDeactivateInOptions)
         {
             const string ActionId = "action ID";
@@ -342,7 +342,8 @@ namespace Bot.Builder.Community.Cards.Tests.Management
             var accessor = botState.CreateProperty<CardManagerState>(nameof(CardManagerState));
             var middleware = new CardManagerMiddleware(new CardManager(botState));
             var adapter = new TestAdapter().Use(middleware);
-            var expectedToDeactivate = autoDeactivateInAction == true || (autoDeactivateInAction != false && autoDeactivateInOptions);
+            var expectedToDeactivate = autoDeactivateInAction == BehaviorSwitch.On
+                || (autoDeactivateInAction != BehaviorSwitch.Off && autoDeactivateInOptions);
             var expectedInStateBefore = !useChannelWithMessageUpdates;
             var expectedInQueueBefore = true;
             var expectedInStateAfter = !(useChannelWithMessageUpdates || expectedToDeactivate);

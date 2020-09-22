@@ -2,7 +2,6 @@
 {
     public static class Behaviors
     {
-        // TODO: Rename "deactivate" to "disable" and vice versa
         public const string AutoDeactivate = "autoDeactivate";
     }
 }

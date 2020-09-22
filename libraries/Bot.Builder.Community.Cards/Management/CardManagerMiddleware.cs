@@ -106,12 +106,12 @@ namespace Bot.Builder.Community.Cards.Management
             if (turnContext.GetIncomingActionData() is JObject data)
             {
                 var incomingIds = data.GetIdsFromActionData();
-                var autoDeactivate = data.GetLibraryValueFromActionData<bool?>(Behaviors.AutoDeactivate);
+                var autoDeactivate = data.GetLibraryValueFromActionData<string>(Behaviors.AutoDeactivate);
 
                 // Actions should not be disabled if they have no data ID's
                 if (incomingIds.Count() > 0)
                 {
-                    if (options.IdTrackingStyle != TrackingStyle.None && autoDeactivate != false)
+                    if (options.IdTrackingStyle != TrackingStyle.None && autoDeactivate != BehaviorSwitch.Off)
                     {
                         // Whether we should proceed by default depends on the ID-tracking style
                         shouldProceed = options.IdTrackingStyle == TrackingStyle.TrackDisabled;
@@ -131,7 +131,7 @@ namespace Bot.Builder.Community.Cards.Management
                                 shouldProceed = options.IdTrackingStyle == TrackingStyle.TrackEnabled;
                             }
 
-                            if (options.AutoDisableOnAction || autoDeactivate == true)
+                            if (options.AutoDisableOnAction || autoDeactivate == BehaviorSwitch.On)
                             {
                                 // This might disable an already-disabled ID but that's okay
                                 await Manager.DisableIdAsync(
@@ -143,7 +143,8 @@ namespace Bot.Builder.Community.Cards.Management
                         }
                     }
 
-                    if ((options.AutoDeleteOnAction && autoDeactivate != false) || (options == UpdatingOptions && autoDeactivate == true))
+                    if ((options.AutoDeleteOnAction && autoDeactivate != BehaviorSwitch.Off)
+                        || (options == UpdatingOptions && autoDeactivate == BehaviorSwitch.On))
                     {
                         // If there are multiple ID scopes in use, just delete the one with the largest range
                         var scope = DataId.Scopes.ElementAtOrDefault(incomingIds.Max(id => DataId.Scopes.IndexOf(id.Key)));
