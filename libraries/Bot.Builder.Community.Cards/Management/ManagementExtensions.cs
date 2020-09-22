@@ -105,24 +105,6 @@ namespace Bot.Builder.Community.Cards.Management
             });
         }
 
-        // TODO: Expose more methods to set behaviors in more tree nodes
-        public static void SetActionBehavior(this IEnumerable<IMessageActivity> activities, string name, object value)
-        {
-            if (activities is null)
-            {
-                throw new ArgumentNullException(nameof(activities));
-            }
-
-            if (name is null)
-            {
-                throw new ArgumentNullException(nameof(name));
-            }
-
-            var jToken = value is null ? null : JToken.FromObject(value);
-
-            CardTree.SetLibraryData(activities, new JObject { { name, jToken } }, TreeNodeType.Batch, true);
-        }
-
         // TODO: Expose more methods to apply ID's to more tree nodes
         public static void ApplyIdsToBatch(this IEnumerable<IMessageActivity> activities, DataIdOptions options = null)
         {
@@ -400,6 +382,28 @@ namespace Bot.Builder.Community.Cards.Management
             // Teams and Facebook values don't need to be adapted any further
 
             return incomingData;
+        }
+
+        internal static void SetActionBehavior<T>(
+                this T entryValue,
+                string behaviorName,
+                object behaviorValue,
+                TreeNodeType? entryType = null)
+            where T : class
+        {
+            if (entryValue is null)
+            {
+                throw new ArgumentNullException(nameof(entryValue));
+            }
+
+            if (behaviorName is null)
+            {
+                throw new ArgumentNullException(nameof(behaviorName));
+            }
+
+            var jToken = behaviorValue is null ? null : JToken.FromObject(behaviorValue);
+
+            CardTree.SetLibraryData(entryValue, new JObject { { behaviorName, jToken } }, entryType, true);
         }
 
         internal static void ApplyIdsToActionData(this JObject actionData, DataIdOptions options)
