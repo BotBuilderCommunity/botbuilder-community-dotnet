@@ -146,6 +146,8 @@ namespace Bot.Builder.Community.Cards.Tests.Management.ManagementExtensions
             Assert.ThrowsException<ArgumentNullException>(() => batch.ConvertAdaptiveCards());
         }
 
+        // TODO: Move this test method to another test class
+        // since ManagementExtensions.ApplyIdsToBatch has been replaced with DataId.SetForBatch
         [TestMethod]
         public void TestApplyIdsToBatch()
         {
@@ -283,7 +285,7 @@ namespace Bot.Builder.Community.Cards.Tests.Management.ManagementExtensions
             var options = new DataIdOptions(DataId.Scopes);
 
             options.Set(DataIdScopes.Batch, BATCHID);
-            batch.ApplyIdsToBatch(options);
+            DataId.SetForBatch(batch, options);
 
             var newAdaptiveCard = (AdaptiveCard)batch[0].Attachments[0].Content;
             var selectAction = (AdaptiveSubmitAction)newAdaptiveCard.SelectAction;
@@ -500,7 +502,7 @@ namespace Bot.Builder.Community.Cards.Tests.Management.ManagementExtensions
             options = new DataIdOptions(DataIdScopes.Batch, true);
 
             options.Set(DataIdScopes.Carousel, CAROUSELID);
-            batch.ApplyIdsToBatch(options);
+            DataId.SetForBatch(batch, options);
 
             heroCard = (HeroCard)batch[0].Attachments[0].Content;
             data = (JObject)heroCard.Buttons.Single().Value;
@@ -538,7 +540,7 @@ namespace Bot.Builder.Community.Cards.Tests.Management.ManagementExtensions
                 }).ToAttachment()),
             };
 
-            batch.ApplyIdsToBatch(new DataIdOptions());
+            DataId.SetForBatch(batch, new DataIdOptions());
 
             heroCard = (HeroCard)batch.Single().Attachments.Single().Content;
             data = (JObject)heroCard.Buttons.Single().Value;
@@ -558,7 +560,7 @@ namespace Bot.Builder.Community.Cards.Tests.Management.ManagementExtensions
                 }).ToAttachment()),
             };
 
-            batch.ApplyIdsToBatch();
+            DataId.SetForBatch(batch);
 
             heroCard = (HeroCard)batch.Single().Attachments.Single().Content;
             data = (JObject)heroCard.Buttons.Single().Value;
@@ -567,12 +569,6 @@ namespace Bot.Builder.Community.Cards.Tests.Management.ManagementExtensions
             Assert.IsNull(data.GetIdFromActionData(DataIdScopes.Carousel));
             Assert.IsNull(data.GetIdFromActionData(DataIdScopes.Card));
             Assert.IsNotNull(data.GetIdFromActionData(DataIdScopes.Action));
-
-            // Null batch should throw an exception
-
-            batch = null;
-
-            Assert.ThrowsException<ArgumentNullException>(() => batch.ApplyIdsToBatch(options));
         }
 
         [TestMethod]

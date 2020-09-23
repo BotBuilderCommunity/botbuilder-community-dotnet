@@ -21,7 +21,7 @@ namespace Bot.Builder.Community.Cards.Tests.Management.ManagementExtensions
         {
             var batch = CreateBatch();
 
-            batch.SetActionBehavior(NewKey, NewValue);
+            ActionBehavior.SetForBatch(batch, NewKey, NewValue);
 
             var expected = new JObject
             {
@@ -39,7 +39,7 @@ namespace Bot.Builder.Community.Cards.Tests.Management.ManagementExtensions
         {
             var batch = CreateBatch();
 
-            batch.SetActionBehavior(OldKey, NewValue);
+            ActionBehavior.SetForBatch(batch, OldKey, NewValue);
 
             var expected = new JObject
             {
@@ -56,7 +56,7 @@ namespace Bot.Builder.Community.Cards.Tests.Management.ManagementExtensions
         {
             var batch = CreateBatch();
 
-            batch.SetActionBehavior(NewKey, null);
+            ActionBehavior.SetForBatch(batch, NewKey, null);
 
             var expected = new JObject
             {

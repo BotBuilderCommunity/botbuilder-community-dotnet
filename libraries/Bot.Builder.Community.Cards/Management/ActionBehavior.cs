@@ -1,12 +1,10 @@
 ﻿using Bot.Builder.Community.Cards.Management.Tree;
 using Microsoft.Bot.Schema;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Bot.Builder.Community.Cards.Management
 {
-    public class ActionBehavior
+    public static class ActionBehavior
     {
         public static void SetForBatch(IEnumerable<IMessageActivity> batch, string name, object value) => batch.SetActionBehavior(name, value);
 

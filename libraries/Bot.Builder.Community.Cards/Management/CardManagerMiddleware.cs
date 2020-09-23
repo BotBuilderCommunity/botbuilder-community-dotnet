@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Bot.Builder.Community.Cards.Management.Tree;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Schema;
@@ -202,7 +203,7 @@ namespace Bot.Builder.Community.Cards.Management
 
             if (options.AutoApplyIds)
             {
-                activities.ApplyIdsToBatch(options.IdOptions);
+                DataId.SetForBatch(activities, options.IdOptions);
             }
 
             // The resource response ID's will be automatically applied to the activities
@@ -257,7 +258,7 @@ namespace Bot.Builder.Community.Cards.Management
 
             if (options.AutoApplyIds)
             {
-                activities.ApplyIdsToBatch(options.IdOptions);
+                DataId.SetForBatch(activities, options.IdOptions);
             }
 
             // The resource response ID will already be the ID of the activity

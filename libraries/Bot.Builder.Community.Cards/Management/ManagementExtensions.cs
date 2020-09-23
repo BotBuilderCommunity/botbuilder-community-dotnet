@@ -105,17 +105,6 @@ namespace Bot.Builder.Community.Cards.Management
             });
         }
 
-        // TODO: Expose more methods to apply ID's to more tree nodes
-        public static void ApplyIdsToBatch(this IEnumerable<IMessageActivity> activities, DataIdOptions options = null)
-        {
-            if (activities is null)
-            {
-                throw new ArgumentNullException(nameof(activities));
-            }
-
-            CardTree.ApplyIds(activities, options);
-        }
-
         public static ISet<DataId> GetIdsFromBatch(this IEnumerable<IMessageActivity> activities)
         {
             if (activities is null)
@@ -391,11 +380,6 @@ namespace Bot.Builder.Community.Cards.Management
                 TreeNodeType? entryType = null)
             where T : class
         {
-            if (entryValue is null)
-            {
-                throw new ArgumentNullException(nameof(entryValue));
-            }
-
             if (behaviorName is null)
             {
                 throw new ArgumentNullException(nameof(behaviorName));

@@ -252,7 +252,7 @@ namespace Cards_Library_Sample.Bots
                 }),
             };
 
-            batch.ApplyIdsToBatch(new DataIdOptions(idScope));
+            DataId.SetForBatch(batch, new DataIdOptions(idScope));
 
             await turnContext.SendActivitiesAsync(batch, cancellationToken);
         }
