@@ -1,5 +1,5 @@
 ﻿using Bot.Builder.Community.Adapters.ActionsSDK.Core.Model.ContentItems;
-using Bot.Builder.Community.Adapters.Shared;
+using Bot.Builder.Community.Adapters.Shared.Attachments;
 using Microsoft.Bot.Schema;
 
 namespace Bot.Builder.Community.Adapters.ActionsSDK.Core.Attachments

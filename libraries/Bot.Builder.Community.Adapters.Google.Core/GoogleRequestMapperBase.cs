@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using Bot.Builder.Community.Adapters.Google.Core.Attachments;
 using Bot.Builder.Community.Adapters.Google.Core.Helpers;
 using Bot.Builder.Community.Adapters.Google.Core.Model;
@@ -10,6 +8,7 @@ using Bot.Builder.Community.Adapters.Google.Core.Model.Request;
 using Bot.Builder.Community.Adapters.Google.Core.Model.Response;
 using Bot.Builder.Community.Adapters.Google.Core.Model.SystemIntents;
 using Bot.Builder.Community.Adapters.Shared;
+using Bot.Builder.Community.Adapters.Shared.Attachments;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -19,6 +18,8 @@ namespace Bot.Builder.Community.Adapters.Google.Core
 {
     public abstract class GoogleRequestMapperBase
     {
+        protected static readonly AttachmentConverter _attachmentConverter = DefaultGoogleAttachmentConverter.CreateDefault();
+
         public GoogleRequestMapperOptions Options { get; set; }
         public ILogger Logger;
 
@@ -35,7 +36,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core
             activity.ServiceUrl = Options.ServiceUrl;
             activity.Recipient = new ChannelAccount("", "action");
             activity.Conversation = new ConversationAccount(false, id: $"{request.Conversation.ConversationId}");
-            activity.From = null;//new ChannelAccount(request.GetUserIdFromUserStorage());
+            activity.From = new ChannelAccount(GetOrSetUserId(request));
             activity.Id = Guid.NewGuid().ToString();
             activity.Timestamp = DateTime.UtcNow;
             activity.Locale = request.User.Locale;
@@ -181,7 +182,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core
         {
             var responseItems = new List<ResponseItem>();
 
-            activity.ConvertAttachmentContent();
+            _attachmentConverter.ConvertAttachments(activity);
 
             var bfCard = activity.Attachments?.FirstOrDefault(a => a.ContentType == HeroCard.ContentType);
 
@@ -269,6 +270,29 @@ namespace Bot.Builder.Community.Adapters.Google.Core
                     UrlTypeHint = UrlTypeHint.URL_TYPE_HINT_UNSPECIFIED
                 }
             };
+        }
+
+        public static string GetOrSetUserId(ConversationRequest request)
+        {
+            if (request.User.UserVerificationStatus != "VERIFIED")
+            {
+                request.User.UserStorage = request.Conversation.ConversationId;
+                return request.Conversation.ConversationId;
+            }
+
+            if (!string.IsNullOrEmpty(request.User.UserStorage?.ToString()))
+            {
+                Guid.TryParse(request.User.UserStorage.ToString(), out Guid currentUserId);
+
+                if (currentUserId != Guid.Empty)
+                {
+                    return currentUserId.ToString();
+                }
+            }
+            
+            var newUserId = Guid.NewGuid();
+            request.User.UserStorage = newUserId;
+            return newUserId.ToString();
         }
 
         private BasicCard CreateGoogleCardFromHeroCard(HeroCard heroCard)
