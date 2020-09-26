@@ -99,6 +99,7 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Shared", "libraries\Bot.Builder.Community.Adapters.Shared\Bot.Builder.Community.Adapters.Shared.csproj", "{87220934-70D0-4BE7-8ED3-C403281CCCFD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bot.Builder.Community.Adapters.MessageBird", "libraries\Bot.Builder.Community.Adapters.MessageBird\Bot.Builder.Community.Adapters.MessageBird.csproj", "{4580F235-AE93-447D-8AB4-F4A27FA663D9}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Google.Core.Tests", "tests\Bot.Builder.Community.Adapters.Google.Core.Tests\Bot.Builder.Community.Adapters.Google.Core.Tests.csproj", "{C7150EF4-4A8E-4014-8C49-FC48D2865AEC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bot.Builder.Community.Adapters.Shared.Tests", "tests\Bot.Builder.Community.Adapters.Shared.Tests\Bot.Builder.Community.Adapters.Shared.Tests.csproj", "{2B523490-955A-4697-ADE4-FB98FD4CD879}"
