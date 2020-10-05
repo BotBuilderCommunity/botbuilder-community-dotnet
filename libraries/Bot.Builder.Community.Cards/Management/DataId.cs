@@ -8,37 +8,41 @@ namespace Bot.Builder.Community.Cards.Management
 {
     public class DataId : DataItem<string>
     {
-        public static void SetForBatch(IEnumerable<IMessageActivity> batch, DataIdOptions options = null) => CardTree.ApplyIds(batch, options);
+        // TODO: Write tests for these static methods
+        public static void SetInBatch(IEnumerable<IMessageActivity> batch, DataIdOptions options = null) => CardTree.ApplyIds(batch, options);
 
-        public static void SetForActivity(IMessageActivity activity, DataIdOptions options = null) => CardTree.ApplyIds(activity, options);
+        public static void SetInActivity(IMessageActivity activity, DataIdOptions options = null) => CardTree.ApplyIds(activity, options);
 
-        public static void SetForCarousel(IEnumerable<Attachment> carousel, DataIdOptions options = null) => CardTree.ApplyIds(carousel, options);
+        public static void SetInCarousel(IEnumerable<Attachment> carousel, DataIdOptions options = null) => CardTree.ApplyIds(carousel, options);
 
-        public static void SetForAttachment(Attachment attachment, DataIdOptions options = null) => CardTree.ApplyIds(attachment, options);
+        public static void SetInAttachment(Attachment attachment, DataIdOptions options = null) => CardTree.ApplyIds(attachment, options);
 
-        public static void SetForAdaptiveCard(object card, DataIdOptions options = null) => CardTree.ApplyIds(card, options, TreeNodeType.AdaptiveCard);
+        public static void SetInAdaptiveCard(ref object card, DataIdOptions options = null) => card = CardTree.ApplyIds(card, options, TreeNodeType.AdaptiveCard);
 
-        public static void SetForAnimationCard(AnimationCard card, DataIdOptions options = null) => CardTree.ApplyIds(card, options);
+        public static void SetInAnimationCard(AnimationCard card, DataIdOptions options = null) => CardTree.ApplyIds(card, options);
 
-        public static void SetForAudioCard(AudioCard card, DataIdOptions options = null) => CardTree.ApplyIds(card, options);
+        public static void SetInAudioCard(AudioCard card, DataIdOptions options = null) => CardTree.ApplyIds(card, options);
 
-        public static void SetForHeroCard(HeroCard card, DataIdOptions options = null) => CardTree.ApplyIds(card, options);
+        public static void SetInHeroCard(HeroCard card, DataIdOptions options = null) => CardTree.ApplyIds(card, options);
 
-        public static void SetForOAuthCard(OAuthCard card, DataIdOptions options = null) => CardTree.ApplyIds(card, options);
+        public static void SetInOAuthCard(OAuthCard card, DataIdOptions options = null) => CardTree.ApplyIds(card, options);
 
-        public static void SetForReceiptCard(ReceiptCard card, DataIdOptions options = null) => CardTree.ApplyIds(card, options);
+        public static void SetInReceiptCard(ReceiptCard card, DataIdOptions options = null) => CardTree.ApplyIds(card, options);
 
-        public static void SetForSigninCard(SigninCard card, DataIdOptions options = null) => CardTree.ApplyIds(card, options);
+        public static void SetInSigninCard(SigninCard card, DataIdOptions options = null) => CardTree.ApplyIds(card, options);
 
-        public static void SetForThumbnailCard(ThumbnailCard card, DataIdOptions options = null) => CardTree.ApplyIds(card, options);
+        public static void SetInThumbnailCard(ThumbnailCard card, DataIdOptions options = null) => CardTree.ApplyIds(card, options);
 
-        public static void SetForVideoCard(VideoCard card, DataIdOptions options = null) => CardTree.ApplyIds(card, options);
+        public static void SetInVideoCard(VideoCard card, DataIdOptions options = null) => CardTree.ApplyIds(card, options);
 
-        public static void SetForSubmitAction(object action, DataIdOptions options = null) => CardTree.ApplyIds(action, options, TreeNodeType.SubmitAction);
+        public static void SetInSubmitAction(ref object action, DataIdOptions options = null) => action = CardTree.ApplyIds(action, options, TreeNodeType.SubmitAction);
 
-        public static void SetForCardAction(CardAction action, DataIdOptions options = null) => CardTree.ApplyIds(action, options);
+        public static void SetInCardAction(CardAction action, DataIdOptions options = null) => CardTree.ApplyIds(action, options);
 
-        public static void SetForActionData(object data, DataIdOptions options = null) => CardTree.ApplyIds(data, options, TreeNodeType.ActionData);
+        public static void SetInActionData(ref object data, DataIdOptions options = null)
+        {
+            data = CardTree.ApplyIds(data, options, TreeNodeType.ActionData);
+        }
 
         /// <summary>
         /// An action data ID that can identify the action, card, carousel, or batch the data came from.

@@ -373,23 +373,6 @@ namespace Bot.Builder.Community.Cards.Management
             return incomingData;
         }
 
-        internal static void SetActionBehavior<T>(
-                this T entryValue,
-                string behaviorName,
-                object behaviorValue,
-                TreeNodeType? entryType = null)
-            where T : class
-        {
-            if (behaviorName is null)
-            {
-                throw new ArgumentNullException(nameof(behaviorName));
-            }
-
-            var jToken = behaviorValue is null ? null : JToken.FromObject(behaviorValue);
-
-            CardTree.SetLibraryData(entryValue, new JObject { { behaviorName, jToken } }, entryType, true);
-        }
-
         internal static void ApplyIdsToActionData(this JObject actionData, DataIdOptions options)
         {
             var ids = options.GetIds();

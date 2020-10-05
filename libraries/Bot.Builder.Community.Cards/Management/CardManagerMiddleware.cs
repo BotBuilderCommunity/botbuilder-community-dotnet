@@ -203,7 +203,7 @@ namespace Bot.Builder.Community.Cards.Management
 
             if (options.AutoApplyIds)
             {
-                DataId.SetForBatch(activities, options.IdOptions);
+                DataId.SetInBatch(activities, options.IdOptions);
             }
 
             // The resource response ID's will be automatically applied to the activities
@@ -258,7 +258,7 @@ namespace Bot.Builder.Community.Cards.Management
 
             if (options.AutoApplyIds)
             {
-                DataId.SetForBatch(activities, options.IdOptions);
+                DataId.SetInBatch(activities, options.IdOptions);
             }
 
             // The resource response ID will already be the ID of the activity

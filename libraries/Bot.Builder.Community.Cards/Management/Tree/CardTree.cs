@@ -273,7 +273,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
             return entryNode.CallChild(entryValue, Next, reassignChildren) as TEntry;
         }
 
-        internal static void SetLibraryData<TEntry>(TEntry entryValue, object data, TreeNodeType? entryType = null, bool merge = false)
+        internal static TEntry SetLibraryData<TEntry>(TEntry entryValue, object data, TreeNodeType? entryType = null, bool merge = false)
             where TEntry : class
         {
             var dataJObject = data.ToJObject(true);
@@ -289,7 +289,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 ? new Action<JObject>(libraryData => libraryData.Merge(dataJObject))
                 : new Action<JObject>(libraryData => libraryData.Replace(dataJObject));
 
-            Recurse(
+            return Recurse(
                 entryValue,
                 action,
                 entryType,
@@ -298,14 +298,14 @@ namespace Bot.Builder.Community.Cards.Management.Tree
         }
 
         // TODO: Rename "apply" to "set"
-        internal static void ApplyIds<TEntry>(TEntry entryValue, DataIdOptions options = null, TreeNodeType? entryType = null)
+        internal static TEntry ApplyIds<TEntry>(TEntry entryValue, DataIdOptions options = null, TreeNodeType? entryType = null)
             where TEntry : class
         {
             options = options ?? new DataIdOptions(DataIdScopes.Action);
 
             var modifiedOptions = options.Clone();
 
-            Recurse(
+            return Recurse(
                 entryValue,
                 (JObject data) =>
                 {
@@ -318,14 +318,9 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                 {
                     if (node.IdScope is string idScope)
                     {
-                        if (options.HasIdScope(idScope))
+                        if (options.HasIdScope(idScope) && options.Get(idScope) is null)
                         {
-                            var id = options.Get(idScope);
-
-                            if (id is null)
-                            {
-                                modifiedOptions.Set(idScope, DataId.GenerateValue(idScope));
-                            }
+                            modifiedOptions.Set(idScope, DataId.GenerateValue(idScope));
                         }
                     }
                 });
