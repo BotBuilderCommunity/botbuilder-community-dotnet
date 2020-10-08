@@ -1,4 +1,5 @@
 using Bot.Builder.Community.Adapters.Infobip;
+using Bot.Builder.Community.Adapters.Infobip.Tests;
 using Xunit;
 
 namespace Bot.Builder.Community.Adapter.Infobip.Tests
