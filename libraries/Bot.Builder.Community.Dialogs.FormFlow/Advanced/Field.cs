@@ -616,7 +616,7 @@ namespace Bot.Builder.Community.Dialogs.FormFlow.Advanced
         {
             _pattern = pattern;
             var regex = new Regex(pattern, RegexOptions.Compiled);
-            _validate = async (T state, object value) =>
+            _validate = (T state, object value) =>
             {
                 var result = new ValidateResult { Value = value };
                 if (value == null)
@@ -632,7 +632,7 @@ namespace Bot.Builder.Community.Dialogs.FormFlow.Advanced
                 {
                     result.Feedback = new Prompter<T>(Template(TemplateUsage.NotUnderstood), _form, null).Prompt(state, this, value).Prompt;
                 }
-                return result;
+                return Task.FromResult(result);
             };
             return this;
         }
@@ -781,7 +781,7 @@ namespace Bot.Builder.Community.Dialogs.FormFlow.Advanced
         protected FieldRole _role;
         protected ActiveDelegate<T> _condition = new ActiveDelegate<T>((state) => true);
         protected DefineAsyncDelegate<T> _define = null;
-        protected ValidateAsyncDelegate<T> _validate = new ValidateAsyncDelegate<T>(async (state, value) => new ValidateResult { IsValid = true, Value = value });
+        protected ValidateAsyncDelegate<T> _validate = new ValidateAsyncDelegate<T>(async (state, value) => await Task.FromResult(new ValidateResult { IsValid = true, Value = value }));
         protected NextDelegate<T> _next = new NextDelegate<T>((value, state) => new NextStep());
         protected double _min, _max;
         protected bool _limited;

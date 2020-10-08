@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove('$(MSBuildThisFileDirectory)../', 'Bot.Builder.Community.sln'))\CommonTargets\library.shared.targets" />
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Description>Adapter for v4 of the Bot Builder .NET SDK to allow for a bot to be used for Google Assistant actions (via the Google Actions Conversation Webhook or DialogFlow).</Description>
+    <Description>Google legacy Actions SDK and DialogFlow Adapter for v4 of the Bot Builder .NET SDK to allow for a bot to be used for Google Assistant.</Description>
     <Authors>Bot Builder Community</Authors>
     <Company>Bot Builder Community</Company>
     <PackageLicenseUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/master/LICENSE</PackageLicenseUrl>
@@ -14,10 +15,15 @@
 </RepositoryUrl>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="media\**" />
+    <EmbeddedResource Remove="media\**" />
+    <None Remove="media\**" />
+  </ItemGroup>
+
 	<ItemGroup>
 		<PackageReference Include="JWT" Version="5.0.1" />
-		<PackageReference Include="Microsoft.Bot.Builder" Version="4.8.0" />
-		<PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.8.0" />
+		<PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="$(Bot_Builder_Version)" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="2.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Options" Version="2.1.1" />
 		<PackageReference Include="Microsoft.Net.Http.Headers" Version="2.1.1" />

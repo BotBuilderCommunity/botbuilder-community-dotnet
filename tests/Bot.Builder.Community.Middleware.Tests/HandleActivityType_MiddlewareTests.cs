@@ -38,9 +38,10 @@ namespace Bot.Builder.Community.Middleware.Tests
         public async Task ActivityFilter_TestMiddleware_HandleMessageActivityOnly()
         {
             TestAdapter adapter = new TestAdapter()
-                .Use(new HandleActivityTypeMiddleware(ActivityTypes.ConversationUpdate, async (context, next, cancellationToken) =>
+                .Use(new HandleActivityTypeMiddleware(ActivityTypes.ConversationUpdate, (context, next, cancellationToken) =>
                 {
                     Assert.Fail("Incorrect activity filter ran");
+                    throw new AssertFailedException("Incorrect activity filter ran");
                 }))
                 .Use(new HandleActivityTypeMiddleware(ActivityTypes.Message, async (context, next, cancellationToken) =>
                 {
@@ -90,7 +91,7 @@ namespace Bot.Builder.Community.Middleware.Tests
 
         [TestMethod]
         [TestCategory("Middleware")]
-        public async Task ActivityFilter_TestMiddleware_NullActivityType()
+        public void ActivityFilter_TestMiddleware_NullActivityType()
         {
             try
             {
@@ -109,7 +110,7 @@ namespace Bot.Builder.Community.Middleware.Tests
 
         [TestMethod]
         [TestCategory("Middleware")]
-        public async Task ActivityFilter_TestMiddleware_EmptyActivityType()
+        public void ActivityFilter_TestMiddleware_EmptyActivityType()
         {
             try
             {

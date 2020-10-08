@@ -50,7 +50,7 @@ PM> Install-Package Bot.Builder.Community.Adapters.Infobip
 
 ## Sample
 
-Sample bot, showing examples of Infobip specific functionality is available [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/samples/Infobip%20Adapter%20Sample).
+Sample bot, showing examples of Infobip specific functionality is available [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/Infobip%20Adapter%20Sample).
 
 ## Usage
 
@@ -226,7 +226,9 @@ You will also need to add the following using statement, in addition to those al
 
 ### Incoming Whatsapp message requests to Bot Framework Activity mapping
 
-All messages sent by end-user Infobip will forward to your endpoint. End-users can send to your bot several different message types. You can read about the different message types [in the Infobip developer documentation](https://dev.infobip.com/#programmable-communications/omni-failover/receive-incoming-messages).
+All messages sent by end-user Infobip will forward to your endpoint. End-users can send to your bot several different message types. You can read about the different message types [in the Infobip 
+
+er documentation](https://dev.infobip.com/#programmable-communications/omni-failover/receive-incoming-messages).
 
 Here are details about common details for all Activity types:
 

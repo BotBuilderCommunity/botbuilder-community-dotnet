@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
+using Alexa.NET.ConnectionTasks.Inputs;
 using Alexa.NET.Request;
 using Alexa.NET.Request.Type;
 using Alexa.NET.Response;
@@ -44,7 +46,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
         public void MergeActivitiesReturnsNullWithNullActivities()
         {
             var alexaAdapter = new AlexaRequestMapper();
-            Assert.Null(alexaAdapter.MergeActivities(new List<Activity>()));
+            Assert.Null(alexaAdapter.MergeActivities(null));
         }
 
         [Fact]
@@ -52,6 +54,127 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
         {
             var alexaAdapter = new AlexaRequestMapper();
             Assert.Null(alexaAdapter.MergeActivities(new List<Activity>()));
+        }
+
+        [Fact]
+        public void IntentRequestMappedReturnsLocale()
+        {
+            // arrange
+            var skillRequest = new SkillRequest
+            {
+                Request = new IntentRequest()
+                {
+                    Locale = "en-US",
+                    Intent = new Intent()
+                    {
+                        Slots = new Dictionary<string, Slot>()
+                        {
+                            { "phrase", new Slot() }
+                        }
+                    }
+                },
+                Context = new Context
+                {
+                    System = new AlexaSystem() { Application = new Application(), User = new User() }
+                },
+                Session = new Session()
+                {
+                    User = new User()
+                }
+            };
+
+
+            // act
+            var alexaMapper = new AlexaRequestMapper();
+            var result = alexaMapper.RequestToActivity(skillRequest);
+
+            // assert
+            Assert.Equal("en-US", result.Locale);
+        }
+
+        [Fact]
+        public void LaunchRequestMappedReturnsNull()
+        {
+            // arrange
+            var skillRequest = new SkillRequest
+            {
+                Request = new LaunchRequest() {},
+                Context = new Context
+                {
+                    System = new AlexaSystem() { Application = new Application(), User = new User() }
+                },
+                Session = new Session()
+                {
+                    User = new User()
+                }
+            };
+
+
+            // act
+            var alexaMapper = new AlexaRequestMapper();
+            var result = alexaMapper.RequestToActivity(skillRequest);
+
+            // assert
+            Assert.Null(result.Locale);
+        }
+
+        [Fact]
+        public void IntentRequestMappedReturnsNull()
+        {
+            // arrange
+            var skillRequest = new SkillRequest
+            {
+                Request = new IntentRequest() { Intent = new Intent() 
+                    { 
+                        Slots = new Dictionary<string, Slot>()
+                        {
+                            { "phrase", new Slot() }
+                        }
+                    }
+                },
+                Context = new Context
+                {
+                    System = new AlexaSystem() { Application = new Application(), User = new User() }
+                },
+                Session = new Session()
+                {
+                    User = new User()
+                }
+            };
+
+
+            // act
+            var alexaMapper = new AlexaRequestMapper();
+            var result = alexaMapper.RequestToActivity(skillRequest);
+
+            // assert
+            Assert.Null(result.Locale);
+        }
+
+        [Fact]
+        public void LaunchRequestMappedReturnsLocale()
+        {
+            // arrange
+            var skillRequest = new SkillRequest
+            {
+                Request = new LaunchRequest() {Locale = "en-US"},
+                Context = new Context
+                {
+                    System = new AlexaSystem() {Application = new Application(), User = new User()}
+                },
+                Session = new Session()
+                {
+                    User = new User()
+                }
+            };
+
+
+            // act
+            var alexaMapper = new AlexaRequestMapper();
+            var result = alexaMapper.RequestToActivity(skillRequest);
+
+            // assert
+            Assert.Equal("en-US", result.Locale);
         }
 
         [Fact]
@@ -65,8 +188,8 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
 
             var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { inputActivity });
 
-            Assert.Equal(text, processActivityResult.Text);
-            Assert.Equal(ssml, processActivityResult.Speak);
+            Assert.Equal(text, processActivityResult.MergedActivity.Text);
+            Assert.Equal(ssml, processActivityResult.MergedActivity.Speak);
         }
 
         [Fact]
@@ -80,9 +203,25 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
 
             var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { inputActivity });
 
-            Assert.Equal(text, processActivityResult.Text);
+            Assert.Equal(text, processActivityResult.MergedActivity.Text);
             // When removing the speak tag the serializer adds the missing space at the end of the xml element. This doesn't matter for rendering in Alexa so it is fine.
-            Assert.Equal(ssml.Replace("/>", " />"), processActivityResult.Speak);
+            Assert.Equal(ssml.Replace("/>", " />"), processActivityResult.MergedActivity.Speak);
+        }
+
+        [Fact]
+        public void MergeActivitiesReturnsSingleActivityWithComplexSpeakSsmlTag()
+        {
+            const string text = "Microsoft Ignite will take place online";
+            const string ssml = "<speak version=\"1.0\" xmlns=\"http://www.w3.org/2001/10/synthesis\" xml:lang=\"en-US\"><voice name=\"en-US-AriaNeural\">Microsoft Ignite will take place online</voice></speak>";
+
+            var alexaAdapter = new AlexaRequestMapper();
+            var inputActivity = MessageFactory.Text(text, ssml);
+
+            var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { inputActivity });
+
+            Assert.Equal(text, processActivityResult.MergedActivity.Text);
+            // When removing the speak tag the serializer adds the missing space at the end of the xml element. This doesn't matter for rendering in Alexa so it is fine.
+            Assert.Equal("<speak>Microsoft Ignite will take place online</speak>", processActivityResult.MergedActivity.Speak);
         }
 
         [Fact]
@@ -96,8 +235,8 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
 
             var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { inputActivity });
 
-            Assert.Equal(text, processActivityResult.Text);
-            Assert.Equal($"<speak>{ssml}</speak>", processActivityResult.Speak);
+            Assert.Equal(text, processActivityResult.MergedActivity.Text);
+            Assert.Equal($"<speak>{ssml}</speak>", processActivityResult.MergedActivity.Speak);
         }
 
         [Fact]
@@ -110,7 +249,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
 
             var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { firstActivity, secondActivity });
 
-            Assert.Equal("This is the first activity. This is the second activity", processActivityResult.Text);
+            Assert.Equal("This is the first activity. This is the second activity", processActivityResult.MergedActivity.Text);
         }
 
         [Fact]
@@ -129,7 +268,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
 
             var processActivityResult = alexaAdapter.MergeActivities(new List<Activity> { firstActivity, secondActivity });
 
-            Assert.Equal("{   \"contentType\": \"image/jpeg\",   \"content\": \"https://somefantasticurl/\",   \"name\": \"Attachment1.jpg\" }", processActivityResult.Text);
+            Assert.Equal("{   \"contentType\": \"image/jpeg\",   \"content\": \"https://somefantasticurl/\",   \"name\": \"Attachment1.jpg\" }", processActivityResult.MergedActivity.Text);
         }
 
         [Fact]
@@ -145,10 +284,36 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
 
             var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { firstActivity, secondActivity });
 
-            Assert.Equal("This is the first activity. This is the second activity", processActivityResult.Text);
-            Assert.NotNull(processActivityResult.Attachments);
-            Assert.Equal(1, processActivityResult.Attachments.Count);
-            Assert.Equal(AlexaAttachmentContentTypes.Card, processActivityResult.Attachments[0].ContentType);
+            Assert.Equal("This is the first activity. This is the second activity", processActivityResult.MergedActivity.Text);
+            Assert.NotNull(processActivityResult.MergedActivity.Attachments);
+            Assert.Equal(1, processActivityResult.MergedActivity.Attachments.Count);
+            Assert.Equal(AlexaAttachmentContentTypes.Card, processActivityResult.MergedActivity.Attachments[0].ContentType);
+        }
+
+        [Fact]
+        public void MergeActivitiesTextWithPeriodAndEmptyText()
+        {
+            var alexaAdapter = new AlexaRequestMapper();
+            var firstActivity = MessageFactory.Text("This is the first activity.");
+            var secondActivity = MessageFactory.Text("");
+
+            var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { firstActivity, secondActivity });
+
+            // We want to preserve the period here even though it is merged with empty text.
+            Assert.Equal("This is the first activity.", processActivityResult.MergedActivity.Text);
+        }
+
+        [Fact]
+        public void MergeActivitiesTextWithNoPeriodAndEmptyText()
+        {
+            var alexaAdapter = new AlexaRequestMapper();
+            var firstActivity = MessageFactory.Text("This is the first activity");
+            var secondActivity = MessageFactory.Text("");
+
+            var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { firstActivity, secondActivity });
+
+            // We want to preserve the missing period here even though it is merged with empty text.
+            Assert.Equal("This is the first activity", processActivityResult.MergedActivity.Text);
         }
 
         [Fact]
@@ -158,12 +323,13 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
 
             var firstActivity = MessageFactory.Text("This is the first activity.");
             var traceActivity = Activity.CreateTraceActivity("This is a trace") as Activity;
+            traceActivity.Text = "This text won't show up";
             var secondActivity = MessageFactory.Text("This is the second activity");
             var typingActivity = Activity.CreateTypingActivity() as Activity;
 
             var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { firstActivity, traceActivity, secondActivity, typingActivity });
 
-            Assert.Equal("This is the first activity. This is the second activity", processActivityResult.Text);
+            Assert.Equal("This is the first activity. This is the second activity", processActivityResult.MergedActivity.Text);
         }
 
         [Fact]
@@ -175,12 +341,64 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
             // is included and one activity where it is not, to ensure the stripping / wrapping
             // of the speak tag is handled correctly.
             var firstActivity = MessageFactory.Text("This is the first activity.", "This is<break strength=\"strong\"/>the first activity SSML");
-            var secondActivity = MessageFactory.Text("This is the second activity.", "<speak>This is the second activity SSML</speak>");
+            var secondActivity = MessageFactory.Text("This is the second activity", "<speak>This is the second activity SSML</speak>");
 
             var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { firstActivity, secondActivity });
 
-            Assert.Equal("<speak>This is<break strength=\"strong\"/>the first activity SSML<break strength=\"strong\"/>This is the second activity SSML</speak>", 
-                processActivityResult.Speak);
+            Assert.Equal("<speak>This is<break strength=\"strong\"/>the first activity SSML<break strength=\"strong\"/>This is the second activity SSML</speak>", processActivityResult.MergedActivity.Speak);
+            Assert.Equal("This is the first activity. This is the second activity", processActivityResult.MergedActivity.Text);
+            Assert.False(processActivityResult.EndOfConversationFlagged);
+        }
+
+        [Fact]
+        public void MergeActivitiesReturnsCorrectlyInconsistentPeriods()
+        {
+            var alexaAdapter = new AlexaRequestMapper();
+
+            // Note: The input activities deliberately have an activity where the speak tag
+            // is included and one activity where it is not, to ensure the stripping / wrapping
+            // of the speak tag is handled correctly.
+            var firstActivity = MessageFactory.Text("This is the first activity.", "This is<break strength=\"strong\"/>the first activity SSML");
+            var secondActivity = MessageFactory.Attachment(new HeroCard("test", "test").ToAttachment()) as Activity;
+
+            var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { firstActivity, secondActivity });
+
+            Assert.Equal("<speak>This is<break strength=\"strong\"/>the first activity SSML</speak>", processActivityResult.MergedActivity.Speak);
+            Assert.Equal("This is the first activity.", processActivityResult.MergedActivity.Text);
+            Assert.False(processActivityResult.EndOfConversationFlagged);
+        }
+
+        [Fact]
+        public void MergeActivitiesWithEndOfConversationOnly()
+        {
+            var alexaAdapter = new AlexaRequestMapper();
+
+            var activity = (Activity) Activity.CreateEndOfConversationActivity();
+
+            var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { activity });
+
+            // Empty merged activities.
+            Assert.NotNull(processActivityResult);
+            Assert.Null(processActivityResult.MergedActivity);
+            Assert.True(processActivityResult.EndOfConversationFlagged);
+        }
+
+        [Fact]
+        public void MergeActivitiesJoinedTextWithEndOfConversation()
+        {
+            var alexaAdapter = new AlexaRequestMapper();
+
+            var activites = new List<Activity>()
+            {
+                MessageFactory.Text("This is the first activity."),
+                (Activity)Activity.CreateEndOfConversationActivity(),
+                MessageFactory.Text("This is the second activity")
+            };
+
+            var processActivityResult = alexaAdapter.MergeActivities(activites);
+
+            Assert.Equal("This is the first activity. This is the second activity", processActivityResult.MergedActivity.Text);
+            Assert.True(processActivityResult.EndOfConversationFlagged);
         }
 
         [Fact]
@@ -212,11 +430,11 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
 
             var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { firstActivity, secondActivity });
 
-            Assert.Equal("This is the first activity. Heading 1. This is another paragraph. Item 1, Item 2, Item 3. Heading 2. 1. Item 1, 2. Item 2, 3. Item 3. More info visit our web site www.microsoft.com. This is the second activity",
-                processActivityResult.Text);
+            Assert.Equal("This is the first activity. Heading 1. This is another paragraph. Item 1, Item 2, Item 3. Heading 2. 1. Item 1, 2. Item 2, 3. Item 3. More info visit our web site www.microsoft.com. This is the second activity.",
+                processActivityResult.MergedActivity.Text);
 
             Assert.Equal("<speak>This is<break strength=\"strong\"/>the first activity SSML<break strength=\"strong\"/>This is the second activity SSML</speak>",
-                processActivityResult.Speak);
+                processActivityResult.MergedActivity.Speak);
         }
 
         [Fact]
@@ -229,7 +447,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
             activity.Text = "Hello world";
             activity.TextFormat = TextFormatTypes.Plain;
 
-            var skillResponse = ExecuteActivityToResponse(mapper, activity, skillRequest);
+            var skillResponse = ExecuteActivityToResponse(mapper, new MergedActivityResult { MergedActivity = activity }, skillRequest);
             VerifyPlainTextResponse(skillResponse, activity.Text);
         }
 
@@ -278,7 +496,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
 
             var activity = Activity.CreateTraceActivity("This is a trace") as Activity;
 
-            var skillResponse = ExecuteActivityToResponse(mapper, activity, skillRequest);
+            var skillResponse = ExecuteActivityToResponse(mapper, new MergedActivityResult { MergedActivity = activity }, skillRequest);
             VerifyPlainTextResponse(skillResponse, string.Empty);
         }
 
@@ -340,7 +558,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
             activity.Attachments.Add(displayDirective.ToAttachment());
             activity.Attachments.Add(simpleCard.ToAttachment());
 
-            var skillResponse = ExecuteActivityToResponse(mapper, activity, skillRequest);
+            var skillResponse = ExecuteActivityToResponse(mapper, new MergedActivityResult { MergedActivity = activity }, skillRequest);
 
             VerifyCardAttachmentAndDirectiveResponse(skillResponse, simpleCard, new List<IDirective>() { hintDirective, displayDirective });
         }
@@ -375,7 +593,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
             var activity = Activity.CreateMessageActivity() as Activity;
             activity.Attachments.Add(new Attachment() { ContentType = HeroCard.ContentType, Content = heroCard});
 
-            var skillResponse = ExecuteActivityToResponse(mapper, activity, skillRequest);
+            var skillResponse = ExecuteActivityToResponse(mapper, new MergedActivityResult { MergedActivity = activity }, skillRequest);
 
             Assert.NotNull(skillResponse.Response.Card);
             Assert.Equal(typeof(StandardCard), skillResponse.Response.Card.GetType());
@@ -409,10 +627,57 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
             var activity = Activity.CreateMessageActivity() as Activity;
             activity.Attachments.Add(new Attachment() { ContentType = SigninCard.ContentType, Content = signinCard });
 
-            var skillResponse = ExecuteActivityToResponse(mapper, activity, skillRequest);
+            var skillResponse = ExecuteActivityToResponse(mapper, new MergedActivityResult { MergedActivity = activity }, skillRequest);
 
             Assert.NotNull(skillResponse.Response.Card);
             Assert.Equal(typeof(LinkAccountCard), skillResponse.Response.Card.GetType());
+        }
+
+        [Fact]
+        public void TaskRequest()
+        {
+            var request = new LaunchRequest
+            {
+                Locale = "en-US",
+                RequestId = "amzn1.echo-api.request.00000000-0000-0000-0000-000000000000",
+                Type = "LaunchRequest",
+                Timestamp = DateTime.Now,
+                Task = new LaunchRequestTask
+                {
+                    Name = "AMAZON.PrintPDF",
+                    Version = "1",
+                    Input = new PrintPdfV1
+                    {
+                        Title = "Flywheel",
+                        Description = "Flywheel",
+                        Url = "http://www.example.com/flywheel.pdf"
+                    }
+                }
+            };
+
+            var skillRequest = new SkillRequest
+            {
+                Request = request,
+                Context = new Context
+                {
+                    System = new AlexaSystem() { Application = new Application(), User = new User() }
+                },
+                Session = new Session()
+                {
+                    User = new User()
+                }
+            };
+
+            var alexaMapper = new AlexaRequestMapper();
+            var result = alexaMapper.RequestToActivity(skillRequest);
+
+            JsonConvert.SerializeObject(result,
+                            Newtonsoft.Json.Formatting.None,
+                            new JsonSerializerSettings
+                            {
+                                NullValueHandling = NullValueHandling.Ignore,
+                                Formatting = Formatting.Indented
+                            });
         }
 
         private static void VerifyIntentRequest(SkillRequest skillRequest, IActivity activity, AlexaRequestMapperOptions mapperOptions)
@@ -476,7 +741,10 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
             directives.IsSameOrEqualTo(skillResponse.Response.Directives);
         }
 
-        private static SkillResponse ExecuteActivityToResponse(AlexaRequestMapper mapper, Activity activity, SkillRequest alexaRequest)
-            => mapper.ActivityToResponse(ActivityHelper.GetAnonymizedActivity(activity), alexaRequest);
+        private static SkillResponse ExecuteActivityToResponse(AlexaRequestMapper mapper, MergedActivityResult mergedActivityResult, SkillRequest alexaRequest)
+        {
+            mergedActivityResult.MergedActivity = ActivityHelper.GetAnonymizedActivity(mergedActivityResult.MergedActivity);
+            return mapper.ActivityToResponse(mergedActivityResult, alexaRequest);
+        }
     }
 }

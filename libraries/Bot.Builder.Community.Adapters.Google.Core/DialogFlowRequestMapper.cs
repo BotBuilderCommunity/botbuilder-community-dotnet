@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using AdaptiveCards;
 using Bot.Builder.Community.Adapters.Google.Core.Attachments;
 using Bot.Builder.Community.Adapters.Google.Core.Model;
 using Bot.Builder.Community.Adapters.Google.Core.Model.Request;
@@ -89,15 +90,18 @@ namespace Bot.Builder.Community.Adapters.Google.Core
                 return response;
             }
 
-            activity.ConvertAttachmentContent();
+            _attachmentConverter.ConvertAttachments(activity);
+
+            // Grab any adaptive card attachment to get fallback speak property
+            var adaptiveCardAttachment = activity.Attachments.FirstOrDefault(a => a.ContentType == AdaptiveCard.ContentType)?.Content as AdaptiveCard;
 
             var simpleResponse = new SimpleResponse
             {
                 Content = new SimpleResponseContent
                 {
                     DisplayText = activity.Text,
-                    Ssml = activity.Speak,
-                    TextToSpeech = activity.Text
+                    Ssml = (activity.Speak ?? adaptiveCardAttachment?.Speak),
+                    TextToSpeech = activity.Speak == null && adaptiveCardAttachment?.Speak == null ? activity.Text : null
                 }
             };
 
@@ -125,7 +129,8 @@ namespace Bot.Builder.Community.Adapters.Google.Core
 
             response.Payload.Google.RichResponse = new RichResponse()
             {
-                Items = responseItems.ToArray()
+                Items = responseItems.ToArray(),
+                LinkOutSuggestion = GetLinkOutSuggestionFromActivity(activity)
             };
 
             // ensure InputHint is set as required for response
@@ -144,7 +149,7 @@ namespace Bot.Builder.Community.Adapters.Google.Core
                 case InputHints.ExpectingInput:
                     response.Payload.Google.ExpectUserResponse = true;
 
-                    var suggestionChips = ConvertSuggestedActionsToSuggestionChips(activity);
+                    var suggestionChips = ConvertIMAndMessageBackSuggestedActionsToSuggestionChips(activity);
                     if (suggestionChips.Any())
                     {
                         response.Payload.Google.RichResponse.Suggestions = suggestionChips.ToArray();

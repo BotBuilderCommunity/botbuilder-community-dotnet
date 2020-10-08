@@ -1,6 +1,6 @@
 ﻿namespace Bot.Builder.Community.Adapters.RingCentral
 {
-    public class RingCentralConstants
+    public static class RingCentralConstants
     {
         // Webhook validation request from RingCentral will contain this in querystring
         public const string HubModeSubscribe = "subscribe";

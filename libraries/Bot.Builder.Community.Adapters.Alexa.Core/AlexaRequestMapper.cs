@@ -4,11 +4,13 @@ using System.Linq;
 using System.Security;
 using System.Xml;
 using System.Xml.Linq;
+using AdaptiveCards;
 using Alexa.NET.Request;
 using Alexa.NET.Request.Type;
 using Alexa.NET.Response;
 using Bot.Builder.Community.Adapters.Alexa.Core.Attachments;
-using Bot.Builder.Community.Adapters.Alexa.Core.Helpers;
+using Bot.Builder.Community.Adapters.Shared;
+using Bot.Builder.Community.Adapters.Shared.Attachments;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -19,8 +21,10 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
 {
     public class AlexaRequestMapper
     {
-        private AlexaRequestMapperOptions _options;
-        private ILogger _logger;
+        private static readonly AttachmentConverter _attachmentConverter = DefaultAlexaAttachmentConverter.CreateDefault();
+
+        private readonly AlexaRequestMapperOptions _options;
+        private readonly ILogger _logger;
 
         public AlexaRequestMapper(AlexaRequestMapperOptions options = null, ILogger logger = null)
         {
@@ -59,29 +63,31 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
 
                         return RequestToEventActivity(skillRequest);
                     }
-                case LaunchRequest launchRequest:
+                case LaunchRequest _:
                     return RequestToConversationUpdateActivity(skillRequest);
-                case SessionEndedRequest sessionEndedRequest:
+                case SessionEndedRequest _:
                     return RequestToEndOfConversationActivity(skillRequest);
                 default:
                     return RequestToEventActivity(skillRequest);
             }
         }
-        
+
         /// <summary>
         /// Creates a SkillResponse based on an Activity and original SkillRequest. 
         /// </summary>
-        /// <param name="activity">The Activity to use to create the SkillResponse</param>
+        /// <param name="mergedActivityResult">The Merged Activity Result to use to create the SkillResponse</param>
         /// <param name="alexaRequest">Original SkillRequest received from Alexa Skills service. This is used
         /// to check if the original request was a SessionEndedRequest which should not return a response.</param>
         /// <returns>SkillResponse</returns>
-        public SkillResponse ActivityToResponse(Activity activity, SkillRequest alexaRequest)
+        public SkillResponse ActivityToResponse(MergedActivityResult mergedActivityResult, SkillRequest alexaRequest)
         {
             var response = new SkillResponse()
             {
                 Version = "1.0",
                 Response = new ResponseBody()
             };
+
+            var activity = mergedActivityResult?.MergedActivity;
 
             if (activity == null || activity.Type != ActivityTypes.Message || alexaRequest.Request is SessionEndedRequest)
             {
@@ -93,31 +99,42 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
                 return response;
             }
 
+            // Grab any adaptive card attachment to get fallback speak property
+            var adaptiveCardAttachment = activity.Attachments.FirstOrDefault(a => a.ContentType == AdaptiveCard.ContentType)?.Content as AdaptiveCard;
+
             if (!string.IsNullOrEmpty(activity.Speak))
             {
                 response.Response.OutputSpeech = new SsmlOutputSpeech(activity.Speak);
             }
             else
-            {
-                response.Response.OutputSpeech = new PlainTextOutputSpeech(activity.Text);
+            { 
+                response.Response.OutputSpeech = new PlainTextOutputSpeech(adaptiveCardAttachment?.Speak ?? activity.Text);
             }
-
+            
             ProcessActivityAttachments(activity, response);
 
             if (ShouldSetEndSession(response))
             {
-                switch (activity.InputHint)
+                // If end of conversation was flagged use that, othwerwise look at the InputHint.
+                if (mergedActivityResult.EndOfConversationFlagged)
                 {
-                    case InputHints.IgnoringInput:
-                        response.Response.ShouldEndSession = true;
-                        break;
-                    case InputHints.ExpectingInput:
-                        response.Response.ShouldEndSession = false;
-                        response.Response.Reprompt = new Reprompt(activity.Text);
-                        break;
-                    default:
-                        response.Response.ShouldEndSession = _options.ShouldEndSessionByDefault;
-                        break;
+                    response.Response.ShouldEndSession = true;
+                }
+                else
+                {
+                    switch (activity.InputHint)
+                    {
+                        case InputHints.IgnoringInput:
+                            response.Response.ShouldEndSession = true;
+                            break;
+                        case InputHints.ExpectingInput:
+                            response.Response.ShouldEndSession = false;
+                            response.Response.Reprompt = new Reprompt(activity.Text);
+                            break;
+                        default:
+                            response.Response.ShouldEndSession = _options.ShouldEndSessionByDefault;
+                            break;
+                    }
                 }
             }
 
@@ -133,36 +150,84 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
         /// https://developer.amazon.com/en-US/docs/alexa/custom-skills/speech-synthesis-markup-language-ssml-reference.html#break
         /// </summary>
         /// <param name="activities">The list of one or more outgoing activities</param>
-        /// <returns>Activity</returns>
-        public Activity MergeActivities(IList<Activity> activities)
+        /// <returns>MergedActivityResult</returns>
+        public MergedActivityResult MergeActivities(IList<Activity> activities)
         {
-            var messageActivities = activities?.Where(a => a.Type == ActivityTypes.Message).ToList();
-
-            if (messageActivities == null || messageActivities.Count == 0)
+            if (activities == null || activities.Count == 0)
             {
                 return null;
             }
 
-            var activity = messageActivities.Last();
+            var mergedActivityResult = new MergedActivityResult();
+            bool mergedActivityEndsWithPeriod = false;
 
-            if (messageActivities.Any(a => !string.IsNullOrEmpty(a.Speak)))
+            bool hasSpeakField = false;
+            var speakFields = new List<string>();
+            var textFields = new List<string>();
+            var attachments = new List<Attachment>();
+            var endWithPeriod = activities.LastOrDefault(a => !string.IsNullOrEmpty(a.Text))?.Text?.TrimEnd().EndsWith(".") ?? false;
+
+            foreach (var activity in activities)
             {
-                var speakText = string.Join("<break strength=\"strong\"/>", messageActivities
-                    .Select(a => !string.IsNullOrEmpty(a.Speak) ? StripSpeakTag(a.Speak) : NormalizeActivityText(a.TextFormat, a.Text, forSsml: true))
-                    .Where(s => !string.IsNullOrEmpty(s))
-                    .Select(s => s));
+                if (activity == null)
+                {
+                    continue;
+                }
 
-                activity.Speak = $"<speak>{speakText}</speak>";
+                switch (activity.Type)
+                {
+                    case ActivityTypes.Message:
+                        mergedActivityResult.MergedActivity = activity;
+
+                        if (!string.IsNullOrEmpty(activity.Speak))
+                        {
+                            hasSpeakField = true;
+                            speakFields.Add(ActivityMappingHelper.StripSpeakTag(activity.Speak));
+                        }
+                        else if (!string.IsNullOrEmpty(activity.Text))
+                        {
+                            speakFields.Add(NormalizeActivityText(activity.TextFormat, activity.Text, forSsml: true));
+                        }
+
+                        if (!string.IsNullOrEmpty(activity.Text))
+                        {
+                            var text = NormalizeActivityText(activity.TextFormat, activity.Text, forSsml: false);
+                            if (!string.IsNullOrEmpty(text))
+                            {
+                                mergedActivityEndsWithPeriod = activity.Text?.TrimEnd().EndsWith(".") ?? false;
+
+                                textFields.Add(text.Trim(new char[] { ' ' }));
+                            }
+                        }
+
+                        if (activity.Attachments != null && activity.Attachments.Count > 0)
+                        {
+                            attachments.AddRange(activity.Attachments);
+                        }
+                        break;
+                    case ActivityTypes.EndOfConversation:
+                        mergedActivityResult.EndOfConversationFlagged = true;
+                        break;
+                }
             }
 
-            activity.Text = string.Join(". ", messageActivities
-                .Select(a => NormalizeActivityText(a.TextFormat, a.Text, forSsml: false))
-                .Where(s => !string.IsNullOrEmpty(s))
-                .Select(s => s.Trim(new char[] { ' ', '.' })));
+            if (mergedActivityResult.MergedActivity != null)
+            {
+                if (hasSpeakField)
+                {
+                    mergedActivityResult.MergedActivity.Speak = $"<speak>{string.Join("<break strength=\"strong\"/>", speakFields)}</speak>";
+                }
 
-            activity.Attachments = messageActivities.Where(x => x.Attachments != null).SelectMany(x => x.Attachments).ToList();
+                mergedActivityResult.MergedActivity.Text = string.Join(" ", textFields);
+                mergedActivityResult.MergedActivity.Attachments = attachments;
 
-            return activity;
+                if (mergedActivityResult.MergedActivity.Text.EndsWith(".") && !mergedActivityEndsWithPeriod)
+                {
+                    mergedActivityResult.MergedActivity.Text = mergedActivityResult.MergedActivity.Text.TrimEnd('.');
+                }
+            }
+
+            return mergedActivityResult;
         }
 
         private Activity RequestToEndOfConversationActivity(SkillRequest skillRequest)
@@ -185,7 +250,6 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
             var activity = Activity.CreateMessageActivity() as Activity;
             activity = SetGeneralActivityProperties(activity, skillRequest);
             activity.Text = intentRequest.Intent.Slots[_options.DefaultIntentSlotName].Value;
-            activity.Locale = intentRequest.Locale;
             return activity;
         }
 
@@ -249,36 +313,9 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
             activity.Conversation = new ConversationAccount(isGroup: false, id: skillRequest.Session?.SessionId ?? skillRequest.Request.RequestId);
             activity.Timestamp = skillRequest.Request.Timestamp.ToUniversalTime();
             activity.ChannelData = skillRequest;
+            activity.Locale = skillRequest.Request.Locale;
 
             return activity;
-        }
-
-        /// <summary>
-        /// Checks a string to see if it is XML and if the outer tag is a speak tag
-        /// indicating it is SSML.  If an outer speak tag is found, the inner XML is
-        /// returned, otherwise the original string is returned
-        /// </summary>
-        /// <param name="speakText">String to be checked for an outer speak XML tag and stripped if found</param>
-        private string StripSpeakTag(string speakText)
-        {
-            try
-            {
-                var speakSsmlDoc = XDocument.Parse(speakText);
-                if (speakSsmlDoc != null && speakSsmlDoc.Root.Name.ToString().ToLowerInvariant() == "speak")
-                {
-                    using (var reader = speakSsmlDoc.Root.CreateReader())
-                    {
-                        reader.MoveToContent();
-                        return reader.ReadInnerXml();
-                    }
-                }
-
-                return speakText;
-            }
-            catch (XmlException)
-            {
-                return speakText;
-            }
         }
 
         private string NormalizeActivityText(string textFormat, string text, bool forSsml)
@@ -301,7 +338,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
             }
             else if (textFormat.Equals(TextFormatTypes.Markdown, StringComparison.Ordinal))
             {
-                plainText = AlexaMarkdownToPlaintextRenderer.Render(text);
+                plainText = MarkdownToPlaintextRenderer.Render(text);
             }
             else // xml format or other unknown and unsupported format.
             {
@@ -347,7 +384,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
         /// <param name="response">The SkillResponse to be modified based on the attachments on the Activity object.</param>
         private void ProcessActivityAttachments(Activity activity, SkillResponse response)
         {
-           activity.ConvertAttachmentContent();
+            _attachmentConverter.ConvertAttachments(activity);
 
             var bfCard = activity.Attachments?.FirstOrDefault(a => a.ContentType == HeroCard.ContentType || a.ContentType == SigninCard.ContentType);
 
