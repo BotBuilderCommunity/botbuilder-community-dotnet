@@ -13,6 +13,8 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Bot.Builder.Community.Adapters.Infobip.Models;
+using Bot.Builder.Community.Adapters.Infobip.ToActivity;
+using Bot.Builder.Community.Adapters.Infobip.ToInfobip;
 
 namespace Bot.Builder.Community.Adapters.Infobip
 {
@@ -57,12 +59,12 @@ namespace Bot.Builder.Community.Adapters.Infobip
             {
                 if (activity.Type == ActivityTypes.Message)
                 {
-                    var messages = ToInfobipConverter.Convert(activity, _infobipOptions.InfobipScenarioKey);
+                    var messages = ToInfobipConverter.Convert(activity, _infobipOptions);
                     var infobipResponses = new List<InfobipResponseMessage>();
 
                     foreach (var message in messages)
                     {
-                        var currentResponse = await _infobipClient.SendMessageAsync(message, cancellationToken);
+                        var currentResponse = await _infobipClient.SendMessageAsync(message, cancellationToken).ConfigureAwait(false);
 
                         if (currentResponse == null) continue;
 

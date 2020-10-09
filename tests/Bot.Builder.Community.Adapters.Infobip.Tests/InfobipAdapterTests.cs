@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Bot.Builder.Community.Adapter.Infobip.Tests.Framework;
-using Bot.Builder.Community.Adapters.Infobip;
 using Bot.Builder.Community.Adapters.Infobip.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Bot.Builder;
@@ -17,7 +16,7 @@ using Moq;
 using Newtonsoft.Json;
 using Xunit;
 
-namespace Bot.Builder.Community.Adapter.Infobip.Tests
+namespace Bot.Builder.Community.Adapters.Infobip.Tests
 {
     public class InfobipAdapterTests
     {
@@ -147,7 +146,7 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
 
                     // We got a response for each message and they are in the order we sent them.
                     Assert.Equal(messageIds.Length, responses.Count);
-                    for (int i = 0; i < messageIds.Length; ++i)
+                    for (var i = 0; i < messageIds.Length; ++i)
                         Assert.Equal(messageIds[i].Value.ToString(), responses[i].Id);
                 }
             };
@@ -178,7 +177,7 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
 
                     // We got a response for each message and they are in the order we sent them.
                     Assert.Equal(messageIds.Length, responses.Length);
-                    for (int i = 0; i < messageIds.Length; ++i)
+                    for (var i = 0; i < messageIds.Length; ++i)
                         Assert.Equal(messageIds[i].Value.ToString(), responses[i].Id);
                 }
             };
@@ -219,9 +218,8 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
             var messageIds = new Guid?[] { Guid.NewGuid(), Guid.NewGuid() };
             var adapter = GetInfobipAdapter(messageIds);
             var activity = CreateMessageActivity();
-            // A message with attachments will create two messages to Infobip.
             activity.Attachments.Add(new Attachment { ContentUrl = "http://dummy-image", ContentType = "image" });
-            activity.Attachments.Add(new Attachment { ContentUrl = "http://dummy-image", ContentType = "image" });
+            activity.Attachments.Add(new Attachment { ContentUrl = "http://dummy-image2", ContentType = "image" });
 
             var responses = await adapter.SendActivitiesAsync(new TurnContext(adapter, CreateMessageActivity()),
                 new[] { activity }, CancellationToken.None);
@@ -233,14 +231,14 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
             Assert.Equal(string.Join("|", messageIds), infobipResponse.Id);
             Assert.Equal(infobipResponse.ActivityId, activity.Id);
             Assert.Equal(2, infobipResponse.ResponseMessages.Count);
-            Assert.Contains(infobipResponse.ResponseMessages, x => x.MessageId == messageIds[0]);
-            Assert.Contains(infobipResponse.ResponseMessages, x => x.MessageId == messageIds[1]);
+            Assert.True(infobipResponse.ResponseMessages.Any(x => x.MessageId == messageIds[0]));
+            Assert.True(infobipResponse.ResponseMessages.Any(x => x.MessageId == messageIds[1]));
         }
 
         [Fact]
         public async Task Process_TwoActivitiesWithMultipleInfobipMessages()
         {
-            var messageIds = new Guid?[] { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() };
+            var messageIds = new Guid?[] { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() };
             var adapter = GetInfobipAdapter(messageIds);
             var activities = new List<Activity>();
             var firstActivity = CreateMessageActivity();
@@ -249,7 +247,8 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
             secondActivity.Attachments = new List<Attachment>
             {
                 new Attachment {ContentUrl = "http://dummy-video", ContentType = "video"},
-                new Attachment {ContentUrl = "http://dummy-image", ContentType = "image"}
+                new Attachment {ContentUrl = "http://dummy-image", ContentType = "image"},
+                new Attachment {ContentUrl = "http://dummy-image2", ContentType = "image"}
             };
             activities.Add(secondActivity);
 
@@ -261,15 +260,16 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
             var firstInfobipResponse = infobipResponses.First();
             Assert.Equal(messageIds[0].ToString(), firstInfobipResponse.Id);
             Assert.Equal(firstInfobipResponse.ActivityId, firstActivity.Id);
-            Assert.Equal(1, firstInfobipResponse.ResponseMessages.Count);
+            Assert.Single(firstInfobipResponse.ResponseMessages);
             Assert.True(firstInfobipResponse.ResponseMessages[0].MessageId == messageIds[0]);
 
             var secondResponse = infobipResponses.ElementAt(1);
-            Assert.Equal(string.Join("|", new[] { messageIds[1], messageIds[2] }), secondResponse.Id);
+            Assert.Equal(string.Join("|", new[] { messageIds[1], messageIds[2], messageIds[3] }), secondResponse.Id);
             Assert.Equal(secondResponse.ActivityId, secondActivity.Id);
-            Assert.Equal(2, secondResponse.ResponseMessages.Count);
+            Assert.Equal(3, secondResponse.ResponseMessages.Count);
             Assert.True(secondResponse.ResponseMessages[0].MessageId == messageIds[1]);
             Assert.True(secondResponse.ResponseMessages[1].MessageId == messageIds[2]);
+            Assert.True(secondResponse.ResponseMessages[2].MessageId == messageIds[3]);
         }
 
         private Activity CreateMessageActivity()
@@ -277,6 +277,7 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
             var message = MessageFactory.Text("text for message");
             message.Id = Guid.NewGuid().ToString();
             message.Recipient = new ChannelAccount { Id = "whatsapp-number" };
+            message.ChannelId = InfobipChannel.WhatsApp;
 
             return message;
         }
@@ -286,7 +287,7 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
             Func<InfobipResponseMessage> throwException = () => throw new HttpRequestException();
             IEnumerable<Func<InfobipResponseMessage>> clientResponses = messageIds.Select(x => x.HasValue ? () => new InfobipResponseMessage { MessageId = x.Value } : throwException);
 
-            var options = new InfobipAdapterOptions("apiKey", "apiBaseUrl", "appSecret", "whatsAppNumber", "scenarioKey");
+            var options = new InfobipAdapterOptions("apiKey", "apiBaseUrl", "appSecret", "whatsAppNumber", "smsNumber", "whatsAppScenarioKey", "smsScenarioKey");
             options.BypassAuthentication = true;
 
             var client = new Mock<IInfobipClient>(MockBehavior.Strict);
