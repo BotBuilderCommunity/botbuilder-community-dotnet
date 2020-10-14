@@ -96,13 +96,17 @@ namespace Bot.Builder.Community.Cards.Management
                 throw new ArgumentNullException(nameof(activities));
             }
 
-            CardTree.Recurse(activities, (Attachment attachment) =>
-            {
-                if (attachment.ContentType == ContentTypes.AdaptiveCard)
+            CardTree.Recurse(
+                activities,
+                (Attachment attachment) =>
                 {
-                    attachment.Content = attachment.Content.ToJObject();
-                }
-            });
+                    if (attachment.ContentType == ContentTypes.AdaptiveCard)
+                    {
+                        attachment.Content = attachment.Content.ToJObject();
+                    }
+                },
+                TreeNodeType.Batch,
+                TreeNodeType.Attachment);
         }
 
         public static ISet<DataId> GetIdsFromBatch(this IEnumerable<IMessageActivity> activities)
@@ -112,7 +116,7 @@ namespace Bot.Builder.Community.Cards.Management
                 throw new ArgumentNullException(nameof(activities));
             }
 
-            return CardTree.GetIds(activities);
+            return CardTree.GetIds(activities, TreeNodeType.Batch);
         }
 
         public static void AdaptOutgoingCardActions(this IEnumerable<IMessageActivity> activities, string channelId = null)
@@ -126,141 +130,145 @@ namespace Bot.Builder.Community.Cards.Management
             {
                 var activityChannelId = channelId ?? activity.ChannelId;
 
-                CardTree.Recurse(activity, (CardAction action) =>
-                {
-                    var text = action.Text;
-                    var value = action.Value;
-
-                    void EnsureText()
+                CardTree.Recurse(
+                    activity,
+                    (CardAction action) =>
                     {
-                        if (text == null)
+                        var text = action.Text;
+                        var value = action.Value;
+
+                        void EnsureText()
                         {
-                            action.Text = value.SerializeIfNeeded();
+                            if (text == null)
+                            {
+                                action.Text = value.SerializeIfNeeded();
+                            }
                         }
-                    }
 
-                    void EnsureValue()
-                    {
-                        if (value == null)
+                        void EnsureValue()
                         {
-                            action.Value = text;
-                        }
-                    }
-
-                    void EnsureStringValue()
-                    {
-                        if (!(value is string))
-                        {
-                            if (value == null && text != null)
+                            if (value == null)
                             {
                                 action.Value = text;
                             }
-                            else
+                        }
+
+                        void EnsureStringValue()
+                        {
+                            if (!(value is string))
                             {
-                                action.Value = value.SerializeIfNeeded();
+                                if (value == null && text != null)
+                                {
+                                    action.Value = text;
+                                }
+                                else
+                                {
+                                    action.Value = value.SerializeIfNeeded();
+                                }
                             }
                         }
-                    }
 
-                    void EnsureObjectValue()
-                    {
-                        // Check if value is null or otherwise primitive
-                        if (value.ToJObject() is null)
+                        void EnsureObjectValue()
                         {
-                            if (value is string stringValue && stringValue.TryParseJObject() is JObject parsedValue)
+                            // Check if value is null or otherwise primitive
+                            if (value.ToJObject() is null)
                             {
-                                action.Value = parsedValue;
+                                if (value is string stringValue && stringValue.TryParseJObject() is JObject parsedValue)
+                                {
+                                    action.Value = parsedValue;
+                                }
+                                else if (text.TryParseJObject() is JObject parsedText)
+                                {
+                                    action.Value = parsedText;
+                                }
                             }
-                            else if (text.TryParseJObject() is JObject parsedText)
+                        }
+
+                        if (action.Type == ActionTypes.MessageBack)
+                        {
+                            switch (activityChannelId)
                             {
-                                action.Value = parsedText;
+                                case Channels.Cortana:
+                                case Channels.Skype:
+                                    // MessageBack does not work on these channels
+                                    action.Type = ActionTypes.PostBack;
+                                    break;
+
+                                case Channels.Directline:
+                                case Channels.Emulator:
+                                case Channels.Line:
+                                case Channels.Webchat:
+                                    EnsureValue();
+                                    break;
+
+                                case Channels.Email:
+                                case Channels.Slack:
+                                case Channels.Telegram:
+                                    EnsureText();
+                                    break;
+
+                                case Channels.Facebook:
+                                    EnsureStringValue();
+                                    break;
+
+                                case Channels.Msteams:
+                                    EnsureObjectValue();
+                                    break;
                             }
                         }
-                    }
 
-                    if (action.Type == ActionTypes.MessageBack)
-                    {
-                        switch (activityChannelId)
+                        // Using if instead of else-if so this block can be executed in addition to the previous one
+                        if (action.Type == ActionTypes.PostBack)
                         {
-                            case Channels.Cortana:
-                            case Channels.Skype:
-                                // MessageBack does not work on these channels
-                                action.Type = ActionTypes.PostBack;
-                                break;
+                            switch (activityChannelId)
+                            {
+                                case Channels.Cortana:
+                                case Channels.Facebook:
+                                case Channels.Slack:
+                                case Channels.Telegram:
+                                    EnsureStringValue();
+                                    break;
 
-                            case Channels.Directline:
-                            case Channels.Emulator:
-                            case Channels.Line:
-                            case Channels.Webchat:
-                                EnsureValue();
-                                break;
+                                case Channels.Directline:
+                                case Channels.Email:
+                                case Channels.Emulator:
+                                case Channels.Line:
+                                case Channels.Skype:
+                                case Channels.Webchat:
+                                    EnsureValue();
+                                    break;
 
-                            case Channels.Email:
-                            case Channels.Slack:
-                            case Channels.Telegram:
-                                EnsureText();
-                                break;
-
-                            case Channels.Facebook:
-                                EnsureStringValue();
-                                break;
-
-                            case Channels.Msteams:
-                                EnsureObjectValue();
-                                break;
+                                case Channels.Msteams:
+                                    EnsureObjectValue();
+                                    break;
+                            }
                         }
-                    }
 
-                    // Using if instead of else-if so this block can be executed in addition to the previous one
-                    if (action.Type == ActionTypes.PostBack)
-                    {
-                        switch (activityChannelId)
+                        if (action.Type == ActionTypes.ImBack)
                         {
-                            case Channels.Cortana:
-                            case Channels.Facebook:
-                            case Channels.Slack:
-                            case Channels.Telegram:
-                                EnsureStringValue();
-                                break;
+                            switch (activityChannelId)
+                            {
+                                case Channels.Cortana:
+                                case Channels.Directline:
+                                case Channels.Emulator:
+                                case Channels.Facebook:
+                                case Channels.Msteams:
+                                case Channels.Skype:
+                                case Channels.Slack:
+                                case Channels.Telegram:
+                                case Channels.Webchat:
+                                    EnsureStringValue();
+                                    break;
 
-                            case Channels.Directline:
-                            case Channels.Email:
-                            case Channels.Emulator:
-                            case Channels.Line:
-                            case Channels.Skype:
-                            case Channels.Webchat:
-                                EnsureValue();
-                                break;
-
-                            case Channels.Msteams:
-                                EnsureObjectValue();
-                                break;
+                                case Channels.Email:
+                                case Channels.Line:
+                                    EnsureValue();
+                                    break;
+                            }
                         }
-                    }
-
-                    if (action.Type == ActionTypes.ImBack)
-                    {
-                        switch (activityChannelId)
-                        {
-                            case Channels.Cortana:
-                            case Channels.Directline:
-                            case Channels.Emulator:
-                            case Channels.Facebook:
-                            case Channels.Msteams:
-                            case Channels.Skype:
-                            case Channels.Slack:
-                            case Channels.Telegram:
-                            case Channels.Webchat:
-                                EnsureStringValue();
-                                break;
-
-                            case Channels.Email:
-                            case Channels.Line:
-                                EnsureValue();
-                                break;
-                        }
-                    }
-                });
+                    },
+                    TreeNodeType.Activity,
+                    TreeNodeType.CardAction);
             }
         }
 

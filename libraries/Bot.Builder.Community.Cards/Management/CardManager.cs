@@ -163,7 +163,7 @@ namespace Bot.Builder.Community.Cards.Management
                     await UnsaveActivityAsync(turnContext, activity.Id, cancellationToken).ConfigureAwait(false);
                 }
 
-                if (CardTree.GetIds(activity).Any())
+                if (CardTree.GetIds(activity, TreeNodeType.Activity).Any())
                 {
                     state.SavedActivities.Add(activity);
                 }
@@ -253,7 +253,7 @@ namespace Bot.Builder.Community.Cards.Management
                     foreach (var activity in state.SavedActivities.ToList())
                     {
                         // Delete any activity that contains the specified batch ID (data items are compared by value)
-                        if (CardTree.GetIds(activity).Any(toDelete.Equals))
+                        if (CardTree.GetIds(activity, TreeNodeType.Activity).Any(toDelete.Equals))
                         {
                             await DeleteActivityAsync(turnContext, activity, cancellationToken).ConfigureAwait(false);
                         }
@@ -308,7 +308,9 @@ namespace Bot.Builder.Community.Cards.Management
                                 (IList<CardAction> actions) =>
                                 {
                                     actions.Remove(cardAction);
-                                });
+                                },
+                                TreeNodeType.Attachment,
+                                TreeNodeType.CardActionList);
 
                             shouldUpdateActivity = true;
 
@@ -379,7 +381,7 @@ namespace Bot.Builder.Community.Cards.Management
                 ignoreUpdate?.Remove(activity);
             }
 
-            if (!CardTree.GetIds(activity).Any())
+            if (!CardTree.GetIds(activity, TreeNodeType.Activity).Any())
             {
                 await RemoveActivityAsync(turnContext, activity, cancellationToken).ConfigureAwait(false);
             }
@@ -494,16 +496,20 @@ namespace Bot.Builder.Community.Cards.Management
                     else
                     {
                         // For Bot Framework cards that are not Adaptive Cards
-                        CardTree.Recurse(savedAttachment, (CardAction savedCardAction) =>
-                        {
-                            var savedData = savedCardAction.Value.ToJObject(true);
-
-                            // This will not throw an exception if the saved action data is null
-                            if (JToken.DeepEquals(savedData, incomingData))
+                        CardTree.Recurse(
+                            savedAttachment,
+                            (CardAction savedCardAction) =>
                             {
-                                result.Add(savedActivity, savedAttachment, savedCardAction);
-                            }
-                        });
+                                var savedData = savedCardAction.Value.ToJObject(true);
+
+                                // This will not throw an exception if the saved action data is null
+                                if (JToken.DeepEquals(savedData, incomingData))
+                                {
+                                    result.Add(savedActivity, savedAttachment, savedCardAction);
+                                }
+                            },
+                            TreeNodeType.Attachment,
+                            TreeNodeType.CardAction);
                     }
                 }
             }
