@@ -4,7 +4,6 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -630,153 +629,6 @@ namespace Bot.Builder.Community.Cards.Tests.Management
             Assert.AreEqual(18, totalAssertions);
         }
 
-        private void TestSetInObject<TScope>(
-            SetIdsInObject setIdsIn,
-            Func<IList<IMessageActivity>, TScope> getScopeRoot,
-            Func<TScope, object> getEntryValue)
-        {
-            var batch = CreateBatch();
-            var scopeRoot = getScopeRoot(batch);
-            var entryValue = getEntryValue(scopeRoot);
-            var anyIdsExpected = true;
-            var anyIdsFound = false;
-            var totalAssertions = 0;
-            var scope = DataIdScopes.Action;
-
-            if (scopeRoot is Attachment) scope = DataIdScopes.Card;
-            if (scopeRoot is IMessageActivity) scope = DataIdScopes.Carousel;
-            if (scopeRoot is IList<IMessageActivity>) scope = DataIdScopes.Batch;
-
-            setIdsIn(ref entryValue);
-
-            foreach (var activity in batch)
-            {
-                if (scope == DataIdScopes.Carousel)
-                {
-                    anyIdsExpected = activity == scopeRoot as IMessageActivity;
-                }
-
-                foreach (var attachment in activity.Attachments)
-                {
-                    if (scope == DataIdScopes.Card)
-                    {
-                        anyIdsExpected = attachment == scopeRoot as Attachment;
-                    }
-
-                    IEnumerable<object> actions = null;
-
-                    var card = attachment.Content;
-
-                    switch (attachment.ContentType)
-                    {
-                        case ContentTypes.AdaptiveCard: actions = JObject.FromObject(card)["actions"]; break;
-                        case AnimationCard.ContentType: actions = ((AnimationCard)card).Buttons; break;
-                        case AudioCard.ContentType: actions = ((AudioCard)card).Buttons; break;
-                        case HeroCard.ContentType: actions = ((HeroCard)card).Buttons; break;
-                        case OAuthCard.ContentType: actions = ((OAuthCard)card).Buttons; break;
-                        case ReceiptCard.ContentType: actions = ((ReceiptCard)card).Buttons; break;
-                        case SigninCard.ContentType: actions = ((SigninCard)card).Buttons; break;
-                        case ThumbnailCard.ContentType: actions = ((ThumbnailCard)card).Buttons; break;
-                        case VideoCard.ContentType: actions = ((VideoCard)card).Buttons; break;
-                    }
-
-                    foreach (var action in actions)
-                    {
-                        if (scope == DataIdScopes.Action)
-                        {
-                            anyIdsExpected = action == scopeRoot as object;
-                        }
-
-                        var actionData = action is CardAction cardAction
-                            ? JObject.FromObject(cardAction.Value)
-                            : JObject.FromObject(action)["data"] as JObject;
-
-                        Assert.AreEqual(anyIdsExpected, actionData.GetIdFromActionData() != null);
-
-                        if (anyIdsExpected)
-                        {
-                            anyIdsFound = true;
-                        }
-
-                        totalAssertions++;
-                    }
-                }
-            }
-
-            Assert.IsTrue(anyIdsFound);
-            Assert.AreEqual(18, totalAssertions);
-        }
-
-        private void TestSetIn<TScope, TValue>(
-            SetIdsIn<TValue> setIdsIn,
-            Func<IList<IMessageActivity>, TScope> getScopeRoot,
-            Func<TScope, TValue> getEntryValue)
-        {
-            var batch = CreateBatch();
-            var scopeRoot = getScopeRoot(batch);
-            var entryValue = getEntryValue(scopeRoot);
-            var idsExpected = true;
-            var totalAssertions = 0;
-            var scope = DataIdScopes.Action;
-
-            if (scopeRoot is Attachment) scope = DataIdScopes.Card;
-            if (scopeRoot is IMessageActivity) scope = DataIdScopes.Carousel;
-            if (scopeRoot is IList<IMessageActivity>) scope = DataIdScopes.Batch;
-
-            setIdsIn(entryValue);
-
-            foreach (var activity in batch)
-            {
-                if (scope == DataIdScopes.Carousel)
-                {
-                    idsExpected = activity == scopeRoot as IMessageActivity;
-                }
-
-                foreach (var attachment in activity.Attachments)
-                {
-                    if (scope == DataIdScopes.Card)
-                    {
-                        idsExpected = attachment == scopeRoot as Attachment;
-                    }
-
-                    IEnumerable<object> actions = null;
-
-                    var card = attachment.Content;
-
-                    switch (attachment.ContentType)
-                    {
-                        case ContentTypes.AdaptiveCard: actions = JObject.FromObject(card)["actions"]; break;
-                        case AnimationCard.ContentType: actions = ((AnimationCard)card).Buttons; break;
-                        case AudioCard.ContentType: actions = ((AudioCard)card).Buttons; break;
-                        case HeroCard.ContentType: actions = ((HeroCard)card).Buttons; break;
-                        case OAuthCard.ContentType: actions = ((OAuthCard)card).Buttons; break;
-                        case ReceiptCard.ContentType: actions = ((ReceiptCard)card).Buttons; break;
-                        case SigninCard.ContentType: actions = ((SigninCard)card).Buttons; break;
-                        case ThumbnailCard.ContentType: actions = ((ThumbnailCard)card).Buttons; break;
-                        case VideoCard.ContentType: actions = ((VideoCard)card).Buttons; break;
-                    }
-
-                    foreach (var action in actions)
-                    {
-                        if (scope == DataIdScopes.Action)
-                        {
-                            idsExpected = action == scopeRoot as object;
-                        }
-
-                        var actionData = action is CardAction cardAction
-                            ? JObject.FromObject(cardAction.Value)
-                            : JObject.FromObject(action)["data"] as JObject;
-
-                        Assert.AreEqual(idsExpected, actionData.GetIdFromActionData() != null);
-
-                        totalAssertions++;
-                    }
-                }
-            }
-
-            Assert.AreEqual(18, totalAssertions);
-        }
-
         private static IList<IMessageActivity> CreateBatch() => new List<IMessageActivity>
         {
             MessageFactory.Attachment(new List<Attachment>
@@ -859,7 +711,5 @@ namespace Bot.Builder.Community.Cards.Tests.Management
         }
 
         private delegate void SetIdsIn<T>(T entryValue, DataIdOptions options = null);
-
-        private delegate void SetIdsInObject(ref object entryValue, DataIdOptions options = null);
     }
 }
