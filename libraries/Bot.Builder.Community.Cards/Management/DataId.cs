@@ -8,7 +8,6 @@ namespace Bot.Builder.Community.Cards.Management
 {
     public class DataId : DataItem<string>
     {
-        // TODO: Write tests for these static methods
         public static void SetInBatch(IEnumerable<IMessageActivity> batch, DataIdOptions options = null) => CardTree.ApplyIds(batch, options, TreeNodeType.Batch);
 
         public static void SetInActivity(IMessageActivity activity, DataIdOptions options = null) => CardTree.ApplyIds(activity, options, TreeNodeType.Activity);

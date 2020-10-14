@@ -6,10 +6,10 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Bot.Builder.Community.Cards.Tests.Management.ManagementExtensions
+namespace Bot.Builder.Community.Cards.Tests.Management
 {
     [TestClass]
-    public class SetActionBehaviorTests
+    public class ActionBehaviorTests
     {
         private const string OldKey = "OldKey";
         private const string NewKey = "NewKey";
@@ -21,7 +21,7 @@ namespace Bot.Builder.Community.Cards.Tests.Management.ManagementExtensions
         {
             var batch = CreateBatch();
 
-            ActionBehavior.SetForBatch(batch, NewKey, NewValue);
+            ActionBehavior.SetInBatch(batch, NewKey, NewValue);
 
             var expected = new JObject
             {
@@ -39,7 +39,7 @@ namespace Bot.Builder.Community.Cards.Tests.Management.ManagementExtensions
         {
             var batch = CreateBatch();
 
-            ActionBehavior.SetForBatch(batch, OldKey, NewValue);
+            ActionBehavior.SetInBatch(batch, OldKey, NewValue);
 
             var expected = new JObject
             {
@@ -56,7 +56,7 @@ namespace Bot.Builder.Community.Cards.Tests.Management.ManagementExtensions
         {
             var batch = CreateBatch();
 
-            ActionBehavior.SetForBatch(batch, NewKey, null);
+            ActionBehavior.SetInBatch(batch, NewKey, null);
 
             var expected = new JObject
             {
