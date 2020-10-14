@@ -277,15 +277,43 @@ namespace Bot.Builder.Community.Cards.Management.Tree
 
             return Recurse(
                 entryValue,
-                (JObject data) =>
+                (JObject libraryData) =>
                 {
-                    data.ApplyIdsToActionData(modifiedOptions);
+                    var ids = modifiedOptions.GetIds();
+
+                    foreach (var kvp in ids)
+                    {
+                        var scope = kvp.Key;
+
+                        if (modifiedOptions.Overwrite || !libraryData.ContainsKey(scope))
+                        {
+                            var id = kvp.Value;
+
+                            if (id is null)
+                            {
+                                if (scope == DataIdScopes.Action)
+                                {
+                                    // Only generate an ID for the action
+                                    id = DataId.GenerateValue(DataIdScopes.Action);
+                                }
+                                else
+                                {
+                                    // If any other ID's are null,
+                                    // don't apply them to the data
+                                    continue;
+                                }
+                            }
+
+                            libraryData[scope] = id;
+                        }
+                    }
                 },
                 entryType,
-                TreeNodeType.ActionData,
+                TreeNodeType.LibraryData,
                 true,
                 node =>
                 {
+                    // Generate a data ID for a batch, carousel, or card at the appropriate nodes
                     if (node.IdScope is string idScope)
                     {
                         if (options.HasIdScope(idScope) && options.Get(idScope) is null)

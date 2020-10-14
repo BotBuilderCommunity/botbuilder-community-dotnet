@@ -381,46 +381,6 @@ namespace Bot.Builder.Community.Cards.Management
             return incomingData;
         }
 
-        internal static void ApplyIdsToActionData(this JObject actionData, DataIdOptions options)
-        {
-            var ids = options.GetIds();
-
-            if (ids.Any())
-            {
-                if (!(actionData[PropertyNames.LibraryData] is JObject libraryData))
-                {
-                    actionData[PropertyNames.LibraryData] = libraryData = new JObject();
-                }
-
-                foreach (var kvp in ids)
-                {
-                    var scope = kvp.Key;
-
-                    if (options.Overwrite || !libraryData.ContainsKey(scope))
-                    {
-                        var id = kvp.Value;
-
-                        if (id is null)
-                        {
-                            if (scope == DataIdScopes.Action)
-                            {
-                                // Only generate an ID for the action
-                                id = DataId.GenerateValue(DataIdScopes.Action);
-                            }
-                            else
-                            {
-                                // If any other ID's are null,
-                                // don't apply them to the data
-                                continue;
-                            }
-                        }
-
-                        libraryData[scope] = id;
-                    }
-                }
-            }
-        }
-
         internal static T GetLibraryValueFromActionData<T>(this JObject actionData, string key)
             => actionData?[PropertyNames.LibraryData] is JObject libraryData
                 && libraryData[key]?.ToObject<object>() is T result ? result : default;
