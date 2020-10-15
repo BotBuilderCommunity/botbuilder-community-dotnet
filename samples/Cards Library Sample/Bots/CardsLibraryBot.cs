@@ -4,6 +4,7 @@ using Bot.Builder.Community.Cards.Translation;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -17,9 +18,16 @@ namespace Cards_Library_Sample.Bots
         private const string DemoDeactivateCards = "Deactivate cards";
         private const string DemoDeactivateCarousels = "Deactivate carousels";
         private const string DemoDeactivateBatch = "Deactivate batch";
+        private const string DemoPreserveValues = "Preserve values";
         private const string DemoTranslateCards = "Translate cards";
 
+        private const string BehaviorSubmit = "submit";
+        private const string BehaviorPreserve = "preserve";
         private const string BehaviorTranslate = "translate";
+
+        private const string IdText = "id-text";
+        private const string IdNumber = "id-number";
+        private const string IdDate = "id-date";
 
         public ConversationState ConversationState { get; }
 
@@ -51,8 +59,28 @@ namespace Cards_Library_Sample.Bots
             {
                 var jObject = JObject.FromObject(incomingData);
 
+                async Task SendPreservationFeedback()
+                {
+                    await turnContext.SendActivityAsync(
+                        $"You sent the following data: {jObject[IdText]}, {jObject[IdNumber]}, {jObject[IdDate]}",
+                        cancellationToken: cancellationToken);
+                }
+
                 switch (jObject["behavior"]?.ToString())
                 {
+                    case BehaviorSubmit:
+
+                        await SendPreservationFeedback();
+
+                        break;
+
+                    case BehaviorPreserve:
+
+                        await CardManager.PreserveValuesAsync(turnContext, cancellationToken);
+                        await SendPreservationFeedback();
+
+                        break;
+
                     case BehaviorTranslate:
 
                         var language = jObject["language"]?.ToString();
@@ -124,6 +152,9 @@ namespace Cards_Library_Sample.Bots
                     case DemoDeactivateBatch:
                         await ShowDeactivationSample(turnContext, DataIdScopes.Batch, cancellationToken);
                         break;
+                    case DemoPreserveValues:
+                        await ShowPreservationSample(turnContext, cancellationToken);
+                        break;
                     case DemoTranslateCards:
                         await ShowTranslationSample(turnContext, cancellationToken);
                         break;
@@ -135,66 +166,6 @@ namespace Cards_Library_Sample.Bots
 
             // The card manager will not work if its state is not saved
             await ConversationState.SaveChangesAsync(turnContext, cancellationToken: cancellationToken);
-        }
-
-        private static AdaptiveCard CreateTranslationCard() => new AdaptiveCard("1.0")
-        {
-            Body = new List<AdaptiveElement>
-            {
-                new AdaptiveTextBlock
-                {
-                    Text = "Cards library demo",
-                    Size = AdaptiveTextSize.ExtraLarge,
-                    Weight = AdaptiveTextWeight.Bolder,
-                    Wrap = true,
-                },
-                new AdaptiveTextBlock
-                {
-                    Text = "Adaptive Card translation",
-                    Size = AdaptiveTextSize.Large,
-                    Weight = AdaptiveTextWeight.Bolder,
-                    Wrap = true,
-                },
-                new AdaptiveTextBlock
-                {
-                    Text = "Go ahead and try typing a language tag here (example: pt-br)",
-                    Wrap = true,
-                },
-                // TODO: Use a choice set instead of text
-                new AdaptiveTextInput
-                {
-                    Id = "language",
-                },
-                new AdaptiveTextBlock
-                {
-                    Text = "Then click the button to see what happens!",
-                    Wrap = true,
-                },
-            },
-            Actions = new List<AdaptiveAction>
-            {
-                new AdaptiveSubmitAction
-                {
-                    Title = "Translate",
-                    Data = new
-                    {
-                        behavior = BehaviorTranslate,
-                    },
-                }
-            },
-        };
-
-        private async Task ShowTranslationSample(ITurnContext turnContext, CancellationToken cancellationToken)
-        {
-            var card = CreateTranslationCard();
-
-            // There's no need to convert the card to a JObject
-            // since the library will do that for us
-            await turnContext.SendActivityAsync(MessageFactory.Attachment(new Attachment
-            {
-                ContentType = AdaptiveCard.ContentType,
-                Content = card,
-            }), cancellationToken);
         }
 
         private async Task ShowDeactivationSample(ITurnContext turnContext, string idScope, CancellationToken cancellationToken = default)
@@ -252,29 +223,179 @@ namespace Cards_Library_Sample.Bots
                 }),
             };
 
-            DataId.SetForBatch(batch, new DataIdOptions(idScope));
+            DataId.SetInBatch(batch, new DataIdOptions(idScope));
 
             await turnContext.SendActivitiesAsync(batch, cancellationToken);
         }
 
+        private async Task ShowPreservationSample(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
+        {
+            object card = new AdaptiveCard("1.0")
+            {
+                Body = new List<AdaptiveElement>
+                {
+                    new AdaptiveTextBlock
+                    {
+                        Text = "Cards library demo",
+                        Size = AdaptiveTextSize.ExtraLarge,
+                        Weight = AdaptiveTextWeight.Bolder,
+                        Wrap = true,
+                    },
+                    new AdaptiveTextBlock
+                    {
+                        Text = "Adaptive Card translation",
+                        Size = AdaptiveTextSize.Large,
+                        Weight = AdaptiveTextWeight.Bolder,
+                        Wrap = true,
+                    },
+                    new AdaptiveTextInput
+                    {
+                        Id = IdText,
+                        Placeholder = "Text",
+                    },
+                    new AdaptiveNumberInput
+                    {
+                        Id = IdNumber,
+                        Placeholder = "Number",
+                    },
+                    new AdaptiveDateInput
+                    {
+                        Id = IdDate,
+                        Placeholder = "Date",
+                    },
+                    new AdaptiveTextBlock
+                    {
+                        Text = "Fill in the inputs and then click a button to see if the values are preserved."
+                                + " (This demo only applies to Microsoft Teams)",
+                        Wrap = true,
+                    },
+                },
+                Actions = new List<AdaptiveAction>
+                {
+                    new AdaptiveSubmitAction
+                    {
+                        Title = "Submit normally",
+                        Data = new
+                        {
+                            behavior = BehaviorSubmit,
+                        },
+                    },
+                    new AdaptiveSubmitAction
+                    {
+                        Title = "Submit and preserve",
+                        Data = new
+                        {
+                            behavior = BehaviorPreserve,
+                        },
+                    },
+                },
+            };
+
+            DataId.SetInAdaptiveCard(ref card);
+            ActionBehavior.SetInAdaptiveCard(ref card, Behaviors.AutoDeactivate, BehaviorSwitch.Off);
+
+            await turnContext.SendActivityAsync(MessageFactory.Attachment(new Attachment
+            {
+                ContentType = AdaptiveCard.ContentType,
+                Content = card,
+            }), cancellationToken);
+        }
+
+        private async Task ShowTranslationSample(ITurnContext turnContext, CancellationToken cancellationToken)
+        {
+            var card = CreateTranslationCard();
+
+            // There's no need to convert the card to a JObject
+            // since the library will do that for us
+            await turnContext.SendActivityAsync(MessageFactory.Attachment(new Attachment
+            {
+                ContentType = AdaptiveCard.ContentType,
+                Content = card,
+            }), cancellationToken);
+        }
+
+        private static AdaptiveCard CreateTranslationCard() => new AdaptiveCard("1.0")
+        {
+            Body = new List<AdaptiveElement>
+            {
+                new AdaptiveTextBlock
+                {
+                    Text = "Cards library demo",
+                    Size = AdaptiveTextSize.ExtraLarge,
+                    Weight = AdaptiveTextWeight.Bolder,
+                    Wrap = true,
+                },
+                new AdaptiveTextBlock
+                {
+                    Text = "Adaptive Card translation",
+                    Size = AdaptiveTextSize.Large,
+                    Weight = AdaptiveTextWeight.Bolder,
+                    Wrap = true,
+                },
+                new AdaptiveTextBlock
+                {
+                    Text = "Go ahead and try typing a language tag here (example: pt-br)",
+                    Wrap = true,
+                },
+                // TODO: Use a choice set instead of text
+                new AdaptiveTextInput
+                {
+                    Id = "language",
+                    Placeholder = "Example: zh-cn",
+                },
+                new AdaptiveTextBlock
+                {
+                    Text = "Then click the button to see what happens!",
+                    Wrap = true,
+                },
+            },
+            Actions = new List<AdaptiveAction>
+            {
+                new AdaptiveSubmitAction
+                {
+                    Title = "Translate",
+                    Data = new
+                    {
+                        behavior = BehaviorTranslate,
+                    },
+                },
+            },
+        };
+
         private async Task ShowMenu(ITurnContext turnContext, CancellationToken cancellationToken = default)
         {
-            var options = new string[]
+            var mainDemos = new string[]
             {
                 DemoDeactivateActions,
                 DemoDeactivateCards,
                 DemoDeactivateCarousels,
                 DemoDeactivateBatch,
+            };
+
+            var adaptiveCardDemos = new string[]
+            {
+                DemoPreserveValues,
                 DemoTranslateCards,
             };
 
-            var card = new HeroCard
+            static IList<CardAction> MakeButtons(string[] demos)
             {
-                Text = "Please select a demo (these options will not be deactivated)",
-                Buttons = options.Select(option => new CardAction(ActionTypes.ImBack, option, value: option)).ToList(),
-            };
+                return demos.Select(demo => new CardAction(ActionTypes.ImBack, demo, value: demo)).ToList();
+            }
 
-            await turnContext.SendActivityAsync(MessageFactory.Attachment(card.ToAttachment()), cancellationToken);
+            await turnContext.SendActivityAsync(MessageFactory.Carousel(new List<Attachment>
+            {
+                new HeroCard
+                {
+                    Text = "These demos should work on most channels",
+                    Buttons = MakeButtons(mainDemos),
+                }.ToAttachment(),
+                new HeroCard
+                {
+                    Text = "These demos will only work on channels that support Adaptive Cards",
+                    Buttons = MakeButtons(adaptiveCardDemos)
+                }.ToAttachment(),
+            }, "Please select a demo (these options will not be deactivated)"), cancellationToken);
         }
     }
 }
