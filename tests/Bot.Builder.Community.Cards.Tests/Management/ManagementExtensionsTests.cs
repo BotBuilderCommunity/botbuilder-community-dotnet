@@ -493,7 +493,7 @@ namespace Bot.Builder.Community.Cards.Tests.Management
 
             activityIndex = 0;
 
-            batch.AdaptOutgoingCardActions(Channels.Msteams);
+            batch.AdaptOutgoingCardActions(Channels.Msteams);   // The channel argument should override the channel ID's in the activities
 
             CheckChannelActions(Channels.Directline, ActionMod.EnsuredObjectValue, ActionMod.EnsuredObjectValue, ActionMod.EnsuredStringValue);
             CheckChannelActions(Channels.DirectlineSpeech, ActionMod.EnsuredObjectValue, ActionMod.EnsuredObjectValue, ActionMod.EnsuredStringValue);
@@ -503,6 +503,30 @@ namespace Bot.Builder.Community.Cards.Tests.Management
             batch = null;
 
             Assert.ThrowsException<ArgumentNullException>(() => batch.AdaptOutgoingCardActions());
+        }
+
+        [TestMethod]
+        public void AdaptOutgoingCardActions_ShouldNotThrowWhenBatchContainsAdaptiveCard()
+        {
+            var batch = new List<IMessageActivity>
+            {
+                MessageFactory.Attachment(new Attachment
+                {
+                    ContentType = ContentTypes.AdaptiveCard,
+                    Content = new AdaptiveCard("1.0")
+                    {
+                        SelectAction = new AdaptiveSubmitAction
+                        {
+                            Data = new Dictionary<string, object>
+                            {
+                                { DataIdScopes.Action, "123" },
+                            }.WrapLibraryData(),
+                        },
+                    }
+                }),
+            };
+
+            batch.AdaptOutgoingCardActions();
         }
 
         [TestMethod]
