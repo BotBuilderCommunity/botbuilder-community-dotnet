@@ -6,7 +6,6 @@ using System.Collections.Generic;
 
 namespace Bot.Builder.Community.Cards.Management
 {
-    // TODO: Write tests for these methods
     public static class ActionBehavior
     {
         public static void SetInBatch(IEnumerable<IMessageActivity> batch, string name, object value) => Set(batch, name, value, TreeNodeType.Batch);

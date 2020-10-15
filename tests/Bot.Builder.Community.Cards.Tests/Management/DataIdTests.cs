@@ -560,6 +560,8 @@ namespace Bot.Builder.Community.Cards.Tests.Management
             AssertIdsWereSetCorrectly(batch, attachment);
         }
 
+        // TODO: Rework tests to only check the object that was modified
+        // because it doesn't make sense to check everything in the whole batch
         private static void AssertIdsWereSetCorrectly(IList<IMessageActivity> batch, object scopeRoot)
         {
             var anyIdsExpected = true;
@@ -611,7 +613,7 @@ namespace Bot.Builder.Community.Cards.Tests.Management
 
                         var actionData = action is CardAction cardAction
                             ? JObject.FromObject(cardAction.Value)
-                            : JObject.FromObject(action)["data"] as JObject;
+                            : JObject.FromObject(action)[AdaptiveProperties.Data] as JObject;
 
                         Assert.AreEqual(anyIdsExpected, actionData.GetIdFromActionData() != null);
 
