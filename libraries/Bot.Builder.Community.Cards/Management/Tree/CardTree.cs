@@ -21,7 +21,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
             { VideoCard.ContentType, TreeNodeType.VideoCard },
         };
 
-        private static readonly Dictionary<TreeNodeType, ITreeNode> _tree = new Dictionary<TreeNodeType, ITreeNode>
+        private static readonly Dictionary<TreeNodeType, ITreeNode> _nodeDefinitions = new Dictionary<TreeNodeType, ITreeNode>
         {
             {
                 TreeNodeType.Batch, new EnumerableTreeNode<IMessageActivity>(TreeNodeType.Activity, DataIdScopes.Batch)
@@ -228,9 +228,11 @@ namespace Bot.Builder.Community.Cards.Management.Tree
                         action(typedChild);
                     }
                 }
-                else
+                // The exit node may have been passed if it was on a parallel route
+                // and there is no need to continue in that case
+                else if (childType < exitType)
                 {
-                    var childNode = _tree[childType];
+                    var childNode = _nodeDefinitions[childType];
 
                     processIntermediateNode?.Invoke(childNode);
 

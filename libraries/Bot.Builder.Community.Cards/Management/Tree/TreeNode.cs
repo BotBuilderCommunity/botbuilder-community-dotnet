@@ -29,7 +29,7 @@ namespace Bot.Builder.Community.Cards.Management.Tree
             // This check will prevent child callers from needing to check for nulls
             if (value is TValue typedValue)
             {
-                return ChildCaller(
+                return ChildCaller?.Invoke(
                     typedValue,
                     (child, childType) =>
                     {
