@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\libraries\Bot.Builder.Community.Adapters.Infobip.Core\Bot.Builder.Community.Adapters.Infobip.Core.csproj" />
+    <ProjectReference Include="..\..\libraries\Bot.Builder.Community.Adapters.Infobip.WhatsApp\Bot.Builder.Community.Adapters.Infobip.WhatsApp.csproj" />
   </ItemGroup>
 
 </Project>

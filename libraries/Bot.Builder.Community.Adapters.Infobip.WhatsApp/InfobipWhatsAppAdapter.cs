@@ -1,10 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 using Bot.Builder.Community.Adapters.Infobip.Core;
 using Bot.Builder.Community.Adapters.Infobip.Core.Models;
 using Bot.Builder.Community.Adapters.Infobip.WhatsApp.Models;
@@ -12,18 +5,24 @@ using Bot.Builder.Community.Adapters.Infobip.WhatsApp.ToActivity;
 using Bot.Builder.Community.Adapters.Infobip.WhatsApp.ToInfobip;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Bot.Builder;
-using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Bot.Builder.Community.Adapters.Infobip.WhatsApp
 {
     public class InfobipWhatsAppAdapter : InfobipAdapterBase
     {
         private readonly ILogger _logger;
-        private readonly TowhatsAppActivityConverter _towhatsAppActivityConverter;
+        private readonly ToWhatsAppActivityConverter _toWhatsAppActivityConverter;
         private readonly AuthorizationHelper _authorizationHelper;
         private readonly IInfobipWhatsAppClient _infobipWhatsAppClient;
         private readonly InfobipWhatsAppAdapterOptions _infobipWhatsAppOptions;
@@ -40,7 +39,7 @@ namespace Bot.Builder.Community.Adapters.Infobip.WhatsApp
             _infobipWhatsAppClient = infobipWhatsAppClient ?? throw new ArgumentNullException(nameof(infobipWhatsAppClient));
             _logger = logger ?? NullLogger<InfobipWhatsAppAdapter>.Instance;
 
-            _towhatsAppActivityConverter = new TowhatsAppActivityConverter(_infobipWhatsAppOptions, _infobipWhatsAppClient, _logger);
+            _toWhatsAppActivityConverter = new ToWhatsAppActivityConverter(_infobipWhatsAppOptions, _infobipWhatsAppClient, _logger);
             _authorizationHelper = new AuthorizationHelper();
         }
 
@@ -124,7 +123,7 @@ namespace Bot.Builder.Community.Adapters.Infobip.WhatsApp
             }
 
             var incomingMessage = stringifiedBody.FromInfobipIncomingMessageJson<InfobipWhatsAppIncomingResult>();
-            var activities = await _towhatsAppActivityConverter.Convert(incomingMessage).ConfigureAwait(false);
+            var activities = await _toWhatsAppActivityConverter.Convert(incomingMessage).ConfigureAwait(false);
 
             foreach (var activity in activities)
             {

@@ -19,7 +19,7 @@ namespace Bot.Builder.Community.Adapters.Infobip.WhatsApp.Tests.ToActivityTests
         private const string _contentType = "image";
 
         private InfobipWhatsAppAdapterOptions _adapterOptions;
-        private TowhatsAppActivityConverter _toActivityConverter;
+        private ToWhatsAppActivityConverter _toActivityConverter;
 
         public ToWhatsAppActivityConverterTest()
         {
@@ -27,7 +27,7 @@ namespace Bot.Builder.Community.Adapters.Infobip.WhatsApp.Tests.ToActivityTests
             infobipClient.Setup(x => x.GetContentTypeAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(_contentType);
 
             _adapterOptions = TestOptions.Get();
-            _toActivityConverter = new TowhatsAppActivityConverter(_adapterOptions, infobipClient.Object, NullLogger.Instance);
+            _toActivityConverter = new ToWhatsAppActivityConverter(_adapterOptions, infobipClient.Object, NullLogger.Instance);
         }
 
         [Fact]
