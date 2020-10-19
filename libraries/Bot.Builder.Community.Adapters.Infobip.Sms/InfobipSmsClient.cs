@@ -1,5 +1,4 @@
 ﻿using Bot.Builder.Community.Adapters.Infobip.Core;
-using Microsoft.Extensions.Logging;
 
 namespace Bot.Builder.Community.Adapters.Infobip.Sms
 {

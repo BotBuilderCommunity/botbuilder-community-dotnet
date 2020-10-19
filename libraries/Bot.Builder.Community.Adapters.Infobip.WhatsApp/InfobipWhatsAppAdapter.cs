@@ -25,7 +25,7 @@ namespace Bot.Builder.Community.Adapters.Infobip.WhatsApp
         private readonly ToWhatsAppActivityConverter _toWhatsAppActivityConverter;
         private readonly AuthorizationHelper _authorizationHelper;
         private readonly IInfobipWhatsAppClient _infobipWhatsAppClient;
-        private readonly InfobipWhatsAppAdapterOptions _infobipWhatsAppOptions;
+        private readonly InfobipWhatsAppAdapterOptions _whatsAppAdapterOptions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InfobipWhatsAppAdapter"/> class using configuration settings.
@@ -35,11 +35,11 @@ namespace Bot.Builder.Community.Adapters.Infobip.WhatsApp
         /// <param name="logger">Logger.</param>
         public InfobipWhatsAppAdapter(InfobipWhatsAppAdapterOptions infobipWhatsAppOptions, IInfobipWhatsAppClient infobipWhatsAppClient, ILogger<InfobipWhatsAppAdapter> logger)
         {
-            _infobipWhatsAppOptions = infobipWhatsAppOptions ?? throw new ArgumentNullException(nameof(infobipWhatsAppOptions));
+            _whatsAppAdapterOptions = infobipWhatsAppOptions ?? throw new ArgumentNullException(nameof(infobipWhatsAppOptions));
             _infobipWhatsAppClient = infobipWhatsAppClient ?? throw new ArgumentNullException(nameof(infobipWhatsAppClient));
             _logger = logger ?? NullLogger<InfobipWhatsAppAdapter>.Instance;
 
-            _toWhatsAppActivityConverter = new ToWhatsAppActivityConverter(_infobipWhatsAppOptions, _infobipWhatsAppClient, _logger);
+            _toWhatsAppActivityConverter = new ToWhatsAppActivityConverter(_whatsAppAdapterOptions, _infobipWhatsAppClient, _logger);
             _authorizationHelper = new AuthorizationHelper();
         }
 
@@ -60,7 +60,7 @@ namespace Bot.Builder.Community.Adapters.Infobip.WhatsApp
             {
                 if (activity.Type == ActivityTypes.Message)
                 {
-                    var messages = ToWhatsAppInfobipConverter.Convert(activity, _infobipWhatsAppOptions);
+                    var messages = ToWhatsAppInfobipConverter.Convert(activity, _whatsAppAdapterOptions);
                     var infobipResponses = new List<InfobipResponseMessage>();
 
                     foreach (var message in messages)
@@ -108,9 +108,9 @@ namespace Bot.Builder.Community.Adapters.Infobip.WhatsApp
                 stringifiedBody = await sr.ReadToEndAsync().ConfigureAwait(false);
             }
 
-            if (!_authorizationHelper.VerifySignature(httpRequest.Headers[InfobipConstants.HeaderSignatureKey], stringifiedBody, _infobipWhatsAppOptions.InfobipAppSecret))
+            if (!_authorizationHelper.VerifySignature(httpRequest.Headers[InfobipConstants.HeaderSignatureKey], stringifiedBody, _whatsAppAdapterOptions.InfobipAppSecret))
             {
-                if (_infobipWhatsAppOptions.BypassAuthentication)
+                if (_whatsAppAdapterOptions.BypassAuthentication)
                 {
                     _logger.LogWarning("WARNING: Bypassing authentication. Do not run this in production.");
                 }

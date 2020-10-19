@@ -24,22 +24,22 @@ namespace Bot.Builder.Community.Adapters.Infobip.Sms
         private readonly ILogger _logger;
         private readonly ToSmsActivityConverter _toSmsActivityConverter;
         private readonly AuthorizationHelper _authorizationHelper;
-        private readonly IInfobipClientBase _infobipClientBase;
-        private readonly InfobipSmsAdapterOptions _infobipSmsOptions;
+        private readonly IInfobipSmsClient _infobipSmsClient;
+        private readonly InfobipSmsAdapterOptions _smsAdapterOptions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InfobipSmsAdapter"/> class using configuration settings.
         /// </summary>
         /// <param name="infobipSmsOptions">Adapter options. Typically created via appsettings loaded into an IConfiguration.</param>
-        /// <param name="infobipClientBase">Client/Proxy used to communicate with Infobip.</param>
+        /// <param name="infobipSmsClient">Client/Proxy used to communicate with Infobip.</param>
         /// <param name="logger">Logger.</param>
-        public InfobipSmsAdapter(InfobipSmsAdapterOptions infobipSmsOptions, IInfobipClientBase infobipClientBase, ILogger<InfobipSmsAdapter> logger)
+        public InfobipSmsAdapter(InfobipSmsAdapterOptions infobipSmsOptions, IInfobipSmsClient infobipSmsClient, ILogger<InfobipSmsAdapter> logger)
         {
-            _infobipSmsOptions = infobipSmsOptions ?? throw new ArgumentNullException(nameof(infobipSmsOptions));
-            _infobipClientBase = infobipClientBase ?? throw new ArgumentNullException(nameof(infobipClientBase));
+            _smsAdapterOptions = infobipSmsOptions ?? throw new ArgumentNullException(nameof(infobipSmsOptions));
+            _infobipSmsClient = infobipSmsClient ?? throw new ArgumentNullException(nameof(infobipSmsClient));
             _logger = logger ?? NullLogger<InfobipSmsAdapter>.Instance;
 
-            _toSmsActivityConverter = new ToSmsActivityConverter(_infobipSmsOptions, _logger);
+            _toSmsActivityConverter = new ToSmsActivityConverter(_smsAdapterOptions, _logger);
             _authorizationHelper = new AuthorizationHelper();
         }
 
@@ -60,12 +60,12 @@ namespace Bot.Builder.Community.Adapters.Infobip.Sms
             {
                 if (activity.Type == ActivityTypes.Message)
                 {
-                    var messages = ToInfobipSmsConverter.Convert(activity, _infobipSmsOptions);
+                    var messages = ToInfobipSmsConverter.Convert(activity, _smsAdapterOptions);
                     var infobipResponses = new List<InfobipResponseMessage>();
 
                     foreach (var message in messages)
                     {
-                        var currentResponse = await _infobipClientBase.SendMessageAsync(message, cancellationToken).ConfigureAwait(false);
+                        var currentResponse = await _infobipSmsClient.SendMessageAsync(message, cancellationToken).ConfigureAwait(false);
 
                         if (currentResponse == null) continue;
 
@@ -108,9 +108,9 @@ namespace Bot.Builder.Community.Adapters.Infobip.Sms
                 stringifiedBody = await sr.ReadToEndAsync().ConfigureAwait(false);
             }
 
-            if (!_authorizationHelper.VerifySignature(httpRequest.Headers[InfobipConstants.HeaderSignatureKey], stringifiedBody, _infobipSmsOptions.InfobipAppSecret))
+            if (!_authorizationHelper.VerifySignature(httpRequest.Headers[InfobipConstants.HeaderSignatureKey], stringifiedBody, _smsAdapterOptions.InfobipAppSecret))
             {
-                if (_infobipSmsOptions.BypassAuthentication)
+                if (_smsAdapterOptions.BypassAuthentication)
                 {
                     _logger.LogWarning("WARNING: Bypassing authentication. Do not run this in production.");
                 }

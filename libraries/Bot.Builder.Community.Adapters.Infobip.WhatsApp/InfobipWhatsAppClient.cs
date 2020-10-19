@@ -19,9 +19,9 @@ namespace Bot.Builder.Community.Adapters.Infobip.WhatsApp
             _infobipHttpClient = new InfobipHttpClient();
         }
 
-        public InfobipWhatsAppClient(InfobipWhatsAppAdapterOptions infobipWhatsAppAdapterOptions, ILogger<InfobipWhatsAppClient> logger):base(infobipWhatsAppAdapterOptions)
+        public InfobipWhatsAppClient(InfobipWhatsAppAdapterOptions infobipViberWhatsAppAdapterOptions, ILogger<InfobipWhatsAppClient> logger):base(infobipViberWhatsAppAdapterOptions)
         {
-            _infobipWhatsAppOptions = infobipWhatsAppAdapterOptions ?? throw new ArgumentNullException(nameof(infobipWhatsAppAdapterOptions));
+            _infobipWhatsAppOptions = infobipViberWhatsAppAdapterOptions ?? throw new ArgumentNullException(nameof(infobipViberWhatsAppAdapterOptions));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _infobipHttpClient.Init(_infobipWhatsAppOptions.InfobipApiKey);
         }
