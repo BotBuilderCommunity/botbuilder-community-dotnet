@@ -95,6 +95,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Infobip.WhatsApp.Tests", "tests\Bot.Builder.Community.Adapters.Infobip.WhatsApp.Tests\Bot.Builder.Community.Adapters.Infobip.WhatsApp.Tests.csproj", "{C4F46594-6E3E-480D-BEFD-58EE59F43869}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Infobip.WhatsApp", "libraries\Bot.Builder.Community.Adapters.Infobip.WhatsApp\Bot.Builder.Community.Adapters.Infobip.WhatsApp.csproj", "{B4105663-C8EE-4182-B9D3-8837954F3E85}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug - NuGet Packages|Any CPU = Debug - NuGet Packages|Any CPU
@@ -389,6 +391,14 @@ Global
 		{C4F46594-6E3E-480D-BEFD-58EE59F43869}.Documentation|Any CPU.Build.0 = Debug|Any CPU
 		{C4F46594-6E3E-480D-BEFD-58EE59F43869}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C4F46594-6E3E-480D-BEFD-58EE59F43869}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4105663-C8EE-4182-B9D3-8837954F3E85}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4105663-C8EE-4182-B9D3-8837954F3E85}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{B4105663-C8EE-4182-B9D3-8837954F3E85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4105663-C8EE-4182-B9D3-8837954F3E85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4105663-C8EE-4182-B9D3-8837954F3E85}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4105663-C8EE-4182-B9D3-8837954F3E85}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{B4105663-C8EE-4182-B9D3-8837954F3E85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4105663-C8EE-4182-B9D3-8837954F3E85}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -435,6 +445,7 @@ Global
 		{2FC3C4F5-0D26-4959-9196-98F9303C3CCB} = {BF310E8A-8DA1-441F-90E9-DE0E66553048}
 		{2C8CFDC6-01A8-4090-B959-D47524B048AF} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
 		{C4F46594-6E3E-480D-BEFD-58EE59F43869} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
+		{B4105663-C8EE-4182-B9D3-8837954F3E85} = {BF310E8A-8DA1-441F-90E9-DE0E66553048}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FE3B75E-BA2B-45BC-BBF0-DDA8BA10C4F0}
