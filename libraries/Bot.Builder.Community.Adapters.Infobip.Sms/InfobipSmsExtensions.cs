@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Bot.Builder.Community.Adapters.Infobip.Sms
 {
-    public static class InfobipExtensions
+    public static class InfobipSmsExtensions
     {
 
         public static void AddInfobipOmniSmsMessageOptions(this Activity activity, InfobipOmniSmsMessageOptions options)
