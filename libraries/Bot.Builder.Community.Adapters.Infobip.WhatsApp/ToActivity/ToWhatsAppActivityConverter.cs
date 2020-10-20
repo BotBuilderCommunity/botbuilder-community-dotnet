@@ -75,7 +75,7 @@ namespace Bot.Builder.Community.Adapters.Infobip.WhatsApp.ToActivity
                 _logger.Log(LogLevel.Debug, $"Received DLR notification: MessageId={response.MessageId}, " +
                                             $"DoneAt={response.DoneAt}, SentAt={response.SentAt}, Channel={response.Channel}");
 
-                var activity = InfobipWhatsAppDeliveryReportToActivity.Convert(response, _whatsAppAdapterOptions);
+                var activity = InfobipWhatsAppDeliveryReportToActivity.Convert(response, _whatsAppAdapterOptions.InfobipWhatsAppNumber);
                 if (string.IsNullOrEmpty(activity.ChannelId))
                     _logger.Log(LogLevel.Error, $"{response.Channel} is not supported channel");
                 HandleCallbackData(response, activity);

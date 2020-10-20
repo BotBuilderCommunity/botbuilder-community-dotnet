@@ -6,12 +6,11 @@ namespace Bot.Builder.Community.Adapters.Infobip.WhatsApp.ToActivity
 {
     public class InfobipWhatsAppDeliveryReportToActivity : InfobipBaseConverter
     {
-        public static Activity Convert(InfobipWhatsAppIncomingResult result, InfobipWhatsAppAdapterOptions whatsAppAdapterOptions)
+        public static Activity Convert(InfobipWhatsAppIncomingResult result, string whatsAppNumber)
         {
             var activity = CreateBaseDeliveryReportActivity(result);
-
             activity.ChannelId = InfobipWhatsAppConstants.ChannelName;
-            activity.From = new ChannelAccount { Id = whatsAppAdapterOptions.InfobipWhatsAppNumber };
+            activity.From = new ChannelAccount { Id = whatsAppNumber };
 
             return activity;
         }

@@ -6,11 +6,11 @@ namespace Bot.Builder.Community.Adapters.Infobip.Sms.ToActivity
 {
     public class InfobipSmsDeliveryReportToActivity : InfobipBaseConverter
     {
-        public static Activity Convert(InfobipSmsIncomingResult result, InfobipSmsAdapterOptions smsAdapterOptions)
+        public static Activity Convert(InfobipSmsIncomingResult result, string smsNumber)
         {
             var activity = CreateBaseDeliveryReportActivity(result);
             activity.ChannelId = InfobipSmsConstants.ChannelName;
-            activity.From = new ChannelAccount { Id = smsAdapterOptions.InfobipSmsNumber };
+            activity.From = new ChannelAccount { Id = smsNumber };
             return activity;
         }
     }

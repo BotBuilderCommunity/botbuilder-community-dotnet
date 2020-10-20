@@ -54,7 +54,7 @@ namespace Bot.Builder.Community.Adapters.Infobip.Sms.Tests.ToActivityTests
             };
 
             var result = incomingMessage.Results.Single();
-            var activity = InfobipSmsDeliveryReportToActivity.Convert(result, TestOptions.Get());
+            var activity = InfobipSmsDeliveryReportToActivity.Convert(result, TestOptions.SmsNumber);
 
             Assert.NotNull(activity);
             Assert.Equal(InfobipSmsConstants.ChannelName, activity.ChannelId);

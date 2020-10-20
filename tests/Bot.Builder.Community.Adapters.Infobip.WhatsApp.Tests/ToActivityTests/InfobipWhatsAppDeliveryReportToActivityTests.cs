@@ -54,7 +54,7 @@ namespace Bot.Builder.Community.Adapters.Infobip.WhatsApp.Tests.ToActivityTests
             };
 
             var result = incomingMessage.Results.Single();
-            var activity = InfobipWhatsAppDeliveryReportToActivity.Convert(result, TestOptions.Get());
+            var activity = InfobipWhatsAppDeliveryReportToActivity.Convert(result, TestOptions.WhatsAppNumber);
 
             Assert.NotNull(activity);
             Assert.Equal(InfobipWhatsAppConstants.ChannelName, activity.ChannelId);
