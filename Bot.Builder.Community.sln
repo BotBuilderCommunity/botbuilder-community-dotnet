@@ -104,6 +104,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Infobip.Sms", "libraries\Bot.Builder.Community.Adapters.Infobip.Sms\Bot.Builder.Community.Adapters.Infobip.Sms.csproj", "{1371CC9F-9374-478C-BF8A-8A4638DFFA05}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Infobip.Sms.Tests", "tests\Bot.Builder.Community.Adapters.Infobip.Sms.Tests\Bot.Builder.Community.Adapters.Infobip.Sms.Tests.csproj", "{9803619D-9F7E-4874-88D0-DBA9206BACF6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug - NuGet Packages|Any CPU = Debug - NuGet Packages|Any CPU
@@ -414,6 +416,14 @@ Global
 		{1371CC9F-9374-478C-BF8A-8A4638DFFA05}.Documentation|Any CPU.Build.0 = Debug|Any CPU
 		{1371CC9F-9374-478C-BF8A-8A4638DFFA05}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1371CC9F-9374-478C-BF8A-8A4638DFFA05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9803619D-9F7E-4874-88D0-DBA9206BACF6}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{9803619D-9F7E-4874-88D0-DBA9206BACF6}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{9803619D-9F7E-4874-88D0-DBA9206BACF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9803619D-9F7E-4874-88D0-DBA9206BACF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9803619D-9F7E-4874-88D0-DBA9206BACF6}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{9803619D-9F7E-4874-88D0-DBA9206BACF6}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{9803619D-9F7E-4874-88D0-DBA9206BACF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9803619D-9F7E-4874-88D0-DBA9206BACF6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -462,6 +472,7 @@ Global
 		{2B523490-955A-4697-ADE4-FB98FD4CD879} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
 		{10027F9C-1320-4FF7-821F-D7EC8C589EFD} = {BF310E8A-8DA1-441F-90E9-DE0E66553048}
 		{1371CC9F-9374-478C-BF8A-8A4638DFFA05} = {BF310E8A-8DA1-441F-90E9-DE0E66553048}
+		{9803619D-9F7E-4874-88D0-DBA9206BACF6} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FE3B75E-BA2B-45BC-BBF0-DDA8BA10C4F0}
