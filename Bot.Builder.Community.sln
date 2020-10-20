@@ -108,6 +108,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Infobip.WhatsApp", "libraries\Bot.Builder.Community.Adapters.Infobip.WhatsApp\Bot.Builder.Community.Adapters.Infobip.WhatsApp.csproj", "{CDB353ED-1AE8-49DF-A5E6-46216F60B01D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Infobip.WhatsApp.Tests", "tests\Bot.Builder.Community.Adapters.Infobip.WhatsApp.Tests\Bot.Builder.Community.Adapters.Infobip.WhatsApp.Tests.csproj", "{5C56354F-C9F7-4C9B-8F2B-6439666683B1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug - NuGet Packages|Any CPU = Debug - NuGet Packages|Any CPU
@@ -434,6 +436,14 @@ Global
 		{CDB353ED-1AE8-49DF-A5E6-46216F60B01D}.Documentation|Any CPU.Build.0 = Debug|Any CPU
 		{CDB353ED-1AE8-49DF-A5E6-46216F60B01D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CDB353ED-1AE8-49DF-A5E6-46216F60B01D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C56354F-C9F7-4C9B-8F2B-6439666683B1}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C56354F-C9F7-4C9B-8F2B-6439666683B1}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{5C56354F-C9F7-4C9B-8F2B-6439666683B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C56354F-C9F7-4C9B-8F2B-6439666683B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C56354F-C9F7-4C9B-8F2B-6439666683B1}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C56354F-C9F7-4C9B-8F2B-6439666683B1}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{5C56354F-C9F7-4C9B-8F2B-6439666683B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C56354F-C9F7-4C9B-8F2B-6439666683B1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -484,6 +494,7 @@ Global
 		{1371CC9F-9374-478C-BF8A-8A4638DFFA05} = {BF310E8A-8DA1-441F-90E9-DE0E66553048}
 		{9803619D-9F7E-4874-88D0-DBA9206BACF6} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
 		{CDB353ED-1AE8-49DF-A5E6-46216F60B01D} = {BF310E8A-8DA1-441F-90E9-DE0E66553048}
+		{5C56354F-C9F7-4C9B-8F2B-6439666683B1} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FE3B75E-BA2B-45BC-BBF0-DDA8BA10C4F0}
