@@ -26,10 +26,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Google Adapter Sample", "sa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zoom Adapter Sample", "samples\Zoom Adapter Sample\Zoom Adapter Sample.csproj", "{D5F5BFB0-CDEC-4980-9EBB-864724B6B2B6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infobip Sms Sample", "samples\Infobip Sms Sample\Infobip Sms Sample.csproj", "{C46657EA-C46F-436D-A226-130960FC337E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infobip WhatsApp Sample", "samples\Infobip WhatsApp Sample\Infobip WhatsApp Sample.csproj", "{9994FD71-D94A-4F65-9605-D684634804D0}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -84,14 +80,6 @@ Global
 		{D5F5BFB0-CDEC-4980-9EBB-864724B6B2B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5F5BFB0-CDEC-4980-9EBB-864724B6B2B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D5F5BFB0-CDEC-4980-9EBB-864724B6B2B6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C46657EA-C46F-436D-A226-130960FC337E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C46657EA-C46F-436D-A226-130960FC337E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C46657EA-C46F-436D-A226-130960FC337E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C46657EA-C46F-436D-A226-130960FC337E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9994FD71-D94A-4F65-9605-D684634804D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9994FD71-D94A-4F65-9605-D684634804D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9994FD71-D94A-4F65-9605-D684634804D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9994FD71-D94A-4F65-9605-D684634804D0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
