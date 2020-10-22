@@ -1,7 +1,6 @@
-using Bot.Builder.Community.Adapters.Infobip;
 using Xunit;
 
-namespace Bot.Builder.Community.Adapter.Infobip.Tests
+namespace Bot.Builder.Community.Adapters.Infobip.Tests
 {
     public class AuthorizationHelperTests
     {
