@@ -150,7 +150,7 @@ namespace Bot.Builder.Community.Adapters.ACS.SMS
             return _requestMapper.RequestToActivity(request);
         }
 
-        public override async Task<ResourceResponse[]> SendActivitiesAsync(ITurnContext turnContext,
+        public override Task<ResourceResponse[]> SendActivitiesAsync(ITurnContext turnContext,
             Activity[] activities, CancellationToken cancellationToken)
         {
             var responses = new List<ResourceResponse>();
@@ -185,7 +185,9 @@ namespace Bot.Builder.Community.Adapters.ACS.SMS
                 }
             }
 
-            return responses.ToArray();
+            var result = responses.ToArray();
+
+            return Task.FromResult(result);
         }
 
         /// <summary>

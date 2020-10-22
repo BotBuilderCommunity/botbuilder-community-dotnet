@@ -1,5 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
+	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove('$(MSBuildThisFileDirectory)../', 'Bot.Builder.Community.sln'))\CommonTargets\library.shared.targets" />
+
+	<PropertyGroup>
 	  <TargetFramework>netstandard2.0</TargetFramework>
 	  <Description>Adapter for v4 of the Bot Builder .NET SDK to allow for a bot to be used with SMS via Azure Communication Services.</Description>
 	  <Authors>Bot Builder Community</Authors>
@@ -13,29 +15,15 @@
 	  <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <Description>Library for connecting bots with SMS via Azure Communication Services.</Description>
-    <Summary>This library implements C# classes for Azure Communication Services SMS adapter.</Summary>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DebugType>Full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <!-- The Twilio package isn't signed, so supress the warning. There seems to not be a way to supress this for ONLY Twilio. -->
-    <NoWarn>$(NoWarn),CS8002</NoWarn>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<WarningsAsErrors />
+	</PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Azure.Communication.Sms" Version="1.0.0-beta.1" />
     <PackageReference Include="Microsoft.Azure.EventGrid" Version="3.2.0" />
-    <PackageReference Include="Twilio" Version="5.33.1" />
-    <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Condition=" '$(IsBuildServer)' == '' " Version="4.9.2" />
-    <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Condition=" '$(IsBuildServer)' != '' " Version="$(ReleasePackageVersion)" />
+    <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="$(Bot_Builder_Version)" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
 
