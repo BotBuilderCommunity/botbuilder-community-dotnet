@@ -34,6 +34,10 @@ namespace Bot.Builder.Community.Adapters.Infobip.Models
         [JsonProperty("message")] public InfobipIncomingWhatsAppMessage Message { get; set; }
         [JsonProperty("contact")] public InfobipIncomingWhatsAppContact Contact { get; set; }
         [JsonProperty("receivedAt")] public DateTimeOffset? ReceivedAt { get; set; }
+        [JsonProperty("text")] public string Text { get; set; }
+        [JsonProperty("cleanText")] public string CleanText { get; set; }
+        [JsonProperty("keyword")] public string Keyword { get; set; }
+        [JsonProperty("smsCount")] public long SmsCount { get; set; }
 
 
         /// <summary>
@@ -66,9 +70,19 @@ namespace Bot.Builder.Community.Adapters.Infobip.Models
         /// https://dev-old.infobip.com/whatsapp-business-messaging/incoming-whatsapp-messages
         /// </summary>
         /// <returns>True if this message represents message sent by subscriber to bot</returns>
-        public bool IsMessage()
+        public bool IsWhatsAppMessage()
         {
             return Message != null;
+        }
+
+        /// <summary>
+        /// Returns True if this message represents SMS message sent by subscriber to bot:
+        /// https://dev-old.infobip.com/receive-sms/forward-method
+        /// </summary>
+        /// <returns>True if this message represents SMS message sent by subscriber to bot</returns>
+        public bool IsSmsMessage()
+        {
+            return SmsCount > 0;
         }
     }
 
