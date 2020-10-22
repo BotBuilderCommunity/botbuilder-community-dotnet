@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+	  <TargetFramework>netstandard2.0</TargetFramework>
+	  <Description>Adapter for v4 of the Bot Builder .NET SDK to allow for a bot to be used with SMS via Azure Communication Services.</Description>
+	  <Authors>Bot Builder Community</Authors>
+	  <Company>Bot Builder Community</Company>
+	  <PackageLicenseUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/master/LICENSE</PackageLicenseUrl>
+	  <PackageProjectUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/libraries/Bot.Builder.Community.Adapters.ACS.SMS</PackageProjectUrl>
+	  <Version>1.0.0</Version>
+	  <FileVersion>1.0.0</FileVersion>
+	  <AssemblyVersion>1.0.0</AssemblyVersion>
+	  <RepositoryUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/</RepositoryUrl>
+	  <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Description>Library for connecting bots with SMS via Azure Communication Services.</Description>
+    <Summary>This library implements C# classes for Azure Communication Services SMS adapter.</Summary>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>Full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <!-- The Twilio package isn't signed, so supress the warning. There seems to not be a way to supress this for ONLY Twilio. -->
+    <NoWarn>$(NoWarn),CS8002</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Communication.Sms" Version="1.0.0-beta.1" />
+    <PackageReference Include="Microsoft.Azure.EventGrid" Version="3.2.0" />
+    <PackageReference Include="Twilio" Version="5.33.1" />
+    <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Condition=" '$(IsBuildServer)' == '' " Version="4.9.2" />
+    <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Condition=" '$(IsBuildServer)' != '' " Version="$(ReleasePackageVersion)" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bot.Builder.Community.Adapters.ACS.SMS.Core\Bot.Builder.Community.Adapters.ACS.SMS.Core.csproj" />
+  </ItemGroup>
+
+</Project>
