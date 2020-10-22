@@ -190,7 +190,7 @@ Now that you have created an Azure Communication Services resource and wired up 
 2. Configure your ACS resource to [handle SMS events](https://docs.microsoft.com/en-us/azure/communication-services/quickstarts/telephony-sms/handle-sms-events).  When configuring your ACS event endpoint, specify 'Webhook' as the type and the URL for your endpoint is the URL for your bot, which will be the URL of your deployed application (or ngrok endpoint), plus '/api/acssms' (for example, `https://yourbotapp.azurewebsites.net/api/acssms`). Your bot must be running when you configure your endpoint so that the endpoint can be verified by Azure Communication Services.
 
 > [!NOTE]
-> If you are not ready to deploy your bot to Azure, or wish to debug your bot when using the Alexa adapter, you can use a tool such as [ngrok](https://www.ngrok.com) (which you will likely already have installed if you have used the Bot Framework emulator previously) to tunnel through to your bot running locally and provide you with a publicly accessible URL for this. 
+> If you are not ready to deploy your bot to Azure, or wish to debug your bot when using the ACS SMS adapter, you can use a tool such as [ngrok](https://www.ngrok.com) (which you will likely already have installed if you have used the Bot Framework emulator previously) to tunnel through to your bot running locally and provide you with a publicly accessible URL for this. 
 > 
 > If you wish create an ngrok tunnel and obtain a URL to your bot, use the following command in a terminal window (this assumes your local bot is running on port 3978, alter the port numbers in the command if your bot is not).
 > 
