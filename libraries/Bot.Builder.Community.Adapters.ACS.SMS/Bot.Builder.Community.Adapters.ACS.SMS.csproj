@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Bot.Builder.Community.Adapters.ACS.SMS.Core\Bot.Builder.Community.Adapters.ACS.SMS.Core.csproj" />
+    <ProjectReference Include="..\Bot.Builder.Community.Adapters.ACS.SMS.Core\Bot.Builder.Community.Adapters.ACS.SMS.Core.csproj" />
   </ItemGroup>
 
 </Project>
