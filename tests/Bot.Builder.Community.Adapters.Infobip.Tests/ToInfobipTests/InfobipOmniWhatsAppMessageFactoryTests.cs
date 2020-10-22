@@ -1,27 +1,26 @@
-﻿using Bot.Builder.Community.Adapters.Infobip;
-using Bot.Builder.Community.Adapters.Infobip.Models;
-using Microsoft.Bot.Schema;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Bot.Builder.Community.Adapters.Infobip.Models;
+using Bot.Builder.Community.Adapters.Infobip.ToInfobip;
+using Microsoft.Bot.Schema;
+using Newtonsoft.Json;
 using Xunit;
 
-namespace Bot.Builder.Community.Adapter.Infobip.Tests
+namespace Bot.Builder.Community.Adapters.Infobip.Tests.ToInfobipTests
 {
-    public class ToInfobipConverterTest
+    public class InfobipOmniWhatsAppMessageFactoryTests
     {
         private Activity _activity;
-        private const string SCENARIO_KEY = TestOptions.ScenarioKey;
 
-        public ToInfobipConverterTest()
+        public InfobipOmniWhatsAppMessageFactoryTests()
         {
             _activity = new Activity
             {
                 Type = ActivityTypes.Message,
                 Id = "message id",
                 Timestamp = DateTimeOffset.Parse("2020-02-26T10:15:48.734+0000"),
-                ChannelId = InfobipConstants.ChannelName,
+                ChannelId = InfobipChannel.WhatsApp,
                 Conversation = new ConversationAccount { Id = "subscriber-number" },
                 From = new ChannelAccount { Id = "whatsapp-number" },
                 Recipient = new ChannelAccount { Id = "subscriber-number" }
@@ -29,19 +28,16 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
         }
 
         [Fact]
-        public void ConvertTextActivityToOmniFailoverMessage()
+        public void ConvertTextActivityToOmniWhatsAppFailoverMessage()
         {
             _activity.Text = "Test text";
 
-            var omniFailoverMessages = ToInfobipConverter.Convert(_activity, SCENARIO_KEY);
-            Assert.NotNull(omniFailoverMessages);
-            Assert.Single(omniFailoverMessages);
+            var whatsAppMessages = InfobipOmniWhatsAppMessageFactory.Create(_activity);
+            Assert.NotNull(whatsAppMessages);
+            Assert.Single(whatsAppMessages);
 
-            var omniFailoverMessage = omniFailoverMessages.First();
-            Assert.Equal(omniFailoverMessage.ScenarioKey, SCENARIO_KEY);
-            CheckDestinations(omniFailoverMessage.Destinations);
+            var whatsAppMessage = whatsAppMessages.Single();
 
-            var whatsAppMessage = omniFailoverMessage.WhatsApp;
             Assert.NotNull(whatsAppMessage);
             Assert.Equal(whatsAppMessage.Text, _activity.Text);
             Assert.Null(whatsAppMessage.FileUrl);
@@ -60,20 +56,20 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
         }
 
         [Fact]
-        public void ConvertActivityWithSingleGeoCoordinateEntityToOmniFailoverMessage()
+        public void ConvertActivityWithSingleGeoCoordinateEntityToOmniWhatsAppFailoverMessage()
         {
             _activity.Entities = new List<Entity> { new GeoCoordinates { Latitude = 12.3456789, Longitude = 23.456789, Name = "Test" } };
 
-            var omniFailoverMessages = ToInfobipConverter.Convert(_activity, SCENARIO_KEY);
-            Assert.NotNull(omniFailoverMessages);
-            Assert.Single(omniFailoverMessages);
+            var whatsAppMessages = InfobipOmniWhatsAppMessageFactory.Create(_activity);
+            Assert.NotNull(whatsAppMessages);
+            Assert.Single(whatsAppMessages);
 
-            var omniFailoverMessage = omniFailoverMessages.First();
-            CheckLocationMessage(omniFailoverMessage, _activity.Entities.First().GetAs<GeoCoordinates>());
+            var whatsAppMessage = whatsAppMessages.First();
+            CheckLocationMessage(whatsAppMessage, _activity.Entities.First().GetAs<GeoCoordinates>());
         }
 
         [Fact]
-        public void ConvertActivityWithMultipleGeoCoordinateEntityToOmniFailoverMessage()
+        public void ConvertActivityWithMultipleGeoCoordinateEntityToOmniWhatsAppFailoverMessage()
         {
             _activity.Entities = new List<Entity>
             {
@@ -81,16 +77,16 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
                 new GeoCoordinates {Latitude = 45.56789, Longitude = 87.12345, Name = "Test2"}
             };
 
-            var omniFailoverMessages = ToInfobipConverter.Convert(_activity, SCENARIO_KEY);
-            Assert.NotNull(omniFailoverMessages);
-            Assert.Equal(2, omniFailoverMessages.Count);
+            var whatsAppMessages = InfobipOmniWhatsAppMessageFactory.Create(_activity);
+            Assert.NotNull(whatsAppMessages);
+            Assert.Equal(2, whatsAppMessages.Count);
 
-            for (var i = 0; i < omniFailoverMessages.Count; i++)
-                CheckLocationMessage(omniFailoverMessages.ElementAt(i), _activity.Entities.ElementAt(i).GetAs<GeoCoordinates>());
+            for (var i = 0; i < whatsAppMessages.Count; i++)
+                CheckLocationMessage(whatsAppMessages.ElementAt(i), _activity.Entities.ElementAt(i).GetAs<GeoCoordinates>());
         }
 
         [Fact]
-        public void ConvertActivityWithSinglePlaceEntityToOmniFailoverMessage()
+        public void ConvertActivityWithSinglePlaceEntityToOmniWhatsAppFailoverMessage()
         {
             _activity.Entities = new List<Entity>
             {
@@ -101,16 +97,16 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
                 }
             };
 
-            var omniFailoverMessages = ToInfobipConverter.Convert(_activity, SCENARIO_KEY);
-            Assert.NotNull(omniFailoverMessages);
-            Assert.Single(omniFailoverMessages);
+            var whatsAppMessages = InfobipOmniWhatsAppMessageFactory.Create(_activity);
+            Assert.NotNull(whatsAppMessages);
+            Assert.Single(whatsAppMessages);
 
-            var omniFailoverMessage = omniFailoverMessages.First();
-            CheckLocationMessage(omniFailoverMessage, _activity.Entities.First().GetAs<Place>());
+            var whatsAppMessage = whatsAppMessages.First();
+            CheckLocationMessage(whatsAppMessage, _activity.Entities.First().GetAs<Place>());
         }
 
         [Fact]
-        public void ConvertActivityWithSinglePlaceEntityWithoutGeoToOmniFailoverMessage()
+        public void ConvertActivityWithSinglePlaceEntityWithoutGeoToOmniWhatsAppFailoverMessage()
         {
             _activity.Entities = new List<Entity>
             {
@@ -120,11 +116,11 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
                 }
             };
 
-            Assert.Throws<Exception>(() => ToInfobipConverter.Convert(_activity, SCENARIO_KEY));
+            Assert.Throws<Exception>(() => InfobipOmniWhatsAppMessageFactory.Create(_activity));
         }
 
         [Fact]
-        public void ConvertActivityWithSinglePlaceEntityWithNonStringAddressFailoverMessage()
+        public void ConvertActivityWithSinglePlaceEntityWithNonStringAddressOmniWhatsAppFailoverMessage()
         {
             _activity.Entities = new List<Entity>
             {
@@ -134,24 +130,21 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
                 }
             };
 
-            Assert.Throws<Exception>(() => ToInfobipConverter.Convert(_activity, SCENARIO_KEY));
+            Assert.Throws<Exception>(() => InfobipOmniWhatsAppMessageFactory.Create(_activity));
         }
 
         [Fact]
-        public void ConvertActivityWithImageAttachmentToOmniFailoverMessage()
+        public void ConvertActivityWithImageAttachmentToOmniWhatsAppFailoverMessage()
         {
             var attachment = new Attachment { ContentUrl = "http://dummy-image.com", ContentType = "image/jpeg" };
             _activity.Attachments = new List<Attachment> { attachment };
 
-            var omniFailoverMessages = ToInfobipConverter.Convert(_activity, SCENARIO_KEY);
-            Assert.NotNull(omniFailoverMessages);
-            Assert.Single(omniFailoverMessages);
+            var whatsAppMessages = InfobipOmniWhatsAppMessageFactory.Create(_activity);
+            Assert.NotNull(whatsAppMessages);
+            Assert.Single(whatsAppMessages);
 
-            var omniFailoverMessage = omniFailoverMessages.First();
-            Assert.Equal(omniFailoverMessage.ScenarioKey, SCENARIO_KEY);
-            CheckDestinations(omniFailoverMessage.Destinations);
+            var whatsAppMessage = whatsAppMessages.Single();
 
-            var whatsAppMessage = omniFailoverMessage.WhatsApp;
             Assert.NotNull(whatsAppMessage);
             Assert.Null(whatsAppMessage.Text);
             Assert.Null(whatsAppMessage.FileUrl);
@@ -170,21 +163,17 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
         }
 
         [Fact]
-        public void ConvertActivityWithImageAttachmentAndTextToOmniFailoverMessage()
+        public void ConvertActivityWithImageAttachmentAndTextToOmniWhatsAppFailoverMessage()
         {
             var attachment = new Attachment { ContentUrl = "http://dummy-image.com", ContentType = "image/jpeg" };
             _activity.Attachments = new List<Attachment> { attachment };
             _activity.Text = "Test text";
 
-            var omniFailoverMessages = ToInfobipConverter.Convert(_activity, SCENARIO_KEY);
-            Assert.NotNull(omniFailoverMessages);
-            Assert.Single(omniFailoverMessages);
+            var whatsAppMessages = InfobipOmniWhatsAppMessageFactory.Create(_activity);
+            Assert.NotNull(whatsAppMessages);
+            Assert.Single(whatsAppMessages);
 
-            var omniFailoverMessage = omniFailoverMessages.First();
-            Assert.Equal(omniFailoverMessage.ScenarioKey, SCENARIO_KEY);
-            CheckDestinations(omniFailoverMessage.Destinations);
-
-            var whatsAppMessage = omniFailoverMessage.WhatsApp;
+            var whatsAppMessage = whatsAppMessages.Single();
             Assert.NotNull(whatsAppMessage);
             Assert.Equal(whatsAppMessage.Text, _activity.Text);
             Assert.Null(whatsAppMessage.FileUrl);
@@ -203,25 +192,19 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
         }
 
         [Fact]
-        public void ConvertActivityWithTextAndMultipleAttachmentsToOmniFailoverMessage()
+        public void ConvertActivityWithTextAndMultipleAttachmentsToOmniWhatsAppFailoverMessage()
         {
             var attachment = new Attachment { ContentUrl = "http://dummy-video.com", ContentType = "video/mp4" };
             var attachment2 = new Attachment { ContentUrl = "http://dummy-image.com", ContentType = "image/jpeg" };
             _activity.Attachments = new List<Attachment> { attachment, attachment2 };
             _activity.Text = "Test text";
 
-            var omniFailoverMessages = ToInfobipConverter.Convert(_activity, SCENARIO_KEY);
-            Assert.NotNull(omniFailoverMessages);
-            Assert.Equal(2, omniFailoverMessages.Count);
+            var whatsAppMessages = InfobipOmniWhatsAppMessageFactory.Create(_activity);
+            Assert.NotNull(whatsAppMessages);
+            Assert.Equal(2, whatsAppMessages.Count);
 
-            var omniFailoverMessage = omniFailoverMessages.First();
-            var omniFailoverMessage2 = omniFailoverMessages.ElementAt(1);
-            Assert.Equal(omniFailoverMessage.ScenarioKey, SCENARIO_KEY);
-            Assert.Equal(omniFailoverMessage2.ScenarioKey, SCENARIO_KEY);
-            CheckDestinations(omniFailoverMessage.Destinations);
-            CheckDestinations(omniFailoverMessage2.Destinations);
+            var whatsAppMessage = whatsAppMessages.First();
 
-            var whatsAppMessage = omniFailoverMessage.WhatsApp;
             Assert.NotNull(whatsAppMessage);
             Assert.Equal(whatsAppMessage.Text, _activity.Text);
             Assert.Null(whatsAppMessage.FileUrl);
@@ -238,7 +221,8 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
             Assert.Null(whatsAppMessage.Language);
             Assert.Null(whatsAppMessage.MediaTemplateData);
 
-            var whatsAppMessage2 = omniFailoverMessage2.WhatsApp;
+            var whatsAppMessage2 = whatsAppMessages.ElementAt(1);
+
             Assert.NotNull(whatsAppMessage2);
             Assert.Null(whatsAppMessage2.Text);
             Assert.Null(whatsAppMessage2.FileUrl);
@@ -257,20 +241,16 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
         }
 
         [Fact]
-        public void ConvertActivityWithVideoAttachmentToOmniFailoverMessage()
+        public void ConvertActivityWithVideoAttachmentToOmniWhatsAppFailoverMessage()
         {
             var attachment = new Attachment { ContentUrl = "http://dummy-video.com", ContentType = "video/mp4" };
             _activity.Attachments = new List<Attachment> { attachment };
 
-            var omniFailoverMessages = ToInfobipConverter.Convert(_activity, SCENARIO_KEY);
-            Assert.NotNull(omniFailoverMessages);
-            Assert.Single(omniFailoverMessages);
+            var whatsAppMessages = InfobipOmniWhatsAppMessageFactory.Create(_activity);
+            Assert.NotNull(whatsAppMessages);
+            Assert.Single(whatsAppMessages);
 
-            var omniFailoverMessage = omniFailoverMessages.First();
-            Assert.Equal(omniFailoverMessage.ScenarioKey, SCENARIO_KEY);
-            CheckDestinations(omniFailoverMessage.Destinations);
-
-            var whatsAppMessage = omniFailoverMessage.WhatsApp;
+            var whatsAppMessage = whatsAppMessages.Single();
             Assert.NotNull(whatsAppMessage);
             Assert.Null(whatsAppMessage.Text);
             Assert.Null(whatsAppMessage.FileUrl);
@@ -289,21 +269,17 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
         }
 
         [Fact]
-        public void ConvertActivityWithVideoAttachmentAndTextToOmniFailoverMessage()
+        public void ConvertActivityWithVideoAttachmentAndTextToOmniWhatsAppFailoverMessage()
         {
             var attachment = new Attachment { ContentUrl = "http://dummy-video.com", ContentType = "video/mp4" };
             _activity.Attachments = new List<Attachment> { attachment };
             _activity.Text = "Test text";
 
-            var omniFailoverMessages = ToInfobipConverter.Convert(_activity, SCENARIO_KEY);
-            Assert.NotNull(omniFailoverMessages);
-            Assert.Single(omniFailoverMessages);
+            var whatsAppMessages = InfobipOmniWhatsAppMessageFactory.Create(_activity);
+            Assert.NotNull(whatsAppMessages);
+            Assert.Single(whatsAppMessages);
 
-            var omniFailoverMessage = omniFailoverMessages.First();
-            Assert.Equal(omniFailoverMessage.ScenarioKey, SCENARIO_KEY);
-            CheckDestinations(omniFailoverMessage.Destinations);
-
-            var whatsAppMessage = omniFailoverMessage.WhatsApp;
+            var whatsAppMessage = whatsAppMessages.Single();
             Assert.NotNull(whatsAppMessage);
             Assert.Equal(whatsAppMessage.Text, _activity.Text);
             Assert.Null(whatsAppMessage.FileUrl);
@@ -322,41 +298,32 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
         }
 
         [Fact]
-        public void ConvertActivityWithAudioAttachmentToOmniFailoverMessage()
+        public void ConvertActivityWithAudioAttachmentToOmniWhatsAppFailoverMessage()
         {
             var attachment = new Attachment { ContentUrl = "http://dummy-audio.com", ContentType = "audio/mp3" };
             _activity.Attachments = new List<Attachment> { attachment };
 
-            var omniFailoverMessages = ToInfobipConverter.Convert(_activity, SCENARIO_KEY);
-            Assert.NotNull(omniFailoverMessages);
-            Assert.Single(omniFailoverMessages);
+            var whatsAppMessages = InfobipOmniWhatsAppMessageFactory.Create(_activity);
+            Assert.NotNull(whatsAppMessages);
+            Assert.Single(whatsAppMessages);
 
-            var omniFailoverMessage = omniFailoverMessages.First();
-            Assert.Equal(omniFailoverMessage.ScenarioKey, SCENARIO_KEY);
-            CheckDestinations(omniFailoverMessage.Destinations);
+            var whatsAppMessage = whatsAppMessages.First();
 
-            CheckAudioMessage(omniFailoverMessage, attachment);
+            CheckAudioMessage(whatsAppMessage, attachment);
         }
 
         [Fact]
-        public void ConvertActivityWithAudioAttachmentAndTextToOmniFailoverMessage()
+        public void ConvertActivityWithAudioAttachmentAndTextToOmniWhatsAppFailoverMessage()
         {
             var attachment = new Attachment { ContentUrl = "http://dummy-audio.com", ContentType = "audio/mp3" };
             _activity.Attachments = new List<Attachment> { attachment };
             _activity.Text = "Test text";
 
-            var omniFailoverMessages = ToInfobipConverter.Convert(_activity, SCENARIO_KEY);
-            Assert.NotNull(omniFailoverMessages);
-            Assert.Equal(2, omniFailoverMessages.Count);
+            var whatsAppMessages = InfobipOmniWhatsAppMessageFactory.Create(_activity);
+            Assert.NotNull(whatsAppMessages);
+            Assert.Equal(2, whatsAppMessages.Count);
 
-            var omniFailoverMessage = omniFailoverMessages.First();
-            var omniFailoverMessage2 = omniFailoverMessages.ElementAt(1);
-            Assert.Equal(omniFailoverMessage.ScenarioKey, SCENARIO_KEY);
-            Assert.Equal(omniFailoverMessage2.ScenarioKey, SCENARIO_KEY);
-            CheckDestinations(omniFailoverMessage.Destinations);
-            CheckDestinations(omniFailoverMessage2.Destinations);
-
-            var whatsAppMessage = omniFailoverMessage.WhatsApp;
+            var whatsAppMessage = whatsAppMessages.First();
             Assert.NotNull(whatsAppMessage);
             Assert.Equal(whatsAppMessage.Text, _activity.Text);
             Assert.Null(whatsAppMessage.FileUrl);
@@ -373,7 +340,7 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
             Assert.Null(whatsAppMessage.Language);
             Assert.Null(whatsAppMessage.MediaTemplateData);
 
-            CheckAudioMessage(omniFailoverMessage2, attachment);
+            CheckAudioMessage(whatsAppMessages.ElementAt(1), attachment);
         }
 
         [Fact]
@@ -382,15 +349,11 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
             var attachment = new Attachment { ContentUrl = "http://dummy-file.com", ContentType = "application/pdf" };
             _activity.Attachments = new List<Attachment> { attachment };
 
-            var omniFailoverMessages = ToInfobipConverter.Convert(_activity, SCENARIO_KEY);
-            Assert.NotNull(omniFailoverMessages);
-            Assert.Single(omniFailoverMessages);
+            var whatsAppMessages = InfobipOmniWhatsAppMessageFactory.Create(_activity);
+            Assert.NotNull(whatsAppMessages);
+            Assert.Single(whatsAppMessages);
 
-            var omniFailoverMessage = omniFailoverMessages.First();
-            Assert.Equal(omniFailoverMessage.ScenarioKey, SCENARIO_KEY);
-            CheckDestinations(omniFailoverMessage.Destinations);
-
-            var whatsAppMessage = omniFailoverMessage.WhatsApp;
+            var whatsAppMessage = whatsAppMessages.Single();
             Assert.NotNull(whatsAppMessage);
             Assert.Null(whatsAppMessage.Text);
             Assert.Equal(whatsAppMessage.FileUrl, attachment.ContentUrl);
@@ -409,21 +372,17 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
         }
 
         [Fact]
-        public void ConvertActivityWithFileAttachmentAndTextToOmniFailoverMessage()
+        public void ConvertActivityWithFileAttachmentAndTextToOmniWhatsAppFailoverMessage()
         {
             var attachment = new Attachment { ContentUrl = "http://dummy-file.com", ContentType = "application/pdf" };
             _activity.Attachments = new List<Attachment> { attachment };
             _activity.Text = "Test text";
 
-            var omniFailoverMessages = ToInfobipConverter.Convert(_activity, SCENARIO_KEY);
-            Assert.NotNull(omniFailoverMessages);
-            Assert.Single(omniFailoverMessages);
+            var whatsAppMessages = InfobipOmniWhatsAppMessageFactory.Create(_activity);
+            Assert.NotNull(whatsAppMessages);
+            Assert.Single(whatsAppMessages);
 
-            var omniFailoverMessage = omniFailoverMessages.First();
-            Assert.Equal(omniFailoverMessage.ScenarioKey, SCENARIO_KEY);
-            CheckDestinations(omniFailoverMessage.Destinations);
-
-            var whatsAppMessage = omniFailoverMessage.WhatsApp;
+            var whatsAppMessage = whatsAppMessages.Single();
             Assert.NotNull(whatsAppMessage);
             Assert.Equal(whatsAppMessage.Text, _activity.Text);
             Assert.Equal(whatsAppMessage.FileUrl, attachment.ContentUrl);
@@ -442,7 +401,7 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
         }
 
         [Fact]
-        public void ConvertActivityWithTemplateAttachmentToOmniFailoverMessage()
+        public void ConvertActivityWithTemplateAttachmentToOmniWhatsAppFailoverMessage()
         {
             var templateMessage = new InfobipWhatsAppTemplateMessage
             {
@@ -463,18 +422,13 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
                 }
             };
 
-            _activity.Attachments = new List<Attachment>();
-            _activity.Attachments.Add(new InfobipAttachment(templateMessage));
+            _activity.AddInfobipWhatsAppTemplateMessage(templateMessage);
 
-            var omniFailoverMessages = ToInfobipConverter.Convert(_activity, SCENARIO_KEY);
-            Assert.NotNull(omniFailoverMessages);
-            Assert.Single(omniFailoverMessages);
+            var whatsAppMessages = InfobipOmniWhatsAppMessageFactory.Create(_activity);
+            Assert.NotNull(whatsAppMessages);
+            Assert.Single(whatsAppMessages);
 
-            var omniFailoverMessage = omniFailoverMessages.First();
-            Assert.Equal(omniFailoverMessage.ScenarioKey, SCENARIO_KEY);
-            CheckDestinations(omniFailoverMessage.Destinations);
-
-            var whatsAppMessage = omniFailoverMessage.WhatsApp;
+            var whatsAppMessage = whatsAppMessages.Single();
             Assert.NotNull(whatsAppMessage);
             Assert.Null(whatsAppMessage.Text);
             Assert.Null(whatsAppMessage.FileUrl);
@@ -501,59 +455,10 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
             Assert.Null(whatsAppMessage.MediaTemplateData.MediaTemplateHeader.VideoUrl);
         }
 
-        [Fact]
-        public void ConvertTextActivityWithCallbackData_Success()
+        private void CheckLocationMessage(InfobipOmniWhatsAppMessage whatsAppMessage, GeoCoordinates geoCoordinate)
         {
-            var callbackData = new Dictionary<string, string>
-            {
-                {"BoolProperty", "true"},
-                {"NumberProperty", "12"},
-                {"StringProperty", "string"},
-                {"DateProperty", DateTimeOffset.MinValue.ToString()}
-            };
-
-            var entityCallbackData = new InfobipCallbackData(callbackData);
-
-            _activity.Text = "Activity with callback data";
-            _activity.Entities = new List<Entity>
-            {
-                entityCallbackData
-            };
-
-            var message = ToInfobipConverter.Convert(_activity, SCENARIO_KEY).Single();
-            Assert.Equal(message.CallbackData, entityCallbackData.Properties.ToInfobipCallbackDataJson());
-        }
-
-        [Fact]
-        public void ConvertEmptyActivityWithCallbackData_Success()
-        {
-            var callbackData = new Dictionary<string, string>
-            {
-                {"BoolProperty", "true"},
-                {"NumberProperty", "12"},
-                {"StringProperty", "string"},
-                {"DateProperty", DateTimeOffset.MinValue.ToString()}
-            };
-
-            var entityCallbackData = new InfobipCallbackData(callbackData);
-
-            _activity.Entities = new List<Entity>
-            {
-                entityCallbackData
-            };
-
-            var messages = ToInfobipConverter.Convert(_activity, SCENARIO_KEY);
-            Assert.False(messages.Any());
-        }
-
-        private void CheckLocationMessage(InfobipOmniFailoverMessage omniFailoverMessage, GeoCoordinates geoCoordinate)
-        {
-            Assert.Equal(omniFailoverMessage.ScenarioKey, SCENARIO_KEY);
-            CheckDestinations(omniFailoverMessage.Destinations);
-
             Assert.NotNull(geoCoordinate);
 
-            var whatsAppMessage = omniFailoverMessage.WhatsApp;
             Assert.NotNull(whatsAppMessage);
             Assert.Null(whatsAppMessage.Text);
             Assert.Null(whatsAppMessage.FileUrl);
@@ -571,17 +476,13 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
             Assert.Null(whatsAppMessage.MediaTemplateData);
         }
 
-        private void CheckLocationMessage(InfobipOmniFailoverMessage omniFailoverMessage, Place place)
+        private void CheckLocationMessage(InfobipOmniWhatsAppMessage whatsAppMessage, Place place)
         {
-            Assert.Equal(omniFailoverMessage.ScenarioKey, SCENARIO_KEY);
-            CheckDestinations(omniFailoverMessage.Destinations);
-
             Assert.NotNull(place);
 
             var geoCoordinate = JsonConvert.DeserializeObject<GeoCoordinates>(JsonConvert.SerializeObject(place.Geo));
             Assert.NotNull(geoCoordinate);
 
-            var whatsAppMessage = omniFailoverMessage.WhatsApp;
             Assert.NotNull(whatsAppMessage);
             Assert.Null(whatsAppMessage.Text);
             Assert.Null(whatsAppMessage.FileUrl);
@@ -599,19 +500,8 @@ namespace Bot.Builder.Community.Adapter.Infobip.Tests
             Assert.Null(whatsAppMessage.MediaTemplateData);
         }
 
-        private void CheckDestinations(InfobipDestination[] destinations)
+        private void CheckAudioMessage(InfobipOmniWhatsAppMessage whatsAppMessage, Attachment attachment)
         {
-            Assert.NotNull(destinations);
-            Assert.Single(destinations);
-
-            var destination = destinations.First();
-            Assert.NotNull(destination.To);
-            Assert.Equal(destination.To.PhoneNumber, _activity.Recipient.Id);
-        }
-
-        private void CheckAudioMessage(InfobipOmniFailoverMessage omniFailoverMessage, Attachment attachment)
-        {
-            var whatsAppMessage = omniFailoverMessage.WhatsApp;
             Assert.NotNull(whatsAppMessage);
             Assert.Null(whatsAppMessage.Text);
             Assert.Null(whatsAppMessage.FileUrl);
