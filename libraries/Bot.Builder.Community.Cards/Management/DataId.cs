@@ -43,7 +43,7 @@ namespace Bot.Builder.Community.Cards.Management
         /// <summary>
         /// An action data ID that can identify the action, card, carousel, or batch the data came from.
         /// </summary>
-        public DataId(string key, string value) : base(key, value)
+        public DataId(string scope, string value) : base(scope, value)
         {
         }
 
