@@ -216,10 +216,48 @@ await cardManager.UnsaveActivityAsync(turnContext, activityId);
 
 #### Middleware
 
+The cards library provides card manager middleware that does everything discussed so far automatically and more. Just provide it with a card manager and add it to your adapter like any other middleware:
+
+```c#
+adapter.Use(new CardManagerMiddleware(cardManager));
+```
+
+Card manager middleware automatically determines whether a channel supports message updates or not. If the channel does not support message updates, card manager middleware does the following:
+
+- Sets data ID's in outgoing activities
+- Enables and disables data ID's as needed
+- Short-circuits the bot logic if an incoming ID is disabled
+
+If the channel does support message updates, card manager middleware does the following:
+
+- Sets data ID's in outgoing activities
+- Saves outgoing activities
+- Deletes actions, cards, carousels, and batches based on incoming actions
+
+Card manager middleware is very configurable, but out of the box it will disable or delete every action as soon as the action is used. There are a few other miscellaneous features of card manager middleware that can also be used outside of card manager middleware as extension methods. These extension methods are:
+
+- `List<Activity>.SeparateAttachments` - In some channels like Teams, no activity ID is returned when an activity is sent with both text and attachments. This method gets around that problem by automatically separating any such activities into multiple activities so that an activity ID can be retrieved for each of them.
+- `IEnumerable<IMessageActivity>.ConvertAdaptiveCards` - This method converts Adaptive Card objects to generic objects in order to get around a longstanding bug that prevents Adaptive Cards from being deserialized in bot state.
+- `IEnumerable<IMessageActivity>.AdaptOutgoingCardActions` - This method makes sure the action data in Bot Framework cards is correctly formatted to work on the specific channel being used. Adaptive Cards are standardized so no modifications are needed for them.
+
+Besides these features that can be turned on or off, the two other extension methods used by card manager middleware are:
+
+- `IEnumerable<IMessageActivity>.GetIdsFromBatch` - This method uses the card tree to retrieve all data ID's from all cards in all activities in a batch.
+- `ITurnContext.GetIncomingActionData` - This method retrieves the action data from an incoming activity based on the specific channel being used, converting strings to objects as needed. This method will return null if no action data is found, so it can be effectively used to determine if an activity came from an action.
+
 #### Behaviors
+
+The cards library uses the term *deactivate* to mean "disable or delete." While card manager middleware can be configured to deactivate all actions, cards, carousels, and batches, you may want specific actions to behave differently from how you've configured card manager middleware. You can achieve this using the auto-deactivate *action behavior*. Action behaviors, or just *behaviors* for short, allow specific actions to be treated by card manager manager middleware in a special way. Auto-deactivate is currently the only behavior available in the cards library, though more may be added later. You can set it using the static methods of the `ActionBehavior` class which have the same names as the static methods of the `DataId` class described earlier. For example, you can use the following code to make sure card manager middleware won't automatically deactivate anything when a specific hero card is clicked:
+
+```c#
+ActionBehavior.SetInHeroCard(
+    card,
+    Behaviors.AutoDeactivate,
+    BehaviorSwitch.Off);
+```
+
+The three possible values for the auto-deactivate behavior are "on," "off," and "default." Using "default" will make the action behave as though it doesn't even have the auto-deactivate behavior at all, which means the cards library will just behave the way it's been configured to for all actions.
 
 ### Preserving Adaptive Card input values in Microsoft Teams
 
 ### Translation
-
-### Miscellaneous

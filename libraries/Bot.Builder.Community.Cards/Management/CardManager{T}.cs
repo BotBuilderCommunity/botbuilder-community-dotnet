@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Bot.Builder;
+﻿using Microsoft.Bot.Builder;
 
 namespace Bot.Builder.Community.Cards.Management
 {
