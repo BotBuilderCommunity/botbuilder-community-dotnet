@@ -98,6 +98,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Shared", "libraries\Bot.Builder.Community.Adapters.Shared\Bot.Builder.Community.Adapters.Shared.csproj", "{87220934-70D0-4BE7-8ED3-C403281CCCFD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageBird Adapter Sample", "samples\MessageBird Adapter Sample\MessageBird Adapter Sample.csproj", "{EC328039-BD0F-4B2D-B8C8-C1905437F73F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug - NuGet Packages|Any CPU = Debug - NuGet Packages|Any CPU
@@ -384,6 +386,14 @@ Global
 		{87220934-70D0-4BE7-8ED3-C403281CCCFD}.Documentation|Any CPU.Build.0 = Debug|Any CPU
 		{87220934-70D0-4BE7-8ED3-C403281CCCFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87220934-70D0-4BE7-8ED3-C403281CCCFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC328039-BD0F-4B2D-B8C8-C1905437F73F}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC328039-BD0F-4B2D-B8C8-C1905437F73F}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{EC328039-BD0F-4B2D-B8C8-C1905437F73F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC328039-BD0F-4B2D-B8C8-C1905437F73F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC328039-BD0F-4B2D-B8C8-C1905437F73F}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC328039-BD0F-4B2D-B8C8-C1905437F73F}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{EC328039-BD0F-4B2D-B8C8-C1905437F73F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC328039-BD0F-4B2D-B8C8-C1905437F73F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
