@@ -81,3 +81,5 @@ The following Storage implementations are currently available;
 | ------ | ------ | ------ |
 | [Elasticsearch storage](libraries/Bot.Builder.Community.Storage.Elasticsearch) | Elasticsearch based storage for bots created using Microsoft Bot Builder SDK. | [![NuGet version](https://img.shields.io/badge/NuGet-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Storage.Elasticsearch/) |
 | [EntityFramework storage](libraries/Bot.Builder.Community.Storage.EntityFramework) | EntityFramework based storage and transcript store for bots created using Microsoft Bot Builder SDK. | [![NuGet version](https://img.shields.io/badge/NuGet-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Storage.EntityFramework/) |
+| [LiteDb storage](https://github.com/binaryfog/BinaryFog.Bot.Builder.LiteDb) | LiteDb based storage and transcript store for bots created using Microsoft Bot Builder SDK. | [![NuGet version](https://img.shields.io/badge/NuGet-blue.svg)](https://www.nuget.org/packages/BinaryFog.Bot.Builder.LiteDb/) |
+
