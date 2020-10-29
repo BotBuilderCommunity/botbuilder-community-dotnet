@@ -110,6 +110,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Infobip.WhatsApp.Tests", "tests\Bot.Builder.Community.Adapters.Infobip.WhatsApp.Tests\Bot.Builder.Community.Adapters.Infobip.WhatsApp.Tests.csproj", "{5C56354F-C9F7-4C9B-8F2B-6439666683B1}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Infobip.Viber", "libraries\Bot.Builder.Community.Adapters.Infobip.Viber\Bot.Builder.Community.Adapters.Infobip.Viber.csproj", "{956D06FF-204A-4629-9BD2-3B6288CCBB05}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Infobip.Viber.Tests", "tests\Bot.Builder.Community.Adapters.Infobip.Viber.Tests\Bot.Builder.Community.Adapters.Infobip.Viber.Tests.csproj", "{E27777B7-6079-4DB6-B946-628AEB0C2000}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug - NuGet Packages|Any CPU = Debug - NuGet Packages|Any CPU
@@ -444,6 +448,22 @@ Global
 		{5C56354F-C9F7-4C9B-8F2B-6439666683B1}.Documentation|Any CPU.Build.0 = Debug|Any CPU
 		{5C56354F-C9F7-4C9B-8F2B-6439666683B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C56354F-C9F7-4C9B-8F2B-6439666683B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{956D06FF-204A-4629-9BD2-3B6288CCBB05}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{956D06FF-204A-4629-9BD2-3B6288CCBB05}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{956D06FF-204A-4629-9BD2-3B6288CCBB05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{956D06FF-204A-4629-9BD2-3B6288CCBB05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{956D06FF-204A-4629-9BD2-3B6288CCBB05}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{956D06FF-204A-4629-9BD2-3B6288CCBB05}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{956D06FF-204A-4629-9BD2-3B6288CCBB05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{956D06FF-204A-4629-9BD2-3B6288CCBB05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E27777B7-6079-4DB6-B946-628AEB0C2000}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{E27777B7-6079-4DB6-B946-628AEB0C2000}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{E27777B7-6079-4DB6-B946-628AEB0C2000}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E27777B7-6079-4DB6-B946-628AEB0C2000}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E27777B7-6079-4DB6-B946-628AEB0C2000}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{E27777B7-6079-4DB6-B946-628AEB0C2000}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{E27777B7-6079-4DB6-B946-628AEB0C2000}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E27777B7-6079-4DB6-B946-628AEB0C2000}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -495,6 +515,8 @@ Global
 		{9803619D-9F7E-4874-88D0-DBA9206BACF6} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
 		{CDB353ED-1AE8-49DF-A5E6-46216F60B01D} = {BF310E8A-8DA1-441F-90E9-DE0E66553048}
 		{5C56354F-C9F7-4C9B-8F2B-6439666683B1} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
+		{956D06FF-204A-4629-9BD2-3B6288CCBB05} = {BF310E8A-8DA1-441F-90E9-DE0E66553048}
+		{E27777B7-6079-4DB6-B946-628AEB0C2000} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FE3B75E-BA2B-45BC-BBF0-DDA8BA10C4F0}
