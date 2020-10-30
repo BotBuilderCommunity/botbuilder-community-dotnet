@@ -43,12 +43,12 @@ namespace Bot.Builder.Community.Adapters.Infobip.WhatsApp
         /// Gets or Sets the WhatsApp assigned number.
         /// </summary>
         /// <value>The WhatsApp number.</value>
-        public string InfobipWhatsAppNumber { get; set; }
+        public string InfobipWhatsAppNumber { get; private set; }
 
         /// <summary>
         /// Gets or Sets the scenario key of scenario which will be used for sending through OMNI failover WhatsApp messages.
         /// </summary>
         /// <value>The scenario key.</value>
-        public string InfobipWhatsAppScenarioKey { get; set; }
+        public string InfobipWhatsAppScenarioKey { get; private set; }
     }
 }

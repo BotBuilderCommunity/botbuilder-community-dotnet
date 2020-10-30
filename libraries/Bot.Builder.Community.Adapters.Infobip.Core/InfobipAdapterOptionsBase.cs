@@ -20,19 +20,19 @@
         /// Gets or Sets the Infobip API key used for outgoing requests authorization.
         /// </summary>
         /// <value>The API key.</value>
-        public string InfobipApiKey { get; set; }
+        public string InfobipApiKey { get; private set; }
 
         /// <summary>
         /// Gets or Sets the Infobip base url where outgoing requests will be sent.
         /// </summary>
         /// <value>The Base URL.</value>
-        public string InfobipApiBaseUrl { get; set; }
+        public string InfobipApiBaseUrl { get; private set; }
 
         /// <summary>
         /// Gets or Sets the secret for validating the origin of incoming webhooks.
         /// </summary>
         /// <value>The App secret.</value>
-        public string InfobipAppSecret { get; set; }
+        public string InfobipAppSecret { get; private set; }
 
         /// <summary>
         /// Should authentication be bypassed. This should never be set in production but can be useful when debugging your bot locally.

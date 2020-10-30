@@ -46,12 +46,12 @@ namespace Bot.Builder.Community.Adapters.Infobip.Viber
         /// Gets or Sets the Viber verified sender.
         /// </summary>
         /// <value>The Viber sender.</value>
-        public string InfobipViberSender { get; set; }
+        public string InfobipViberSender { get; private set; }
 
         /// <summary>
         /// Gets or Sets the scenario key of scenario which will be used for sending through OMNI failover Viber messages.
         /// </summary>
         /// <value>The scenario key.</value>
-        public string InfobipViberScenarioKey { get; set; }
+        public string InfobipViberScenarioKey { get; private set; }
     }
 }

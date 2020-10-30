@@ -43,12 +43,12 @@ namespace Bot.Builder.Community.Adapters.Infobip.Sms
         /// Gets or Sets the SMS assigned number.
         /// </summary>
         /// <value>The SMS number.</value>
-        public string InfobipSmsNumber { get; set; }
+        public string InfobipSmsNumber { get; private set; }
 
         /// <summary>
         /// Gets or Sets the scenario key of scenario which will be used for sending through OMNI failover SMS messages.
         /// </summary>
         /// <value>The scenario key.</value>
-        public string InfobipSmsScenarioKey { get; set; }
+        public string InfobipSmsScenarioKey { get; private set; }
     }
 }
