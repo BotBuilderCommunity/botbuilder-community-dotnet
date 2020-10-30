@@ -126,10 +126,10 @@ You will also need to add the following using statements.
 
 #### Create a new controller for handling Infobip SMS requests
 
-You now need to create a new controller which will handle requests for incoming SMS messages, and delivery reports, on a new endpoint 'api/infobip' instead of the default 'api/messages' used for requests from Azure Bot Service Channels. By adding an additional endpoint to your bot, you can accept requests from Bot Service channels (or additional adapters), as well as from Infobip, using the same bot.
+You now need to create a new controller which will handle requests for incoming SMS messages, and delivery reports, on a new endpoint 'api/infobip/sms' instead of the default 'api/messages' used for requests from Azure Bot Service Channels. By adding an additional endpoint to your bot, you can accept requests from Bot Service channels (or additional adapters), as well as from Infobip, using the same bot.
 
 ```csharp
-  [Route("api/infobip")]
+  [Route("api/infobip/sms")]
   [ApiController]
   public class InfobipController : ControllerBase
   {
