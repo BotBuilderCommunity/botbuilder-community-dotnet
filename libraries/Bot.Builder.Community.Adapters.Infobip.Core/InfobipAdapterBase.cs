@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Bot.Builder;
-using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Schema;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Bot.Builder.Integration.AspNet.Core;
 
 namespace Bot.Builder.Community.Adapters.Infobip.Core
 {
@@ -21,7 +21,7 @@ namespace Bot.Builder.Community.Adapters.Infobip.Core
         /// or threads to receive notice of cancellation.</param>
         /// <returns>A task that represents the work queued to execute.</returns>
         public abstract Task ProcessAsync(HttpRequest httpRequest, HttpResponse httpResponse, IBot bot,
-            CancellationToken cancellationToken = new CancellationToken());
+            CancellationToken cancellationToken = default);
         
         /// <summary>
         /// Throws a <see cref="NotImplementedException"/> exception in all cases.
