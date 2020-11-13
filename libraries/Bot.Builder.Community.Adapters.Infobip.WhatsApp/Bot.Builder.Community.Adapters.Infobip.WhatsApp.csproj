@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove('$(MSBuildThisFileDirectory)../', 'Bot.Builder.Community.sln'))\CommonTargets\library.shared.targets" />
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Description>Adapter for v4 of the Bot Builder .NET SDK for connecting bots with Infobip WhatsApp communication channel.</Description>
+    <PackageProjectUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/libraries/Bot.Builder.Community.Adapters.Infobip.WhatsApp</PackageProjectUrl>
+    <RepositoryUrl>http://www.github.com/botbuildercommunity/botbuildercommunity-dotnet
+</RepositoryUrl>
+    <PackageTags>microsoft;bot;adapter;infobip;whatsapp;botframework;botbuilder;bots</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Bot.Builder" Version="$(Bot_Builder_Version)" />
+    <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="$(Bot_Builder_Version)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Bot.Builder.Community.Adapters.Infobip.Core\Bot.Builder.Community.Adapters.Infobip.Core.csproj" />
+  </ItemGroup>
+
+</Project>

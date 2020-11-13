@@ -1,5 +1,5 @@
 accountLinking:
-  enableAccountCreation: false
+  enableAccountCreation: true
   linkingType: GOOGLE_SIGN_IN
 defaultLocale: en
 localizedSettings:
