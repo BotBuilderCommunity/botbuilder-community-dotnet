@@ -20,7 +20,7 @@ namespace Bot.Builder.Community.Adapters.Shared
             }
 
             var activity = messageActivities.Last();
-            var endWithPeriod = activity.Text?.TrimEnd().EndsWith(".") ?? false;
+            var endWithPeriod = activities.LastOrDefault(a => !string.IsNullOrEmpty(a.Text))?.Text?.TrimEnd().EndsWith(".") ?? false;
 
             if (messageActivities.Any(a => !String.IsNullOrEmpty(a.Speak))) 
             {
@@ -53,12 +53,23 @@ namespace Bot.Builder.Community.Adapters.Shared
             {
                 var speakSsmlDoc = XDocument.Parse(speakText);
                 
-                if (speakSsmlDoc.Root != null && speakSsmlDoc.Root.Name.ToString().ToLowerInvariant() == "speak")
+                if (speakSsmlDoc.Root != null && speakSsmlDoc.Root.Name.LocalName.ToLowerInvariant() == "speak")
                 {
                     using (var reader = speakSsmlDoc.Root.CreateReader())
                     {
                         reader.MoveToContent();
-                        return reader.ReadInnerXml();
+                        speakText = reader.ReadInnerXml();
+                    }
+                }
+
+                speakSsmlDoc = XDocument.Parse(speakText);
+
+                if (speakSsmlDoc.Root != null && speakSsmlDoc.Root.Name.LocalName.ToLowerInvariant() == "voice")
+                {
+                    using (var reader = speakSsmlDoc.Root.CreateReader())
+                    {
+                        reader.MoveToContent();
+                        speakText = reader.ReadInnerXml();
                     }
                 }
 

@@ -45,7 +45,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
         {
             var alexaAdapter = new AlexaAdapter(new Mock<AlexaAdapterOptions>().Object);
 
-            Task BotsLogic(ITurnContext turnContext, CancellationToken cancellationToken)
+            static Task BotsLogic(ITurnContext turnContext, CancellationToken cancellationToken)
             {
                 return Task.CompletedTask;
             }

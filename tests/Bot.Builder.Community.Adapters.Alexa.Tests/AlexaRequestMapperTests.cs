@@ -209,6 +209,22 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
         }
 
         [Fact]
+        public void MergeActivitiesReturnsSingleActivityWithComplexSpeakSsmlTag()
+        {
+            const string text = "Microsoft Ignite will take place online";
+            const string ssml = "<speak version=\"1.0\" xmlns=\"http://www.w3.org/2001/10/synthesis\" xml:lang=\"en-US\"><voice name=\"en-US-AriaNeural\">Microsoft Ignite will take place online</voice></speak>";
+
+            var alexaAdapter = new AlexaRequestMapper();
+            var inputActivity = MessageFactory.Text(text, ssml);
+
+            var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { inputActivity });
+
+            Assert.Equal(text, processActivityResult.MergedActivity.Text);
+            // When removing the speak tag the serializer adds the missing space at the end of the xml element. This doesn't matter for rendering in Alexa so it is fine.
+            Assert.Equal("<speak>Microsoft Ignite will take place online</speak>", processActivityResult.MergedActivity.Speak);
+        }
+
+        [Fact]
         public void MergeActivitiesReturnsSingleActivityAddingSpeakSsmlTag()
         {
             const string text = "This is the single activity";
@@ -275,6 +291,32 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
         }
 
         [Fact]
+        public void MergeActivitiesTextWithPeriodAndEmptyText()
+        {
+            var alexaAdapter = new AlexaRequestMapper();
+            var firstActivity = MessageFactory.Text("This is the first activity.");
+            var secondActivity = MessageFactory.Text("");
+
+            var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { firstActivity, secondActivity });
+
+            // We want to preserve the period here even though it is merged with empty text.
+            Assert.Equal("This is the first activity.", processActivityResult.MergedActivity.Text);
+        }
+
+        [Fact]
+        public void MergeActivitiesTextWithNoPeriodAndEmptyText()
+        {
+            var alexaAdapter = new AlexaRequestMapper();
+            var firstActivity = MessageFactory.Text("This is the first activity");
+            var secondActivity = MessageFactory.Text("");
+
+            var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { firstActivity, secondActivity });
+
+            // We want to preserve the missing period here even though it is merged with empty text.
+            Assert.Equal("This is the first activity", processActivityResult.MergedActivity.Text);
+        }
+
+        [Fact]
         public void MergeActivitiesIgnoresNonMessageActivities()
         {
             var alexaAdapter = new AlexaRequestMapper();
@@ -305,6 +347,24 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
 
             Assert.Equal("<speak>This is<break strength=\"strong\"/>the first activity SSML<break strength=\"strong\"/>This is the second activity SSML</speak>", processActivityResult.MergedActivity.Speak);
             Assert.Equal("This is the first activity. This is the second activity", processActivityResult.MergedActivity.Text);
+            Assert.False(processActivityResult.EndOfConversationFlagged);
+        }
+
+        [Fact]
+        public void MergeActivitiesReturnsCorrectlyInconsistentPeriods()
+        {
+            var alexaAdapter = new AlexaRequestMapper();
+
+            // Note: The input activities deliberately have an activity where the speak tag
+            // is included and one activity where it is not, to ensure the stripping / wrapping
+            // of the speak tag is handled correctly.
+            var firstActivity = MessageFactory.Text("This is the first activity.", "This is<break strength=\"strong\"/>the first activity SSML");
+            var secondActivity = MessageFactory.Attachment(new HeroCard("test", "test").ToAttachment()) as Activity;
+
+            var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { firstActivity, secondActivity });
+
+            Assert.Equal("<speak>This is<break strength=\"strong\"/>the first activity SSML</speak>", processActivityResult.MergedActivity.Speak);
+            Assert.Equal("This is the first activity.", processActivityResult.MergedActivity.Text);
             Assert.False(processActivityResult.EndOfConversationFlagged);
         }
 
