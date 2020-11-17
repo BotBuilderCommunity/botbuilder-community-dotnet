@@ -40,14 +40,8 @@ namespace Bot.Builder.Community.Adapters.MessageBird
             _options = options ?? throw new ArgumentNullException(nameof(options));
             _logger = logger ?? NullLogger.Instance;
 
-            if (_options.UseWhatsAppSandbox)
-            {
-                _messageBirdClient = Client.CreateDefault(_options.AccessKey, features: new Client.Features[] { Client.Features.EnableWhatsAppSandboxConversations });
-            }
-            else
-            {
-                _messageBirdClient = Client.CreateDefault(_options.AccessKey);
-            }
+            _messageBirdClient = Client.CreateDefault(_options.AccessKey);
+
             _requestAuthorization = new MessageBirdRequestAuthorization();
         }
         Client _messageBirdClient;

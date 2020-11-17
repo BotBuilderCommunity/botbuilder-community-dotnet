@@ -49,7 +49,7 @@ namespace Bot.Builder.Community.Adapters.MessageBird
                 var contentType = attachment.ContentType.ToLower();
                 if (contentType.Contains("image"))
                 {
-                    message.conversationMessageRequest.Content = new Content() { Image = new MediaContent() { Url = attachment.ContentUrl } };
+                    message.conversationMessageRequest.Content = new Content() { Image = new MediaContent() { Url = attachment.ContentUrl, Caption = attachment.Name } };
                     message.conversationMessageRequest.Type = ContentType.Image;
                 }
                 else if (contentType.Contains("video"))

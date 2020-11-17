@@ -50,8 +50,7 @@ You could create in the project an `appsettings.json` file to set the MessageBir
 ```json
 {
   "MessageBirdAccessKey": "",
-  "MessageBirdSigningKey": "",
-  "MessageBirdUseWhatsAppSandbox": true
+  "MessageBirdSigningKey": ""
 }
 ```
 

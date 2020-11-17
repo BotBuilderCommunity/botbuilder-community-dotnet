@@ -30,6 +30,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Teams Zoom Sample", "sample
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityFramework Storage Sample", "samples\EntityFramework Storage Sample\EntityFramework Storage Sample.csproj", "{0EB315B8-7E1E-4F03-ABF1-C258A08640BE}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageBird Adapter Sample", "samples\MessageBird Adapter Sample\MessageBird Adapter Sample.csproj", "{B3B1BC29-2C54-49A4-A739-1C23D2CE13D5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -92,6 +94,10 @@ Global
 		{0EB315B8-7E1E-4F03-ABF1-C258A08640BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0EB315B8-7E1E-4F03-ABF1-C258A08640BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0EB315B8-7E1E-4F03-ABF1-C258A08640BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3B1BC29-2C54-49A4-A739-1C23D2CE13D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3B1BC29-2C54-49A4-A739-1C23D2CE13D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3B1BC29-2C54-49A4-A739-1C23D2CE13D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3B1BC29-2C54-49A4-A739-1C23D2CE13D5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MessageBird" Version="2.1.0" />
+    <PackageReference Include="MessageBird" Version="3.0.0" />
     <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.10.0" />
   </ItemGroup>
 

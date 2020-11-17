@@ -101,7 +101,7 @@ namespace Bot.Builder.Community.Adapters.MessageBird
                     {
                         ContentType = contentType,
                         ContentUrl = response.message.content.Image.Url,
-                        Name = ""// response.message.content.image.caption
+                        Name = response.message.content.Image.Caption
                     }
                 };
             }
