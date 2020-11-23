@@ -75,11 +75,14 @@ This article will walk you through modifying the EchoBot sample to connect it to
 
 ![Select action template](/libraries/Bot.Builder.Community.Adapters.ActionsSDK/media/actions-sdk-project-created.PNG?raw=true)
 
-### Configure your Actions SDK project
+### Setup and Configure your Actions SDK project
 
 You now need to configure your new Actions SDK project, with appropriate settings, scenes, intents, types etc. You will do this using the gactions CLI tool and the provided action template files included in the 'action' folder in this repository.
 
-1. If you haven't already, [install the gactions CLI tool](https://developers.google.com/assistant/conversational/quickstart#install_the_gactions_command-line_tool).
+1. If you haven't already, 
+    * [Install the gactions CLI tool](https://developers.google.com/assistant/conversational/quickstart#install_the_gactions_command-line_tool).
+
+    * [Get the hello world sample](https://developers.google.com/assistant/conversational/quickstart#get_the_hello_world_sample).
 
 2. Navigate to action/settings/settings.yaml, and replace <YOUR PROJECT ID> with your project ID. You can find your project id by navigating to **Project settings** from the menu in the top right hand of the Google Actions Console.
 
