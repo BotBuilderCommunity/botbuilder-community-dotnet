@@ -81,19 +81,21 @@ You now need to configure your new Actions SDK project, with appropriate setting
 
 1. If you haven't already, [install the gactions CLI tool](https://developers.google.com/assistant/conversational/quickstart#install_the_gactions_command-line_tool).
 
-2. Navigate to action/settings/settings.yaml, and replace <YOUR PROJECT ID> with your project ID. You can find your project id by navigating to **Project settings** from the menu in the top right hand of the Google Actions Console.
+2. If you haven't already, Download a copy of this repository.
+
+3. Navigate to botbuilder-community-dotnet/libraries/Bot.Builder.Community.Adapters.ActionsSDK/action/settings/settings.yaml, and replace <YOUR PROJECT ID> with your project ID. You can find your project id by navigating to **Project settings** from the menu in the top right hand of the Google Actions Console.
 
 ![Project settings menu](/libraries/Bot.Builder.Community.Adapters.ActionsSDK/media/actions-sdk-select-project-settings.PNG?raw=true)
 
-3. Open a command prompt and change the directory to the action/ directory.
+4. Open a command prompt and change the directory to the botbuilder-community-dotnet/libraries/Bot.Builder.Community.Adapters.ActionsSDK/action/ directory.
 
-4. Run 'gactions login' to login and follow the instructions to login to your account.
+5. Run 'gactions login' to login and follow the instructions to login to your account.
 
-5. Run 'gactions push' to push local settings to your project.
+6. Run 'gactions push' to push local settings to your project.
 
-6. Run 'gactions deploy preview' to deploy your project (including the locally defined scenes etc).
+7. Run 'gactions deploy preview' to deploy your project (including the locally defined scenes etc).
 
-7. Finally, navigate back to your project within the Google Actions Console. You will see that the display name has been updated to 'Bot Framework Sample'. Change this to a display name of your choice.  This will also be your invocation name, which is the name used by users when they invoke your action. 
+8. Finally, navigate back to your project within the Google Actions Console. You will see that the display name has been updated to 'Bot Framework Sample'. Change this to a display name of your choice.  This will also be your invocation name, which is the name used by users when they invoke your action. 
 
 ### Wiring up the Actions SDK adapter in your bot
 
