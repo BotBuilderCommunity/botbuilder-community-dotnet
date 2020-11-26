@@ -268,8 +268,4 @@ ActionBehavior.SetInHeroCard(
 
 The three possible values for the auto-deactivate behavior are `"on"`, `"off"`, and `"default"`. Using `"default"` will make the action behave as though it doesn't even have the auto-deactivate behavior at all, which means the cards library will just behave the way it's been configured to behave for all actions.
 
-### Preserving Adaptive Card input values in Microsoft Teams
-
-Like disabling and deleting, preserving values also uses a card manager because it depends on card manager state. 
-
 ### Translation
