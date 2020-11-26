@@ -140,6 +140,16 @@ The `DataId` class has 16 static set methods including the three you've seen so 
 - `SetInCardAction`
 - `SetInActionData`
 
+Three of these methods take a `ref object` as their first argument. This indicates that the method may create a new object with the data ID's in it instead of modifying the existing object. If the existing object was already assigned to a property of another object then you will need to account for this by reassigning the new object to whatever property it was contained in, like this:
+
+
+```c#
+DataId.SetInAdaptiveCard(ref card);
+
+attachment.Content = card;
+```
+
+
 Internally, the cards library uses something it calls the [*card tree*](./mermaid-diagram.md) to facilitate recursion for operations like these. At the top you have batches and each batch has indexed activities and each activity has an `Attachments` property and the `Attachments` property has indexed attachments and each attachment has a `Content` property and so on. The card tree can be entered at any of those "nodes" and it will drill down into indexes and properties and sub-properties of objects until it reaches its "exit" node.
 
 #### Tracking and disabling
@@ -256,8 +266,10 @@ ActionBehavior.SetInHeroCard(
     BehaviorSwitch.Off);
 ```
 
-The three possible values for the auto-deactivate behavior are "on," "off," and "default." Using "default" will make the action behave as though it doesn't even have the auto-deactivate behavior at all, which means the cards library will just behave the way it's been configured to for all actions.
+The three possible values for the auto-deactivate behavior are `"on"`, `"off"`, and `"default"`. Using `"default"` will make the action behave as though it doesn't even have the auto-deactivate behavior at all, which means the cards library will just behave the way it's been configured to behave for all actions.
 
 ### Preserving Adaptive Card input values in Microsoft Teams
+
+Like disabling and deleting, preserving values also uses a card manager because it depends on card manager state. 
 
 ### Translation
