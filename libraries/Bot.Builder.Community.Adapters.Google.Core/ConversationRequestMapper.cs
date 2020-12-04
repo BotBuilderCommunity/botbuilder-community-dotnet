@@ -116,8 +116,9 @@ namespace Bot.Builder.Community.Adapters.Google.Core
                             {
                                 RichInitialPrompt = new RichResponse()
                                 {
-                                    Items = new ResponseItem[] { simpleResponse }
-                                }
+                                    Items = new ResponseItem[] { simpleResponse },
+                                    Suggestions = ConvertIMAndMessageBackSuggestedActionsToSuggestionChips(activity)?.ToArray()
+            }
                             }
                             : null
                     }
