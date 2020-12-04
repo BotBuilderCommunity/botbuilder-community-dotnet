@@ -6,17 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Bot.Builder.Community.Adapters.ACS.SMS" Version="4.9.8" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.Azure.EventGrid" Version="3.2.0" />
     <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.9.2" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Bot.Builder.Community.Adapters.ACS.SMS.Core\Bot.Builder.Community.Adapters.ACS.SMS.Core.csproj" />
-    <ProjectReference Include="..\..\libraries\Bot.Builder.Community.Adapters.ACS.SMS\Bot.Builder.Community.Adapters.ACS.SMS.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
+	<ItemGroup>
     <Content Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
