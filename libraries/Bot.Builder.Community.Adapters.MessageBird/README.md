@@ -60,7 +60,6 @@ You could create in the project an `appsettings.json` file to set the MessageBir
 After you completed the configuration of your MessageBird adapter, you need to wire up the MessageBird adapter into your bot.
 
 
-````
 
 #### Create an MessageBird adapter class
 

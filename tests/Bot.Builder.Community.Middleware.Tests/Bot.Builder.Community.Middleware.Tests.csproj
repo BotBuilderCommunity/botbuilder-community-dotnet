@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\libraries\Bot.Builder.Community.Middleware.BestMatch\Bot.Builder.Community.Middleware.BestMatch.csproj" />
     <ProjectReference Include="..\..\libraries\Bot.Builder.Community.Middleware.HandleActivityType\Bot.Builder.Community.Middleware.HandleActivityType.csproj" />
+    <ProjectReference Include="..\..\libraries\Bot.Builder.Community.Middleware.TextRecognizer\Bot.Builder.Community.Middleware.TextRecognizer.csproj" />
   </ItemGroup>
 
   <ItemGroup>
