@@ -27,5 +27,8 @@ namespace Bot.Builder.Community.Adapters.Infobip.Core
 
         public static Dictionary<string, string> ToDictionary(this JObject self) =>
             JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(self, Settings));
+
+        public static InfobipOmniSmsMessageOptions ToInfobipOmniSmsMessageOptions(this JObject self) =>
+            JsonConvert.DeserializeObject<InfobipOmniSmsMessageOptions>(JsonConvert.SerializeObject(self, Settings));
     }
 }

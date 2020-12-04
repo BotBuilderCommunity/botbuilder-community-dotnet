@@ -42,6 +42,7 @@ The following adapters can be used to expose your bot on additional channels not
 | [Infobip Viber Adapter](libraries/Bot.Builder.Community.Adapters.Infobip.Viber) | An adapter that accepts and hanldes Viber requests via Infobip, including support for various messages. | | [![NuGet version](https://img.shields.io/badge/NuGet-blue.svg)](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/develop/libraries/Bot.Builder.Community.Adapters.Infobip.Viber/) |
 | [MessageBird WhatsApp Adapter](libraries/Bot.Builder.Community.Adapters.MessageBird) | An adapter that accepts and handles WhatsApp app requests via MessageBird, including support for various message types. | [Sample](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/develop/samples/MessageBird%20Adapter%20Sample) | [![NuGet version](https://img.shields.io/badge/NuGet-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Adapters.MessageBird/) |
 
+
 ## Dialogs and Prompts
 
 The following dialogs are currently available;
