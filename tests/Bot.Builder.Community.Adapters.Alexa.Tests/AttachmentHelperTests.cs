@@ -5,8 +5,8 @@ using Alexa.NET.Response;
 using Alexa.NET.Response.Directive;
 using Alexa.NET.Response.Directive.Templates.Types;
 using Bot.Builder.Community.Adapters.Alexa.Core.Attachments;
-using Bot.Builder.Community.Adapters.Alexa.Core.Helpers;
 using Bot.Builder.Community.Adapters.Alexa.Tests.Helpers;
+using Bot.Builder.Community.Adapters.Shared.Attachments;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -17,10 +17,12 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
 {
     public class AttachmentHelperTests
     {
+        private static readonly AttachmentConverter _attachmentConverter = DefaultAlexaAttachmentConverter.CreateDefault();
+
         [Fact]
         public void ConvertNullActivityDoesNothing()
         {
-            AttachmentHelper.ConvertAttachmentContent(null);
+            _attachmentConverter.ConvertAttachments(null);
         }
 
         [Fact]
@@ -30,7 +32,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
             {
                 Attachments = null
             };
-            activity.ConvertAttachmentContent();
+            _attachmentConverter.ConvertAttachments(activity);
         }
 
         [Fact]
@@ -40,9 +42,26 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
             {
                 Attachments = new List<Attachment> { new TestAttachment { ContentType = null } }
             };
-            activity.ConvertAttachmentContent();
+            _attachmentConverter.ConvertAttachments(activity);
 
             Assert.Equal(typeof(TestAttachment), activity.Attachments[0].GetType());
+        }
+
+        [Fact]
+        public void ConvertAttachmentContentTypeUnsupportedDoesNothing()
+        {
+            var activity = new Activity
+            {
+                Attachments = new List<Attachment> { new TestAttachment { ContentType = "application/vnd.nocompany.test", Content = new ChannelAccount { Id = "caid" } } }
+            };
+            _attachmentConverter.ConvertAttachments(activity);
+
+            Assert.Equal(typeof(TestAttachment), activity.Attachments[0].GetType());
+
+            var anonymizedActivity = ActivityHelper.GetAnonymizedActivity(activity);
+
+            _attachmentConverter.ConvertAttachments(anonymizedActivity);
+            Assert.Equal(typeof(JObject), anonymizedActivity.Attachments[0].Content.GetType());
         }
 
         [Fact]
@@ -75,10 +94,10 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
 
         [Fact]
         public void NonSupportedAttachmentCardIsIgnored() =>
-            VerifyAttachmentContentConversion<NonSupportedCard>(new NonSupportedCard
+            Assert.Throws<Microsoft.Rest.ValidationException>(() => VerifyAttachmentContentConversion<NonSupportedCard>(new NonSupportedCard
             {
                 Value = "non-supported card value"
-            }.ToAttachment(), false);
+            }.ToAttachment(), false));
 
         [Fact]
         public void ConvertAttachmentAudioPlayerPlayDirective() =>
@@ -184,7 +203,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
             // After conversion the type information is lost.
             Assert.Equal(typeof(JObject), anonymizedActivity.Attachments[0].Content.GetType());
 
-            anonymizedActivity.ConvertAttachmentContent();
+            _attachmentConverter.ConvertAttachments(anonymizedActivity);
 
             // After converting Alexa attachments the type information is back.
             Assert.Equal(supportedType ? typeof(T) : typeof(JObject), anonymizedActivity.Attachments[0].Content.GetType());

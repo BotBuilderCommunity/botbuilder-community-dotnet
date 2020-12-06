@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="$(Bot_Builder_Version)" />
+    <PackageReference Include="Microsoft.Recognizers.Text.Sequence" Version="1.4.0" />
   </ItemGroup>
 
 </Project>

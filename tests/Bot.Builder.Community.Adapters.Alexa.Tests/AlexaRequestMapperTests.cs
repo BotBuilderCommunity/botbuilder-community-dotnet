@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
+using Alexa.NET.ConnectionTasks.Inputs;
 using Alexa.NET.Request;
 using Alexa.NET.Request.Type;
 using Alexa.NET.Response;
@@ -207,6 +209,22 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
         }
 
         [Fact]
+        public void MergeActivitiesReturnsSingleActivityWithComplexSpeakSsmlTag()
+        {
+            const string text = "Microsoft Ignite will take place online";
+            const string ssml = "<speak version=\"1.0\" xmlns=\"http://www.w3.org/2001/10/synthesis\" xml:lang=\"en-US\"><voice name=\"en-US-AriaNeural\">Microsoft Ignite will take place online</voice></speak>";
+
+            var alexaAdapter = new AlexaRequestMapper();
+            var inputActivity = MessageFactory.Text(text, ssml);
+
+            var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { inputActivity });
+
+            Assert.Equal(text, processActivityResult.MergedActivity.Text);
+            // When removing the speak tag the serializer adds the missing space at the end of the xml element. This doesn't matter for rendering in Alexa so it is fine.
+            Assert.Equal("<speak>Microsoft Ignite will take place online</speak>", processActivityResult.MergedActivity.Speak);
+        }
+
+        [Fact]
         public void MergeActivitiesReturnsSingleActivityAddingSpeakSsmlTag()
         {
             const string text = "This is the single activity";
@@ -273,6 +291,32 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
         }
 
         [Fact]
+        public void MergeActivitiesTextWithPeriodAndEmptyText()
+        {
+            var alexaAdapter = new AlexaRequestMapper();
+            var firstActivity = MessageFactory.Text("This is the first activity.");
+            var secondActivity = MessageFactory.Text("");
+
+            var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { firstActivity, secondActivity });
+
+            // We want to preserve the period here even though it is merged with empty text.
+            Assert.Equal("This is the first activity.", processActivityResult.MergedActivity.Text);
+        }
+
+        [Fact]
+        public void MergeActivitiesTextWithNoPeriodAndEmptyText()
+        {
+            var alexaAdapter = new AlexaRequestMapper();
+            var firstActivity = MessageFactory.Text("This is the first activity");
+            var secondActivity = MessageFactory.Text("");
+
+            var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { firstActivity, secondActivity });
+
+            // We want to preserve the missing period here even though it is merged with empty text.
+            Assert.Equal("This is the first activity", processActivityResult.MergedActivity.Text);
+        }
+
+        [Fact]
         public void MergeActivitiesIgnoresNonMessageActivities()
         {
             var alexaAdapter = new AlexaRequestMapper();
@@ -297,12 +341,30 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
             // is included and one activity where it is not, to ensure the stripping / wrapping
             // of the speak tag is handled correctly.
             var firstActivity = MessageFactory.Text("This is the first activity.", "This is<break strength=\"strong\"/>the first activity SSML");
-            var secondActivity = MessageFactory.Text("This is the second activity.", "<speak>This is the second activity SSML</speak>");
+            var secondActivity = MessageFactory.Text("This is the second activity", "<speak>This is the second activity SSML</speak>");
 
             var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { firstActivity, secondActivity });
 
             Assert.Equal("<speak>This is<break strength=\"strong\"/>the first activity SSML<break strength=\"strong\"/>This is the second activity SSML</speak>", processActivityResult.MergedActivity.Speak);
             Assert.Equal("This is the first activity. This is the second activity", processActivityResult.MergedActivity.Text);
+            Assert.False(processActivityResult.EndOfConversationFlagged);
+        }
+
+        [Fact]
+        public void MergeActivitiesReturnsCorrectlyInconsistentPeriods()
+        {
+            var alexaAdapter = new AlexaRequestMapper();
+
+            // Note: The input activities deliberately have an activity where the speak tag
+            // is included and one activity where it is not, to ensure the stripping / wrapping
+            // of the speak tag is handled correctly.
+            var firstActivity = MessageFactory.Text("This is the first activity.", "This is<break strength=\"strong\"/>the first activity SSML");
+            var secondActivity = MessageFactory.Attachment(new HeroCard("test", "test").ToAttachment()) as Activity;
+
+            var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { firstActivity, secondActivity });
+
+            Assert.Equal("<speak>This is<break strength=\"strong\"/>the first activity SSML</speak>", processActivityResult.MergedActivity.Speak);
+            Assert.Equal("This is the first activity.", processActivityResult.MergedActivity.Text);
             Assert.False(processActivityResult.EndOfConversationFlagged);
         }
 
@@ -368,7 +430,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
 
             var processActivityResult = alexaAdapter.MergeActivities(new List<Activity>() { firstActivity, secondActivity });
 
-            Assert.Equal("This is the first activity. Heading 1. This is another paragraph. Item 1, Item 2, Item 3. Heading 2. 1. Item 1, 2. Item 2, 3. Item 3. More info visit our web site www.microsoft.com. This is the second activity",
+            Assert.Equal("This is the first activity. Heading 1. This is another paragraph. Item 1, Item 2, Item 3. Heading 2. 1. Item 1, 2. Item 2, 3. Item 3. More info visit our web site www.microsoft.com. This is the second activity.",
                 processActivityResult.MergedActivity.Text);
 
             Assert.Equal("<speak>This is<break strength=\"strong\"/>the first activity SSML<break strength=\"strong\"/>This is the second activity SSML</speak>",
@@ -569,6 +631,53 @@ namespace Bot.Builder.Community.Adapters.Alexa.Tests
 
             Assert.NotNull(skillResponse.Response.Card);
             Assert.Equal(typeof(LinkAccountCard), skillResponse.Response.Card.GetType());
+        }
+
+        [Fact]
+        public void TaskRequest()
+        {
+            var request = new LaunchRequest
+            {
+                Locale = "en-US",
+                RequestId = "amzn1.echo-api.request.00000000-0000-0000-0000-000000000000",
+                Type = "LaunchRequest",
+                Timestamp = DateTime.Now,
+                Task = new LaunchRequestTask
+                {
+                    Name = "AMAZON.PrintPDF",
+                    Version = "1",
+                    Input = new PrintPdfV1
+                    {
+                        Title = "Flywheel",
+                        Description = "Flywheel",
+                        Url = "http://www.example.com/flywheel.pdf"
+                    }
+                }
+            };
+
+            var skillRequest = new SkillRequest
+            {
+                Request = request,
+                Context = new Context
+                {
+                    System = new AlexaSystem() { Application = new Application(), User = new User() }
+                },
+                Session = new Session()
+                {
+                    User = new User()
+                }
+            };
+
+            var alexaMapper = new AlexaRequestMapper();
+            var result = alexaMapper.RequestToActivity(skillRequest);
+
+            JsonConvert.SerializeObject(result,
+                            Newtonsoft.Json.Formatting.None,
+                            new JsonSerializerSettings
+                            {
+                                NullValueHandling = NullValueHandling.Ignore,
+                                Formatting = Formatting.Indented
+                            });
         }
 
         private static void VerifyIntentRequest(SkillRequest skillRequest, IActivity activity, AlexaRequestMapperOptions mapperOptions)

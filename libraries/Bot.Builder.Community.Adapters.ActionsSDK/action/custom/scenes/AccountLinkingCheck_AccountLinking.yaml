@@ -1,0 +1,22 @@
+conditionalEvents:
+- condition: session.params.AccountLinkingSlot == "LINKED"
+  handler:
+    webhookHandler: accountlinkingcompleted
+- condition: session.params.AccountLinkingSlot == "ERROR"
+  handler:
+    webhookHandler: accountlinkingerror
+- condition: session.params.AccountLinkingSlot == "REJECTED"
+  handler:
+    webhookHandler: accountlinkingcancelled
+slots:
+- commitBehavior:
+    writeSessionParam: AccountLinkingSlot
+  config:
+    '@type': type.googleapis.com/google.actions.conversation.v3.SignInSpec
+    opt_context: In order to keep using this action
+  defaultValue:
+    sessionParam: AccountLinkingSlot
+  name: AccountLinkingSlot
+  required: true
+  type:
+    name: actions.type.AccountLinking
