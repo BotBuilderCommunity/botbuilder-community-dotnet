@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Description>Adapter for v4 of the Bot Builder .NET SDK to allow for a bot to be used for WhatsApp channel with MessageBird C# SDK.</Description>
   </PropertyGroup>
 
   <ItemGroup>
