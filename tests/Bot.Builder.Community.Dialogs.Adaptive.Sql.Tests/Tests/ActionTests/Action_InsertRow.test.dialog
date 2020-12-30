@@ -10,7 +10,7 @@
                 "$kind": "Microsoft.OnUnknownIntent",
                 "actions": [
                     {
-                        "$kind": "Sql.InsertRow",
+                        "$kind": "Community.SqlInsertRow",
                         "providerName": "SQLite",
                         "connection": "Data Source=InMemorySample;Mode=Memory;Cache=Shared",
                         "table": "ActionTable",

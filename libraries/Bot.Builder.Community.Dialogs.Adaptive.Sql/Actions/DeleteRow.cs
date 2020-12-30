@@ -17,7 +17,7 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Sql.Actions
     public class DeleteRow : SqlAction
     {
         [JsonProperty("$kind")]
-        public const string DeclarativeType = "Sql.DeleteRow";
+        public const string DeclarativeType = "Community.SqlDeleteRow";
 
         public DeleteRow(string connection, string table, Dictionary<string, ValueExpression> keys, [CallerFilePath] string callerPath = "", [CallerLineNumber] int callerLine = 0)
         {
@@ -52,14 +52,12 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Sql.Actions
                 throw new ArgumentException($"{nameof(options)} cannot be a cancellation token");
             }
 
-            var dcState = dc.GetState();
-
-            if (this.Disabled != null && this.Disabled.GetValue(dcState) == true)
+            if (this.Disabled != null && this.Disabled.GetValue(dc.State) == true)
             {
                 return await dc.EndDialogAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
             }
 
-            var (instanceTable, instanceTableError) = this.Table.TryGetValue(dcState);
+            var (instanceTable, instanceTableError) = this.Table.TryGetValue(dc.State);
             if (instanceTableError != null)
             {
                 throw new ArgumentException(instanceTableError);
@@ -67,7 +65,7 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Sql.Actions
 
             //binding keys
             string keyList = string.Join(" AND ", this.Keys.Select(p => $"{p.Key} = @k_{p.Key}"));
-            var keyParamList = this.Keys.Select(k => new KeyValuePair<string, object>($"@k_{k.Key}", k.Value.GetValue(dcState)));
+            var keyParamList = this.Keys.Select(k => new KeyValuePair<string, object>($"@k_{k.Key}", k.Value.GetValue(dc.State)));
 
             string sql = $"DELETE FROM [{instanceTable}] WHERE {keyList};";
 
@@ -75,7 +73,7 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Sql.Actions
 
             try
             {
-                using DbConnection connection = GetConnection(dcState);
+                using DbConnection connection = GetConnection(dc.State);
                 sqlResult.DeletedRows = connection.Execute(sql, new DynamicParameters(keyParamList));
             }
             catch (Exception ex)
@@ -85,7 +83,7 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Sql.Actions
             }
 
             // return the actionResult as the result of this operation
-            return await dc.EndDialogAsync(result: sqlResult, cancellationToken: cancellationToken);
+            return await dc.EndDialogAsync(result: sqlResult, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>

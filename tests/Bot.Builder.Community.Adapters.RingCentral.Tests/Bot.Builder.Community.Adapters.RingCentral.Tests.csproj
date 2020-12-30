@@ -58,7 +58,4 @@
     <ProjectReference Include="..\..\libraries\Bot.Builder.Community.Adapters.RingCentral\Bot.Builder.Community.Adapters.RingCentral.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\..\.editorconfig" />
-  </ItemGroup>
 </Project>

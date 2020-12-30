@@ -11,12 +11,12 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Sql
 {
     public class SqlComponentRegistration : ComponentRegistration, IComponentDeclarativeTypes
     {
-        public IEnumerable<JsonConverter> GetConverters(ResourceExplorer resourceExplorer, Stack<string> paths)
+        public IEnumerable<JsonConverter> GetConverters(ResourceExplorer resourceExplorer, SourceContext sourceContext)
         {
-            return new JsonConverter[] { };
+            yield break;
         }
 
-        public IEnumerable<DeclarativeType> GetDeclarativeTypes()
+        public IEnumerable<DeclarativeType> GetDeclarativeTypes(ResourceExplorer resourceExplorer)
         {
             yield return new DeclarativeType<DeleteRow>(DeleteRow.DeclarativeType);
             yield return new DeclarativeType<ExecuteQuery>(ExecuteQuery.DeclarativeType);

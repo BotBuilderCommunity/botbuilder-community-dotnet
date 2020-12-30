@@ -17,7 +17,7 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Sql.Actions
     public class GetRows : SqlAction
     {
         [JsonProperty("$kind")]
-        public const string DeclarativeType = "Sql.GetRows";
+        public const string DeclarativeType = "Community.SqlGetRows";
 
         public GetRows(string connection, string table, [CallerFilePath] string callerPath = "", [CallerLineNumber] int callerLine = 0)
         {
@@ -36,6 +36,13 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Sql.Actions
         /// <value>Table name.</value>
         [JsonProperty("table")]
         public StringExpression Table { get; set; }
+
+        /// <summary>
+        /// Gets or sets the where clause.
+        /// </summary>
+        /// <value>Table name.</value>
+        [JsonProperty("where")]
+        public StringExpression WhereClause { get; set; }
 
         /// <summary>
         /// Gets or sets the property expression to store the query response. 
@@ -57,14 +64,12 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Sql.Actions
                 throw new ArgumentException($"{nameof(options)} cannot be a cancellation token");
             }
 
-            var dcState = dc.GetState();
-
-            if (this.Disabled != null && this.Disabled.GetValue(dcState) == true)
+            if (this.Disabled != null && this.Disabled.GetValue(dc.State) == true)
             {
                 return await dc.EndDialogAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
             }
 
-            var (instanceTable, instanceTableError) = this.Table.TryGetValue(dcState);
+            var (instanceTable, instanceTableError) = this.Table.TryGetValue(dc.State);
             if (instanceTableError != null)
             {
                 throw new ArgumentException(instanceTableError);
@@ -72,12 +77,23 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Sql.Actions
 
             string sql = $"SELECT * FROM [{instanceTable}];";
 
+            if (this.WhereClause != null)
+            {
+                var (instanceWhereClause, instanceWhereClauseError) = this.WhereClause.TryGetValue(dc.State);
+                if (instanceTableError != null)
+                {
+                    throw new ArgumentException(instanceWhereClauseError);
+                }
+
+                sql += $" WHERE {instanceWhereClause}";
+            }
+
             Result sqlResult = new Result();
 
             try
             {
-                using DbConnection connection = GetConnection(dcState);
-                sqlResult.Rows = connection.Query(sql);
+                using DbConnection connection = GetConnection(dc.State);
+                sqlResult.Rows = await connection.QueryAsync(sql).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -87,11 +103,11 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Sql.Actions
 
             if (this.ResultProperty != null)
             {
-                dcState.SetValue(this.ResultProperty.GetValue(dcState), sqlResult);
+                dc.State.SetValue(this.ResultProperty.GetValue(dc.State), sqlResult);
             }
 
             // return the actionResult as the result of this operation
-            return await dc.EndDialogAsync(result: sqlResult, cancellationToken: cancellationToken);
+            return await dc.EndDialogAsync(result: sqlResult, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         protected override string OnComputeId()

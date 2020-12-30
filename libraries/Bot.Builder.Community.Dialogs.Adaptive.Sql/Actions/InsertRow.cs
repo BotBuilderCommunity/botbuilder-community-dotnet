@@ -18,7 +18,7 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Sql.Actions
     public class InsertRow : SqlAction
     {
         [JsonProperty("$kind")]
-        public const string DeclarativeType = "Sql.InsertRow";
+        public const string DeclarativeType = "Community.SqlInsertRow";
 
         public InsertRow(string connection, string table, Dictionary<string, ValueExpression> values, [CallerFilePath] string callerPath = "", [CallerLineNumber] int callerLine = 0)
         {
@@ -53,14 +53,12 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Sql.Actions
                 throw new ArgumentException($"{nameof(options)} cannot be a cancellation token");
             }
 
-            var dcState = dc.GetState();
-
-            if (this.Disabled != null && this.Disabled.GetValue(dcState) == true)
+            if (this.Disabled != null && this.Disabled.GetValue(dc.State) == true)
             {
                 return await dc.EndDialogAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
             }
 
-            var (instanceTable, instanceTableError) = this.Table.TryGetValue(dcState);
+            var (instanceTable, instanceTableError) = this.Table.TryGetValue(dc.State);
             if (instanceTableError != null)
             {
                 throw new ArgumentException(instanceTableError);
@@ -71,7 +69,7 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Sql.Actions
 
             string columnList = string.Join(", ", this.Values.Keys);
             string columnParams = string.Join(", @", this.Values.Keys);
-            var valueParams = this.Values.Select(v => new KeyValuePair<string, object>($"@{v.Key}", v.Value.GetValue(dcState))).ToList();
+            var valueParams = this.Values.Select(v => new KeyValuePair<string, object>($"@{v.Key}", v.Value.GetValue(dc.State))).ToList();
 
             string sql = $"INSERT INTO [{instanceTable}] ({columnList}) Values (@{columnParams});";
 
@@ -81,8 +79,8 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Sql.Actions
 
             try
             {
-                using DbConnection connection = GetConnection(dcState);
-                sqlResult.InsertedRows = connection.Execute(sql, new DynamicParameters(valueParams));
+                using DbConnection connection = GetConnection(dc.State);
+                sqlResult.InsertedRows = await connection.ExecuteAsync(sql, new DynamicParameters(valueParams)).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -91,7 +89,7 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Sql.Actions
             }
 
             // return the actionResult as the result of this operation
-            return await dc.EndDialogAsync(result: sqlResult, cancellationToken: cancellationToken);
+            return await dc.EndDialogAsync(result: sqlResult, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
