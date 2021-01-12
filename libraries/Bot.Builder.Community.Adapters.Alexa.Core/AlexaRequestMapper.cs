@@ -4,11 +4,13 @@ using System.Linq;
 using System.Security;
 using System.Xml;
 using System.Xml.Linq;
+using AdaptiveCards;
 using Alexa.NET.Request;
 using Alexa.NET.Request.Type;
 using Alexa.NET.Response;
 using Bot.Builder.Community.Adapters.Alexa.Core.Attachments;
-using Bot.Builder.Community.Adapters.Alexa.Core.Helpers;
+using Bot.Builder.Community.Adapters.Shared;
+using Bot.Builder.Community.Adapters.Shared.Attachments;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -19,8 +21,10 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
 {
     public class AlexaRequestMapper
     {
-        private AlexaRequestMapperOptions _options;
-        private ILogger _logger;
+        private static readonly AttachmentConverter _attachmentConverter = DefaultAlexaAttachmentConverter.CreateDefault();
+
+        private readonly AlexaRequestMapperOptions _options;
+        private readonly ILogger _logger;
 
         public AlexaRequestMapper(AlexaRequestMapperOptions options = null, ILogger logger = null)
         {
@@ -59,9 +63,9 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
 
                         return RequestToEventActivity(skillRequest);
                     }
-                case LaunchRequest launchRequest:
+                case LaunchRequest _:
                     return RequestToConversationUpdateActivity(skillRequest);
-                case SessionEndedRequest sessionEndedRequest:
+                case SessionEndedRequest _:
                     return RequestToEndOfConversationActivity(skillRequest);
                 default:
                     return RequestToEventActivity(skillRequest);
@@ -95,15 +99,18 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
                 return response;
             }
 
+            // Grab any adaptive card attachment to get fallback speak property
+            var adaptiveCardAttachment = activity.Attachments.FirstOrDefault(a => a.ContentType == AdaptiveCard.ContentType)?.Content as AdaptiveCard;
+
             if (!string.IsNullOrEmpty(activity.Speak))
             {
                 response.Response.OutputSpeech = new SsmlOutputSpeech(activity.Speak);
             }
             else
-            {
-                response.Response.OutputSpeech = new PlainTextOutputSpeech(activity.Text);
+            { 
+                response.Response.OutputSpeech = new PlainTextOutputSpeech(adaptiveCardAttachment?.Speak ?? activity.Text);
             }
-
+            
             ProcessActivityAttachments(activity, response);
 
             if (ShouldSetEndSession(response))
@@ -152,11 +159,14 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
             }
 
             var mergedActivityResult = new MergedActivityResult();
+            bool mergedActivityEndsWithPeriod = false;
 
             bool hasSpeakField = false;
             var speakFields = new List<string>();
             var textFields = new List<string>();
             var attachments = new List<Attachment>();
+            var endWithPeriod = activities.LastOrDefault(a => !string.IsNullOrEmpty(a.Text))?.Text?.TrimEnd().EndsWith(".") ?? false;
+
             foreach (var activity in activities)
             {
                 if (activity == null)
@@ -168,10 +178,11 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
                 {
                     case ActivityTypes.Message:
                         mergedActivityResult.MergedActivity = activity;
+
                         if (!string.IsNullOrEmpty(activity.Speak))
                         {
                             hasSpeakField = true;
-                            speakFields.Add(StripSpeakTag(activity.Speak));
+                            speakFields.Add(ActivityMappingHelper.StripSpeakTag(activity.Speak));
                         }
                         else if (!string.IsNullOrEmpty(activity.Text))
                         {
@@ -183,7 +194,9 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
                             var text = NormalizeActivityText(activity.TextFormat, activity.Text, forSsml: false);
                             if (!string.IsNullOrEmpty(text))
                             {
-                                textFields.Add(text.Trim(new char[] { ' ', '.' }));
+                                mergedActivityEndsWithPeriod = activity.Text?.TrimEnd().EndsWith(".") ?? false;
+
+                                textFields.Add(text.Trim(new char[] { ' ' }));
                             }
                         }
 
@@ -205,8 +218,13 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
                     mergedActivityResult.MergedActivity.Speak = $"<speak>{string.Join("<break strength=\"strong\"/>", speakFields)}</speak>";
                 }
 
-                mergedActivityResult.MergedActivity.Text = string.Join(". ", textFields);
+                mergedActivityResult.MergedActivity.Text = string.Join(" ", textFields);
                 mergedActivityResult.MergedActivity.Attachments = attachments;
+
+                if (mergedActivityResult.MergedActivity.Text.EndsWith(".") && !mergedActivityEndsWithPeriod)
+                {
+                    mergedActivityResult.MergedActivity.Text = mergedActivityResult.MergedActivity.Text.TrimEnd('.');
+                }
             }
 
             return mergedActivityResult;
@@ -300,34 +318,6 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
             return activity;
         }
 
-        /// <summary>
-        /// Checks a string to see if it is XML and if the outer tag is a speak tag
-        /// indicating it is SSML.  If an outer speak tag is found, the inner XML is
-        /// returned, otherwise the original string is returned
-        /// </summary>
-        /// <param name="speakText">String to be checked for an outer speak XML tag and stripped if found</param>
-        private string StripSpeakTag(string speakText)
-        {
-            try
-            {
-                var speakSsmlDoc = XDocument.Parse(speakText);
-                if (speakSsmlDoc != null && speakSsmlDoc.Root.Name.ToString().ToLowerInvariant() == "speak")
-                {
-                    using (var reader = speakSsmlDoc.Root.CreateReader())
-                    {
-                        reader.MoveToContent();
-                        return reader.ReadInnerXml();
-                    }
-                }
-
-                return speakText;
-            }
-            catch (XmlException)
-            {
-                return speakText;
-            }
-        }
-
         private string NormalizeActivityText(string textFormat, string text, bool forSsml)
         {
             if (string.IsNullOrWhiteSpace(text))
@@ -348,7 +338,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
             }
             else if (textFormat.Equals(TextFormatTypes.Markdown, StringComparison.Ordinal))
             {
-                plainText = AlexaMarkdownToPlaintextRenderer.Render(text);
+                plainText = MarkdownToPlaintextRenderer.Render(text);
             }
             else // xml format or other unknown and unsupported format.
             {
@@ -394,7 +384,7 @@ namespace Bot.Builder.Community.Adapters.Alexa.Core
         /// <param name="response">The SkillResponse to be modified based on the attachments on the Activity object.</param>
         private void ProcessActivityAttachments(Activity activity, SkillResponse response)
         {
-           activity.ConvertAttachmentContent();
+            _attachmentConverter.ConvertAttachments(activity);
 
             var bfCard = activity.Attachments?.FirstOrDefault(a => a.ContentType == HeroCard.ContentType || a.ContentType == SigninCard.ContentType);
 

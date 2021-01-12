@@ -1,0 +1,7 @@
+conditionalEvents:
+- condition: user.verificationStatus != "VERIFIED"
+  handler:
+    webhookHandler: accountlinkingnotverified
+  transitionToScene: Prompt
+- condition: user.verificationStatus == "VERIFIED"
+  transitionToScene: AccountLinkingCheck_AccountLinking

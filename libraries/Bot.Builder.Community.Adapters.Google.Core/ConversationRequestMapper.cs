@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using AdaptiveCards;
 using Bot.Builder.Community.Adapters.Google.Core.Attachments;
-using Bot.Builder.Community.Adapters.Google.Core.Helpers;
 using Bot.Builder.Community.Adapters.Google.Core.Model.Request;
 using Bot.Builder.Community.Adapters.Google.Core.Model.Response;
 using Bot.Builder.Community.Adapters.Google.Core.Model.SystemIntents;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 
 namespace Bot.Builder.Community.Adapters.Google.Core
 {
@@ -81,15 +82,18 @@ namespace Bot.Builder.Community.Adapters.Google.Core
                 return response;
             }
 
-            activity.ConvertAttachmentContent();
+            _attachmentConverter.ConvertAttachments(activity);
+
+            // Grab any adaptive card attachment to get fallback speak property
+            var adaptiveCardAttachment = activity.Attachments.FirstOrDefault(a => a.ContentType == AdaptiveCard.ContentType)?.Content as AdaptiveCard;
 
             var simpleResponse = new SimpleResponse
             {
                 Content = new SimpleResponseContent
                 {
                     DisplayText = activity.Text,
-                    Ssml = activity.Speak,
-                    TextToSpeech = activity.Text
+                    Ssml = (activity.Speak ?? adaptiveCardAttachment?.Speak),
+                    TextToSpeech = activity.Speak == null && adaptiveCardAttachment?.Speak == null ? activity.Text : null
                 }
             };
 
@@ -112,8 +116,9 @@ namespace Bot.Builder.Community.Adapters.Google.Core
                             {
                                 RichInitialPrompt = new RichResponse()
                                 {
-                                    Items = new ResponseItem[] { simpleResponse }
-                                }
+                                    Items = new ResponseItem[] { simpleResponse },
+                                    Suggestions = ConvertIMAndMessageBackSuggestedActionsToSuggestionChips(activity)?.ToArray()
+            }
                             }
                             : null
                     }

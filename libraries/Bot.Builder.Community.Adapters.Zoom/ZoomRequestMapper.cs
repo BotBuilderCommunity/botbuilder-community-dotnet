@@ -5,14 +5,16 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Linq;
 using Bot.Builder.Community.Adapters.Zoom.Attachments;
-using Bot.Builder.Community.Adapters.Zoom.Helpers;
+using Bot.Builder.Community.Adapters.Shared.Attachments;
 
 namespace Bot.Builder.Community.Adapters.Zoom
 {
     public class ZoomRequestMapper
     {
+        private static readonly AttachmentConverter _attachmentConverter = DefaultZoomAttachmentConverter.CreateDefault();
+
         private readonly ZoomRequestMapperOptions _options;
-        private ILogger _logger;
+        private readonly ILogger _logger;
 
         public ZoomRequestMapper(ZoomRequestMapperOptions options, ILogger logger)
         {
@@ -112,7 +114,7 @@ namespace Bot.Builder.Community.Adapters.Zoom
 
         private void ProcessActivityAttachments(Activity activity, ChatResponse response)
         {
-            activity.ConvertAttachmentContent();
+            _attachmentConverter.ConvertAttachments(activity);
 
             ProcessAttachment<MessageBodyItemWithLink>(ZoomAttachmentContentTypes.MessageWithLink, activity, response);
             ProcessAttachment<FieldsBodyItem>(ZoomAttachmentContentTypes.Fields, activity, response);

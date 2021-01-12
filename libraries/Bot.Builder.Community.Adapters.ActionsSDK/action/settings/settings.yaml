@@ -1,0 +1,9 @@
+accountLinking:
+  enableAccountCreation: true
+  linkingType: GOOGLE_SIGN_IN
+defaultLocale: en
+localizedSettings:
+  displayName: bot framework sample
+  pronunciation: bot framework sample
+  voice: female_2
+projectId: <YOUR PROJECT ID>

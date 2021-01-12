@@ -1,0 +1,3 @@
+handler:
+  webhookHandler: no_match3
+transitionToScene: actions.scene.END_CONVERSATION
