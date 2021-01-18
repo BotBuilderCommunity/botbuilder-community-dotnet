@@ -49,7 +49,7 @@ namespace Infobip_Viber_Sample.Bots
 
             activity.AddInfobipViberMessage(new InfobipOmniViberMessage
             {
-                Text = "Testni text",
+                Text = "Test text",
                 ImageUrl = "https://p.bigstockphoto.com/GeFvQkBbSLaMdpKXF1Zv_bigstock-Aerial-View-Of-Blue-Lakes-And--227291596.jpg",
                 ButtonText = "Button text",
                 ButtonUrl = "https://www.infobip.com/docs/api#programmable-communications/omni-failover/send-omni-failover-message"
