@@ -8,14 +8,14 @@ namespace Infobip_Sms_Sample.Controllers
     // This ASP Controller is created to handle a request. Dependency Injection will provide the Adapter and IBot
     // implementation at runtime. Multiple different IBot implementations running at different endpoints can be
     // achieved by specifying a more specific type for the bot constructor argument.
-    [Route("api/infobip")]
+    [Route("api/infobip/sms")]
     [ApiController]
-    public class InfobipController: ControllerBase
+    public class InfobipSmsController: ControllerBase
     {
         private readonly InfobipSmsAdapter Adapter;
         private readonly IBot Bot;
 
-        public InfobipController(InfobipSmsAdapter adapter, IBot bot)
+        public InfobipSmsController(InfobipSmsAdapter adapter, IBot bot)
         {
             Adapter = adapter;
             Bot = bot;

@@ -36,6 +36,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ACS SMS Sample", "samples\A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infobip Sms Sample", "samples\Infobip Sms Sample\Infobip Sms Sample.csproj", "{D74800E6-0A73-40E8-BB09-A65F79AD5779}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infobip Viber Sample", "samples\Infobip Viber Sample\Infobip Viber Sample.csproj", "{BFCA2C67-78E6-45F9-A1CD-0CC4744E80BC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -110,6 +112,10 @@ Global
 		{D74800E6-0A73-40E8-BB09-A65F79AD5779}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D74800E6-0A73-40E8-BB09-A65F79AD5779}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D74800E6-0A73-40E8-BB09-A65F79AD5779}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFCA2C67-78E6-45F9-A1CD-0CC4744E80BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFCA2C67-78E6-45F9-A1CD-0CC4744E80BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFCA2C67-78E6-45F9-A1CD-0CC4744E80BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFCA2C67-78E6-45F9-A1CD-0CC4744E80BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
