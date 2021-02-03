@@ -141,13 +141,11 @@ The `DataId` class has 16 static set methods including the three you've seen so 
 
 Three of these methods take a `ref object` as their first argument. This indicates that the method may create a new object with the data ID's in it instead of modifying the existing object. If the existing object was already assigned to a property of another object then you will need to account for this by reassigning the new object to whatever property it was contained in, like this:
 
-
 ```c#
 DataId.SetInAdaptiveCard(ref card);
 
 attachment.Content = card;
 ```
-
 
 Internally, the cards library uses something it calls the [*card tree*](./mermaid-diagram.md) to facilitate recursion for operations like these. At the top you have batches and each batch has indexed activities and each activity has an `Attachments` property and the `Attachments` property has indexed attachments and each attachment has a `Content` property and so on. The card tree can be entered at any of those "nodes" and it will recurse down into indexes and properties and sub-properties of objects until it reaches its "exit" node.
 
