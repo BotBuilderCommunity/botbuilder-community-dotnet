@@ -9,11 +9,10 @@
 
 This is part of the [Bot Builder Community Extensions](https://github.com/botbuildercommunity) project which contains various pieces of middleware, recognizers and other components for use with the Bot Builder .NET SDK v4.
 
-The cards library currently has three main features:
+The cards library currently has two main features:
 
 1. Both Adaptive Cards and Bot Framework cards can be disabled
-2. Adaptive Cards can have their input values preserved when they are submitted in Microsoft Teams
-3. Adaptive Cards can be translated
+2. Adaptive Cards can be translated
 
 More information about the cards library can be found in its original ideation thread: https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/issues/137
 
@@ -29,7 +28,7 @@ Install into your project use the following command in the package manager.
 
 ## Sample
 
-A sample bot showcasing the various features of the cards library is available [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/samples/Cards%20Library%20Sample).
+A sample bot showcasing the features of the cards library is available [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/develop/samples/Cards%20Library%20Sample).
 
 ## Usage
 
@@ -140,16 +139,24 @@ The `DataId` class has 16 static set methods including the three you've seen so 
 - `SetInCardAction`
 - `SetInActionData`
 
-Internally, the cards library uses something it calls the [*card tree*](./mermaid-diagram.md) to facilitate recursion for operations like these. At the top you have batches and each batch has indexed activities and each activity has an `Attachments` property and the `Attachments` property has indexed attachments and each attachment has a `Content` property and so on. The card tree can be entered at any of those "nodes" and it will drill down into indexes and properties and sub-properties of objects until it reaches its "exit" node.
+Three of these methods take a `ref object` as their first argument. This indicates that the method may create a new object with the data ID's in it instead of modifying the existing object. If the existing object was already assigned to a property of another object then you will need to account for this by reassigning the new object to whatever property it was contained in, like this:
 
-#### Tracking and disabling
+```c#
+DataId.SetInAdaptiveCard(ref card);
 
-Once you've set ID's in your action data, remember that you need to track them in card manager state as well in order to disable them. The `CardManager` class has 5 methods for disabling in this way:
+attachment.Content = card;
+```
+
+Internally, the cards library uses something it calls the [*card tree*](./mermaid-diagram.md) to facilitate recursion for operations like these. At the top you have batches and each batch has indexed activities and each activity has an `Attachments` property and the `Attachments` property has indexed attachments and each attachment has a `Content` property and so on. The card tree can be entered at any of those "nodes" and it will recurse down into indexes and properties and sub-properties of objects until it reaches its "exit" node.
+
+#### Tracking and forgetting
+
+Once you've set ID's in your action data, remember that you also need to track them in card manager state in order to disable them. Forgetting ID's is the opposite of tracking ID's, so it refers to removing an ID from card manager state instead of adding it. When it comes to tracking and forgetting, the question of which one enables and which one disables is determined by the tracking style. The `CardManager` class has 5 methods for disabling in this way:
 
 - `EnableIdAsync` - Tracks or forgets depending on tracking style
 - `DisableIdAsync` - Tracks or forgets depending on tracking style
-- `TrackIdAsync` - Tracks an ID in card manager state
-- `ForgetIdAsync` - Removes an ID from the ID's tracked in card manager state
+- `TrackIdAsync` - Adds an ID to card manager state
+- `ForgetIdAsync` - Removes an ID from the tracked ID's in card manager state
 - `ClearTrackedIdsAsync` - Forgets all ID's in card manager state
 
 If you want to treat all ID's as disabled by default and you only want to enable specific ID's (such as in the most recently sent card), you should use `TrackingStyle.TrackEnabled`. This means you'd have to enable an ID before it can be used, like this:
@@ -206,7 +213,7 @@ Just like with tracking and disabling, you will want to make sure your saved act
 await cardManager.DeleteActionSourceAsync(turnContext, DataIdScopes.Card);
 ```
 
-It uses the phrase "delete action source" instead of "delete card" etc. because it can delete an action or a card or a carousel or a batch depending on the scope you pass to it. The method looks at the incoming activity in the turn context and determines if the activity contains action data and uses the data ID from the scope you specify to update or delete the associated activities accordingly.
+It has the phrase "delete action source" in its name instead of "delete card" etc. because it can delete an action or a card or a carousel or a batch depending on the scope you pass to it. The method looks at the incoming activity in the turn context and determines if the activity contains action data and uses the data ID from the scope you specify to update or delete the associated activities accordingly.
 
 Note that "deleting activities" in this context means actually removing them from the channel conversation on the client side. The cards library uses the term *unsave* to mean removing an activity from card manager state. If any activities are deleted when you call `DeleteActionSourceAsync` then they get unsaved automatically, but if you want to unsave an activity manually then you can use `UnsaveActivityAsync`:
 
@@ -243,7 +250,7 @@ Card manager middleware is very configurable, but out of the box it will disable
 Besides these features that can be turned on or off, the two other extension methods used by card manager middleware are:
 
 - `IEnumerable<IMessageActivity>.GetIdsFromBatch` - This method uses the card tree to retrieve all data ID's from all cards in all activities in a batch.
-- `ITurnContext.GetIncomingActionData` - This method retrieves the action data from an incoming activity based on the specific channel being used, converting strings to objects as needed. This method will return null if no action data is found, so it can be effectively used to determine if an activity came from an action.
+- `ITurnContext.GetIncomingActionData` - This method retrieves the action data from an incoming activity based on the specific channel being used, deserializing strings as needed. This method will return null if no action data is found, so it can be effectively used to determine if an activity came from an action or not.
 
 #### Behaviors
 
@@ -256,8 +263,94 @@ ActionBehavior.SetInHeroCard(
     BehaviorSwitch.Off);
 ```
 
-The three possible values for the auto-deactivate behavior are "on," "off," and "default." Using "default" will make the action behave as though it doesn't even have the auto-deactivate behavior at all, which means the cards library will just behave the way it's been configured to for all actions.
-
-### Preserving Adaptive Card input values in Microsoft Teams
+The three possible values for the auto-deactivate behavior are `"on"`, `"off"`, and `"default"`. Using `"default"` will make the action behave as though it doesn't even have the auto-deactivate behavior at all, which means the cards library will just behave the way it's been configured to behave for all actions.
 
 ### Translation
+
+Multilingual bots have been able to use the [translation middleware](https://github.com/microsoft/BotBuilder-Samples/blob/main/samples/csharp_dotnetcore/17.multilingual-bot/Translation/TranslationMiddleware.cs) found in the multilingual bot sample to automatically translate incoming and outgoing activities, but that sample only translates the activities' text properties and ignores their attachments. Translating cards is more complicated because a card contains multiple strings and some of them should be translated and some of them shouldn't. As an example of something that shouldn't be translated, consider the ID string of an input element in an Adaptive Card. If that were translated into another language then the bot might not be able to recognize the input in an incoming activity's action data correctly.
+
+The cards library solves this problem by providing an Adaptive Card translator in the `Bot.Builder.Community.Cards.Translation` namespace. The Adaptive Card translator intelligently detects which strings to translate using a configurable list of property names and in some cases checking the type of the element that property is in. For an example of when it's necessary to check the type of the property's parent element, consider that a "value" property should be translated in an `Input.Text` element but not in an `Input.ChoiceSet` element. Currently, the cards library only translates Adaptive Cards and not Bot Framework cards.
+
+The Adaptive Card translator provides four static overloads and two instance overloads of the `TranslateAsync` method. This allows it to be used in a variety of ways depending on your needs. The instance overloads are for when you want to create an instance of the `AdaptiveCardTranslator` class that contains its own settings so you don't have to pass them as an argument every time you call `TranslateAsync`. The `AdaptiveCardTranslator` class can even be used with dependency injection, and its settings can be loaded from your bot's configuration file (which is probably appsettings.json).
+
+In addition to letting you decide what gets translated, the Adaptive Card translator also allows you to decide how it gets translated. The Adaptive Card translator has built-in compatibility with the Microsoft Translator API, but it also lets you pass in a delegate that translates strings in some other way. If you want to use Microsoft Translator, there are three settings that the Adaptive Cards translator can read from your configuration file: `MicrosoftTranslatorKey`, `MicrosoftTranslatorLocale`, and `MicrosoftTranslatorEndpoint`. So if you're using Microsoft Translator with the Adaptive Cards translator, your bot's configuration file might look like this:
+
+```json
+{
+  // Bot credentials
+  "MicrosoftAppId": "<guid>",
+  "MicrosoftAppPassword": "<password>",
+  // Microsoft Translator configuration
+  "MicrosoftTranslatorKey": "<guid>",
+  "MicrosoftTranslatorLocale": "en-us",
+  "MicrosoftTranslatorEndpoint": "https://api.cognitive.microsofttranslator.com"
+}
+```
+
+Just like in the multilingual bot sample, in order to use Microsoft Translator with the Adaptive Cards translator you will need to follow the instructions [here](https://docs.microsoft.com/en-us/azure/cognitive-services/translator/translator-how-to-signup) to get a translator key to use in your bot. The other two Microsoft Translator settings are optional. `MicrosoftTranslatorLocale` is just the default language that you want your translator to use if no language option is provided when `TranslateAsync` is called, and `MicrosoftTranslatorEndpoint` allows you to provide a custom domain in case you want the Adaptive Cards translator to call a translator service that's hosted somewhere else. In the above example configuration, you can see that the default locale is US English and the endpoint is just the ordinary Microsoft Translator endpoint that would be used by default even if no endpoint was provided.
+
+If you don't put any Microsoft Translator settings in your configuration file, you can just pass a `MicrosoftTranslatorConfig` object as an argument to `TranslateAsync`:
+
+```c#
+var translatedCard = await AdaptiveCardTranslator.TranslateAsync(
+    untranslatedCard,
+    new MicrosoftTranslatorConfig("YOUR TRANSLATOR KEY"));
+```
+
+Alternatively, you can pass the settings as their own arguments outside of a `MicrosoftTranslatorConfig` object:
+
+```c#
+var translatedCard = await AdaptiveCardTranslator.TranslateAsync(
+    untranslatedCard,
+    "es-es",
+    "YOUR TRANSLATOR KEY",
+    httpClient);
+```
+
+The `httpClient` parameter is how you would provide a custom endpoint if you wanted to, but since it's a whole `HttpClient` object you can configure the client to send its requests however you want instead of just providing the endpoint.
+
+The other two static `TranslateAsync` overloads are for when you want to provide a delegate that does the translation your own way instead of using the default Microsoft Translator functionality. As a contrived example, here's how you might translate all the strings in an Adaptive Card by reversing them (so `["hello", "world"]` becomes `["olleh", "dlrow"]`):
+
+```c#
+var translatedCard = await AdaptiveCardTranslator.TranslateAsync(
+    untranslatedCard,
+    async (input, cancellationToken) => input.Reverse().ToArray().ToString());
+```
+
+The delegate passed to that `TranslateAsync` overload takes one string and returns one string, so it just translates each string one at a time. In case you want to translate all the translatable strings at once (such as when you only want to make one API call perhaps), you can use a delegate that takes and returns an `IEnumerable<string>`. The following (again contrived) example replaces all the translatable strings in an Adaptive Card with the first one (so `["hello", "world"]` becomes `["hello", "hello"]`):
+
+```c#
+var translatedCard = await AdaptiveCardTranslator.TranslateAsync(
+    untranslatedCard,
+    async (inputs, cancellationToken) => Enumerable.Repeat(inputs.First(), inputs.Count()));
+```
+
+Finally, the two instance overloads of `TranslateAsync` are for when you want to create an instance of the `AdaptiveCardTranslator` class with persistent properties so you don't have to pass Microsoft Translator settings to it every time you call it. This works well with dependency injection. If the language you want to translate the card into is already in your configuration, you can pass only the card and nothing more to `TranslateAsync`:
+
+```c#
+var translatedCard = await adaptiveCardTranslator.TranslateAsync(untranslatedCard);
+```
+
+If you want to provide a language, you can do that with the other instance overload:
+
+```c#
+var translatedCard = await adaptiveCardTranslator.TranslateAsync(
+    untranslatedCard,
+    turnContext.Activity.Locale);
+```
+
+Note that the Adaptive Card translator will always return a newly created object and never modify the card in place. Because the `TranslateAsync` methods are all generic, they are able to return an object of the same type as the one you pass as an argument. This means you can provide the Adaptive Card in any form you like, whether it be as a string or as an `AdaptiveCard` object from the Adaptive Cards library or something else.
+
+If you want to specify which parts of Adaptive Cards get translated, you can use the `PropertiesToTranslate` property of an `AdaptiveCardTranslatorSettings` object. The following example makes it so that only fallback text gets translated:
+
+```c#
+var settings = new AdaptiveCardTranslatorSettings
+{
+    PropertiesToTranslate = new[]
+    {
+        "fallbackText",
+    },
+};
+```
+
+All four static `TranslateAsync` overloads have an optional `settings` parameter that allows you to pass an `AdaptiveCardTranslatorSettings` object, and if you're using the instance overloads then you can modify the `Settings` property of the `AdaptiveCardTranslator` instance.

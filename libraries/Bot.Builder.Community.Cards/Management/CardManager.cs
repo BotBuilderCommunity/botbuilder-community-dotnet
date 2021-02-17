@@ -191,45 +191,6 @@ namespace Bot.Builder.Community.Cards.Management
             await StateAccessor.SetAsync(turnContext, state, cancellationToken).ConfigureAwait(false);
         }
 
-        // TODO: Incorporate value preservation into other updates made to Adaptive Cards
-        public async Task PreserveValuesAsync(ITurnContext turnContext, CancellationToken cancellationToken = default)
-        {
-            BotAssert.ContextNotNull(turnContext);
-
-            if (turnContext.GetIncomingActionData() is JObject data)
-            {
-                var matchResult = await GetDataMatchAsync(turnContext, cancellationToken).ConfigureAwait(false);
-
-                if (matchResult.SavedActivity != null
-                    && matchResult.SavedAttachment?.ContentType.EqualsCI(ContentTypes.AdaptiveCard) == true)
-                {
-                    var changed = false;
-
-                    // The content must be non-null or else the attachment couldn't have been a match
-                    matchResult.SavedAttachment.Content = matchResult.SavedAttachment.Content.ToJObjectAndBack(
-                        card =>
-                        {
-                            // Iterate through all inputs in the card
-                            foreach (var input in AdaptiveCardUtil.GetAdaptiveInputs(card))
-                            {
-                                var id = AdaptiveCardUtil.GetAdaptiveInputId(input);
-                                var inputValue = data.GetValue(id);
-
-                                input.SetValue(AdaptiveProperties.Value, inputValue);
-
-                                changed = true;
-                            }
-                        });
-
-                    if (changed)
-                    {
-                        // The changes to the attachment will already be reflected in the activity
-                        await UpdateActivityAsync(turnContext, matchResult.SavedActivity, cancellationToken).ConfigureAwait(false);
-                    }
-                }
-            }
-        }
-
         public async Task DeleteActionSourceAsync(ITurnContext turnContext, string dataIdScope, CancellationToken cancellationToken = default)
         {
             // TODO: Provide a way to delete elements by specifying an ID that's not in the incoming action data
