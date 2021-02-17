@@ -12,6 +12,7 @@ To see a list of current extensions available for the Bot Builder .NET SDK, use 
   - [Contributing and Reporting Issues](#contributing-and-reporting-issues)
   - [Adapters](#adapters)
   - [Dialogs and Prompts](#dialogs-and-prompts)
+  - [Cards](#cards)
   - [Middleware](#middleware)
   - [Recognizers](#recognizers)
   - [Storage](#storage)
@@ -54,6 +55,15 @@ The following dialogs are currently available;
 | [Bot Builder v4 Prompts](libraries/Bot.Builder.Community.Dialogs.Prompts) | A collection of Prompts for use with Bot Builder v4, providing the ability to prompt using Adaptive Cards and for recognizing currencies, age, distances and temperature. | | [![NuGet version](https://img.shields.io/badge/NuGet-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Dialogs.Prompts/) |
 | [Bot Builder v4 Luis Dialog](libraries/Bot.Builder.Community.Dialogs.Luis) | An implementation for v4 of the Bot Builder .NET SDK of the [Microsoft.Bot.Builder.Dialogs.LuisDialog built for Bot Builder V3](https://github.com/microsoft/BotBuilder-V3/tree/master/CSharp/Library/Microsoft.Bot.Builder/Luis) A dialog specialized to handle intents and entities from LUIS. | [Sample](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/Luis%20Dialog%20Sample) | [![NuGet version](https://img.shields.io/badge/NuGet-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Dialogs.Luis/) |
 | [Adaptive Dialogs - REST](libraries/Bot.Builder.Community.Dialogs.Adaptive.Rest) | Adaptive package containing additional actions to make calling REST endpoints easier when using Adaptive dialogs | | [![NuGet version](https://img.shields.io/badge/NuGet-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Dialogs.Adaptive.Rest/) |
+
+## Cards
+
+Packages that assist in building bots using Adaptive Cards and Bot Framework Cards;
+
+| Name | Description | Sample? | NuGet |
+| ------ | ------ | ------ | ------ |
+| [Cards Library](libraries/Bot.Builder.Community.Cards) | The cards library currently has two main features - Both Adaptive Cards and Bot Framework cards can be disabled and Adaptive Cards can be translated | | [![NuGet version](https://img.shields.io/badge/NuGet-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Middleware.HandleActivityType/) |
+| [Adaptive Card Prompt](libraries/Bot.Builder.Community.Prompts) | This prompt is available as part of the Bot.Builder.Community.Prompts package. It includes validation for specified required input fields, displays a custom message if user replies via text and not card input and ensures input is only valid if it comes from the appropriate card (not one shown previous to prompt).| | [![NuGet version](https://img.shields.io/badge/NuGet-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Prompts/) |
 
 ## Middleware
 
