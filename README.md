@@ -63,7 +63,7 @@ Packages that assist in building bots using Adaptive Cards and Bot Framework Car
 | Name | Description | Sample? | NuGet |
 | ------ | ------ | ------ | ------ |
 | [Cards Library](libraries/Bot.Builder.Community.Cards) | The cards library currently has two main features - Both Adaptive Cards and Bot Framework cards can be disabled and Adaptive Cards can be translated | | [![NuGet version](https://img.shields.io/badge/NuGet-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Middleware.HandleActivityType/) |
-| [Adaptive Card Prompt](libraries/Bot.Builder.Community.Prompts) | This prompt is available as part of the Bot.Builder.Community.Prompts package. It includes validation for specified required input fields, displays a custom message if user replies via text and not card input and ensures input is only valid if it comes from the appropriate card (not one shown previous to prompt).| | [![NuGet version](https://img.shields.io/badge/NuGet-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Prompts/) |
+| [Adaptive Card Prompt](libraries/Bot.Builder.Community.Dialogs.Prompts) | This prompt is available as part of the Bot.Builder.Community.Prompts package. It includes validation for specified required input fields, displays a custom message if user replies via text and not card input and ensures input is only valid if it comes from the appropriate card (not one shown previous to prompt).| | [![NuGet version](https://img.shields.io/badge/NuGet-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Prompts/) |
 
 ## Middleware
 
