@@ -2,3 +2,13 @@
 
 # SendActivity_Welcome
 - ${WelcomeUser()}
+
+# SendActivity_wY4baV()
+[Activity
+    Text = Calling 20 dialogs in parallel. Each will delay between 1 - 3 seconds before sending a completion maessage and returning their index.
+]
+
+# SendActivity_VNhoMW()
+[Activity
+    Text = Results returned: ${join(dialog.results, ',')}
+]

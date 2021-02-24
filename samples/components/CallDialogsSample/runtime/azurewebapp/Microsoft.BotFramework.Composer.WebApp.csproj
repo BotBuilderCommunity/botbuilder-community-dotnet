@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
+    <UserSecretsId>ad7b7886-92ab-4417-89d7-12ebc9fd9cb2</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <None Include="ComposerDialogs\**">
@@ -16,7 +17,7 @@
     <CodeAnalysisRuleSet>..\core\Microsoft.BotFramework.Composer.Core.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Bot.Builder.Community.Components.CallDialogs" Version="1.0.0-preview" />
+    <PackageReference Include="Bot.Builder.Community.Components.CallDialogs" Version="1.0.2-preview" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.2" />
     <PackageReference Include="Microsoft.Bot.Builder" Version="4.12.0-daily.*" />
     <PackageReference Include="Microsoft.Bot.Builder.AI.Luis" Version="4.12.0-daily.*" />
