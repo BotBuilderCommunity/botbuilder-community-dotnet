@@ -2,17 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageTags>bots;ai;botframework;botbuilder;bf-component</PackageTags>
-    <RepositoryUrl>https://www.github.com/botbuildercommunity/botbuildercommunity-dotnet
-</RepositoryUrl>
+    <RepositoryUrl>https://github.com/Stevenic/botbuilder-community-dotnet/tree/develop/libraries/Bot.Builder.Community.Components.CallDialogs</RepositoryUrl>
     <PackageIcon>package-icon.png</PackageIcon>
     <PackageLicenseUrl />
     <PackageLicenseExpression></PackageLicenseExpression>
     <Description>Composer actions to execute non-interactive dialogs in parallel. Useful when you wish to make multiple HttpRequest or other service calls in parallel.</Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <PackageProjectUrl>https://www.github.com/botbuildercommunity/botbuildercommunity-dotnet</PackageProjectUrl>
-    <Version>1.0.0-preview</Version>
+    <PackageProjectUrl>https://github.com/Stevenic/botbuilder-community-dotnet/tree/develop/libraries/Bot.Builder.Community.Components.CallDialogs</PackageProjectUrl>
+    <Version>1.0.2-preview</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageTags>bf-component</PackageTags>
+    <ContentTargetFolders>content</ContentTargetFolders>
   </PropertyGroup>
 
   <ItemGroup>

@@ -3,6 +3,7 @@
 
 using System;
 using System.IO;
+using Bot.Builder.Community.Components.CallDialogs;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -159,6 +160,7 @@ namespace Microsoft.BotFramework.Composer.WebAppTemplates
             ComponentRegistration.Add(new LanguageGenerationComponentRegistration());
             ComponentRegistration.Add(new QnAMakerComponentRegistration());
             ComponentRegistration.Add(new LuisComponentRegistration());
+            ComponentRegistration.Add(new CallDialogsComponentRegistration());
 
             // This is for custom action component registration.
             //ComponentRegistration.Add(new CustomActionComponentRegistration());
