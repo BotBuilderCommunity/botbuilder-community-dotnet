@@ -25,6 +25,12 @@
         }
       },
       "subtitle": "Add Dialog Call"
+    },
+    "menu": {
+      "label": "Add a dialog to call",
+      "submenu": [
+        "Dialog management"
+      ]
     }
   },
   "BotBuilderCommunity.CallDialogs": {
@@ -59,6 +65,12 @@
         }
       },
       "subtitle": "Call Dialogs"
+    },
+    "menu": {
+      "label": "Call dialogs in parallel",
+      "submenu": [
+        "Dialog management"
+      ]
     }
   },
   "Microsoft.AdaptiveDialog": {
