@@ -125,6 +125,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Dialogs.CustomInput", "libraries\Bot.Builder.Community.Dialogs.CustomAction\Bot.Builder.Community.Dialogs.CustomInput.csproj", "{D586DAC3-D231-43B8-82F4-D2F225AC9668}"
 EndProject
+<<<<<<< Updated upstream
+=======
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Components", "Components", "{1F7F4CAF-CF22-491F-840D-A63835726C12}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Components.CallDialogs", "libraries\Bot.Builder.Community.Components.CallDialogs\Bot.Builder.Community.Components.CallDialogs.csproj", "{C2AD2BBF-9C56-4DE1-9385-87ACFC3B3669}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bot.Builder.Community.Components.Storage", "libraries\Bot.Builder.Community.Components.Storage\Bot.Builder.Community.Components.Storage.csproj", "{7F797A6E-AAC7-40A0-A640-D64F3FC57032}"
+EndProject
+>>>>>>> Stashed changes
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug - NuGet Packages|Any CPU = Debug - NuGet Packages|Any CPU
@@ -523,6 +532,25 @@ Global
 		{D586DAC3-D231-43B8-82F4-D2F225AC9668}.Documentation|Any CPU.Build.0 = Debug|Any CPU
 		{D586DAC3-D231-43B8-82F4-D2F225AC9668}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D586DAC3-D231-43B8-82F4-D2F225AC9668}.Release|Any CPU.Build.0 = Release|Any CPU
+<<<<<<< Updated upstream
+=======
+		{C2AD2BBF-9C56-4DE1-9385-87ACFC3B3669}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2AD2BBF-9C56-4DE1-9385-87ACFC3B3669}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{C2AD2BBF-9C56-4DE1-9385-87ACFC3B3669}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2AD2BBF-9C56-4DE1-9385-87ACFC3B3669}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2AD2BBF-9C56-4DE1-9385-87ACFC3B3669}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2AD2BBF-9C56-4DE1-9385-87ACFC3B3669}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{C2AD2BBF-9C56-4DE1-9385-87ACFC3B3669}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2AD2BBF-9C56-4DE1-9385-87ACFC3B3669}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F797A6E-AAC7-40A0-A640-D64F3FC57032}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F797A6E-AAC7-40A0-A640-D64F3FC57032}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{7F797A6E-AAC7-40A0-A640-D64F3FC57032}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F797A6E-AAC7-40A0-A640-D64F3FC57032}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F797A6E-AAC7-40A0-A640-D64F3FC57032}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F797A6E-AAC7-40A0-A640-D64F3FC57032}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{7F797A6E-AAC7-40A0-A640-D64F3FC57032}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F797A6E-AAC7-40A0-A640-D64F3FC57032}.Release|Any CPU.Build.0 = Release|Any CPU
+>>>>>>> Stashed changes
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -582,6 +610,12 @@ Global
 		{B9347740-E245-4B13-8BA8-222C27522E82} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
 		{E8FAA9DA-D193-466D-896C-D053AC5CD154} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
 		{D586DAC3-D231-43B8-82F4-D2F225AC9668} = {08759E28-8592-4EBA-9A07-19A5BED3FB0C}
+<<<<<<< Updated upstream
+=======
+		{1F7F4CAF-CF22-491F-840D-A63835726C12} = {57D9879A-FC9F-468C-B86F-BE45A1472F88}
+		{C2AD2BBF-9C56-4DE1-9385-87ACFC3B3669} = {1F7F4CAF-CF22-491F-840D-A63835726C12}
+		{7F797A6E-AAC7-40A0-A640-D64F3FC57032} = {1F7F4CAF-CF22-491F-840D-A63835726C12}
+>>>>>>> Stashed changes
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FE3B75E-BA2B-45BC-BBF0-DDA8BA10C4F0}

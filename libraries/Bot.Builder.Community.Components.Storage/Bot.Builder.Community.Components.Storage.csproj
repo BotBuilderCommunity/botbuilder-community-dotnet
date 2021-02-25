@@ -1,0 +1,52 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RepositoryUrl>https://github.com/Stevenic/botbuilder-community-dotnet/tree/develop/libraries/Bot.Builder.Community.Components.CallDialogs</RepositoryUrl>
+    <PackageIcon>package-icon.png</PackageIcon>
+    <PackageLicenseUrl />
+    <PackageLicenseExpression></PackageLicenseExpression>
+    <Description>Composer actions for reading and writing objects directly to the bots configured storage provider.</Description>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/Stevenic/botbuilder-community-dotnet/tree/develop/libraries/Bot.Builder.Community.Components.CallDialogs</PackageProjectUrl>
+    <Version>1.0.0-preview</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageTags>bf-component</PackageTags>
+    <ContentTargetFolders>content</ContentTargetFolders>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Bot.Builder" Version="4.11.1" />
+    <PackageReference Include="Microsoft.Bot.Connector" Version="4.11.1" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.11.1" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.11.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="**/*.dialog" />
+    <Content Include="**/*.lg" />
+    <Content Include="**/*.lu" />
+    <Content Include="**/*.schema" />
+    <Content Include="**/*.uischema" />
+    <Content Include="**/*.qna" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Schemas\BotBuilderCommunity.StorageDeleteItem.schema" />
+    <None Remove="Schemas\BotBuilderCommunity.StorageDeleteItem.uischema" />
+    <None Remove="Schemas\BotBuilderCommunity.StorageReadItem.schema" />
+    <None Remove="Schemas\BotBuilderCommunity.StorageReadItem.uischema" />
+    <None Remove="Schemas\BotBuilderCommunity.StorageWriteItem.schema" />
+    <None Remove="Schemas\BotBuilderCommunity.StorageWriteItem.uischema" />
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\..\package-icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>

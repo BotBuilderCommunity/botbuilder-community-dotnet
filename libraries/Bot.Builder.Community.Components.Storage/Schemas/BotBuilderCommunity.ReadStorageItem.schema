@@ -1,0 +1,33 @@
+﻿{
+  "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+  "$role": "implements(Microsoft.IDialog)",
+  "title": "Storage - Read Item",
+  "description": "Reads an item from the bots state storage.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Id",
+      "description": "Optional id for the dialog"
+    },
+    "disabled": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "title": "Disabled",
+      "description": "Optional condition which if true will disable this action.",
+      "examples": [
+        "user.age > 3"
+      ]
+    },
+    "itemKey": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "title": "Item Key",
+      "description": "The key of the item to read."
+    },
+    "resultProperty": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "title": "Result Property",
+      "description": "Property path for where to store the item that was read."
+    }
+  },
+  "required": [ "itemKey", "resultProperty" ]
+}
