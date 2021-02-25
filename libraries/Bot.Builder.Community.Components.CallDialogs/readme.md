@@ -8,6 +8,8 @@
 ### Description
 This package extends [Bot Framework Composer](https://docs.microsoft.com/en-us/composer/introduction) with new actions for calling dialogs in parallel. Normally composer dialogs are executed in series one after the other. This is fine for the conversational elements of your bot but there may be times where you'd like to use something like the `HttpRequest` action to call multiple services at once. Using the [AddDialogCall](#AddDialogCall) action you can build up a list of dialogs to call in parallel using the [CallDialogs](#CallDialogs) action. 
 
+> :warning: You should not call any dialogs in parallel that interact with the user. Sending activities is ok but do not call any input actions otherwise an error will be triggered.
+
 The following new components are included in this package:
 
 | Actions | Description |
@@ -29,7 +31,6 @@ Once installed you should find two new actions added to composers "Dialog manage
 
 ![Action Menu](new-menu.png)
 
-> :warning: You should not call any dialogs in parallel that interact with the user. Sending activities is ok but do not call any input actions otherwise an error will be triggered.
 
 #### AddDialogCall
 
