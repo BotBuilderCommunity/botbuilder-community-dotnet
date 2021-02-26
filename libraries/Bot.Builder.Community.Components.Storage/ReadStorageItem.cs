@@ -29,6 +29,9 @@ namespace Bot.Builder.Community.Components.Storage
         [JsonProperty("itemKey")]
         public StringExpression ItemKey { get; set; }
 
+        [JsonProperty("initialItem")]
+        public ValueExpression InitialItem { get; set; }
+
         [JsonProperty("resultProperty")]
         public StringExpression ResultProperty { get; set; }
 
@@ -52,8 +55,19 @@ namespace Bot.Builder.Community.Components.Storage
 
             // Read item and convert to JObject
             var itemKey = this.ItemKey.GetValue(dc.State);
-            var item = await storage.ReadAsync(new string[] { itemKey }, cancellationToken).ConfigureAwait(false);
-            var jItem = item.ContainsKey(itemKey) ? JToken.FromObject(item[itemKey]) : null;
+            var items = await storage.ReadAsync(new string[] { itemKey }, cancellationToken).ConfigureAwait(false);
+            var item = items.ContainsKey(itemKey) ? items[itemKey] : null;
+            var jItem = item != null ? JToken.FromObject(item) : null;
+
+            // Assign initial object if null
+            if (jItem == null && this.InitialItem != null)
+            {
+                var initialItem = this.InitialItem.GetValue(dc.State);
+                if (initialItem is JToken jInitialItem)
+                {
+                    jItem = jInitialItem;
+                }
+            }
 
             // Save item
             if (this.ResultProperty != null)

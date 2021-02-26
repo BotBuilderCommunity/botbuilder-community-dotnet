@@ -5,6 +5,7 @@
     "subtitle": "Read Storage Item",
     "order": [
       "itemKey",
+      "initialItem",
       "resultProperty",
       "*"
     ],
@@ -27,7 +28,7 @@
   },
   "flow": {
     "widget": "ActionCard",
-    "body": "=itemKey",
+    "body": "=action.itemKey",
     "footer": {
       "widget": "PropertyDescription",
       "property": "=action.resultProperty",

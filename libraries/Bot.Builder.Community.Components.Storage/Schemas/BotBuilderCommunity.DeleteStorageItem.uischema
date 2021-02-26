@@ -21,6 +21,6 @@
   },
   "flow": {
     "widget": "ActionCard",
-    "body": "=itemKey"
+    "body": "=action.itemKey"
   }
 }

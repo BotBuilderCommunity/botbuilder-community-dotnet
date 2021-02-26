@@ -1,0 +1,2 @@
+# WelcomeUser
+- Welcome! This sample uses the Storage component to increment a counter anytime a message is sent. This is similar to the echobot sample but the counter isn't reset for each conversation. 

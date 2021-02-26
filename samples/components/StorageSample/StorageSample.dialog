@@ -1,0 +1,108 @@
+{
+  "$kind": "Microsoft.AdaptiveDialog",
+  "$designer": {
+    "$designer": {
+      "name": "StorageSample",
+      "description": "",
+      "id": "IE1t04"
+    }
+  },
+  "autoEndDialog": true,
+  "defaultResultProperty": "dialog.result",
+  "triggers": [
+    {
+      "$kind": "Microsoft.OnConversationUpdateActivity",
+      "$designer": {
+        "id": "376720"
+      },
+      "actions": [
+        {
+          "$kind": "Microsoft.Foreach",
+          "$designer": {
+            "id": "518944",
+            "name": "Loop: for each item"
+          },
+          "itemsProperty": "turn.Activity.membersAdded",
+          "actions": [
+            {
+              "$kind": "Microsoft.IfCondition",
+              "$designer": {
+                "id": "641773",
+                "name": "Branch: if/else"
+              },
+              "condition": "string(dialog.foreach.value.id) != string(turn.Activity.Recipient.id)",
+              "actions": [
+                {
+                  "$kind": "Microsoft.SendActivity",
+                  "$designer": {
+                    "id": "859266",
+                    "name": "Send a response"
+                  },
+                  "activity": "${SendActivity_Welcome()}"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "$kind": "Microsoft.OnUnknownIntent",
+      "$designer": {
+        "id": "3X4m1u"
+      },
+      "actions": [
+        {
+          "$kind": "Microsoft.SetProperty",
+          "$designer": {
+            "id": "a7Z5go",
+            "name": "Initialize item key"
+          },
+          "property": "dialog.itemKey",
+          "value": "=concat(turn.activity.from.id, \":count\")"
+        },
+        {
+          "$kind": "BotBuilderCommunity.ReadStorageItem",
+          "$designer": {
+            "id": "eoiVKn",
+            "name": "Read item from storage"
+          },
+          "itemKey": "=dialog.itemKey",
+          "resultProperty": "dialog.item",
+          "initialItem": {
+            "count": 0
+          }
+        },
+        {
+          "$kind": "Microsoft.SetProperty",
+          "$designer": {
+            "id": "SuWz4I",
+            "name": "Increment count"
+          },
+          "property": "dialog.item.count",
+          "value": "=dialog.item.count + 1"
+        },
+        {
+          "$kind": "BotBuilderCommunity.WriteStorageItem",
+          "$designer": {
+            "id": "hRperx",
+            "name": "Save updated item to storage"
+          },
+          "item": "=dialog.item",
+          "itemKey": "=dialog.itemKey"
+        },
+        {
+          "$kind": "Microsoft.SendActivity",
+          "$designer": {
+            "id": "VuIY1U"
+          },
+          "activity": "${SendActivity_VuIY1U()}"
+        }
+      ]
+    }
+  ],
+  "$schema": "https://raw.githubusercontent.com/microsoft/BotFramework-Composer/stable/Composer/packages/server/schemas/sdk.schema",
+  "generator": "StorageSample.lg",
+  "id": "StorageSample",
+  "recognizer": "StorageSample.lu.qna"
+}
