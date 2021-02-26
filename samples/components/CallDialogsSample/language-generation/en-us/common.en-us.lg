@@ -1,0 +1,2 @@
+# WelcomeUser
+- Welcome! This sample shows the use of the AddDialogCall and CallDialogs actions. Send any message and the bot will call 20 dialogs in parallel. Each dialog will randomly delay for 1 - 3 seconds.

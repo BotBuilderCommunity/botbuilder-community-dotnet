@@ -1,0 +1,39 @@
+﻿{
+  "$schema": "https://schemas.botframework.com/schemas/ui/v1.0/ui.schema",
+  "form": {
+    "label": "Call dialogs in parallel",
+    "subtitle": "Call Dialogs",
+    "helpLink": "https://aka.ms/bfc-understanding-dialogs",
+    "order": [
+      "dialogsProperty",
+      "resultProperty",
+      "*"
+    ],
+    "properties": {
+      "dialogsProperty": {
+        "intellisenseScopes": [
+          "variable-scopes"
+        ]
+      },
+      "resultProperty": {
+        "intellisenseScopes": [
+          "variable-scopes"
+        ]
+      }
+    }
+  },
+  "menu": {
+    "label": "Call dialogs in parallel",
+    "submenu": [ "Dialog management" ]
+  },
+  "flow": {
+    "widget": "ActionCard",
+    "body": "=action.dialogsProperty",
+    "footer": {
+      "widget": "PropertyDescription",
+      "property": "=action.resultProperty",
+      "description": "= Return value"
+    },
+    "hideFooter": "=!action.resultProperty"
+  }
+}
