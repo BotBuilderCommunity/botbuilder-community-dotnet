@@ -3,14 +3,14 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <RepositoryUrl>https://github.com/Stevenic/botbuilder-community-dotnet/tree/develop/libraries/Bot.Builder.Community.Components.CallDialogs</RepositoryUrl>
+    <RepositoryUrl>https://github.com/Stevenic/botbuilder-community-dotnet/tree/develop/libraries/Bot.Builder.Community.Components.Storage</RepositoryUrl>
     <PackageIcon>package-icon.png</PackageIcon>
     <PackageLicenseUrl />
     <PackageLicenseExpression></PackageLicenseExpression>
     <Description>Composer actions for reading and writing objects directly to the bots configured storage provider.</Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <PackageProjectUrl>https://github.com/Stevenic/botbuilder-community-dotnet/tree/develop/libraries/Bot.Builder.Community.Components.CallDialogs</PackageProjectUrl>
-    <Version>1.0.1-preview</Version>
+    <PackageProjectUrl>https://github.com/Stevenic/botbuilder-community-dotnet/tree/develop/libraries/Bot.Builder.Community.Components.Storage</PackageProjectUrl>
+    <Version>1.0.2-preview</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageTags>bf-component</PackageTags>
     <ContentTargetFolders>content</ContentTargetFolders>
