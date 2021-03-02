@@ -275,7 +275,7 @@ The Adaptive Card translator provides four static overloads and two instance ove
 
 In addition to letting you decide what gets translated, the Adaptive Card translator also allows you to decide how it gets translated. The Adaptive Card translator has built-in compatibility with the Microsoft Translator API, but it also lets you pass in a delegate that translates strings in some other way. If you want to use Microsoft Translator, there are three settings that the Adaptive Cards translator can read from your configuration file: `MicrosoftTranslatorKey`, `MicrosoftTranslatorLocale`, and `MicrosoftTranslatorEndpoint`. So if you're using Microsoft Translator with the Adaptive Cards translator, your bot's configuration file might look like this:
 
-```json
+```jsonc
 {
   // Bot credentials
   "MicrosoftAppId": "<guid>",
