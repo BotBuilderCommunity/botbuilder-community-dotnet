@@ -1,6 +1,3 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-//
 // Generated with Bot Builder V4 SDK Template for Visual Studio EchoBot v4.10.3
 
 using Bot.Builder.Community.Adapters.Infobip.Core;
