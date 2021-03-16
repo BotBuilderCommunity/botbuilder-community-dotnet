@@ -1,0 +1,38 @@
+﻿{
+  "$schema": "https://schemas.botframework.com/schemas/ui/v1.0/ui.schema",
+  "form": {
+    "label": "Read a stored item",
+    "subtitle": "Read Storage Item",
+    "order": [
+      "itemKey",
+      "initialItem",
+      "resultProperty",
+      "*"
+    ],
+    "properties": {
+      "itemKey": {
+        "intellisenseScopes": [
+          "variable-scopes"
+        ]
+      },
+      "resultProperty": {
+        "intellisenseScopes": [
+          "variable-scopes"
+        ]
+      }
+    }
+  },
+  "menu": {
+    "label": "Read a stored item",
+    "submenu": [ "Store items" ]
+  },
+  "flow": {
+    "widget": "ActionCard",
+    "body": "=action.itemKey",
+    "footer": {
+      "widget": "PropertyDescription",
+      "property": "=action.resultProperty",
+      "description": "= (Item)"
+    }
+  }
+}
