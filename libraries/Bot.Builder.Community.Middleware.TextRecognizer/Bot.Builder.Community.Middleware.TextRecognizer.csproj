@@ -1,6 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove('$(MSBuildThisFileDirectory)../', 'Bot.Builder.Community.sln'))\CommonTargets\library.shared.targets" />
 
-  <PropertyGroup>
+	<PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>Bot BuilderCommunity</Authors>
     <Company>Bot BuilderCommunity</Company>
@@ -10,7 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Bot.Builder" Version="4.9.4" />
+    <PackageReference Include="Microsoft.Bot.Builder" Version="$(Bot_Builder_Version)" />
     <PackageReference Include="Microsoft.Recognizers.Text.Sequence" Version="1.4.0" />
   </ItemGroup>
 
