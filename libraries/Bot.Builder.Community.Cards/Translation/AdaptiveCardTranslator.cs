@@ -188,20 +188,16 @@ namespace Bot.Builder.Community.Cards.Translation
             var tokens = GetTokensToTranslate(cardJObject, settings ?? DefaultSettings);
 
             var translations = await translateManyAsync(
-                tokens.Select(Convert.ToString).ToList(),
+                tokens.Select(Convert.ToString),
                 cancellationToken).ConfigureAwait(false);
-
+            
             if (translations != null)
             {
-                for (int i = 0; i < tokens.Count && i < translations.Count; i++)
+                foreach (var (token, translation) in tokens.Zip(translations, Tuple.Create))
                 {
-                    var item = tokens[i];
-                    var translatedText = translations[i];
-
-                    if (!string.IsNullOrWhiteSpace(translatedText))
+                    if (!string.IsNullOrWhiteSpace(translation))
                     {
-                        // Modify each stored JToken with the translated text
-                        item.Replace(translatedText);
+                        token.Replace(translation);
                     }
                 }
             }
