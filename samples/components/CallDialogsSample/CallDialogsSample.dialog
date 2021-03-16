@@ -1,0 +1,120 @@
+{
+  "$kind": "Microsoft.AdaptiveDialog",
+  "$designer": {
+    "$designer": {
+      "name": "CallDialogsSample",
+      "description": "",
+      "id": "UJLu6e"
+    }
+  },
+  "autoEndDialog": true,
+  "defaultResultProperty": "dialog.result",
+  "triggers": [
+    {
+      "$kind": "Microsoft.OnConversationUpdateActivity",
+      "$designer": {
+        "id": "376720"
+      },
+      "actions": [
+        {
+          "$kind": "Microsoft.Foreach",
+          "$designer": {
+            "id": "518944",
+            "name": "Loop: for each item"
+          },
+          "itemsProperty": "turn.Activity.membersAdded",
+          "actions": [
+            {
+              "$kind": "Microsoft.IfCondition",
+              "$designer": {
+                "id": "641773",
+                "name": "Branch: if/else"
+              },
+              "condition": "string(dialog.foreach.value.id) != string(turn.Activity.Recipient.id)",
+              "actions": [
+                {
+                  "$kind": "Microsoft.SendActivity",
+                  "$designer": {
+                    "id": "859266",
+                    "name": "Send a response"
+                  },
+                  "activity": "${SendActivity_Welcome()}"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "$kind": "Microsoft.OnUnknownIntent",
+      "$designer": {
+        "id": "mtQi3D"
+      },
+      "actions": [
+        {
+          "$kind": "Microsoft.SetProperties",
+          "$designer": {
+            "id": "fSzKmK"
+          },
+          "assignments": [
+            {
+              "property": "dialog.range",
+              "value": "=range(0, 20)"
+            },
+            {
+              "property": "dialog.dialogList",
+              "value": "=[]"
+            }
+          ]
+        },
+        {
+          "$kind": "Microsoft.Foreach",
+          "$designer": {
+            "id": "hsoTAm"
+          },
+          "index": "dialog.foreach.index",
+          "value": "dialog.foreach.value",
+          "itemsProperty": "dialog.range",
+          "actions": [
+            {
+              "$kind": "BotBuilderCommunity.AddDialogCall",
+              "$designer": {
+                "id": "sLD4EZ"
+              },
+              "dialogsProperty": "dialog.dialogList",
+              "dialog": "RandomDelay",
+              "options": "={ index: dialog.foreach.index, delay: rand(1, 4) }"
+            }
+          ]
+        },
+        {
+          "$kind": "Microsoft.SendActivity",
+          "$designer": {
+            "id": "wY4baV"
+          },
+          "activity": "${SendActivity_wY4baV()}"
+        },
+        {
+          "$kind": "BotBuilderCommunity.CallDialogs",
+          "$designer": {
+            "id": "YZFmb9"
+          },
+          "dialogsProperty": "dialog.dialogList",
+          "resultProperty": "dialog.results"
+        },
+        {
+          "$kind": "Microsoft.SendActivity",
+          "$designer": {
+            "id": "VNhoMW"
+          },
+          "activity": "${SendActivity_VNhoMW()}"
+        }
+      ]
+    }
+  ],
+  "$schema": "https://raw.githubusercontent.com/microsoft/BotFramework-Composer/stable/Composer/packages/server/schemas/sdk.schema",
+  "generator": "CallDialogsSample.lg",
+  "id": "CallDialogsSample",
+  "recognizer": "CallDialogsSample.lu.qna"
+}

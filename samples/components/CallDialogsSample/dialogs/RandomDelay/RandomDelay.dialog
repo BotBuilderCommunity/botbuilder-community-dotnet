@@ -1,0 +1,47 @@
+{
+  "$kind": "Microsoft.AdaptiveDialog",
+  "$designer": {
+    "id": "dOdQeY",
+    "name": "RandomDelay",
+    "description": ""
+  },
+  "autoEndDialog": true,
+  "defaultResultProperty": "dialog.result",
+  "triggers": [
+    {
+      "$kind": "Microsoft.OnBeginDialog",
+      "$designer": {
+        "name": "BeginDialog",
+        "description": "",
+        "id": "ZYZUEr"
+      },
+      "actions": [
+        {
+          "$kind": "Microsoft.SendActivity",
+          "$designer": {
+            "id": "CtLqfM"
+          },
+          "activity": "${SendActivity_CtLqfM()}"
+        },
+        {
+          "$kind": "Microsoft.SendActivity",
+          "$designer": {
+            "id": "dNkq5J"
+          },
+          "activity": "${SendActivity_dNkq5J()}"
+        },
+        {
+          "$kind": "Microsoft.SetProperty",
+          "$designer": {
+            "id": "4XXnSY"
+          },
+          "property": "dialog.result",
+          "value": "=dialog.index"
+        }
+      ]
+    }
+  ],
+  "generator": "RandomDelay.lg",
+  "recognizer": "RandomDelay.lu.qna",
+  "id": "RandomDelay"
+}

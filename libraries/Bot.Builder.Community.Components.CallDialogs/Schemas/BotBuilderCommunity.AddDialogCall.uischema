@@ -1,0 +1,32 @@
+﻿{
+  "$schema": "https://schemas.botframework.com/schemas/ui/v1.0/ui.schema",
+  "form": {
+    "label": "Add a dialog to call",
+    "subtitle": "Add Dialog Call",
+    "helpLink": "https://aka.ms/bfc-understanding-dialogs",
+    "order": [
+      "dialogsProperty",
+      "dialog",
+      "options",
+      "*"
+    ],
+    "properties": {
+      "dialogsProperty": {
+        "intellisenseScopes": [
+          "variable-scopes"
+        ]
+      }
+    }
+  },
+  "menu": {
+    "label": "Add a dialog to call",
+    "submenu": [ "Dialog management" ]
+  },
+  "flow": {
+    "widget": "ActionCard",
+    "body": {
+      "widget": "DialogRef",
+      "dialog": "=action.dialog"
+    }
+  }
+}
