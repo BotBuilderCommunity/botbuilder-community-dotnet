@@ -1,0 +1,35 @@
+{
+    "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+    "$role": "implements(Microsoft.IAdapter)",
+    "title": "Google Actions SDK connection",
+    "description": "Connects a bot to Google Actions.",
+    "type": "object",
+    "properties": {
+        "ActionProjectId": {
+            "type": "string",
+            "title": "Project id",
+            "description": "Google action project id."
+        },
+        "ActionInvocationName": {
+            "type": "string",
+            "title": "Invocation name",
+            "description": "Google action invocation name."
+        },
+        "ShouldEndSessionByDefault": {
+            "type": "boolean",
+            "title": "Should end session",
+            "description": "Whether to end session by default.",
+            "default": true
+        },
+        "route": {
+            "type": "string",
+            "title": "Route",
+            "description": "Optional route where the adapter is exposed.",
+            "default": "google"
+        }
+    },
+    "required": [
+        "ActionProjectId",
+        "ActionInvocationName"
+    ]
+}
