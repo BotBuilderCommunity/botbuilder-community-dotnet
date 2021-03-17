@@ -1,0 +1,46 @@
+{
+    "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+    "$role": "implements(Microsoft.IAdapter)",
+    "title": "Zoom connection",
+    "description": "Connects a bot to Zoom.",
+    "type": "object",
+    "properties": {
+        "ClientSecret": {
+            "type": "string",
+            "title": "Client Secret",
+            "description": "Zoom client secret."
+        },
+        "ClientId": {
+            "type": "string",
+            "title": "Client id",
+            "description": "Zoom client id."
+        },
+        "BotJid": {
+            "type": "string",
+            "title": "Bot JID",
+            "description": "Zoom bot JID."
+        },
+        "VerificationToken": {
+            "type": "string",
+            "title": "Verification token",
+            "description": "Zoom verification token."
+        },
+        "ValidateIncomingZoomRequests": {
+            "type": "boolean",
+            "title": "Validate incoming requests",
+            "description": "Whether to validate incoming requests from Zoom.",
+            "default": true
+        },
+        "route": {
+            "type": "string",
+            "title": "Route",
+            "description": "Optional route where the adapter is exposed.",
+            "default": "zoom"
+        }
+    },
+    "required": [
+        "ClientSecret",
+        "ClientId",
+        "BotJid"
+    ]
+}

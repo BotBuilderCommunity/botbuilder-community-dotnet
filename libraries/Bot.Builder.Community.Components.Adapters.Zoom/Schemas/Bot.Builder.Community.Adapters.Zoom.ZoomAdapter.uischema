@@ -1,0 +1,15 @@
+{
+    "$schema": "https://schemas.botframework.com/schemas/ui/v1.0/ui.schema",
+    "form": {
+        "label": "Zoom connection",
+        "description": "Connects a bot to Zoom.",
+        "helpLink": "https://github.com/carlosscastro/botbuilder-community-dotnet/blob/feature/packages-preview/libraries/Bot.Builder.Community.Adapters.Zoom/Component/README.md",
+        "order": [
+            "ClientId",
+            "ClientSecret",
+            "BotJid",
+            "VerificationToken",
+            "*"
+        ]
+    }
+}
