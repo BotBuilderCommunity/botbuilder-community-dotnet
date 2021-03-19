@@ -33,7 +33,7 @@ Install into your project use the following command in the package manager.
 
 ## Sample
 
-Sample bot is available [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/develop/samples/ACS%20SMS%20Adapter%20Sample).
+Sample bot is available [here](../../samples/ACS%20SMS%20Adapter%20Sample).
 
 ## Usage
 

@@ -20,6 +20,10 @@ Install into your project using the following command in the package manager;
     PM> Install-Package Bot.Builder.Community.Storage.EntityFramework
 ```
 
+### Sample
+
+A basic sample for using this component can be found [here](../../samples/EntityFramework%20Storage%20Sample).
+
 ### Usage
 
 The extension uses Microsoft.EntityFrameworkCore as the library for connecting to Sql server. Therefore a connection string to an existing database must be provided during startup. 

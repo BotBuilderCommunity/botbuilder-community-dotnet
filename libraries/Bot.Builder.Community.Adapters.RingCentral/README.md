@@ -46,7 +46,7 @@ Install into your project using the following command in the package manager;
 
 ### Sample
 
-Basic sample bot available [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/RingCentral%20Adapter%20Sample).
+Basic sample bot available [here](../../samples/RingCentral%20Adapter%20Sample).
 
 ### Usage
 

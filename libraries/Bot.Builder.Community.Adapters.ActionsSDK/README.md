@@ -35,7 +35,7 @@ Install into your project use the following command in the package manager.
 
 ## Sample
 
-A Sample bot with examples of Actions SDK specific functionality (such as sending cards, lists etc.) is available [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/samples/Actions%20SDK%20Adapter%20Sample).
+A Sample bot with examples of Actions SDK specific functionality (such as sending cards, lists etc.) is available [here](../../samples/Actions%20SDK%20Adapter%20Sample).
 
 ## Usage
 
