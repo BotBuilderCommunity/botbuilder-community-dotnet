@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Bot_Builder_Version>4.12.1</Bot_Builder_Version>
-    <Bot_Builder_Preview_Version>4.12.1-preview</Bot_Builder_Preview_Version>
+    <Bot_Builder_Preview_Version>4.12.1-rc0.preview</Bot_Builder_Preview_Version>
   </PropertyGroup>
 
 </Project>
