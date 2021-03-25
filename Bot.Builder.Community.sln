@@ -123,7 +123,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Infobip.WhatsApp.Tests", "tests\Bot.Builder.Community.Adapters.Infobip.WhatsApp.Tests\Bot.Builder.Community.Adapters.Infobip.WhatsApp.Tests.csproj", "{E8FAA9DA-D193-466D-896C-D053AC5CD154}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Dialogs.CustomInput", "libraries\Bot.Builder.Community.Dialogs.CustomAction\Bot.Builder.Community.Dialogs.CustomInput.csproj", "{D586DAC3-D231-43B8-82F4-D2F225AC9668}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Dialogs.Adaptive.Input", "libraries\Bot.Builder.Community.Dialogs.CustomAction\Bot.Builder.Community.Dialogs.Adaptive.Input.csproj", "{D586DAC3-D231-43B8-82F4-D2F225AC9668}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
