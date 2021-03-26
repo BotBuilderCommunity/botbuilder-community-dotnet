@@ -141,9 +141,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Compo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Components.Shared", "libraries\Bot.Builder.Community.Components.Shared\Bot.Builder.Community.Components.Shared.csproj", "{4B056E07-7FE3-48F7-8BA0-43097932380D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bot.Builder.Community.Components.Handoff.Shared", "libraries\Bot.Builder.Community.Components.Handoff.Shared\Bot.Builder.Community.Components.Handoff.Shared.csproj", "{5197AF70-82CB-4868-B9DF-20EA8E136972}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Components.Handoff.Shared", "libraries\Bot.Builder.Community.Components.Handoff.Shared\Bot.Builder.Community.Components.Handoff.Shared.csproj", "{5197AF70-82CB-4868-B9DF-20EA8E136972}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Components.Handoff.LivePerson", "libraries\Bot.Builder.Community.Components.Handoff.LivePerson\Bot.Builder.Community.Components.Handoff.LivePerson.csproj", "{1359A0F3-5F40-40F9-809B-AB5A6D21AD58}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bot.Builder.Community.Components.Handoff.ServiceNow", "libraries\Bot.Builder.Community.Components.Handoff.ServiceNow\Bot.Builder.Community.Components.Handoff.ServiceNow.csproj", "{63A62728-74B0-4BA3-9ACA-87E583BBB9B4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -615,6 +617,14 @@ Global
 		{1359A0F3-5F40-40F9-809B-AB5A6D21AD58}.Documentation|Any CPU.Build.0 = Debug|Any CPU
 		{1359A0F3-5F40-40F9-809B-AB5A6D21AD58}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1359A0F3-5F40-40F9-809B-AB5A6D21AD58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63A62728-74B0-4BA3-9ACA-87E583BBB9B4}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{63A62728-74B0-4BA3-9ACA-87E583BBB9B4}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{63A62728-74B0-4BA3-9ACA-87E583BBB9B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63A62728-74B0-4BA3-9ACA-87E583BBB9B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63A62728-74B0-4BA3-9ACA-87E583BBB9B4}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{63A62728-74B0-4BA3-9ACA-87E583BBB9B4}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{63A62728-74B0-4BA3-9ACA-87E583BBB9B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63A62728-74B0-4BA3-9ACA-87E583BBB9B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -684,6 +694,7 @@ Global
 		{4B056E07-7FE3-48F7-8BA0-43097932380D} = {1F7F4CAF-CF22-491F-840D-A63835726C12}
 		{5197AF70-82CB-4868-B9DF-20EA8E136972} = {1F7F4CAF-CF22-491F-840D-A63835726C12}
 		{1359A0F3-5F40-40F9-809B-AB5A6D21AD58} = {1F7F4CAF-CF22-491F-840D-A63835726C12}
+		{63A62728-74B0-4BA3-9ACA-87E583BBB9B4} = {1F7F4CAF-CF22-491F-840D-A63835726C12}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FE3B75E-BA2B-45BC-BBF0-DDA8BA10C4F0}
