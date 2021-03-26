@@ -12,7 +12,7 @@
     <PackageProjectUrl>https://github.com/Stevenic/botbuilder-community-dotnet/tree/develop/libraries/Bot.Builder.Community.Components.Storage</PackageProjectUrl>
     <Version>1.0.2-preview</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageTags>bf-component</PackageTags>
+    <PackageTags>msbot-component;msbot-action</PackageTags>
     <ContentTargetFolders>content</ContentTargetFolders>
   </PropertyGroup>
 

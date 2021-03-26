@@ -11,7 +11,7 @@
     <PackageProjectUrl>https://github.com/Stevenic/botbuilder-community-dotnet/tree/develop/libraries/Bot.Builder.Community.Components.CallDialogs</PackageProjectUrl>
     <Version>1.0.3-preview</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageTags>bf-component</PackageTags>
+    <PackageTags>msbot-component;msbot-adapter</PackageTags>
     <ContentTargetFolders>content</ContentTargetFolders>
   </PropertyGroup>
 
