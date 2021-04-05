@@ -24,7 +24,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="$(Bot_Builder_Version)" />
-    <PackageReference Include="Microsoft.Bot.Builder.Runtime.Plugins" Version="$(Bot_Builder_Preview_Version)" />
+    <PackageReference Include="Microsoft.Bot.Builder" Version="$(Bot_Builder_Version)" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
 
@@ -38,7 +38,5 @@
     <Content Include="**/*.uischema" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Schemas\" />
-  </ItemGroup>
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
 </Project>

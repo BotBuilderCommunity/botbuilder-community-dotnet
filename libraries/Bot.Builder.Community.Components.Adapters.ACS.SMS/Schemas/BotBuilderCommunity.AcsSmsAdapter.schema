@@ -26,6 +26,12 @@
             "title": "Route",
             "description": "Optional route where the adapter is exposed.",
             "default": "acs"
+        },
+        "type": {
+            "type": "string",
+            "title": "Type",
+            "description": "Adapter type.",
+            "default": "Bot.Builder.Community.Adapters.ACS.SMS.AcsSmsAdapter"
         }
     },
     "required": [

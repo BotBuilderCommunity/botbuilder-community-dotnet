@@ -9,6 +9,9 @@
             "AcsPhoneNumber",
             "EnableDeliveryReports",
             "*"
+        ],
+        "hidden": [
+            "type"
         ]
     }
 }

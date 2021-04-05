@@ -8,8 +8,8 @@ namespace Bot.Builder.Community.Adapters.Alexa.Component
     /// <summary>
     /// Alexa adapter bot plugin.
     /// </summary>
-    public class AlexaAdapterBotPlugin
-        : AdapterPlugin<AlexaAdapter, AlexaAdapterOptions>
+    public class AlexaAdapterBotComponent
+        : AdapterBotComponent<AlexaAdapter, AlexaAdapterOptions>
     {
     }
 }
