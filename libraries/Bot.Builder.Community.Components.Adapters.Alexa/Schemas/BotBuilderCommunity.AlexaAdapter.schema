@@ -33,6 +33,12 @@
             "title": "Route",
             "description": "Optional route where the adapter is exposed.",
             "default": "alexa"
+        },
+        "type": {
+            "type": "string",
+            "title": "Type",
+            "description": "Adapter type.",
+            "default": "Bot.Builder.Community.Adapters.Alexa.AlexaAdapter"
         }
     },
     "required": [

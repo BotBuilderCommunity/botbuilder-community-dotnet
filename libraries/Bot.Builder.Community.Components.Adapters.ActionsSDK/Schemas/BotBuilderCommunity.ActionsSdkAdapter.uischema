@@ -9,6 +9,9 @@
             "ActionInvocationName",
             "ShouldEndSessionByDefault",
             "*"
+        ],
+        "hidden": [
+            "type"
         ]
     }
 }

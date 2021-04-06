@@ -36,6 +36,12 @@
             "title": "Route",
             "description": "Optional route where the adapter is exposed.",
             "default": "zoom"
+        },
+        "type": {
+            "type": "string",
+            "title": "Type",
+            "description": "Adapter type.",
+            "default": "Bot.Builder.Community.Adapters.Zoom.ZoomAdapter"
         }
     },
     "required": [

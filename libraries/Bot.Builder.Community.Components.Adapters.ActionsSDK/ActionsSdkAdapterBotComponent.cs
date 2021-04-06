@@ -8,8 +8,8 @@ namespace Bot.Builder.Community.Adapters.ActionsSDK.Component
     /// <summary>
     /// Google Actions SDK adapter bot plugin.
     /// </summary>
-    public class ActionsSdkAdapterBotPlugin
-        : AdapterPlugin<ActionsSdkAdapter, ActionsSdkAdapterOptions>
+    public class ActionsSdkAdapterBotComponent
+        : AdapterBotComponent<ActionsSdkAdapter, ActionsSdkAdapterOptions>
     {
     }
 }

@@ -26,6 +26,12 @@
             "title": "Route",
             "description": "Optional route where the adapter is exposed.",
             "default": "google"
+        },
+        "type": {
+            "type": "string",
+            "title": "Type",
+            "description": "Adapter type.",
+            "default": "Bot.Builder.Community.Adapters.ActionsSDK.ActionsSdkAdapter"
         }
     },
     "required": [
