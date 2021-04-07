@@ -8,6 +8,6 @@
         public string userId { get; set; }
         public Body[] body { get; set; }
         public bool completed { get; set; }
-        public int score { get; set; }
+        public float score { get; set; }
     }
 }

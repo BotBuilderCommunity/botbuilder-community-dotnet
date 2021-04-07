@@ -67,6 +67,11 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                                 _credentials.MsAppId,
                                 handoffRecord.ConversationReference,
                                 (turnContext, cancellationToken) => turnContext.SendActivityAsync(eventActivity, cancellationToken), default);
+
+                            await (_adapter).ContinueConversationAsync(
+                                _credentials.MsAppId,
+                                handoffRecord.ConversationReference,
+                                (turnContext, cancellationToken) => turnContext.SendActivityAsync(Activity.CreateTraceActivity("ServiceNowVirtualAgent", "Handoff completed"), cancellationToken), default);
                         }
                     }
 
@@ -127,6 +132,12 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                             _credentials.MsAppId,
                             handoffRecord.ConversationReference,
                             (turnContext, cancellationToken) => turnContext.SendActivityAsync(responseActivity, cancellationToken), default);
+                                              
+                        await (_adapter).ContinueConversationAsync(
+                            _credentials.MsAppId,
+                            handoffRecord.ConversationReference,
+                            (turnContext, cancellationToken) => turnContext.SendActivityAsync(Activity.CreateTraceActivity("ServiceNowVirtualAgent", $"Response from ServiceNow Virtual Agent received (Id:{responseMessage.requestId})"), cancellationToken), default);
+
                     }
                 }
                 else

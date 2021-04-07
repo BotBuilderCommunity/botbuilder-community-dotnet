@@ -46,6 +46,8 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
 
             var conversationRecord = await ServiceNowConnector.EscalateToAgentAsync(turnContext, handoffEvent, serviceNowTenant, userName, password, _conversationHandoffRecordMap);
 
+            await turnContext.SendActivityAsync(Activity.CreateTraceActivity("ServiceNowVirtualAgent", "Handoff initiated"));
+
             return new ServiceNowHandoffRecord(turnContext.Activity.GetConversationReference(), conversationRecord);
         }
 
