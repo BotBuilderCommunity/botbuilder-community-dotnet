@@ -1,54 +1,43 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{914A389D-E88A-421E-88D1-E1346BA4A5F7}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>Bot.Builder.Community.Components.Dialogs.GetWeather</RootNamespace>
-    <AssemblyName>Bot.Builder.Community.Components.Dialogs.GetWeather</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Deterministic>true</Deterministic>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PackageId>Bot.Builder.Community.Components.Dialogs.GetWeather</PackageId>
-    <PackageVersion>1.0.0</PackageVersion>
-    <Description>First version of GetWeather packages</Description>
-    <Summary>Dialogs to provide getWeather utterance handling</Summary>
-    <Company>Microsoft</Company>
-    <Authors>Microsoft</Authors>
-    <Product>Microsoft Bot Builder SDK</Product>
-    <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
-  </PropertyGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove('$(MSBuildThisFileDirectory)../', 'Bot.Builder.Community.sln'))\CommonTargets\library.shared.targets" />
+  
+  	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<Description>Dialogs to provide getWeather utterance handling.</Description>
+		<Authors>Bot Builder Community</Authors>
+		<Company>Bot Builder Community</Company>
+		<PackageLicenseUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/master/LICENSE</PackageLicenseUrl>
+		<PackageProjectUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/libraries/Bot.Builder.Community.Components.Dialogs.GetWeather</PackageProjectUrl>
+		<Version>1.0.0</Version>
+		<FileVersion>1.0.0</FileVersion>
+		<AssemblyVersion>1.0.0</AssemblyVersion>
+		<PackageIcon>package-icon.png</PackageIcon>
+		<RepositoryUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/</RepositoryUrl>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<ContentTargetFolders>content</ContentTargetFolders>
+	    <releaseNotes>First version of GetWeather package</releaseNotes>
+		<PackageTags>msbot-component;msbot-content;botbuildercommunity</PackageTags>
+		<NoWarn>$(NoWarn);NU5104</NoWarn>
+	</PropertyGroup>
+
   <ItemGroup>
-    <None Include="Bot.Builder.Community.Components.Dialogs.GetWeather.nuspec" />
-    <None Include="package.json" />
-    <None Include="README.md" />
+    <Content Include="**/*.dialog" />
+    <Content Include="**/*.lg" />
+    <Content Include="**/*.lu" />
+    <Content Include="**/*.schema" />
+    <Content Include="**/*.uischema" />
+    <Content Include="**/*.qna" />
   </ItemGroup>
+
   <ItemGroup>
-    <Folder Include="NewFolder1\" />
+    <None Remove="package.json" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
+  <ItemGroup>
+    <None Include="..\..\package-icon.png" Link="package-icon.png">
+      <PackagePath></PackagePath>
+      <Pack>True</Pack>
+    </None>
+  </ItemGroup>
+
 </Project>
