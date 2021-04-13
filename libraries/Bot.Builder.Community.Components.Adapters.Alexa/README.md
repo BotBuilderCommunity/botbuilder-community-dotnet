@@ -25,9 +25,9 @@ This readme focuses on consuming the Alexa component in [Bot Framework Composer]
 
 1. Install [Bot Framework Composer](https://dev.botframework.com/). Once Composer is installed, subscribe to the Early Adopters feed from the Composer application settings. Check for updates to install the latest nightly build in order to access the latest features. If you prefer to build locally, clone [Bot Framework Composer](https://github.com/microsoft/BotFramework-Composer) and build locally from the main branch using the instructions in the repository.
 
-2. If you don't already have one, create a new bot using the 'Empty' bot template.
+2. If you don't already have one, create a new bot using one of the available templates.
 
-![Create new empty bot](/libraries/Bot.Builder.Community.Adapters.Alexa/media/bot-service-adapter-connect-alexa/component-2-new-bot.PNG?raw=true)
+![image](https://user-images.githubusercontent.com/3900649/114547335-3974ab80-9c56-11eb-9abd-9b6938149f42.png)
 
 3. Go to Package Manager (in the left hand navigation within Composer) and select 'Community Packages' from the dropdown filter.
 
