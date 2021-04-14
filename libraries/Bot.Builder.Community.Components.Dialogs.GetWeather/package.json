@@ -1,0 +1,25 @@
+{
+  "name": "@botbuildercommunity/bot-components-getweather",
+  "version": "1.0.0",
+  "description": "Contains Adaptive Dialog assets to support GetWeather conversational flows in an Adaptive bot built on the Azure Bot Framework.",
+  "keywords": [
+    "microsoft",
+    "bot",
+    "framework",
+    "adaptive",
+    "msbot-component",
+    "msbot-content"
+  ],
+  "license": "MIT",
+  "author": "Bot Builder Community",
+  "files": [
+    "exported"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BotBuilderCommunity/botbuilder-community-dotnet.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

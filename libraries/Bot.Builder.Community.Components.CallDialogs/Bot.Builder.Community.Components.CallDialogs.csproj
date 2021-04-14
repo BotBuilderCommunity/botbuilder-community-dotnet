@@ -1,0 +1,51 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove('$(MSBuildThisFileDirectory)../', 'Bot.Builder.Community.sln'))\CommonTargets\library.shared.targets" />
+  
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RepositoryUrl>https://github.com/Stevenic/botbuilder-community-dotnet/tree/develop/libraries/Bot.Builder.Community.Components.CallDialogs</RepositoryUrl>
+    <PackageIcon>package-icon.png</PackageIcon>
+    <PackageLicenseUrl />
+    <PackageLicenseExpression></PackageLicenseExpression>
+    <Description>Composer actions to execute non-interactive dialogs in parallel. Useful when you wish to make multiple HttpRequest or other service calls in parallel.</Description>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/Stevenic/botbuilder-community-dotnet/tree/develop/libraries/Bot.Builder.Community.Components.CallDialogs</PackageProjectUrl>
+    <Version>1.0.3-preview</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageTags>msbot-component;msbot-adapter</PackageTags>
+    <ContentTargetFolders>content</ContentTargetFolders>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Bot.Builder" Version="$(Bot_Builder_Version)" />
+    <PackageReference Include="Microsoft.Bot.Connector" Version="$(Bot_Builder_Version)" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="$(Bot_Builder_Version)" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="$(Bot_Builder_Version)" />
+    <PackageReference Include="ParallelExtensionsExtras.CrossPlatform" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="**/*.dialog" />
+    <Content Include="**/*.lg" />
+    <Content Include="**/*.lu" />
+    <Content Include="**/*.schema" />
+    <Content Include="**/*.uischema" />
+    <Content Include="**/*.qna" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Schemas\BotBuilderCommunity.AddDialogCall.schema" />
+    <None Remove="Schemas\BotBuilderCommunity.AddDialogCall.uischema" />
+    <None Remove="Schemas\BotBuilderCommunity.CallDialogs.schema" />
+    <None Remove="Schemas\BotBuilderCommunity.CallDialogs.uischema" />
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\..\package-icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>
