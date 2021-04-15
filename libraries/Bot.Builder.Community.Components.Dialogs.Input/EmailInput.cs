@@ -11,21 +11,21 @@ using Microsoft.Recognizers.Text.Sequence;
 using Newtonsoft.Json;
 using static Microsoft.Recognizers.Text.Culture;
 
-namespace Bot.Builder.Community.Dialogs.Adaptive.Input.Input
+namespace Bot.Builder.Community.Components.Dialogs.Input
 {
-    public class PhoneNumberInput : InputDialog
+    public class EmailInput : InputDialog
     {
         [JsonProperty("$Kind")]
-        public const string Kind = "BotBuilderCommunity.PhoneNumberInput";
+        public const string Kind = "BotBuilderCommunity.EmailInput";
 
         [JsonProperty("defaultLocale")]
         public StringExpression DefaultLocale { get; set; }
 
         [JsonProperty("resultProperty")]
         public StringExpression ResultProperty { get; set; }
-
+        
         [JsonConstructor]
-        public PhoneNumberInput([CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
+        public EmailInput([CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
         {
             this.RegisterSourceLocation(sourceFilePath, sourceLineNumber);
         }
@@ -35,11 +35,12 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Input.Input
         {
             if (this.Prompt == null)
             {
-                this.Prompt = new StaticActivityTemplate(MessageFactory.Text("Prompt for a phone number"));
+                this.Prompt = new StaticActivityTemplate(MessageFactory.Text("Prompt for a email"));
             }
 
             return base.OnRenderPromptAsync(dc, state, cancellationToken);
         }
+
         protected override Task<InputState> OnRecognizeInputAsync(DialogContext dc, CancellationToken cancellationToken)
         {
             var validateText = dc.State.GetValue<object>(VALUE_PROPERTY);
@@ -51,17 +52,18 @@ namespace Bot.Builder.Community.Dialogs.Adaptive.Input.Input
 
             var culture = GetCulture(dc);
 
-            var modelResults = SequenceRecognizer.RecognizePhoneNumber(strEmailText, culture);
+            var recognizeEmail = SequenceRecognizer.RecognizeEmail(strEmailText, culture);
 
-            if (modelResults == null || modelResults.Count <= 0)
+            if (recognizeEmail == null || recognizeEmail.Count <= 0)
             {
                 return Task.FromResult(InputState.Unrecognized);
             }
 
-            var result = modelResults[0].Resolution["value"].ToString();
+            var result = recognizeEmail[0].Resolution["value"].ToString();
             dc.State.SetValue(this.ResultProperty.GetValue(dc.State), result);
 
             return Task.FromResult(InputState.Valid);
+
         }
 
         private string GetCulture(DialogContext dc)

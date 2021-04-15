@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using static Microsoft.Recognizers.Text.Culture;
 
-namespace Bot.Builder.Community.Dialogs.Adaptive.Input.Input
+namespace Bot.Builder.Community.Components.Dialogs.Input
 {
     [JsonConverter(typeof(StringEnumConverter), true)]
     public enum SocialMediaInputType

@@ -121,8 +121,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Infobip.WhatsApp.Tests", "tests\Bot.Builder.Community.Adapters.Infobip.WhatsApp.Tests\Bot.Builder.Community.Adapters.Infobip.WhatsApp.Tests.csproj", "{E8FAA9DA-D193-466D-896C-D053AC5CD154}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Dialogs.Adaptive.Input", "libraries\Bot.Builder.Community.Dialogs.CustomAction\Bot.Builder.Community.Dialogs.Adaptive.Input.csproj", "{D586DAC3-D231-43B8-82F4-D2F225AC9668}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Components", "Components", "{1F7F4CAF-CF22-491F-840D-A63835726C12}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Components.CallDialogs", "libraries\Bot.Builder.Community.Components.CallDialogs\Bot.Builder.Community.Components.CallDialogs.csproj", "{C2AD2BBF-9C56-4DE1-9385-87ACFC3B3669}"
@@ -139,7 +137,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Compo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Components.Shared", "libraries\Bot.Builder.Community.Components.Shared\Bot.Builder.Community.Components.Shared.csproj", "{4B056E07-7FE3-48F7-8BA0-43097932380D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bot.Builder.Community.Components.Dialogs.GetWeather", "libraries\Bot.Builder.Community.Components.Dialogs.GetWeather\Bot.Builder.Community.Components.Dialogs.GetWeather.csproj", "{914A389D-E88A-421E-88D1-E1346BA4A5F7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Components.Dialogs.GetWeather", "libraries\Bot.Builder.Community.Components.Dialogs.GetWeather\Bot.Builder.Community.Components.Dialogs.GetWeather.csproj", "{914A389D-E88A-421E-88D1-E1346BA4A5F7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Components.Dialogs.Input", "libraries\Bot.Builder.Community.Components.Dialogs.Input\Bot.Builder.Community.Components.Dialogs.Input.csproj", "{81878E10-7802-4FAA-B207-7BBDC0D0588F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -523,14 +523,6 @@ Global
 		{E8FAA9DA-D193-466D-896C-D053AC5CD154}.Documentation|Any CPU.Build.0 = Debug|Any CPU
 		{E8FAA9DA-D193-466D-896C-D053AC5CD154}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E8FAA9DA-D193-466D-896C-D053AC5CD154}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D586DAC3-D231-43B8-82F4-D2F225AC9668}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
-		{D586DAC3-D231-43B8-82F4-D2F225AC9668}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
-		{D586DAC3-D231-43B8-82F4-D2F225AC9668}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D586DAC3-D231-43B8-82F4-D2F225AC9668}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D586DAC3-D231-43B8-82F4-D2F225AC9668}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
-		{D586DAC3-D231-43B8-82F4-D2F225AC9668}.Documentation|Any CPU.Build.0 = Debug|Any CPU
-		{D586DAC3-D231-43B8-82F4-D2F225AC9668}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D586DAC3-D231-43B8-82F4-D2F225AC9668}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C2AD2BBF-9C56-4DE1-9385-87ACFC3B3669}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
 		{C2AD2BBF-9C56-4DE1-9385-87ACFC3B3669}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
 		{C2AD2BBF-9C56-4DE1-9385-87ACFC3B3669}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -595,6 +587,14 @@ Global
 		{914A389D-E88A-421E-88D1-E1346BA4A5F7}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
 		{914A389D-E88A-421E-88D1-E1346BA4A5F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{914A389D-E88A-421E-88D1-E1346BA4A5F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81878E10-7802-4FAA-B207-7BBDC0D0588F}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{81878E10-7802-4FAA-B207-7BBDC0D0588F}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{81878E10-7802-4FAA-B207-7BBDC0D0588F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81878E10-7802-4FAA-B207-7BBDC0D0588F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81878E10-7802-4FAA-B207-7BBDC0D0588F}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{81878E10-7802-4FAA-B207-7BBDC0D0588F}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{81878E10-7802-4FAA-B207-7BBDC0D0588F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81878E10-7802-4FAA-B207-7BBDC0D0588F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -652,7 +652,6 @@ Global
 		{DE1D7A6A-8018-4375-8118-98A72EE5505A} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
 		{B9347740-E245-4B13-8BA8-222C27522E82} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
 		{E8FAA9DA-D193-466D-896C-D053AC5CD154} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
-		{D586DAC3-D231-43B8-82F4-D2F225AC9668} = {08759E28-8592-4EBA-9A07-19A5BED3FB0C}
 		{1F7F4CAF-CF22-491F-840D-A63835726C12} = {57D9879A-FC9F-468C-B86F-BE45A1472F88}
 		{C2AD2BBF-9C56-4DE1-9385-87ACFC3B3669} = {1F7F4CAF-CF22-491F-840D-A63835726C12}
 		{7F797A6E-AAC7-40A0-A640-D64F3FC57032} = {1F7F4CAF-CF22-491F-840D-A63835726C12}
@@ -662,6 +661,7 @@ Global
 		{3924EB13-7A0B-4837-8C96-06194ED96508} = {1F7F4CAF-CF22-491F-840D-A63835726C12}
 		{4B056E07-7FE3-48F7-8BA0-43097932380D} = {1F7F4CAF-CF22-491F-840D-A63835726C12}
 		{914A389D-E88A-421E-88D1-E1346BA4A5F7} = {1F7F4CAF-CF22-491F-840D-A63835726C12}
+		{81878E10-7802-4FAA-B207-7BBDC0D0588F} = {1F7F4CAF-CF22-491F-840D-A63835726C12}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FE3B75E-BA2B-45BC-BBF0-DDA8BA10C4F0}
