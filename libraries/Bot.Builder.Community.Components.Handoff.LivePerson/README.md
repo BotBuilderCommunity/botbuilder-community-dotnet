@@ -27,7 +27,9 @@ This component provides integration with the LivePerson platform, enabling hando
 
 1. Navigate to the Bot Framework Composer **Package Manager**.
 2. Change the filter to **Community packages**.
-3. Locate and install **Bot.Builder.Community.Components.Handoff.LivePerson**
+3. Search for 'liverperson' and install **Bot.Builder.Community.Components.Handoff.LivePerson**
+
+![image](https://user-images.githubusercontent.com/3900649/115234449-f3fe2580-a110-11eb-95f4-e549cd14ceea.png)
 
 ### LivePerson Configuration
 
@@ -41,7 +43,11 @@ This component provides integration with the LivePerson platform, enabling hando
 ngrok.exe http 3978 -host-header="localhost:3978"
 ```
 
+![image](https://user-images.githubusercontent.com/3900649/115234852-68d15f80-a111-11eb-865b-43085418c26a.png)
+
 6. Once your app is configured, make a note of the application Id and secret, which have been generated automatically for you and displayed on the LivePerson Connector Hub.
+
+![image](https://user-images.githubusercontent.com/3900649/115234991-90c0c300-a111-11eb-877f-0ddb8df6421f.png)
 
 ### Composer component configuration
 
@@ -63,6 +69,8 @@ ngrok.exe http 3978 -host-header="localhost:3978"
 ### Triggering handoff from your bot
 
 You can trigger handoff to LivePerson at any point by adding the **Send Handoff Activity** action in the designer. For example, you might add an natural language intent trigger to detect if the user asks to speak to a human.
+
+![image](https://user-images.githubusercontent.com/3900649/115235187-d1204100-a111-11eb-8dee-bcfb63b76347.png)
 
 When adding a **Send Handoff Activity** you have the option to provide Context information that can be passed to LivePerson, provided as a JSON object. The Context can contian a Skill, which can used as part of LivePerson routing rules and / or Engagement Attributes. Currently you can add EngagementAttributes of type 'ctmrinfo' and / or 'personal'. For more information on Engagement Attributes, visit https://developers.liveperson.com/engagement-attributes-types-of-engagement-attributes.html. 
 
