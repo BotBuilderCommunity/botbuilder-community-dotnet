@@ -3,18 +3,18 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<Description>LivePerson handoff component for Bot Framework Composer and v4 Bot Builder SDK. Enables human handoff capability for LivePerson platform.</Description>
+		<Description>Enables handoff to another channel (such as Microsoft Teams) for Bot Framework Composer and v4 Bot Builder SDK.</Description>
 		<Authors>Bot Builder Community</Authors>
 		<Company>Bot Builder Community</Company>
 		<PackageLicenseUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/master/LICENSE</PackageLicenseUrl>
-		<PackageProjectUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/libraries/Bot.Builder.Community.Handoff.LivePerson</PackageProjectUrl>
+		<PackageProjectUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/libraries/Bot.Builder.Community.Handoff.Channel</PackageProjectUrl>
 		<Version>1.0.0-preview</Version>
 		<FileVersion>1.0.0</FileVersion>
 		<AssemblyVersion>1.0.0</AssemblyVersion>
 		<RepositoryUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/</RepositoryUrl>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<ContentTargetFolders>content</ContentTargetFolders>
-		<PackageTags>bots;botframework;botbuilder;msbot-component;liveperson;handoff;</PackageTags>
+		<PackageTags>bots;botframework;botbuilder;msbot-component;handoff;</PackageTags>
 	</PropertyGroup>
 
   <ItemGroup>
