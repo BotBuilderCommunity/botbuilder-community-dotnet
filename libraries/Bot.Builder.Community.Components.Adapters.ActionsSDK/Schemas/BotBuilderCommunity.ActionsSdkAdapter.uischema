@@ -3,7 +3,7 @@
     "form": {
         "label": "\"Google actions SDK connection,",
         "description": "Connects a bot to Google Actions.",
-        "helpLink": "https://github.com/carlosscastro/botbuilder-community-dotnet/blob/feature/packages-preview/libraries/Bot.Builder.Community.Adapters.ActionsSDK/Component/README.md",
+        "helpLink": "https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/feature/packages-preview/libraries/Bot.Builder.Community.Adapters.ActionsSDK/Component/README.md",
         "order": [
             "ActionProjectId",
             "ActionInvocationName",
