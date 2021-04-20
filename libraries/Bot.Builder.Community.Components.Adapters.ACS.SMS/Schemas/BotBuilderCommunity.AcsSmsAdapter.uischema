@@ -3,7 +3,7 @@
     "form": {
         "label": "Azure Communication Services connection.",
         "description": "Connects a bot to an Azure Communication Services phone number through SMS.",
-        "helpLink": "https://github.com/carlosscastro/botbuilder-community-dotnet/blob/feature/packages-preview/libraries/Bot.Builder.Community.Adapters.ACS.SMS/Component/README.md",
+        "helpLink": "https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/feature/packages-preview/libraries/Bot.Builder.Community.Adapters.ACS.SMS/Component/README.md",
         "order": [
             "AcsConnectionString",
             "AcsPhoneNumber",
