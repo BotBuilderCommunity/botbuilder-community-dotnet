@@ -30,7 +30,7 @@ Install into your project using the following command in the package manager;
 
 ### Sample
 
-A basic sample for using this component can be found [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/Location%20Dialog%20Sample).
+A basic sample for using this component can be found [here](../../samples/Location%20Dialog%20Sample).
 
 ### Usage
 

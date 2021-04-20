@@ -21,7 +21,7 @@ Install into your project using the following command in the package manager;
 
 ### Sample
 
-A sample for using FormFlow with the v4 SDK can be found [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/samples/Form%20Flow%20Sample)
+A sample for using FormFlow with the v4 SDK can be found [here](../../samples/Form%20Flow%20Sample)
 
 ### Usage
 

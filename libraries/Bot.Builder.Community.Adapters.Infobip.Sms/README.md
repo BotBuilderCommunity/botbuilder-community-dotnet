@@ -34,10 +34,6 @@ Install into your project using the following command in the package manager;
 PM> Install-Package Bot.Builder.Community.Adapters.Infobip.Sms
 ```
 
-## Sample
-
-Sample bot, showing examples of Infobip specific functionality is available [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/samples/Infobip%Sms%20Sample).
-
 ## Usage
 
 - [Prerequisites](#prerequisites)
