@@ -9,6 +9,10 @@ Use nuget to add the required dependencies
 
     dotnet add package Bot.Builder.Community.Twitter.Adapter
 
+### Sample
+
+Basic sample bot available [here](../../samples/Twitter%20Adapter%20Sample).
+
 ## Configuration
 
 Use the provided extensions to setup the adapter, middleware and hosted service in .NET Core

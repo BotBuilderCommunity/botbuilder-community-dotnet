@@ -28,7 +28,7 @@ Install into your project use the following command in the package manager.
 
 ## Sample
 
-A sample bot showcasing the features of the cards library is available [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/develop/samples/Cards%20Library%20Sample).
+A sample bot showcasing the features of the cards library is available [here](../../samples/Cards%20Library%20Sample).
 
 ## Usage
 

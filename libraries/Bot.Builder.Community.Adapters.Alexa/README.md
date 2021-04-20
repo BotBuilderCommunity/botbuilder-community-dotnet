@@ -36,7 +36,7 @@ Install into your project use the following command in the package manager.
 
 ## Sample
 
-Sample bot, showing examples of Alexa specific functionality is available [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/samples/Alexa%20Adapter%20Sample).
+Sample bots showing examples of Alexa specific functionality are available [here](../../samples/Alexa%20Adapter%20Sample) and [here](../../samples/Cortana%20Assistant%20Alexa%20Sample).
 
 ## Usage
 
