@@ -21,6 +21,9 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
         {
             var serviceNowHandoffRecord = handoffRecord as ServiceNowHandoffRecord;
 
+            var botAdapter = (BotFrameworkAdapter)turnContext.Adapter;
+            var tokenResponse = await botAdapter.GetUserTokenAsync(turnContext, serviceNowHandoffRecord.ConversationRecord.ServiceNowAuthConnectionName, null);
+
             if (serviceNowHandoffRecord != null)
             {
                 var message = ServiceNowConnector.MakeServiceNowMessage(0,
@@ -33,18 +36,16 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
 
                 await ServiceNowConnector.SendMessageToConversationAsync(
                     serviceNowHandoffRecord.ConversationRecord.ServiceNowTenant,
-                    serviceNowHandoffRecord.ConversationRecord.ServiceNowUserName,
-                    serviceNowHandoffRecord.ConversationRecord.ServiceNowPassword,
+                    tokenResponse.Token,
                     message).ConfigureAwait(false);
             }
         }
         public override async Task<HandoffRecord> Escalate(ITurnContext turnContext, IEventActivity handoffEvent)
         {
             var serviceNowTenant = _creds.ServiceNowTenant;
-            var userName = _creds.UserName; 
-            var password = _creds.Password;
+            var serviceNowAuthConnectionName = _creds.ServiceNowAuthConnectionName;
 
-            var conversationRecord = await ServiceNowConnector.EscalateToAgentAsync(turnContext, handoffEvent, serviceNowTenant, userName, password, _conversationHandoffRecordMap);
+            var conversationRecord = await ServiceNowConnector.EscalateToAgentAsync(turnContext, handoffEvent, serviceNowTenant, serviceNowAuthConnectionName, _conversationHandoffRecordMap);
 
             await turnContext.SendActivityAsync(Activity.CreateTraceActivity("ServiceNowVirtualAgent", "Handoff initiated"));
 

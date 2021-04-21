@@ -14,7 +14,7 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
     // Connector class for ServiceNow integration
     public static class ServiceNowConnector
     {
-        public static async Task<ServiceNowConversationRecord> EscalateToAgentAsync(ITurnContext turnContext, IEventActivity handoffEvent, string serviceNowTenant, string userName, string password, ConversationHandoffRecordMap conversationHandoffRecordMap)
+        public static async Task<ServiceNowConversationRecord> EscalateToAgentAsync(ITurnContext turnContext, IEventActivity handoffEvent, string serviceNowTenant, string serviceNowAuthConnectionName, ConversationHandoffRecordMap conversationHandoffRecordMap)
         {
             var context = handoffEvent.Value as JObject;
 
@@ -24,7 +24,7 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
             var userId = context?.Value<string>("userId");
             var emailId = context?.Value<string>("emailId");
 
-            return new ServiceNowConversationRecord { ConversationId = turnContext.Activity.Conversation.Id, ServiceNowTenant = serviceNowTenant, ServiceNowUserName = userName, ServiceNowPassword = password, Timezone = timeZone, UserId = userId, EmailId = emailId};
+            return new ServiceNowConversationRecord { ConversationId = turnContext.Activity.Conversation.Id, ServiceNowTenant = serviceNowTenant, ServiceNowAuthConnectionName = serviceNowAuthConnectionName, Timezone = timeZone, UserId = userId, EmailId = emailId};
         }
 
         public static ServiceNowRequestMessage MakeServiceNowMessage(int id, string conversationId, string text, string timeZone, string locale, string userId, string emailId)
@@ -56,7 +56,7 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                 }
             };
         }
-        public static async Task<int> SendMessageToConversationAsync(string serviceNowTenant, string userName, string password, ServiceNowRequestMessage message)
+        public static async Task<int> SendMessageToConversationAsync(string serviceNowTenant, string token, ServiceNowRequestMessage message)
         {
             using (var client = new HttpClient())
             {
@@ -72,11 +72,8 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                     Method = HttpMethod.Post,
                     Content = httpContent
                 };
-
-                // Provide SSO Implementation here, replacing fixed user authentication currently implemented.
-                string svcCredentials = Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(userName + ":" + password));
-                request.Headers.Add("Authorization", $"Basic {svcCredentials}");
-                // --------------------------------
+               
+                request.Headers.Add("Authorization", $"Bearer {token}");
 
                 request.RequestUri = new Uri($"https://{serviceNowTenant}/api/sn_va_as_service/bot/integration");
 

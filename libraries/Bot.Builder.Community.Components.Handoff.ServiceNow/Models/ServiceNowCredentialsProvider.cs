@@ -6,9 +6,7 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow.Models
     {
         public ServiceNowCredentialsProvider(IConfiguration configuration)
         {
-            ServiceNowTenant = configuration["ServiceNowTenant"];
-            UserName = configuration["ServiceNowUserName"];
-            Password = configuration["ServiceNowPassword"];
+            ServiceNowTenant = configuration["ServiceNowTenant"];            
             ServiceNowAuthConnectionName = configuration["ServiceNowAuthConnectionName"];
             MsAppId = configuration["MicrosoftAppId"];
 
@@ -21,11 +19,7 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow.Models
             //}
         }
 
-        public string ServiceNowTenant{ get; }
-
-        public string UserName { get; }
-
-        public string Password { get; }
+        public string ServiceNowTenant{ get; }      
 
         public string ServiceNowAuthConnectionName { get; }
 
