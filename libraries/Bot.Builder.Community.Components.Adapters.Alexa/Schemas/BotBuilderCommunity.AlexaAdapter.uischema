@@ -3,10 +3,13 @@
     "form": {
         "label": "Amazon Alexa connection.",
         "description": "Connects a bot to an Amazon Alexa skill.",
-        "helpLink": "https://github.com/carlosscastro/botbuilder-community-dotnet/blob/feature/packages-preview/libraries/Bot.Builder.Community.Adapters.Alexa/Component/README.md",
+        "helpLink": "https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/feature/packages-preview/libraries/Bot.Builder.Community.Adapters.Alexa/Component/README.md",
         "order": [
             "AlexaSkillId",
             "*"
+        ],
+        "hidden": [
+            "type"
         ]
     }
 }

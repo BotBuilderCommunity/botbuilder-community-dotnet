@@ -21,6 +21,7 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
         {
             var serviceNowHandoffRecord = handoffRecord as ServiceNowHandoffRecord;
 
+            // Retrieve an oAuth token for ServiceNow which we'll pass on this turn
             var botAdapter = (BotFrameworkAdapter)turnContext.Adapter;
             var tokenResponse = await botAdapter.GetUserTokenAsync(turnContext, serviceNowHandoffRecord.ConversationRecord.ServiceNowAuthConnectionName, null);
 

@@ -1,4 +1,4 @@
-# Alexa Adapter Component for Bot Builder v4 .NET SDK
+# Alexa Adapter Component for Bot Framework Composer
 
 ## Description
 
@@ -25,19 +25,13 @@ This readme focuses on consuming the Alexa component in [Bot Framework Composer]
 
 1. Install [Bot Framework Composer](https://dev.botframework.com/). Once Composer is installed, subscribe to the Early Adopters feed from the Composer application settings. Check for updates to install the latest nightly build in order to access the latest features. If you prefer to build locally, clone [Bot Framework Composer](https://github.com/microsoft/BotFramework-Composer) and build locally from the main branch using the instructions in the repository.
 
-2. In Composer settings, enable the 'New creation experience' feature flag.
+2. If you don't already have one, create a new bot using one of the available templates.
 
-![Enable new creation experience](/libraries/Bot.Builder.Community.Adapters.Alexa/media/bot-service-adapter-connect-alexa/component-1-flag.png?raw=true)
+![image](https://user-images.githubusercontent.com/3900649/114547335-3974ab80-9c56-11eb-9abd-9b6938149f42.png)
 
-3. Create a new bot using the 'Empty' bot template.
+3. Go to Package Manager (in the left hand navigation within Composer) and select 'Community Packages' from the dropdown filter.
 
-![Create new empty bot](/libraries/Bot.Builder.Community.Adapters.Alexa/media/bot-service-adapter-connect-alexa/component-2-new-bot.PNG?raw=true)
-
-4. Go to Package Manager, and select 'Add feed', to add the NuGet feed where the test version of the new community adapters can be found. Use `myget adapters` as name and `https://www.myget.org/F/ms-test-adapters/api/v3/index.json` as url.
-
-![Add preview community adapters feed](/libraries/Bot.Builder.Community.Adapters.Alexa/media/bot-service-adapter-connect-alexa/component-3-add-feed.PNG?raw=true)
-
-5. Install the Alexa adapter component in package manager by selecting install on the latest version of Bot.Builder.Community.Adapters.Alexa.
+4. Install the Alexa adapter component in Package Manager by selecting install on the latest version of Bot.Builder.Community.Components.Adapters.Alexa.
 
 ## Create an Alexa skill
 
@@ -80,6 +74,14 @@ This readme focuses on consuming the Alexa component in [Bot Framework Composer]
           "samples": ["{phrase}"]
         },
         {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
           "name": "AMAZON.StopIntent",
           "samples": []
         }
@@ -117,9 +119,9 @@ This readme focuses on consuming the Alexa component in [Bot Framework Composer]
 
 Before you can complete the configuration of your Alexa skill, you need to wire up the Alexa adapter into your bot in Bot Framework Composer.
 
-1. In Composer, go to your bot settings. Under the `adapters` section, there should be a new entry called `Amazon Alexa connection`. Select `Configure` to wire up your skill.
+1. In Composer, go to your project settings. Within the 'Connections' tab, there should be a new entry called `Amazon Alexa connection`. Select `Configure` to wire up your skill.
 
-![Configure adapter](/libraries/Bot.Builder.Community.Adapters.Alexa/media/bot-service-adapter-connect-alexa/alexa-component-1-configure-adapter.PNG?raw=true)
+![image](https://user-images.githubusercontent.com/3900649/114547215-0e8a5780-9c56-11eb-9add-bfd7c39a4046.png)
 
 2. A modal will pop up. Fill the `Alexa skill id` with the id from the skill you created in the Alexa developer console.
 

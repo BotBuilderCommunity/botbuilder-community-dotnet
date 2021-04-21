@@ -8,8 +8,8 @@ namespace Bot.Builder.Community.Adapters.Zoom.Component
     /// <summary>
     /// Zoom adapter bot plugin.
     /// </summary>
-    public class ZoomAdapterBotPlugin
-        : AdapterPlugin<ZoomAdapter, ZoomAdapterOptions>
+    public class ZoomAdapterBotComponent
+        : AdapterBotComponent<ZoomAdapter, ZoomAdapterOptions>
     {
     }
 }

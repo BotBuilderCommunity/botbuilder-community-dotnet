@@ -1,5 +1,5 @@
-﻿using Microsoft.Bot.Builder.Integration.AspNet.Core;
-using Microsoft.Bot.Builder.Runtime.Plugins;
+﻿using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -14,19 +14,17 @@ namespace Bot.Builder.Community.Components.Shared.Adapters
     /// </summary>
     /// <typeparam name="TAdapter">Adapter type.</typeparam>
     /// <typeparam name="TOptions">Adapter options type that defines the configuration required by the adapter.</typeparam>
-    public class AdapterPlugin<TAdapter, TOptions> : IBotPlugin
+    public class AdapterBotComponent<TAdapter, TOptions> : BotComponent
             where TAdapter : class, IBotFrameworkHttpAdapter
             where TOptions : class
     {
         /// <summary>
-        /// Plugin entry point.
+        /// Component entry point.
         /// </summary>
-        /// <param name="context">Plugin load context.</param>
-        public void Load(IBotPluginLoadContext context)
+        /// <param name="services"><see cref="IServiceCollection"/> where to register component services.</param>
+        /// <param name="configuration"><see cref="IConfiguration"/> for the component. </param>
+        public override void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
-            IServiceCollection services = context.Services;
-            IConfiguration configuration = context.Configuration;
-
             // Get options from configuration
             var options = configuration.Get<TOptions>();
 

@@ -1,8 +1,8 @@
 <Project>
 
   <PropertyGroup>
-    <Bot_Builder_Version>4.12.2</Bot_Builder_Version>
-    <Bot_Builder_Preview_Version>4.12.2-preview</Bot_Builder_Preview_Version>
+    <Bot_Builder_Version>4.13.0</Bot_Builder_Version>
+    <Bot_Builder_Preview_Version>4.13.0-rc5.preview</Bot_Builder_Preview_Version>
   </PropertyGroup>
 
 </Project>

@@ -6,5 +6,6 @@
         public string chatState { get; set; }
         public string message { get; set; }
         public string contentType { get; set; }
+        public EventContent Content { get; set; }
     }
 }

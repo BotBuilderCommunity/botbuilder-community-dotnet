@@ -62,10 +62,11 @@ namespace Bot.Builder.Community.Components.Handoff.LivePerson
                                 case "AcceptStatusEvent":
                                     await HandleAcceptStatusEvent(body);
                                     break;
+                                case "RichContentEvent":
+                                    await HandleRichContentEvent(body);
+                                    break;
                                 case "ContentEvent":
                                     await HandleContentEvent(body);
-                                    break;
-                                case "RichContentEvent":
                                     break;
                             }
 
@@ -88,26 +89,72 @@ namespace Bot.Builder.Community.Components.Handoff.LivePerson
                     if (change.@event.message != null)
                     {
                         var humanActivity = MessageFactory.Text(change.@event.message);
+                        await SendActivityToUser(change, humanActivity);
+                    }
+                }
+            }
+        }
 
-                        if (await ConversationHandoffRecordMap.GetByRemoteConversationId(change.conversationId) is LivePersonHandoffRecord handoffRecord)
+        private async Task HandleRichContentEvent(string body)
+        {
+            var webhookData = JsonConvert.DeserializeObject<WebhookData>(body);
+
+            foreach (var change in webhookData.body.changes)
+            {
+                if (change?.@event?.type == "RichContentEvent" &&
+                         change?.originatorMetadata?.role == "ASSIGNED_AGENT")
+                {
+                    if (change.@event.Content != null)
+                    {
+                        var text = change.@event.Content.Elements?.FirstOrDefault(e => e.Type == "text")?.Text;
+
+                        if (!string.IsNullOrEmpty(text))
                         {
-                            if (!handoffRecord.ConversationRecord.IsClosed)
+                            var humanActivity = MessageFactory.Text(text);
+
+                            var suggestedActions = change.@event.Content.Elements
+                                .Where(e => e.Type == "button").ToList();
+
+                            if (suggestedActions.Any())
                             {
-                                MicrosoftAppCredentials.TrustServiceUrl(handoffRecord.ConversationReference.ServiceUrl);
-                                
-                                await (_adapter).ContinueConversationAsync(
-                                    _credentials.MsAppId,
-                                    handoffRecord.ConversationReference,
-                                    (turnContext, cancellationToken) => turnContext.SendActivityAsync(humanActivity, cancellationToken), default);
+                                humanActivity.SuggestedActions = new SuggestedActions()
+                                {
+                                    Actions = suggestedActions.Select(a => new CardAction()
+                                    {
+                                        Title = a.Title,
+                                        Type = ActionTypes.ImBack,
+                                        Value = a.Title
+                                    }).ToList()
+                                };
                             }
-                        }
-                        else
-                        {
-                            // The bot has no record of this conversation, this should not happen
-                            throw new Exception("Cannot find conversation");
+
+                            await SendActivityToUser(change, humanActivity);
                         }
                     }
                 }
+            }
+        }
+
+        private async Task SendActivityToUser(Change change, Activity humanActivity)
+        {
+            if (await ConversationHandoffRecordMap.GetByRemoteConversationId(change.conversationId) is
+                LivePersonHandoffRecord handoffRecord)
+            {
+                if (!handoffRecord.ConversationRecord.IsClosed)
+                {
+                    MicrosoftAppCredentials.TrustServiceUrl(handoffRecord.ConversationReference.ServiceUrl);
+
+                    await (_adapter).ContinueConversationAsync(
+                        _credentials.MsAppId,
+                        handoffRecord.ConversationReference,
+                        (turnContext, cancellationToken) =>
+                            turnContext.SendActivityAsync(humanActivity, cancellationToken), default);
+                }
+            }
+            else
+            {
+                // The bot has no record of this conversation, this should not happen
+                throw new Exception("Cannot find conversation");
             }
         }
 
