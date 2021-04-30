@@ -1,0 +1,45 @@
+{
+  "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+  "$role": [ "implements(Microsoft.IDialog)", "extends(Microsoft.InputDialog)" ],
+  "title": "Social Media",
+  "description": "Collect information - Ask for a Social Media , based on the MediaType",
+  "type": "object",
+
+  "properties": {
+    "defaultLocale": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "description": "Value from callers memory to use as localization",
+      "title": "DefaultLocale",
+      "examples": [
+        "en-us"
+      ]
+    },
+    "resultProperty": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "description": "Value from callers memory to store the result",
+      "title": "Result",
+      "examples": [
+        "@msbotframework (Select Mention) "
+      ]
+    },
+    "mediaType": {
+      "title": "Media Type",
+      "description": "Input type to find the media type",
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "MediaType",
+          "description": "Choose the Media Type",
+          "enum": [
+            "Mention",
+            "Hashtag"
+          ],
+          "default": "Mention"
+        }
+      ]
+    }
+  },
+  "$policies": {
+    "interactive": true
+  }
+}

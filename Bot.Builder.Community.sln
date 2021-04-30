@@ -145,6 +145,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Compo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Components.Handoff.LivePerson", "libraries\Bot.Builder.Community.Components.Handoff.LivePerson\Bot.Builder.Community.Components.Handoff.LivePerson.csproj", "{F262015A-02F7-4D48-9426-A10B15CC1FDE}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Components.Dialogs.Input", "libraries\Bot.Builder.Community.Components.Dialogs.Input\Bot.Builder.Community.Components.Dialogs.Input.csproj", "{4999E3C2-0281-411E-9A5E-660832A5ABE7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug - NuGet Packages|Any CPU = Debug - NuGet Packages|Any CPU
@@ -615,6 +617,14 @@ Global
 		{F262015A-02F7-4D48-9426-A10B15CC1FDE}.Documentation|Any CPU.Build.0 = Debug|Any CPU
 		{F262015A-02F7-4D48-9426-A10B15CC1FDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F262015A-02F7-4D48-9426-A10B15CC1FDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4999E3C2-0281-411E-9A5E-660832A5ABE7}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{4999E3C2-0281-411E-9A5E-660832A5ABE7}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{4999E3C2-0281-411E-9A5E-660832A5ABE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4999E3C2-0281-411E-9A5E-660832A5ABE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4999E3C2-0281-411E-9A5E-660832A5ABE7}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{4999E3C2-0281-411E-9A5E-660832A5ABE7}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{4999E3C2-0281-411E-9A5E-660832A5ABE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4999E3C2-0281-411E-9A5E-660832A5ABE7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -684,6 +694,7 @@ Global
 		{914A389D-E88A-421E-88D1-E1346BA4A5F7} = {1F7F4CAF-CF22-491F-840D-A63835726C12}
 		{490389D5-F52D-45A8-A5DC-164EE9B51594} = {1F7F4CAF-CF22-491F-840D-A63835726C12}
 		{F262015A-02F7-4D48-9426-A10B15CC1FDE} = {1F7F4CAF-CF22-491F-840D-A63835726C12}
+		{4999E3C2-0281-411E-9A5E-660832A5ABE7} = {1F7F4CAF-CF22-491F-840D-A63835726C12}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FE3B75E-BA2B-45BC-BBF0-DDA8BA10C4F0}
