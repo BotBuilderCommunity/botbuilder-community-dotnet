@@ -14,7 +14,7 @@
 		<RepositoryUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/</RepositoryUrl>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<ContentTargetFolders>content</ContentTargetFolders>
-		<PackageTags>bots;botframework;botbuilder;msbot-component;liveperson;handoff;</PackageTags>
+		<PackageTags>bots;botframework;botbuilder;msbot-component;liveperson;handoff;msbot-middleware;</PackageTags>
 	</PropertyGroup>
 
   <ItemGroup>
