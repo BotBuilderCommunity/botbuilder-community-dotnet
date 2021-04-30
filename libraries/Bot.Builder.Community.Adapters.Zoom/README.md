@@ -34,7 +34,7 @@ Install into your project use the following command in the package manager.
 
 ## Sample
 
-Sample bot, showing examples of Zoom specific functionality is available [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/samples/Zoom%20Adapter%20Sample).
+Sample bots showing examples of Zoom specific functionality are available [here](../../samples/Zoom%20Adapter%20Sample) and [here](../../samples/Teams%20Zoom%20Sample).
 
 ## Usage
 
