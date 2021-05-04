@@ -12,7 +12,7 @@ The following new component is in this package:
 
 | Actions | Description |
 | ------ | ------ |
-| [TokenExchangeComponent](#TokenExchangeComponent) | Reads an item from storage. |
+| [TokenExchangeComponent](#TokenExchangeComponent) | Installs the TokenExchangeSkillHandler. |
 
 ### Installation
 
