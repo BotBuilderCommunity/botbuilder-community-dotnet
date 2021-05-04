@@ -7,7 +7,6 @@
     <PackageIcon>package-icon.png</PackageIcon>
     <PackageLicenseUrl />
     <PackageLicenseExpression></PackageLicenseExpression>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>Component for Single Sign On Token Exchange Skill Handler</Description>
     <Summary>Token Exchange Skill Handler component for Single Sign on between Root Bot and Skill.</Summary>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
