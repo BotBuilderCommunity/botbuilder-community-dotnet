@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
+using System.Xml;
+using System.Xml.XPath;
 using Bot.Builder.Community.Components.Handoff.ServiceNow.Models;
 using Bot.Builder.Community.Components.Handoff.Shared;
 using Microsoft.AspNetCore.Mvc;
@@ -91,17 +95,38 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                 IMessageActivity responseActivity;
 
                 // Map ServiceNow UX controls to Bot Framework concepts. This will need refinement as broader experiences are used but this covers a broad range of out-of-box ServiceNow response types.
-                switch (item.uiType)
+              switch (item.uiType)
                 {
                     case "TopicPickerControl":
                     case "ItemPicker":
-                    case "Picker":
+                    case "Picker":                        
 
-                        var options = item.options.Select(o => o.label);
+                        // Map the picker concept to a basic HeroCard with buttons
+                        List<CardAction> cardActions = new List<CardAction>();
+                        foreach (var option in item.options)
+                        {
+                            cardActions.Add(new CardAction("imBack", option.description ?? option.label, value: option.label));
+                        }
+                        
+                        var pickerHeroCard = new HeroCard(buttons: cardActions);
+                        responseActivity = MessageFactory.Attachment(pickerHeroCard.ToAttachment());
 
-                        responseActivity = MessageFactory.SuggestedActions(options);
                         responseActivity.AsMessageActivity().Text = item.promptMsg ?? item.label;
                         break;
+
+                    case "DefaultPicker":
+
+                        // Map the picker concept to a basic HeroCard with buttons
+                        List<CardAction> defaultPickerActions = new List<CardAction>();
+                        foreach (var option in item.options)
+                        {
+                            defaultPickerActions.Add(new CardAction("imBack", option.description ?? option.label, value: option.label));
+                        }
+
+                        var defaultPickerCard = new HeroCard(buttons: defaultPickerActions);
+                        responseActivity = MessageFactory.Attachment(defaultPickerCard.ToAttachment());
+                        break;
+
                     case "GroupedPartsOutputControl":
                         responseActivity = MessageFactory.Text(item.header);
                         responseActivity.AttachmentLayout = "carousel";
@@ -113,8 +138,43 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                             responseActivity.Attachments.Add(card.ToAttachment());
                         }
                         break;
+                    case "OutputHtml":
+
+                        // We can't render HTML inside of conversations.
+                        responseActivity = MessageFactory.Text(StripTags(item.value)); 
+
+                        break;
+                    case "Boolean":
+                        List<CardAction> booleanCardActions = new List<CardAction>();
+
+                        booleanCardActions.Add(new CardAction("imBack", title: "Yes", displayText: "Yes", value:"true" ));
+                        booleanCardActions.Add(new CardAction("imBack", title: "No", displayText: "Yes", value:"false"));
+                        var booleanHeroCard = new HeroCard(buttons: booleanCardActions);
+
+                        responseActivity = MessageFactory.Attachment(booleanHeroCard.ToAttachment());
+                        responseActivity.AsMessageActivity().Text = item.promptMsg ?? item.label;
+                        break;
+
                     case "OutputText":
                         responseActivity = MessageFactory.Text(item.value ?? item.label);
+                        break;
+
+                    case "OutputImage":
+                        
+                        var cardImages = new List<CardImage>();
+                        cardImages.Add(new CardImage(url: item.value));
+
+                        var imageHeroCard = new HeroCard(images: cardImages);
+                        responseActivity = MessageFactory.Attachment(imageHeroCard.ToAttachment());
+
+                        break;
+
+                    case "OutputLink":
+
+                        var linkHeroCard = new HeroCard(buttons: new List<CardAction> { new CardAction("openUrl", item.value) });
+                        responseActivity = MessageFactory.Attachment(linkHeroCard.ToAttachment());
+                        responseActivity.AsMessageActivity().Text = item.promptMsg ?? item.label;
+
                         break;
 
                     default:
@@ -150,6 +210,22 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                     throw new Exception("Cannot find conversation");
                 }
             }
+        }
+
+        // Crude flattening of HTML content into just it's string content. ServiceNow uses HTML in some scenarios which can't be rendered in most conversational canvases.
+        public static string StripTags(string htmlResponse)
+        {
+            // create whitespace between html elements, so that words do not run together
+            htmlResponse = htmlResponse.Replace(">", "> ");
+           
+            var doc = new HtmlAgilityPack.HtmlDocument();
+            doc.LoadHtml(htmlResponse);
+
+            // strip html decoded text from html
+            string text = HttpUtility.HtmlDecode(doc.DocumentNode.InnerText);
+
+            // replace all whitespace with a single space and remove leading and trailing whitespace
+            return Regex.Replace(text, @"\s+", " ").Trim();
         }
     }
 }

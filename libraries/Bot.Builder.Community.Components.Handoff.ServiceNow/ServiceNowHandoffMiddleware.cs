@@ -49,6 +49,10 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                         serviceNowHandoffRecord.ConversationRecord.ServiceNowTenant,
                         tokenResponse.Token,
                         message).ConfigureAwait(false);
+
+                    var traceActivity = Activity.CreateTraceActivity("ServiceNowVirtualAgent", label: "ServiceNowHandoff->Activity forwarded to ServiceNow");
+                    await turnContext.SendActivityAsync(traceActivity);
+
                 }
             }
             else
