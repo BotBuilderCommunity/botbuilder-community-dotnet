@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using Bot.Builder.Community.Components.Handoff.ServiceNow.Models;
 using Bot.Builder.Community.Components.Handoff.Shared;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Connector.Authentication;
@@ -40,50 +37,53 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
             using (var sr = new StreamReader(Request.Body))
             {
                 var body = await sr.ReadToEndAsync();
-
-                // Doesn't appear to be a way with ServiceNow to authenticate incoming responses
-                //if (!Authenticate(Request, Response, body))
-                //{
-                //    return;
-                //}
-
                 var responseMessage = JsonConvert.DeserializeObject<ServiceNowResponseMessage>(body);
 
                 if (responseMessage != null)
                 {
-                    await HandleContentEvent(responseMessage);
-
-                    // If ServiceNow indicates it's completed handoff from it's perspective we end handoff
-                    if (responseMessage.completed)
+                    // Do we have a matching handoff record for the incoming ConversationID from ServiceNow?
+                    var handoffRecord = await ConversationHandoffRecordMap.GetByRemoteConversationId(responseMessage.clientSessionId) as ServiceNowHandoffRecord;
+                    if (handoffRecord != null)
                     {
-                        if (await ConversationHandoffRecordMap.GetByRemoteConversationId(responseMessage.clientSessionId) is ServiceNowHandoffRecord handoffRecord)
+                        await HandleContentEvent(responseMessage);
+
+                        // If ServiceNow indicates it's completed handoff from it's perspective we end handoff and return control.
+                        if (responseMessage.completed)
                         {
                             var eventActivity = EventFactory.CreateHandoffStatus(handoffRecord.ConversationReference.Conversation, "completed") as Activity;
-
-                            //await _adapter.ContinueConversationAsync(_credentials.MsAppId, eventActivity, _bot.OnTurnAsync, default);
-
-                            //TEMPORARY WORKAROUND UNTIL CLOUDADAPTER IS IN PLACE SO ABOVE LINE WILL WORK
                             await (_adapter).ContinueConversationAsync(
-                                _credentials.MsAppId,
-                                handoffRecord.ConversationReference,
-                                (turnContext, cancellationToken) => turnContext.SendActivityAsync(eventActivity, cancellationToken), default);
+                                 _credentials.MsAppId,
+                                 handoffRecord.ConversationReference,
+                                 (turnContext, cancellationToken) => turnContext.SendActivityAsync(eventActivity, cancellationToken), default);
 
-                            await (_adapter).ContinueConversationAsync(
-                                _credentials.MsAppId,
-                                handoffRecord.ConversationReference,
-                                (turnContext, cancellationToken) => turnContext.SendActivityAsync(Activity.CreateTraceActivity("ServiceNowVirtualAgent", "Handoff completed"), cancellationToken), default);
+                            var traceActivity = Activity.CreateTraceActivity(
+                                "ServiceNowVirtualAgent",
+                                label: "ServiceNowHandoff->Handoff completed");
+
+                             await (_adapter).ContinueConversationAsync(
+                                  _credentials.MsAppId,
+                                  handoffRecord.ConversationReference,
+                                  (turnContext, cancellationToken) => turnContext.SendActivityAsync(traceActivity, cancellationToken), default);
                         }
-                    }
 
-                    Response.StatusCode = (int)HttpStatusCode.OK;
+                        Response.StatusCode = (int)HttpStatusCode.OK;
+                    }
+                    else 
+                    {
+                        // No matching handoff record for the conversation referenced by ServiceNow
+                        Response.StatusCode = (int)HttpStatusCode.NotFound;
+                    }
                 }
                 else
                 {
+                    // Malformed response from ServiceNow
                     Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 }
             }
         }
 
+        // A sample mapping from ServiceNow response types to Bot Framework concepts, in many cases this will need to be adapted to a
+        // Bot owners specific requirements and styling.
         private async Task HandleContentEvent(ServiceNowResponseMessage responseMessage)
         {
             foreach (var item in responseMessage.body)
@@ -132,12 +132,16 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                             _credentials.MsAppId,
                             handoffRecord.ConversationReference,
                             (turnContext, cancellationToken) => turnContext.SendActivityAsync(responseActivity, cancellationToken), default);
-                                              
+
+                        var traceActivity = Activity.CreateTraceActivity(
+                            "ServiceNowVirtualAgent",
+                            $"Response from ServiceNow Virtual Agent received (Id:{responseMessage.requestId})",
+                            label: "ServiceNowHandoff->Response from ServiceNow Virtual Agent");
+
                         await (_adapter).ContinueConversationAsync(
                             _credentials.MsAppId,
                             handoffRecord.ConversationReference,
-                            (turnContext, cancellationToken) => turnContext.SendActivityAsync(Activity.CreateTraceActivity("ServiceNowVirtualAgent", $"Response from ServiceNow Virtual Agent received (Id:{responseMessage.requestId})"), cancellationToken), default);
-
+                            (turnContext, cancellationToken) => turnContext.SendActivityAsync(traceActivity, cancellationToken), default);
                     }
                 }
                 else
@@ -146,11 +150,6 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                     throw new Exception("Cannot find conversation");
                 }
             }
-        }
-
-        private bool Authenticate(HttpRequest request, HttpResponse response, string body)
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Bot.Builder.Community.Components.Handoff.ServiceNow;
-using Bot.Builder.Community.Components.Handoff.ServiceNow.Models;
+﻿using Bot.Builder.Community.Components.Handoff.ServiceNow.Models;
 using Bot.Builder.Community.Components.Handoff.Shared;
 using Microsoft.Bot.Schema;
 
