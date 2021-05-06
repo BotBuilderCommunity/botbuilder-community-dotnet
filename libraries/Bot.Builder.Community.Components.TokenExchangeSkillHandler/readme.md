@@ -5,6 +5,11 @@
 | ------ | ------ | ------ |
 | master | [![Build status](https://ci.appveyor.com/api/projects/status/b9123gl3kih8x9cb?svg=true)](https://ci.appveyor.com/project/garypretty/botbuilder-community) | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.39-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Components.TokenExchangeSkillHandler/) |
 
+### Prerequisite Setup
+Create the Azure AD identity [for SkillBot](https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-authentication-sso#create-the-azure-ad-identity-for-skillbot)
+
+Create the Azure AD identity [for RootBot](https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-authentication-sso#create-the-azure-ad-identity-for-rootbot)
+
 ### Description
 This package extends [Bot Framework Composer](https://docs.microsoft.com/en-us/composer/introduction) with a CloudSkillHandler BotComponent for enabling Single Sign On Token Exchange between a root bot and skill bot. 
 
