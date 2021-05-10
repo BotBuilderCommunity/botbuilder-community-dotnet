@@ -21,11 +21,23 @@ namespace Bot.Builder.Community.Components.TokenExchangeSkillHandler
             {
                 var props = child.GetChildren().ToDictionary(x => x.Key, x => x.Value);
 
+                if (!props.ContainsKey("msAppId"))
+                {
+                    throw new InvalidOperationException("Skill in appsettings is missing 'msAppId'.");
+                }
+                if (!props.ContainsKey("endpointUrl"))
+                {
+                    throw new InvalidOperationException("Skill in appsettings is missing 'endpointUrl'.");
+                }
+
+                var appId = props["msAppId"];
+                var endpointUrl = props["endpointUrl"];
+                
                 Skills.Add(child.Key, new BotFrameworkSkill()
                 {
                     Id = child.Key,
-                    AppId = props["msAppId"],
-                    SkillEndpoint = new Uri(props["endpointUrl"]),
+                    AppId = appId,
+                    SkillEndpoint = new Uri(endpointUrl),
                 });
             }
 

@@ -44,7 +44,7 @@ namespace Bot.Builder.Community.Components.TokenExchangeSkillHandler
             _botId = configuration.GetSection(MicrosoftAppCredentials.MicrosoftAppIdKey)?.Value;
             _logger = logger;
 
-            var settings = configuration.GetSection("Bot.Builder.Community.Components.TokenExchangeSkillHandler").Get<ComponentSettings>() ?? new ComponentSettings();
+            var settings = configuration.GetSection("Bot.Builder.Community.Components.TokenExchangeSkillHandler")?.Get<ComponentSettings>() ?? new ComponentSettings();
             _connectionName = settings.TokenExchangeConnectionName ?? configuration.GetSection("tokenExchangeConnectionName")?.Value;
         }
 
