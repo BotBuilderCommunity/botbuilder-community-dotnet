@@ -11,7 +11,13 @@ namespace Bot.Builder.Community.Components.TokenExchangeSkillHandler
         public SkillsConfiguration(IConfiguration configuration)
         {
             var section = configuration?.GetSection("skill");
-            foreach (var child in section.GetChildren())
+            var skills = section?.GetChildren();
+            if (section == null || skills == null || skills.Count() < 1)
+            {
+                throw new InvalidOperationException("Missing 'skill' section in appsettings.");
+            }
+
+            foreach (var child in skills)
             {
                 var props = child.GetChildren().ToDictionary(x => x.Key, x => x.Value);
 
@@ -23,7 +29,13 @@ namespace Bot.Builder.Community.Components.TokenExchangeSkillHandler
                 });
             }
 
-            SkillHostEndpoint = new Uri(configuration.GetValue<string>("skillHostEndpoint"));
+            var hostEndpoint = configuration?.GetValue<string>("skillHostEndpoint");
+            if (string.IsNullOrEmpty(hostEndpoint))
+            {
+                throw new InvalidOperationException("Missing 'skillHostEndpoint' in appsettings.");
+            }
+
+            SkillHostEndpoint = new Uri(hostEndpoint);
         }
 
         public Uri SkillHostEndpoint { get; }
