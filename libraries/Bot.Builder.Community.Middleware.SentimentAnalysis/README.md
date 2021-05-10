@@ -21,6 +21,10 @@ Install into your project using the following command in the package manager;
     PM> Install-Package Bot.Builder.Community.Middleware.SentimentAnalysis
 ```
 
+### Sample
+
+A basic sample for using this component can be found [here](../../samples/Sentiment%20Middleware%20Sample).
+
 ### Usage
 
 Typically I would place this middleware at the end of the pipeline, but it will work anywhere.  

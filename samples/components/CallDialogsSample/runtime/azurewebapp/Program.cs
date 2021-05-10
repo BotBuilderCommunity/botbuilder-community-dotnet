@@ -1,3 +1,5 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.BotFramework.Composer.Core;
