@@ -37,7 +37,7 @@ Install into your project use the following command in the package manager.
 
 ## Sample
 
-A Sample bot with examples of specific functionality for the legacy Actions SDK and DialogFLow (such as sending cards, lists etc.) is available [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/samples/Google%20Adapter%20Sample).
+A Sample bot with examples of specific functionality for the legacy Actions SDK and DialogFLow (such as sending cards, lists etc.) is available [here](../../samples/Google%20Adapter%20Sample).
 
 ## Usage
 

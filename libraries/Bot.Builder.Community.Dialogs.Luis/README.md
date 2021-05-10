@@ -19,6 +19,10 @@ Install into your project using the following command in the package manager;
     PM> Install-Package Bot.Builder.Community.Dialogs.Luis
 ```
 
+### Sample
+
+A basic sample for using this component can be found [here](../../samples/Luis%20Dialog%20Sample).
+
 ### References
 Take note of namespace changes from **Microsoft.Bot.Builder.Luis** to **Bot.Builder.Community.Dialogs.Luis**
 

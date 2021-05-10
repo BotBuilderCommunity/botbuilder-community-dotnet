@@ -20,6 +20,9 @@ The adapter currently supports the following scenarios:
 * Receive delivery reports
 * Full incoming request from MessageBird is added to the incoming activity as ChannelData
 
+### Sample
+
+Basic sample bot available [here](../../samples/MessageBird%20Adapter%20Sample).
 
 ## Usage
 
