@@ -148,6 +148,7 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Components.Dialogs.Input", "libraries\Bot.Builder.Community.Components.Dialogs.Input\Bot.Builder.Community.Components.Dialogs.Input.csproj", "{4999E3C2-0281-411E-9A5E-660832A5ABE7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Components.TokenExchangeSkillHandler", "libraries\Bot.Builder.Community.Components.TokenExchangeSkillHandler\Bot.Builder.Community.Components.TokenExchangeSkillHandler.csproj", "{97B74354-8D6B-482B-A779-2E20B38DF0DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Components.Handoff.ServiceNow", "libraries\Bot.Builder.Community.Components.Handoff.ServiceNow\Bot.Builder.Community.Components.Handoff.ServiceNow.csproj", "{63A62728-74B0-4BA3-9ACA-87E583BBB9B4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -635,6 +636,14 @@ Global
 		{97B74354-8D6B-482B-A779-2E20B38DF0DD}.Documentation|Any CPU.Build.0 = Debug|Any CPU
 		{97B74354-8D6B-482B-A779-2E20B38DF0DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{97B74354-8D6B-482B-A779-2E20B38DF0DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63A62728-74B0-4BA3-9ACA-87E583BBB9B4}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{63A62728-74B0-4BA3-9ACA-87E583BBB9B4}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{63A62728-74B0-4BA3-9ACA-87E583BBB9B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63A62728-74B0-4BA3-9ACA-87E583BBB9B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63A62728-74B0-4BA3-9ACA-87E583BBB9B4}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{63A62728-74B0-4BA3-9ACA-87E583BBB9B4}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{63A62728-74B0-4BA3-9ACA-87E583BBB9B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63A62728-74B0-4BA3-9ACA-87E583BBB9B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -706,6 +715,7 @@ Global
 		{F262015A-02F7-4D48-9426-A10B15CC1FDE} = {1F7F4CAF-CF22-491F-840D-A63835726C12}
 		{4999E3C2-0281-411E-9A5E-660832A5ABE7} = {1F7F4CAF-CF22-491F-840D-A63835726C12}
 		{97B74354-8D6B-482B-A779-2E20B38DF0DD} = {1F7F4CAF-CF22-491F-840D-A63835726C12}
+		{63A62728-74B0-4BA3-9ACA-87E583BBB9B4} = {1F7F4CAF-CF22-491F-840D-A63835726C12}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FE3B75E-BA2B-45BC-BBF0-DDA8BA10C4F0}
