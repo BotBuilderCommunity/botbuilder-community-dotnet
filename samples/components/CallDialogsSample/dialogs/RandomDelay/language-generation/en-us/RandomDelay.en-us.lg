@@ -1,0 +1,11 @@
+[import](common.lg)
+
+# SendActivity_CtLqfM()
+[Activity
+    Type = delay
+    Value = ${dialog.delay * 1000}
+]
+# SendActivity_dNkq5J()
+[Activity
+    Text = ${dialog.index}: completed after ${dialog.delay} second{s}
+]

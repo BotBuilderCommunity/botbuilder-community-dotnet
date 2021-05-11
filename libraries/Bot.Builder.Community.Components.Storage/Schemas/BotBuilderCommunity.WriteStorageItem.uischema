@@ -1,0 +1,32 @@
+﻿{
+  "$schema": "https://schemas.botframework.com/schemas/ui/v1.0/ui.schema",
+  "form": {
+    "label": "Write an item to storage",
+    "subtitle": "Write Storage Item",
+    "order": [
+      "itemKey",
+      "item",
+      "*"
+    ],
+    "properties": {
+      "itemKey": {
+        "intellisenseScopes": [
+          "variable-scopes"
+        ]
+      },
+      "item": {
+        "intellisenseScopes": [
+          "variable-scopes"
+        ]
+      }
+    }
+  },
+  "menu": {
+    "label": "Write an item to storage",
+    "submenu": [ "Store items" ]
+  },
+  "flow": {
+    "widget": "ActionCard",
+    "body": "=action.itemKey"
+  }
+}

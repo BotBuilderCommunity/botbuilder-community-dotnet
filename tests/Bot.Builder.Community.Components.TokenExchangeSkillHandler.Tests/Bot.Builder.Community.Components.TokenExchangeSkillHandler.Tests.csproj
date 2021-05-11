@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="configSettings.json" />
+    <None Remove="configSettings_missingHost.json" />
+    <None Remove="configs\configSettings_missingSkillAppId.json" />
+    <None Remove="configs\configSettings_missingSkillEndpointUrl.json" />
+    <None Remove="configs\configSettings_missingSkills.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="configs\configSettings_missingSkills.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="configs\configSettings_missingSkillEndpointUrl.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="configs\configSettings_missingSkillAppId.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="configs\configSettings_missingHost.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="configs\configSettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.14" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="1.4.0" />
+    <PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\..\libraries\Bot.Builder.Community.Components.TokenExchangeSkillHandler\Bot.Builder.Community.Components.TokenExchangeSkillHandler.csproj" />
+  </ItemGroup>
+
+</Project>

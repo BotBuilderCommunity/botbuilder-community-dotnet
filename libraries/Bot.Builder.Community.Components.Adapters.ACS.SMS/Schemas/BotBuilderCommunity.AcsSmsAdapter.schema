@@ -1,0 +1,41 @@
+{
+    "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+    "$role": "implements(Microsoft.IAdapter)",
+    "title": "Azure Communication Services connection",
+    "description": "Connects a bot to an Azure Communication Services phone number through SMS.",
+    "type": "object",
+    "properties": {
+        "AcsConnectionString": {
+            "type": "string",
+            "title": "Connection string",
+            "description": "Azure Communication Services connection string."
+        },
+        "AcsPhoneNumber": {
+            "type": "string",
+            "title": "Phone number",
+            "description": "Phone number belonging to the Azure Communication Services instance."
+        },
+        "EnableDeliveryReports": {
+            "type": "boolean",
+            "title": "Enable delivery reports",
+            "description": "Whether SMS delivery reports are enabled.",
+            "default": true
+        },
+        "route": {
+            "type": "string",
+            "title": "Route",
+            "description": "Optional route where the adapter is exposed.",
+            "default": "acs"
+        },
+        "type": {
+            "type": "string",
+            "title": "Type",
+            "description": "Adapter type.",
+            "default": "Bot.Builder.Community.Adapters.ACS.SMS.AcsSmsAdapter"
+        }
+    },
+    "required": [
+        "AcsConnectionString",
+        "AcsPhoneNumber"
+    ]
+}
