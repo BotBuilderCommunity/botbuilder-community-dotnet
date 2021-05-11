@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove('$(MSBuildThisFileDirectory)../', 'Bot.Builder.Community.sln'))\CommonTargets\library.shared.targets" />
-  
-  	<PropertyGroup>
+	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove('$(MSBuildThisFileDirectory)../', 'Bot.Builder.Community.sln'))\CommonTargets\library.shared.targets" />
+
+	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<Description>Dialogs to provide getWeather utterance handling.</Description>
 		<Authors>Bot Builder Community</Authors>
@@ -15,29 +15,24 @@
 		<RepositoryUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/</RepositoryUrl>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<ContentTargetFolders>content</ContentTargetFolders>
-	    <releaseNotes>First version of GetWeather package</releaseNotes>
+		<releaseNotes>First version of GetWeather package</releaseNotes>
 		<PackageTags>msbot-component;msbot-content;botbuildercommunity</PackageTags>
 		<NoWarn>$(NoWarn);NU5104</NoWarn>
 	</PropertyGroup>
 
-  <ItemGroup>
-    <Content Include="**/*.dialog" />
-    <Content Include="**/*.lg" />
-    <Content Include="**/*.lu" />
-    <Content Include="**/*.schema" />
-    <Content Include="**/*.uischema" />
-    <Content Include="**/*.qna" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="exported/**/*.*" Pack="true" PackagePath="exported" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Remove="package.json" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove="package.json" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\..\package-icon.png" Link="package-icon.png">
-      <PackagePath></PackagePath>
-      <Pack>True</Pack>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="..\..\package-icon.png" Link="package-icon.png">
+			<PackagePath></PackagePath>
+			<Pack>True</Pack>
+		</None>
+	</ItemGroup>
 
 </Project>
