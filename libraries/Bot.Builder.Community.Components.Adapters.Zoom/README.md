@@ -1,12 +1,8 @@
-# Zoom Adapter for Bot Builder v4 .NET SDK
+# Zoom Adapter Component for Bot Framework Composer / Bot Framework SDK
 
 ## Description
 
-This is part of the [Bot Builder Community Extensions](https://github.com/botbuildercommunity) project which contains various pieces of middleware, recognizers and other components for use with the Bot Builder .NET SDK v4.
-
-The Zoom Adapter allows you to add an additional endpoint to your bot for Zoom apps. The Zoom endpoint can be used
-in conjunction with other channels meaning, for example, you can have a bot exposed on out of the box channels such as Facebook and
-Teams, but also via a Zoom app, such as a chatbot (as well as side by side with the Google / Twitter Adapters also available from the Bot Builder Community Project).
+This is part of the [Bot Builder Community](https://github.com/botbuildercommunity) project which contains Bot Framework Components and other projects / packages for use with Bot Framework Composer and the Bot Builder .NET SDK v4.
 
 Incoming Zoom app requests are transformed, by the adapter, into Bot Framework Activties and then when your bot sends outgoing activities, the adapter transforms the outgoing Activity into an appropriate Zoom response.
 
@@ -17,31 +13,43 @@ The adapter currently supports the following scenarios;
 - Transforms incoming interactive message events (such as use interacting with dropdown / editable fields) into Event activites with strongly typed payload objects
 - Handles all incoming events from Zoom (that the app has been subscribed to) and transforms into Bot Framework Event activities
 
-This readme focuses on consuming the Zoom component in [Bot Framework Composer](https://docs.microsoft.com/en-us/composer/introduction). For more information about the supported scenarios and how to consume the Zoom adapter in code-first scenarios, visit the [Zoom adapter readme](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/develop/libraries/Bot.Builder.Community.Adapters.Zoom/README.md).
+*This readme focuses on consuming the Zoom component in [Bot Framework Composer](https://docs.microsoft.com/en-us/composer/introduction). For more information about the supported scenarios and how to consume the Zoom adapter in code-first scenarios, visit the [Zoom adapter readme](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/develop/libraries/Bot.Builder.Community.Adapters.Zoom/README.md).*
+
+## Usage
+
+- [Prerequisites](#Prerequisites)
+- [Component Installation](#Component-installation-via-Composer-Package-Manager)
+- [Get your bots Zoom endpoint](#Get-your-bots-Zoom-endpoint)
+- [Create a Zoom app](#Create-a-Zoom-app)
+- [Configure the Zoom connection in Composer](#Configuring-the-Zoom-connection-in-Bot-Framework-Composer)
+- [Install and Test your Zoom app](#Install-and-Test-your-Zoom-app)
 
 ## Prerequisites
 
-1. Install [Bot Framework Composer](https://dev.botframework.com/). Once Composer is installed, subscribe to the Early Adopters feed from the Composer application settings. Check for updates to install the latest nightly build in order to access the latest features. If you prefer to build locally, clone [Bot Framework Composer](https://github.com/microsoft/BotFramework-Composer) and build locally from the main branch using the instructions in the repository.
+- [Bot Framework Composer](https://dev.botframework.com/)
 
-2. In Composer settings, enable the 'New creation experience' feature flag.
+- Access to the Zoom Developer Console with sufficient permissions to login to create / manage apps at  [https://marketplace.zoom.us/develop](https://marketplace.zoom.us/develop). If you do not have this you can create an account for free.
 
-![Enable new creation experience](/libraries/Bot.Builder.Community.Adapters.Alexa/media/bot-service-adapter-connect-alexa/component-1-flag.png?raw=true)
 
-3. Create a new bot using the 'Empty' bot template.
+## Component installation via Composer Package Manager
 
-![Create new empty bot](/libraries/Bot.Builder.Community.Adapters.Alexa/media/bot-service-adapter-connect-alexa/component-2-new-bot.PNG?raw=true)
+1. Go to Package Manager (in the left hand navigation within Composer).
 
-4. Go to Package Manager, and select 'Add feed', to add the NuGet feed where the test version of the new community adapters can be found. Use `myget adapters` as name and `https://www.myget.org/F/ms-test-adapters/api/v3/index.json` as url.
+2. Within in Package Manager, search for an install the latest version of Bot.Builder.Community.Components.Adapters.Zoom.
 
-![Add preview community adapters feed](/libraries/Bot.Builder.Community.Adapters.Alexa/media/bot-service-adapter-connect-alexa/component-3-add-feed.PNG?raw=true)
+## Get your bots Zoom endpoint
 
-5. Install the Zoom adapter component in package manager by selecting install on the latest version of Bot.Builder.Community.Adapters.Zoom.
+In order to sucessfully configure Zoom to send requests to your bot, you are required to provide it with you bot's Zoom endpoint. To do this deploy your bot to Azure and make a note of the URL to your deployed bot. Your Zoom messaging endpoint is the URL for your bot, which will be the URL of your deployed application (or ngrok endpoint), plus '/api/zoom' (for example, `https://yourbotapp.azurewebsites.net/api/zoom`).
 
-6. Download [ngrok](https://ngrok.com/) to allow Alexa to access your bot to serve requests. When you publish to Azure this is not needed, but for local testing, ngrok permits hosting the bot locally and provides a public URL.
-
-7. In a command prompt, navigate to where you downloaded ngrok and run `ngrok http 3980 -host-header="localhost:3980"`. This assumes that you will use port 3980 which is Composer's default port for single bots. If you plan to use another bot, adjust the command above. Once ran, this command will show the URLs where ngrok is exposing your bot. Copy the url starting with `https://` to wire the bot endpoint in the Zoom marketplace in the next section.
-
-![Ngrok url for local bot](/libraries/Bot.Builder.Community.Adapters.Alexa/media/bot-service-adapter-connect-alexa/component-5-ngrok.PNG?raw=true)
+> [!NOTE]
+> If you are not ready to deploy your bot to Azure, or wish to debug your bot when using the Alexa adapter, you can use a tool such as [ngrok](https://www.ngrok.com) (which you will likely already have installed if you have used the Bot Framework emulator previously) to tunnel through to your bot running locally and provide you with a publicly accessible URL for this. 
+> 
+> If you wish create an ngrok tunnel and obtain a URL to your bot, use the following command in a terminal window (this assumes your local bot is running on port 3978, alter the port numbers in the command if your bot is not).
+> 
+> ```
+> ngrok.exe http 3978 -host-header="localhost:3978"
+> ```
+>
 
 ## Create a Zoom app
 
@@ -51,25 +59,27 @@ This readme focuses on consuming the Zoom component in [Bot Framework Composer](
 
 3. Click the **Scopes** section in the left hand menu. Click the **+Add Scopes** button and search for 'Chat'. Select the scope **Enable Chatbot within Zoom Chat Client** (**imchat:bot**) and click **Done**.
 
-4. Click the **Feature** section in the left hand menu. Set the endpoint URL to where your bot's Zoom endpoint will be, which is the url that you copied from ngrok, and add `/api/zoom` at the end. For example, for the ngrok url `https://74747474d.ngrok.io`, in the Alexa portal you should enter `https://74747474d.ngrok.io/api/zoom`. Click **Save**
+4. Click the **Feature** section in the left hand menu. Set the endpoint URL to where your bot's Zoom endpoint (see [Get your bots Zoom endpoint](#Get-your-bots-Zoom-endpoint)). Click **Save**
 
-5. One the URLs are saved, two pieces of information should appear above: the **Verification token** and **Bot JID**. Copy and make a note of these values since along with the **Client ID** and **Client secret** of step 1 will be used to configure the adapter.
+5. Once the URLs are saved, two pieces of information should appear above: the **Verification token** and **Bot JID**. Copy and make a note of these values since along with the **Client ID** and **Client secret** of step 1 will be used to configure the new Zoom connection in Bot Framework Composer.
 
 6. Click back into the **App credentials** section in the left hand menu. Update the **Redirect URL for OAuth** and **Whitelist URL** to the value `https://zoom.us/launch/chat?jid=<Your Bot JID from step 5>`, replacing the last part with your bot JID. Example: `https://zoom.us/launch/chat?jid=robot_v3ynierrdntw-yfsdfsm1a9g@xmpp.zoom.us`.
 
-## Wiring up the Zoom adapter in your bot
+## Configuring the Zoom connection in Bot Framework Composer
 
-Now it is time to configure the adapter for your bot in Bot Framework Composer, using the values we got from the Zoom marketplace.
+1. In Composer, go to your project settings. Within the 'Connections' tab, there should be a new entry called `Zoom connection`. Select `Configure` to configure the new connection.
 
-1. In Composer, go to your bot settings. Under the `adapters` section, there should be a new entry called `Zoom connection`. Select `Configure` to wire up your app.
+![image](https://user-images.githubusercontent.com/3900649/114547215-0e8a5780-9c56-11eb-9add-bfd7c39a4046.png)
 
 2. A modal will pop up. Fill the fields with the values from steps 2 and 5 from the preiovus section.
 
-3. Once you close the modal, your adapter should appear as configured in the bot settings.
+![Configured adapter modal](/libraries/Bot.Builder.Community.Adapters.Alexa/media/bot-service-adapter-connect-alexa/alexa-component-2-adapter-configured.PNG?raw=true)
 
-4. Start your bot in composer.
+3. Once you close the modal, your connection should appear as configured in the bot settings.
 
-### Install and Test your Zoom app
+![Configured adapter](/libraries/Bot.Builder.Community.Adapters.Alexa/media/bot-service-adapter-connect-alexa/alexa-component-3-success-bot.PNG?raw=true)
+
+## Install and Test your Zoom app
 
 You can now test interacting with your Zoom app using the Zoom client.
 

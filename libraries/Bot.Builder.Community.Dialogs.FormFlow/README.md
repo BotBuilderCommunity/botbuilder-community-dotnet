@@ -6,7 +6,7 @@
 | master | | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.0-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Dialogs.FormFlow/) |
 
 ### Description
-This is part of the [Bot Builder Community Extensions](https://github.com/BotBuilderCommunity) project which contains various pieces of middleware, recognizers and other components for use with the Bot Builder .NET SDK v4.
+This is part of the [Bot Builder Community](https://github.com/BotBuilderCommunity) project which contains Bot Framework Components and other projects / packages for use with Bot Framework Composer and the Bot Builder .NET SDK v4.
 
 This library is a netstandard2.0 port of [Microsoft.Bot.Builder.FormFlow](https://github.com/Microsoft/BotBuilder-v3/tree/master/CSharp/Library/Microsoft.Bot.Builder/FormFlow)  The Bot Builder V3 FormFlow documentation is useful for this library as well, just take note of the namespace changes.
 

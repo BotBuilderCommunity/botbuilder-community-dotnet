@@ -1,8 +1,8 @@
-# Alexa Adapter Component for Bot Framework Composer
+# AlexaAdapter Component for Bot Framework Composer / Bot Framework SDK
 
 ## Description
 
-This is part of the [Bot Builder Community Extensions](https://github.com/botbuildercommunity) project which contains various pieces of middleware, recognizers and other components for use with the Bot Builder .NET SDK v4.
+This is part of the [Bot Builder Community](https://github.com/botbuildercommunity) project which contains Bot Framework Components and other projects / packages for use with Bot Framework Composer and the Bot Builder .NET SDK v4.
 
 The Alexa Adapter allows you to add an additional endpoint to your bot for Alexa Skills. The Alexa endpoint can be used
 in conjunction with other channels meaning, for example, you can have a bot exposed on out of the box channels such as Facebook and
@@ -21,23 +21,29 @@ The adapter currently supports the following scenarios;
 
 This readme focuses on consuming the Alexa component in [Bot Framework Composer](https://docs.microsoft.com/en-us/composer/introduction). For more information about the supported scenarios and how to consume the Alexa adapter in code-first scenarios, visit the [Alexa adapter readme](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/develop/libraries/Bot.Builder.Community.Adapters.Alexa/README.md).
 
+## Usage
+
+- [Prerequisites](#Prerequisites)
+- [Component Installation](#Component-installation-via-Composer-Package-Manager)
+- [Create an Alexa skill](#Create-an-Alexa-skill)
+- [Configure the Alexa connection in Composer](#Configure-the-Alexa-connection-in-Composer)
+- [Complete configuration of your Alexa skill](#Complete-configuration-of-your-Alexa-skill)
+- [Test your Alexa skill](#Test-your-Alexa-skill)
+- [Customising your conversation](#Customising-your-conversation)
+
 ## Prerequisites
 
-1. Install [Bot Framework Composer](https://dev.botframework.com/). Once Composer is installed, subscribe to the Early Adopters feed from the Composer application settings. Check for updates to install the latest nightly build in order to access the latest features. If you prefer to build locally, clone [Bot Framework Composer](https://github.com/microsoft/BotFramework-Composer) and build locally from the main branch using the instructions in the repository.
+- [Bot Framework Composer](https://dev.botframework.com/)
 
-2. If you don't already have one, create a new bot using one of the available templates.
+- Access to the Alexa Developer Console with sufficient permissions to login to create / manage skills at  [https://developer.amazon.com/alexa/console/ask](https://developer.amazon.com/alexa/console/ask). If you do not have this you can create an account for free.
 
-![image](https://user-images.githubusercontent.com/3900649/114547335-3974ab80-9c56-11eb-9abd-9b6938149f42.png)
+## Component installation via Composer Package Manager
 
-3. Go to Package Manager (in the left hand navigation within Composer) and select 'Community Packages' from the dropdown filter.
+1. Go to Package Manager (in the left hand navigation within Composer).
 
-4. Install the Alexa adapter component in Package Manager by selecting install on the latest version of Bot.Builder.Community.Components.Adapters.Alexa.
+2. Within in Package Manager, search for an install the latest version of Bot.Builder.Community.Components.Adapters.Alexa.
 
 ## Create an Alexa skill
-
-- Access to the Alexa Developer Console with sufficient permissions to login to create / manage skills at [https://developer.amazon.com/alexa/console/ask](https://developer.amazon.com/alexa/console/ask). If you do not have this you can create an account for free.
-
-### Create the Alexa skill in the Alexa developer console
 
 1. Log into the [Alexa Developer Console](https://developer.amazon.com/alexa/console/ask) and then click the 'Create Skill' button.
 
@@ -115,7 +121,7 @@ This readme focuses on consuming the Alexa component in [Bot Framework Composer]
 
 6. Click the **Save Model** button and then click **Build Model**, which will update the configuration for your skill.
 
-## Configure the Alexa adapter in Composer
+## Configure the Alexa connection in Composer
 
 Before you can complete the configuration of your Alexa skill, you need to wire up the Alexa adapter into your bot in Bot Framework Composer.
 
@@ -131,31 +137,32 @@ Before you can complete the configuration of your Alexa skill, you need to wire 
 
 ![Configured adapter](/libraries/Bot.Builder.Community.Adapters.Alexa/media/bot-service-adapter-connect-alexa/alexa-component-3-success-bot.PNG?raw=true)
 
-4. Start your bot in composer.
-
-![Start bot](/libraries/Bot.Builder.Community.Adapters.Alexa/media/bot-service-adapter-connect-alexa/component-4-start-bot.PNG?raw=true)
-
-5. Download [ngrok](https://ngrok.com/) to allow Alexa to access your bot to serve requests. When you publish to Azure this is not needed, but for local testing, ngrok permits hosting the bot locally and provides a public URL.
-
-6. In a command prompt, navigate to where you downloaded ngrok and run `ngrok http 3980 -host-header="localhost:3980"`. This assumes that you started your bot in port 3980 which is Composer's default port for single bots. Adjust the port if you have your bot in other port. Once ran, this command will show the URLs where ngrok is exposing your bot. Copy the url starting with `https://` to wire the bot in the Alexa portal in the next section.
-
-![Ngrok url for local bot](/libraries/Bot.Builder.Community.Adapters.Alexa/media/bot-service-adapter-connect-alexa/component-5-ngrok.PNG?raw=true)
-
-### Complete configuration of your Alexa skill
+## Complete configuration of your Alexa skill
 
 Now that you have created an Alexa skill and wired up the adapter in your bot project, the final steps are to configure the endpoint to which requests will be posted to when your Alexa skill is invoked, pointing it to the correct endpoint on your bot.
 
-1. Back within your Alexa skill dashboard, navigate to the **Endpoint** section on the left hand menu. Select **HTTPS** as the **Service Endpoint Type** and set the **Default Region** endpoint to your bot's Alexa endpoint, which is the url that you copied from ngrok, and add `/api/alexa` at the end. For example, for the ngrok url `https://74747474d.ngrok.io`, in the Alexa portal you should enter `https://74747474d.ngrok.io/api/alexa`.
+1. To complete this step, [deploy your bot to Azure](https://aka.ms/bot-builder-deploy-az-cli) and make a note of the URL to your deployed bot. Your Alexa messaging endpoint is the URL for your bot, which will be the URL of your deployed application (or ngrok endpoint), plus '/api/alexa' (for example, `https://yourbotapp.azurewebsites.net/api/alexa`).
 
-2. In the drop down underneath the text box where you have defined your endpoint, you need to select the type of certificate being used. For development purposes, you can choose **My development endpoint is a sub-domain of a domain that has a wildcard certificate from a certificate authority**, changing this to **My development endpoint has a certificate from a trusted certificate authority** when you publish your skill into Production.
+> [!NOTE]
+> If you are not ready to deploy your bot to Azure, or wish to debug your bot when using the Alexa adapter, you can use a tool such as [ngrok](https://www.ngrok.com) (which you will likely already have installed if you have used the Bot Framework emulator previously) to tunnel through to your bot running locally and provide you with a publicly accessible URL for this. 
+> 
+> If you wish create an ngrok tunnel and obtain a URL to your bot, use the following command in a terminal window (this assumes your local bot is running on port 3978, alter the port numbers in the command if your bot is not).
+> 
+> ```
+> ngrok.exe http 3978 -host-header="localhost:3978"
+> ```
+
+2. Back within your Alexa skill dashboard, navigate to the **Endpoint** section on the left hand menu.  Select **HTTPS** as the **Service Endpoint Type** and set the **Default Region** endpoint to your bot's Alexa endpoint, such as https://yourbotapp.azurewebsites.net/api/alexa.
+
+3. In the drop down underneath the text box where you have defined your endpoint, you need to select the type of certificate being used.  For development purposes, you can choose **My development endpoint is a sub-domain of a domain that has a wildcard certificate from a certificate authority**, changing this to **My development endpoint has a certificate from a trusted certificate authority** when you publish your skill into Production.
 
 ![Skill template](/libraries/Bot.Builder.Community.Adapters.Alexa/media/bot-service-adapter-connect-alexa/alexa-endpoint.PNG?raw=true)
 
 4. Click the **Save Endpoints** button.
 
-### Test your Alexa skill
+## Test your Alexa skill
 
-You can now test interacting with your Alexa skill using the simulator.
+You can now test interacting with your Alexa skill using the simulator. 
 
 1. In the skill dashboard navigate to the **Test** tab at the top of the page.
 
@@ -167,10 +174,32 @@ You can now test interacting with your Alexa skill using the simulator.
 
 Now that you have enabled testing for your skill, you can also test your skill using a physical Echo device or the Alexa app, providing you are logged into the device / app with the same account used to login to the Alexa Developer Console (or an account that you have added as a beta tester for your skill within the console).
 
-### Customising your conversation
+## Customising your conversation
 
-#### Controlling the end of a session
+### Controlling the end of a session
 
-By default, the Alexa adapter is configured to close the session following sending a response. You can explicitly indicate that Alexa should wait for the user to say something else, meaning Alexa should leave the microphone open and listen for further input, by sending an input hint of **_ExpectingInput_** on your outgoing activity.
+By default, the Alexa adapter is configured to close the session following sending a response. You can explicitly indicate that Alexa should wait for the user to say something else, meaning Alexa should leave the microphone open and listen for further input, by sending an input hint of **Expecting** on your outgoing activity.
 
-You can alter the default behavior to leave the session open and listen for further input by default by setting the **_ShouldEndSessionByDefault_** setting on the adapter configuration.
+To set an input hint on an individual outgoing activity within Composer, add a speech tab to your response and then use the **Input Hint** dropdown to select the appropriate value.
+
+You can alter the default behavior to leave the session open and listen for further input by default by setting the **End session by default** setting on the connection configuration within your project settings.
+
+### Incoming Alexa request to Bot Framework activity mapping
+
+The Alexa service can send your bot a number of different request types.  You can read about the different request types [in the Alexa developer documentation](https://developer.amazon.com/en-US/docs/alexa/custom-skills/request-types-reference.html).
+
+Here is how the adapter handles different types.
+
+* **Intent Requests -> Message Activity**
+Most incoming requests when a user talks to your skill will be sent as an IntentRequest. In this case the adapter transforms this into a Bot Framework Message activity.
+Key exceptions here include if a user triggers a built in Amazon intent. The only built in intent available in the default configuration described within this document is the AMAZON.StopIntent - if this is receieved then this is converted to an EndOfConversationActivity.
+Any other intent requests receieved, that are not using the default intent described within this article, your bot will receieve an Event Activity, where the type is set to 'IntentRequest' and the incoming request payload set as the value property on the activity.
+
+* **Launch Request -> ConversationUpdate Activity**
+If a user explicitly launches your skill without any other intent / input (e.g. "Alexa open ***your skill name***"), then your bot will recieve a ConversationUpdate Activity.  This is mirrors the default functionality on Azure bot Service channels when a user starts a conversation.
+
+* **SessionEnded Request -> EndOfCOnversation Activity**
+In the case that your bot receieves a SessionEnded request, your bot will recieve an EndOfConversation activity. You can use this opportunity to clean up any data related to the conversation / user that you wish, but any outgoing activities you send in response will be ignored by the adapter, due to Alexa not allowing responses to SessionEnded requests.
+
+* **All other request types -> Event Activity**
+All request types, not explicity mentioned above, will be sent to your bot as an Event activity. The name property on the Event activity will be set to the type of the Alexa request, with the value set to the full request payload.

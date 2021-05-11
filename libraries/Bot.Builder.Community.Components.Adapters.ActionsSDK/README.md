@@ -1,10 +1,8 @@
-# Google Actions SDK (latest) Adapter for Bot Builder v4 .NET SDK
-
-> **This adapter is for use with the latest Google Actions SDK for building conversational actions (https://developers.google.com/assistant/conversational/overview).**
+# Google Actions (latest) Adapter Component for Bot Framework Composer / Bot Framework SDK
 
 ## Description
 
-This is part of the [Bot Builder Community Extensions](https://github.com/botbuildercommunity) project which contains various pieces of middleware, recognizers and other components for use with the Bot Builder .NET SDK v4.
+This is part of the [Bot Builder Community](https://github.com/botbuildercommunity) project which contains Bot Framework Components and other projects / packages for use with Bot Framework Composer and the Bot Builder .NET SDK v4.
 
 The Actions SDK Adapter allows you to add an additional endpoint to your bot for conversational actions built with the latest Google Actions SDK. The Google endpoint can be used in conjunction with other channels meaning, for example, you can have a bot exposed on out of the box channels such as Facebook and Teams, but also via a Google Action (as well as side by side with other adapters (e.g. the Alexa adapter) also available from the Bot Builder Community Project).
 
@@ -18,29 +16,31 @@ The adapter currently supports the following scenarios;
 - Account Linking - send a Bot Framework Signin Card to trigger the account linking flow
 - Full incoming request from Google is added to the incoming activity as ChannelData
 
-This readme focuses on consuming the Google Actions SDK component in [Bot Framework Composer](https://docs.microsoft.com/en-us/composer/introduction). For more information about the supported scenarios and how to consume the Google Actions SDK adapter in code-first scenarios, visit the [Google Actions SDK adapter readme](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/develop/libraries/Bot.Builder.Community.Adapters.ActionsSDK/README.md).
+*This readme focuses on consuming the Google Actions SDK component in [Bot Framework Composer](https://docs.microsoft.com/en-us/composer/introduction). For more information about the supported scenarios and how to consume the Google Actions SDK adapter in code-first scenarios, visit the [Google Actions SDK adapter readme](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/develop/libraries/Bot.Builder.Community.Adapters.ActionsSDK/README.md).*
+
+## Usage
+
+- [Prerequisites](#Prerequisites)
+- [Component Installation](#Component-installation-via-Composer-Package-Manager)
+- [Create an Actions SDK action project](#Create-an-Actions-SDK-action-project)
+- [Configure your Actions SDK project](#Configure-your-Actions-SDK-project)
+- [Configure Composer Actions SDK Connection](#Configure-the-Actions-SDK-Connection-in-Bot-Framework-Composer)
+- [Complete configuration for Actions on Google](#Complete-configuration-for-Actions-on-Google)
+- [Testing your Action](#testing-your-action)
 
 ## Prerequisites
 
-1. Install [Bot Framework Composer](https://dev.botframework.com/). Once Composer is installed, subscribe to the Early Adopters feed from the Composer application settings. Check for updates to install the latest nightly build in order to access the latest features. If you prefer to build locally, clone [Bot Framework Composer](https://github.com/microsoft/BotFramework-Composer) and build locally from the main branch using the instructions in the repository.
+- [Bot Framework Composer](https://dev.botframework.com/)
 
-2. In Composer settings, enable the 'New creation experience' feature flag.
-
-![Enable new creation experience](/libraries/Bot.Builder.Community.Adapters.Alexa/media/bot-service-adapter-connect-alexa/component-1-flag.png?raw=true)
-
-3. Create a new bot using the 'Empty' bot template.
-
-![Create new empty bot](/libraries/Bot.Builder.Community.Adapters.Alexa/media/bot-service-adapter-connect-alexa/component-2-new-bot.PNG?raw=true)
-
-4. Go to Package Manager, and select 'Add feed', to add the NuGet feed where the test version of the new community adapters can be found. Use `myget adapters` as name and `https://www.myget.org/F/ms-test-adapters/api/v3/index.json` as url.
-
-![Add preview community adapters feed](/libraries/Bot.Builder.Community.Adapters.Alexa/media/bot-service-adapter-connect-alexa/component-3-add-feed.PNG?raw=true)
-
-5. Install the Actions SDK adapter component in package manager by selecting install on the latest version of Bot.Builder.Community.Adapters.ActionsSDK.
-
-6. Log in or create a free account for Actions on [Google developer console](https://console.actions.google.com/).
+- Access to the Actions on Google developer console with sufficient permissions to login to create / manage projects at  [https://console.actions.google.com/](https://console.actions.google.com/). If you do not have this you can create an account for free.
 
 - The gactions command-line tool. [Download this here](https://developers.google.com/assistant/conversational/quickstart#install_the_gactions_command-line_tool)
+
+## Component installation via Composer Package Manager
+
+1. Go to Package Manager (in the left hand navigation within Composer).
+
+2. Within in Package Manager, search for an install the latest version of Bot.Builder.Community.Components.Adapters.ActionsSDK.
 
 ## Create an Actions SDK action project
 
@@ -54,11 +54,11 @@ This readme focuses on consuming the Google Actions SDK component in [Bot Framew
 
 ![Select action template](/libraries/Bot.Builder.Community.Adapters.ActionsSDK/media/actions-sdk-select-project-type-2.PNG?raw=true)
 
-4. Your action will now be created. Once the creation process has finished you will be presented with your project dashboard. _Note: you do not need to set a **Display name** yet._
+4. Your action will now be created. Once the creation process has finished you will be presented with your project dashboard. *Note: you do not need to set a **Display name** yet.*
 
 ![Select action template](/libraries/Bot.Builder.Community.Adapters.ActionsSDK/media/actions-sdk-project-created.PNG?raw=true)
 
-### Configure your Actions SDK project
+## Configure your Actions SDK project
 
 You now need to configure your new Actions SDK project, with appropriate settings, scenes, intents, types etc. You will do this using the gactions CLI tool and the provided action template files included in the 'action' folder in this repository.
 
@@ -80,37 +80,38 @@ You now need to configure your new Actions SDK project, with appropriate setting
 
 8. Finally, navigate back to your project within the Google Actions Console. You will see that the display name has been updated to 'Bot Framework Sample'. Change this to a display name of your choice. This will also be your invocation name, which is the name used by users when they invoke your action.
 
-## Wiring up the Actions SDK adapter in your bot
+## Configure the Actions SDK Connection in Bot Framework Composer
 
-Before you can complete the configuration of your Actiosn SDK project, you need to wire up the Actions SDK adapter into your bot in Bot Framework Composer.
+Before you can complete the configuration of your Actiosn SDK project, you need to configure the Actions SDK connection in Bot Framework Composer.
 
 1. In Composer, go to your bot settings. Under the `adapters` section, there should be a new entry called `Google Actions SDK connection`. Select `Configure` to wire up your project.
 
-2. A modal will pop up. Fill the invocation name and project id with the information from your Actions SDK project.
+2. A modal will pop up. Fill the `invocation name` and `project id` with the information from your Actions SDK project.
 
 3. Once you close the modal, your adapter should appear as configured in the bot settings with a green check mark.
 
-4. Start your bot in composer.
-
-![Start bot](/libraries/Bot.Builder.Community.Adapters.Alexa/media/bot-service-adapter-connect-alexa/component-4-start-bot.PNG?raw=true)
-
-5. Download [ngrok](https://ngrok.com/) to allow Google Actions to access your bot to serve requests. When you publish to Azure this is not needed, but for local testing, ngrok permits hosting the bot locally and provides a public URL.
-
-6. In a command prompt, navigate to where you downloaded ngrok and run `ngrok http 3980 -host-header="localhost:3980"`. This assumes that you started your bot in port 3980 which is Composer's default port for single bots. Adjust the port if you have your bot in other port. Once ran, this command will show the URLs where ngrok is exposing your bot. Copy the url starting with `https://` to complete your project configuration in the Google Actions portal in the next section.
-
-![Ngrok url for local bot](/libraries/Bot.Builder.Community.Adapters.Alexa/media/bot-service-adapter-connect-alexa/component-5-ngrok.PNG?raw=true)
-
 ## Complete configuration for Actions on Google
 
-1. Navigate back to the [Google Actions console](https://console.actions.google.com/) and navigate to your action project.
+1. [Deploy your bot to Azure](https://aka.ms/bot-builder-deploy-az-cli) and make a note of the URL to your deployed bot.
 
-2. Navigate to the **Develop** tab and then to the **Webhook** page on the left hand menu.
+> **NOTE**
+> If you are not ready to deploy your bot to Azure, or wish to test / debug your bot locally, you can use a tool such as [ngrok](https://www.ngrok.com) (which you will likely already have installed if you have used the Bot Framework emulator previously) to tunnel through to your bot running locally and provide you with a publicly accessible URL for this. 
+> 
+> If you wish create an ngrok tunnel and obtain a URL to your bot, use the following command in a terminal window (this assumes your local bot is running on port 3980, alter the port numbers in the command if your bot is not).
+> 
+> ```
+> ngrok.exe http 3980 -host-header="localhost:3980"
+> ```
 
-3. Enter your Actions SDK endpoint, which is the url that you copied from ngrok, and add `/api/google` at the end. For example, for the ngrok url `https://74747474d.ngrok.io`, in the Alexa portal you should enter `https://74747474d.ngrok.io/api/google`.
+2. Navigate back to the [Google Actions console](https://console.actions.google.com/) and navigate to your action project.
 
-### Testing your action
+3. Navigate to the **Develop** tab and then to the **Webhook** page on the left hand menu.
 
-You can now test interacting with your action using the simulator.
+4. Enter your Actions SDK endpoint. This will be the URL of your deployed application (or ngrok endpoint - see below), plus '/api/actionssdk' (for example, `https://yourbotapp.azurewebsites.net/api/actionssdk`).
+
+## Testing your action
+
+You can now test interacting with your action using the simulator (if using an ngrok endpoint, ensure both your bot and ngrok endpoint are running). 
 
 1. Navigate to https://console.actions.google.com/ and navigate to your action project.
 
