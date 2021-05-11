@@ -1,4 +1,4 @@
-# Alexa Adapter Component for Bot Framework Composer
+# Alexa Adapter Component for Bot Framework Composer / Bot Framework SDK
 
 ## Description
 

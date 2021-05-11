@@ -12,17 +12,17 @@ Use the links below to jump to a section to see a list of current components and
 
 This repository contains 
 
-- **[Bot Framework Components](bot-framework-components)** - Primarily used with through [Bot Framework Composer](https://github.com/Microsoft/BotFramework-Composer) and the Package Manager. 
-- **[Bot Builder SDK Packages](bot-framework-components)** - For use with Bot Builder .NET SDK projects. Require manual installation / configuration and cannot be used with the Bot Framework Composer Package Manager.
+- **[Bot Framework Components](#bot-framework-components)** - Primarily used with through [Bot Framework Composer](https://github.com/Microsoft/BotFramework-Composer) and the Package Manager. 
+- **[Bot Builder SDK Packages](#other-net-sdk-packages-non-component)** - For use with Bot Builder .NET SDK projects. Require manual installation / configuration and cannot be used with the Bot Framework Composer Package Manager.
 
 ## Bot Framework Components
 
 Components are part of the component model for building bots with re-usable building blocks. You can learn more about components and the component model [here](https://github.com/microsoft/botframework-components#bot-framework-components).  You'll primarily use components through [Bot Framework Composer](https://github.com/Microsoft/BotFramework-Composer) - a visual bot authoring canvas for developers. From Composer you can add and remove packages from your bot.
 
-- [Custom Actions](#custom-action-components)
-- [Adapters / Composer Connections](#composer-connections-adatpers)
+- [Custom Actions](#custom-actions)
+- [Adapters / Composer Connections](#composer-connections--adatpers)
 - [Live Agent Handoff](#live-agent-handoff)
-- [Pre-built Adaptive Dialogs](#pre-built-dialogs)
+- [Pre-built Adaptive Dialogs](#pre-built-adaptive-dialogs)
 - [Other Components](#other-components)
 
 ### Custom Actions

@@ -1,4 +1,4 @@
-# Zoom Adapter for Bot Builder v4 .NET SDK
+# Zoom Adapter Component for Bot Framework Composer / Bot Framework SDK
 
 ## Description
 

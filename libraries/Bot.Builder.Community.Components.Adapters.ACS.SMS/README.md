@@ -1,6 +1,6 @@
-# Azure Communication Services SMS Adapter for Bot Builder v4 .NET SDK
+# Azure Communication Services SMS Adapter Component for Bot Framework Composer / Bot Framework SDK
 
-> **Important!!!** ACS is in preview, and creation of phone numbers is restricted depending on subscriptions and consumption plans. The phone number creation of this readme is first so that you can confirm whether you are able to create phone numbers in order to proceed with the usage of this adapter. If that feature is not available to your subscription and you don’t already have a Communication Services resource with a phone number, you won’t be able to test this path until the Azure Communication Services team enables it.
+> **Important!** ACS is in preview, and creation of phone numbers is restricted depending on subscriptions and consumption plans. The phone number creation of this readme is first so that you can confirm whether you are able to create phone numbers in order to proceed with the usage of this adapter. If that feature is not available to your subscription and you don’t already have a Communication Services resource with a phone number, you won’t be able to test this path until the Azure Communication Services team enables it.
 
 ## Description
 
@@ -16,56 +16,45 @@ The adapter currently supports the following scenarios;
 - SMS send
 - SMS delivery reports
 
-## Create an Azure Communication Services resource
+This readme focuses on consuming the Azure Communication Services SMS adapter component in [Bot Framework Composer](https://docs.microsoft.com/en-us/composer/introduction). For more information about the supported scenarios and how to consume the adapter in code-first scenarios, visit the [Azure Communication Services adapter readme](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/develop/libraries/Bot.Builder.Community.Adapters.ACS.SMS/README.md).
 
-1. [Create an Azure Communication Services resource](https://docs.microsoft.com/en-us/azure/communication-services/quickstarts/create-communication-resource?tabs=windows&pivots=platform-azp) .
-
-2. [Get a phone number](https://docs.microsoft.com/en-us/azure/communication-services/quickstarts/telephony-sms/get-phone-number).
-
-## Install Bot Framework Composer and set up bot
+## Prerequisites
 
 1. Install [Bot Framework Composer](https://dev.botframework.com/). Once Composer is installed, subscribe to the Early Adopters feed from the Composer application settings. Check for updates to install the latest nightly build in order to access the latest features. If you prefer to build locally, clone [Bot Framework Composer](https://github.com/microsoft/BotFramework-Composer) and build locally from the main branch using the instructions in the repository.
 
-2. In Composer settings, enable the 'New creation experience' feature flag.
+2. If you don't already have one, create a new bot using one of the available templates.
 
-![Enable new creation experience](/libraries/Bot.Builder.Community.Adapters.Alexa/media/bot-service-adapter-connect-alexa/component-1-flag.png?raw=true)
+3. Go to Package Manager (in the left hand navigation within Composer) and select 'Community Packages' from the dropdown filter.
 
-3. Create a new bot using the 'Empty' bot template.
+4. Install the Alexa adapter component in Package Manager by selecting install on the latest version of Bot.Builder.Community.Components.Adapters.ACS.SMS.
 
-![Create new empty bot](/libraries/Bot.Builder.Community.Adapters.Alexa/media/bot-service-adapter-connect-alexa/component-2-new-bot.PNG?raw=true)
-
-4. Go to Package Manager, and select 'Add feed', to add the NuGet feed where the test version of the new community adapters can be found. Use `myget adapters` as name and `https://www.myget.org/F/ms-test-adapters/api/v3/index.json` as url.
-
-![Add preview community adapters feed](/libraries/Bot.Builder.Community.Adapters.Alexa/media/bot-service-adapter-connect-alexa/component-3-add-feed.PNG?raw=true)
-
-5. Install the Azure Communication Services SMS adapter component in package manager by selecting install on the latest version of Bot.Builder.Community.Adapters.ACS.SMS.
+5. [Create an Azure Communication Services resource](https://docs.microsoft.com/en-us/azure/communication-services/quickstarts/create-communication-resource?tabs=windows&pivots=platform-azp) and [get a phone number](https://docs.microsoft.com/en-us/azure/communication-services/quickstarts/telephony-sms/get-phone-number).
 
 ## Configure the ACS SMS adapter in Composer
 
 Before you can complete the configuration of your ACS SMS skill, you need to wire up the ACS SMS adapter into your bot in Bot Framework Composer.
 
-1. In Composer, go to your bot settings. Under the `adapters` section, there should be a new entry called `Azure Communication Services connection`. Select `Configure` to wire up your skill.
+1. In Composer, go to your bot settings. Under the `adapters` section, there should be a new entry called `Azure Communication Services connection`. Select `Configure`.
 
-![Configure adapter](/libraries/Bot.Builder.Community.Adapters.Alexa/media/bot-service-adapter-connect-alexa/alexa-component-1-configure-adapter.PNG?raw=true)
+![image](https://user-images.githubusercontent.com/3900649/114547215-0e8a5780-9c56-11eb-9add-bfd7c39a4046.png)
 
 2. A modal will pop up. Fill the **Connection string** and **Phone number** with the values obtained in the Azure portal.
 
 3. Once you close the modal, your adapter should appear as configured in the bot settings.
 
-4. Start your bot in composer.
+## Complete configuration of your Azure Communication Services resource
 
-![Start bot](/libraries/Bot.Builder.Community.Adapters.Alexa/media/bot-service-adapter-connect-alexa/component-4-start-bot.PNG?raw=true)
+Now that you have created an Azure Communication Services resource and configured the connection in your Composer bot, the final steps are to configure the endpoint to which requests from will be posted to when an SMS is sent to your number, pointing it to the correct endpoint on your bot.
 
-5. Download [ngrok](https://ngrok.com/) to allow Alexa to access your bot to serve requests. When you publish to Azure this is not needed, but for local testing, ngrok permits hosting the bot locally and provides a public URL.
+1. [Deploy your bot to Azure](https://aka.ms/bot-builder-deploy-az-cli) and make a note of the URL to your deployed bot.
 
-6. In a command prompt, navigate to where you downloaded ngrok and run `ngrok http 3980 -host-header="localhost:3980"`. This assumes that you started your bot in port 3980 which is Composer's default port for single bots. Adjust the port if you have your bot in other port. Once ran, this command will show the URLs where ngrok is exposing your bot. Copy the url starting with `https://` to wire the bot in the Azure portal in the next section.
+2. Configure your ACS resource to [handle SMS events](https://docs.microsoft.com/en-us/azure/communication-services/quickstarts/telephony-sms/handle-sms-events).  When configuring your ACS event endpoint, specify 'Webhook' as the type and the URL for your endpoint is the URL for your bot, which will be the URL of your deployed application (or ngrok endpoint), plus '/api/acssms' (for example, `https://yourbotapp.azurewebsites.net/api/acssms`). Your bot must be running when you configure your endpoint so that the endpoint can be verified by Azure Communication Services.
 
-![Ngrok url for local bot](/libraries/Bot.Builder.Community.Adapters.Alexa/media/bot-service-adapter-connect-alexa/component-5-ngrok.PNG?raw=true)
-
-## Wire up your bot endpoint to SMS events in Azure Portal
-
-Now that you have created an Azure Communication Services resource and wired up the adapter in your bot project, the final steps are to configure your ACS resource to handle SMS events, which will be triggered when an SMS or SMS delivery report is received, pointing it to the correct endpoint on your bot.
-
-Configure your ACS resource to [handle SMS events](https://docs.microsoft.com/en-us/azure/communication-services/quickstarts/telephony-sms/handle-sms-events). When configuring your ACS event endpoint, specify 'Webhook' as the type and the URL for your endpoint is the URL for your bot, which will be the URL of your deployed application (or ngrok endpoint), plus '/api/acs'. For example, for the ngrok url `https://74747474d.ngrok.io`, in the Alexa portal you should enter `https://74747474d.ngrok.io/api/acs`.
-
-> **Important!!!** Your bot must be running and exposed through ngrok when you configure your endpoint so that the endpoint can be verified by Azure Communication Services.
+> [!NOTE]
+> If you are not ready to deploy your bot to Azure, or wish to debug your bot when using the ACS SMS adapter, you can use a tool such as [ngrok](https://www.ngrok.com) (which you will likely already have installed if you have used the Bot Framework emulator previously) to tunnel through to your bot running locally and provide you with a publicly accessible URL for this. 
+> 
+> If you wish create an ngrok tunnel and obtain a URL to your bot, use the following command in a terminal window (this assumes your local bot is running on port 3978, alter the port numbers in the command if your bot is not).
+> 
+> ```
+> ngrok.exe http 3978 -host-header="localhost:3978"
+> ```

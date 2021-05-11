@@ -1,4 +1,4 @@
-# Google Actions SDK (latest) Adapter for Bot Builder v4 .NET SDK
+# Google Actions (latest) Adapter Component for Bot Framework Composer / Bot Framework SDK
 
 > **This adapter is for use with the latest Google Actions SDK for building conversational actions (https://developers.google.com/assistant/conversational/overview).**
 
