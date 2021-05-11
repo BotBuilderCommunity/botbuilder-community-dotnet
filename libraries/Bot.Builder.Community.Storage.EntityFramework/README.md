@@ -7,7 +7,7 @@
 
 ### Description
 
-This is part of the [Bot Builder Community Extensions](https://github.com/garypretty/botbuilder-community) project which contains various pieces of middleware, recognizers and other components for use with the Bot Builder .NET SDK v4.
+This is part of the [Bot Builder Community](https://github.com/garypretty/botbuilder-community) project which contains Bot Framework Components and other projects / packages for use with Bot Framework Composer and the Bot Builder .NET SDK v4.
 
 Entity Framework based storage extension for bots created using Microsoft Bot Framework.
 
@@ -19,6 +19,10 @@ Install into your project using the following command in the package manager;
 ```
     PM> Install-Package Bot.Builder.Community.Storage.EntityFramework
 ```
+
+### Sample
+
+A basic sample for using this component can be found [here](../../samples/EntityFramework%20Storage%20Sample).
 
 ### Usage
 

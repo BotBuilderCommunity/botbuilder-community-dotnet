@@ -6,7 +6,7 @@
 | master | [![Build status](https://ci.appveyor.com/api/projects/status/b9123gl3kih8x9cb?svg=true)](https://ci.appveyor.com/project/garypretty/botbuilder-community) | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.184-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Middleware.SentimentAnalysis/) |
 
 ### Description
-This is part of the [Bot Builder Community Extensions](https://github.com/garypretty/botbuilder-community) project which contains various pieces of middleware, recognizers and other components for use with the Bot Builder .NET SDK v4.
+This is part of the [Bot Builder Community](https://github.com/garypretty/botbuilder-community) project which contains Bot Framework Components and other projects / packages for use with Bot Framework Composer and the Bot Builder .NET SDK v4.
 
 This middleware will record the sentiment of each incoming message text. It uses Cognitive Services Text Analytics API and therefore requires a key. There is a free tier which meets most demo/PoC needs.  You can get more info at https://azure.microsoft.com/en-us/services/cognitive-services/text-analytics/
 
@@ -20,6 +20,10 @@ Install into your project using the following command in the package manager;
 ```
     PM> Install-Package Bot.Builder.Community.Middleware.SentimentAnalysis
 ```
+
+### Sample
+
+A basic sample for using this component can be found [here](../../samples/Sentiment%20Middleware%20Sample).
 
 ### Usage
 

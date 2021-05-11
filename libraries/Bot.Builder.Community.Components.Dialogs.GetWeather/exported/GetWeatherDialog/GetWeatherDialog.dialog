@@ -1,0 +1,139 @@
+{
+  "$kind": "Microsoft.AdaptiveDialog",
+  "$designer": {
+    "id": "fs124t",
+    "name": "GetWeatherDialog",
+    "description": ""
+  },
+  "autoEndDialog": true,
+  "defaultResultProperty": "dialog.result",
+  "triggers": [
+    {
+      "$kind": "Microsoft.OnBeginDialog",
+      "$designer": {
+        "name": "BeginDialog",
+        "description": "",
+        "id": "o4t4Ju"
+      },
+      "actions": [
+        {
+          "$kind": "Microsoft.IfCondition",
+          "$designer": {
+            "id": "pmmKeP"
+          },
+          "condition": "=contains(turn.recognized.entities, \"geographyV2\")",
+          "actions": [
+            {
+              "$kind": "Microsoft.SetProperties",
+              "$designer": {
+                "id": "kI2f51"
+              },
+              "assignments": [
+                {
+                  "property": "dialog.location",
+                  "value": "=@geographyV2.location"
+                }
+              ]
+            }
+          ],
+          "elseActions": [
+            {
+              "$kind": "Microsoft.TextInput",
+              "$designer": {
+                "id": "p6jfvG"
+              },
+              "disabled": false,
+              "maxTurnCount": 3,
+              "alwaysPrompt": false,
+              "allowInterruptions": false,
+              "prompt": "${TextInput_Prompt_p6jfvG()}",
+              "unrecognizedPrompt": "",
+              "invalidPrompt": "",
+              "property": "dialog.location"
+            }
+          ]
+        },
+        {
+          "$kind": "Microsoft.HttpRequest",
+          "$designer": {
+            "id": "2wRdsV"
+          },
+          "method": "GET",
+          "url": "https://atlas.microsoft.com/search/address/json?api-version=1.0&query=${dialog.location}&subscription-key=${settings.WeatherApiKey}&language=en-US&limit=1",
+          "resultProperty": "dialog.locationDetails"
+        },
+        {
+          "$kind": "Microsoft.SetProperties",
+          "$designer": {
+            "id": "wlVCOP"
+          },
+          "assignments": [
+            {
+              "property": "dialog.lat",
+              "value": "=dialog.locationDetails.content.results[0].position.lat"
+            },
+            {
+              "property": "dialog.lon",
+              "value": "=dialog.locationDetails.content.results[0].position.lon"
+            },
+            {
+              "property": "dialog.coordinates",
+              "value": "=dialog.lat + \",\" + dialog.lon"
+            }
+          ]
+        },
+        {
+          "$kind": "Microsoft.HttpRequest",
+          "$designer": {
+            "id": "Ko6Axr"
+          },
+          "method": "GET",
+          "url": "https://atlas.microsoft.com/weather/forecast/daily/json?api-version=1.0&query=${dialog.coordinates}&duration=1&subscription-key=${settings.WeatherApiKey}&language=en-US&limit=1",
+          "resultProperty": "dialog.dailyForecast"
+        },
+        {
+          "$kind": "Microsoft.SetProperties",
+          "$designer": {
+            "id": "hsbUQb"
+          },
+          "assignments": [
+            {
+              "property": "dialog.dailyForecastContent",
+              "value": "=dialog.dailyForecast.content.forecasts[0]"
+            },
+            {
+              "property": "dialog.icon",
+              "value": "=dialog.dailyForecastContent.day.iconCode"
+            },
+            {
+              "property": "dialog.date",
+              "value": "=dialog.dailyForecastContent.date"
+            },
+            {
+              "property": "dialog.minTemp",
+              "value": "=dialog.dailyForecastContent.temperature.minimum.value"
+            },
+            {
+              "property": "dialog.shortPhrase",
+              "value": "=dialog.dailyForecastContent.day.shortPhrase"
+            },
+            {
+              "property": "dialog.maxTemp",
+              "value": "=dialog.dailyForecastContent.temperature.maximum.value"
+            }
+          ]
+        },
+        {
+          "$kind": "Microsoft.SendActivity",
+          "$designer": {
+            "id": "PwFdLQ"
+          },
+          "activity": "${SendActivity_PwFdLQ()}"
+        }
+      ]
+    }
+  ],
+  "generator": "GetWeatherDialog.lg",
+  "recognizer": "GetWeatherDialog.lu.qna",
+  "id": "GetWeatherDialog"
+}

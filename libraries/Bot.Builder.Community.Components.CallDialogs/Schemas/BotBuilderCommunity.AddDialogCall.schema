@@ -1,0 +1,53 @@
+﻿{
+    "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+    "$role": "implements(Microsoft.IDialog)",
+    "title": "Add a dialog to call",
+    "description": "Adds a dialog to a list of dialogs called in parallel with the \"Call Dialogs\" action.",
+    "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Id",
+      "description": "Optional id for the dialog"
+    },
+    "disabled": {
+      "$ref": "schema:#/definitions/booleanExpression",
+      "title": "Disabled",
+      "description": "Optional condition which if true will disable this action.",
+      "examples": [
+        "user.age > 3"
+      ]
+    },
+    "dialog": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "title": "Dialog name",
+      "description": "Name of the dialog to call.",
+      "examples": [
+        "GetAccountData"
+      ]
+    },
+    "options": {
+      "$ref": "schema:#/definitions/objectExpression",
+      "title": "Options",
+      "description": "One or more options that are passed to the dialog that is called.",
+      "additionalProperties": {
+        "type": "string",
+        "title": "Options",
+        "description": "Options for dialog."
+      },
+      "examples": [
+        {
+          "arg1": "=expression"
+        }
+      ]
+    },
+    "dialogsProperty": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "title": "Dialogs property",
+      "description": "Name of the property with the array of dialogs to append this dialog to.",
+      "examples": [
+        "dialog.dialogList"
+      ]
+    }
+  }
+}

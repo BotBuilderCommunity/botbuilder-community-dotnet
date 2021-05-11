@@ -4,7 +4,7 @@ This project is created by Ahmet Kocadoğan to help Bot Framework community for 
 
 # Description
 
-This is part of the [Bot Builder Community Extensions](https://github.com/botbuildercommunity) project which contains various pieces of middleware, recognizers and other components for use with the Bot Builder .NET SDK v4.
+This is part of the [Bot Builder Community](https://github.com/botbuildercommunity) project which contains Bot Framework Components and other projects / packages for use with Bot Framework Composer and the Bot Builder .NET SDK v4.
 
 The MessageBird WhatsApp adapter enables receiving and sending WhatsApp messages. The MessageBird adapter allows you to add an additional endpoint to your bot for receiving WhatsApp messages. The MessageBird endpoint can be used in conjunction with other channels meaning, for example, you can have a bot exposed on out of the box channels such as Facebook and Teams, but also via an MessageBird (as well as side by side with the Google/Twitter adapters also available from the Bot Builder Community Project).
 
@@ -20,6 +20,9 @@ The adapter currently supports the following scenarios:
 * Receive delivery reports
 * Full incoming request from MessageBird is added to the incoming activity as ChannelData
 
+### Sample
+
+Basic sample bot available [here](../../samples/MessageBird%20Adapter%20Sample).
 
 ## Usage
 

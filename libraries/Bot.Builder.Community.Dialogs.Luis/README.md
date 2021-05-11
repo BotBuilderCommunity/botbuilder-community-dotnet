@@ -6,7 +6,7 @@
 | master | | [![NuGet version](https://img.shields.io/badge/NuGet-1.0.0-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Dialogs.Luis/) |
 
 ### Description
-This is part of the [Bot Builder Community Extensions](https://github.com/BotBuilderCommunity) project which contains various pieces of middleware, recognizers and other components for use with the Bot Builder .NET SDK v4.
+This is part of the [Bot Builder Community](https://github.com/BotBuilderCommunity) project which contains Bot Framework Components and other projects / packages for use with Bot Framework Composer and the Bot Builder .NET SDK v4.
 
 This library is a netstandard2.0 port of [Microsoft.Bot.Builder.Luis](https://github.com/microsoft/BotBuilder-V3/tree/master/CSharp/Library/Microsoft.Bot.Builder/Luis) and the [Microsoft.Bot.Builder.Dialogs.LuisDialog](https://github.com/microsoft/BotBuilder-V3/blob/master/CSharp/Library/Microsoft.Bot.Builder/Dialogs/LuisDialog.cs)  The Bot Builder V3 LuisDialog documentation is useful for this library as well, just take note of the namespace changes inheritence changes.  **Bot.Builder.Community.Dialogs.Luis.LuisDialog** inherits from ComponentDialog.
 
@@ -18,6 +18,10 @@ Install into your project using the following command in the package manager;
 ```
     PM> Install-Package Bot.Builder.Community.Dialogs.Luis
 ```
+
+### Sample
+
+A basic sample for using this component can be found [here](../../samples/Luis%20Dialog%20Sample).
 
 ### References
 Take note of namespace changes from **Microsoft.Bot.Builder.Luis** to **Bot.Builder.Community.Dialogs.Luis**
