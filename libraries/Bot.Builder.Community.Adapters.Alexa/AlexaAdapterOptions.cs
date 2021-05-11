@@ -1,4 +1,6 @@
-﻿namespace Bot.Builder.Community.Adapters.Alexa
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Bot.Builder.Community.Adapters.Alexa
 {
     public class AlexaAdapterOptions
     {
@@ -15,6 +17,7 @@
         /// This will be used to verify requests coming from Alexa are for this bot.
         /// See https://developer.amazon.com/en-US/docs/alexa/custom-skills/handle-requests-sent-by-alexa.html for more information including how to get this value.
         /// </remarks>
+        [Required]
         public string AlexaSkillId { get; set; }
     }
 }

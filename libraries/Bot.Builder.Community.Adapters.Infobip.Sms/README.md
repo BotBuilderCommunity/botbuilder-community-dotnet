@@ -8,7 +8,7 @@
 
 # Description
 
-This is part of the [Bot Builder Community Extensions](https://github.com/botbuildercommunity) project which contains various pieces of middleware, recognizers and other components for use with the Bot Builder .NET SDK v4.
+This is part of the [Bot Builder Community](https://github.com/botbuildercommunity) project which contains Bot Framework Components and other projects / packages for use with Bot Framework Composer and the Bot Builder .NET SDK v4.
 
 The Infobip SMS adapter enables receiving and sending SMS messages. The Infobip SMS Adapter allows you to add an additional endpoint to your bot for receiving SMS messages. The Infobip endpoint can be used
 in conjunction with other channels meaning, for example, you can have a bot exposed on out of the box channels such as Facebook and
