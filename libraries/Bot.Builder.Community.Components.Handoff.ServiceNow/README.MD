@@ -28,7 +28,7 @@ This component provides integration with the ServiceNow platform, enabling hando
 
 1. Navigate to the Bot Framework Composer **Package Manager**.
 2. Change the filter to **Community packages**.
-3. Search for 'liverperson' and install **Bot.Builder.Community.Components.Handoff.ServiceNow**
+3. Search for 'servicenow' and install **Bot.Builder.Community.Components.Handoff.ServiceNow**
 
 ![image](https://user-images.githubusercontent.com/3900649/115234449-f3fe2580-a110-11eb-95f4-e549cd14ceea.png)
 
