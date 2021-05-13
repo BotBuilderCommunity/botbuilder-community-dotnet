@@ -1,0 +1,38 @@
+﻿{
+  "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+  "$role": "implements(Microsoft.IDialog)",
+  "title": "Evaluate Template",
+  "description": "Evaluates an LG template and saves its result to a memory variable.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Id",
+      "description": "Optional id for the dialog"
+    },
+    "disabled": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "title": "Disabled",
+      "description": "Optional condition which if true will disable this action.",
+      "examples": [
+        "user.age > 3"
+      ]
+    },
+    "property": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "title": "Property",
+      "description": "Property (named location to store template results)."
+    },
+    "template": {
+      "type": "string",
+      "title": "Template",
+      "description": "LG Template to evaluate.",
+      "examples": [
+        "${WelcomeUser()}",
+        "Hello ${user.name}",
+        "https://example.com/search?q=${turn.activity.text}"
+      ]
+    }
+  },
+  "required": [ "property", "template" ]
+}

@@ -1,0 +1,27 @@
+﻿{
+  "$schema": "https://schemas.botframework.com/schemas/ui/v1.0/ui.schema",
+  "form": {
+    "label": "Evaluate an LG Template",
+    "subtitle": "Evaluate LG Template",
+    "order": [
+      "property",
+      "template",
+      "*"
+    ],
+    "properties": {
+      "property": {
+        "intellisenseScopes": [
+          "variable-scopes"
+        ]
+      }
+    }
+  },
+  "menu": {
+    "label": "Evaluate an LG Template",
+    "submenu": [ "Language Generation" ]
+  },
+  "flow": {
+    "widget": "ActionCard",
+    "body": "${coalesce(action.property, \"?\")} : ${coalesce(action.template, \"?\")}"
+  }
+}

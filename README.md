@@ -1,6 +1,6 @@
 [![Build Status](https://dev.azure.com/BotBuilder-Community/dotnet/_apis/build/status/BotBuilderCommunity.botbuilder-community-dotnet?branchName=master)](https://dev.azure.com/BotBuilder-Community/dotnet/_build/latest?definitionId=1&branchName=master) [![Bot Builder Community NuGet](https://img.shields.io/badge/NuGet-blue.svg)](https://www.nuget.org/profiles/BotBuilderCommunity)
 
-**Latest release: v4.13.0 (05/11/2021) - [Release Notes](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/releases/tag/v4.13)**
+**Latest release: v4.13.0 (05/11/2021) - [Release Notes](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/releases/tag/v4.13.0)**
 
 # Bot Framework Community - .NET Components &amp; Extensions
 
