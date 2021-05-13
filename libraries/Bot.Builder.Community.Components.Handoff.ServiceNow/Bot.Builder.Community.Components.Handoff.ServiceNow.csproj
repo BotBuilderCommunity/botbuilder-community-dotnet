@@ -14,7 +14,7 @@
     <RepositoryUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/</RepositoryUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <ContentTargetFolders>content</ContentTargetFolders>
-    <PackageTags>bots;ai;botframework;botbuilder;bf-component;servicenow;handoff;</PackageTags>
+    <PackageTags>bots;botframework;botbuilder;msbot-component;servicenow;handoff;msbot-middleware;</PackageTags>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
