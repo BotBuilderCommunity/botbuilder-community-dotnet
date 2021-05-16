@@ -1,4 +1,4 @@
-﻿﻿# ServiceNow Handoff Component for Bot Framework Composer
+# ServiceNow Handoff Component for Bot Framework Composer
 
 ## Build status
 | Branch | Status | Recommended NuGet package version |
