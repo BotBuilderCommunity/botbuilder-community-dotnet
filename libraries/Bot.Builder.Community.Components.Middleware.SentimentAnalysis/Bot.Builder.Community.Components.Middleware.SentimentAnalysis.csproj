@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageTags>bots;ai;botframework;botbuilder;msbot-middleware;sentimentanalysis</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.0.0</Version>
+    <PackageProjectUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/libraries/Bot.Builder.Community.Components.Middleware.SentimentAnalysis</PackageProjectUrl>
+    <RepositoryUrl>http://www.github.com/botbuildercommunity/botbuildercommunity-dotnet
+</RepositoryUrl>
+    <Description>Sentiment Analysis Middleware component for Bot Framework Composer and v4 Bot Builder SDK. Enables you to find out what customer think of brand or topic by analyzing raw text for clues about positive or negative sentiment. This component can extract the sentiment either offline (powered by ML.NET) or online (powered by Azure Cognitive Services)</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Azure.CognitiveServices.Language.TextAnalytics" Version="4.0.0" />
+    <PackageReference Include="Microsoft.Bot.Builder" Version="4.13.1" />
+    <PackageReference Include="SentimentAnalyzer" Version="1.2.2" />
+  </ItemGroup>
+
+</Project>
