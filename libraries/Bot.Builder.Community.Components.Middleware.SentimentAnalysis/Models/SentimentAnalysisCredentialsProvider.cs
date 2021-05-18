@@ -9,7 +9,7 @@ namespace Bot.Builder.Community.Components.Middleware.SentimentAnalysis.Models
     {
         public SentimentAnalysisCredentialsProvider(IConfiguration configuration)
         {
-            IsEnabled = Convert.ToBoolean(configuration["IsEnabled"]);
+            IsEnabled = !(String.IsNullOrEmpty(configuration["IsEnabled"])) ? Convert.ToBoolean(configuration["IsEnabled"]) : false;
             APIKey = configuration["APIKey"];
             EndpointUrl = configuration["EndpointUrl"];
         }
