@@ -16,9 +16,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AdaptiveExpressions" Version="4.13.1" />
-    <PackageReference Include="Microsoft.Bot.Builder" Version="4.13.1" />
-    <PackageReference Include="Microsoft.Bot.Schema" Version="4.13.1" />
+    <PackageReference Include="AdaptiveExpressions" Version="$(Bot_Builder_Version)" />
+    <PackageReference Include="Microsoft.Bot.Builder" Version="$(Bot_Builder_Version)" />
+    <PackageReference Include="Microsoft.Bot.Schema" Version="$(Bot_Builder_Version)" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0-preview.3.21201.4" />
     <PackageReference Include="Microsoft.Recognizers.Text.Sequence" Version="1.6.0" />
   </ItemGroup>
