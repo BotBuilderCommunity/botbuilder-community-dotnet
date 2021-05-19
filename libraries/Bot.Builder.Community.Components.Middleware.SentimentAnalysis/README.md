@@ -52,7 +52,7 @@ You can now get the results using two different settings;
 
 To use this, you just have to keep the settings as it is defined in the above example. In order to get it in Bot Framework Composer, you can use this syntax;
 
-`${turn.Activity.Conversation.Sentiment}`
+`${turn.Sentiment}`
 
 ![image](https://user-images.githubusercontent.com/16351038/118396606-97e8db80-b693-11eb-983d-039df10d2050.png)
 
@@ -62,7 +62,9 @@ This will give result as **True** for Positive and **False ** for Negative.
 
 #### Online Mode (using Azure Text Analytics) 
 
-To use this, you need to get the API key and an endpoint URL, once they both are populated, the component will automatically switch its mode to online and now the results will be fetched from Azure Text Analytics service. 
+To use this, you need to get the API key and an endpoint URL, once they both are populated, the component will automatically switch its mode to online and now the results will be fetched from Azure Text Analytics service. Same syntax as above;
+
+`${turn.Sentiment}`
 
 This will give result from 0.0 to 1 where 1 being Positive and 0 being Negative. 
 

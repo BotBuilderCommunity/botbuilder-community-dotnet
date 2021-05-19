@@ -1,6 +1,8 @@
 ﻿using Bot.Builder.Community.Components.Middleware.SentimentAnalysis.Models;
 using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,6 +12,8 @@ namespace Bot.Builder.Community.Components.Middleware.SentimentAnalysis
     public class SentimentMiddleware : IMiddleware
     {
         private readonly ISentimentAnalysisCredentialsProvider _creds;
+        private const string Turn = "turn";
+
         public SentimentMiddleware(ISentimentAnalysisCredentialsProvider credentialsProvider)
         {
             _creds = credentialsProvider;
@@ -21,8 +25,7 @@ namespace Bot.Builder.Community.Components.Middleware.SentimentAnalysis
         {
             if (turnContext.Activity.Type is ActivityTypes.Message && _creds.IsEnabled == true)
             {
-                turnContext.Activity.Conversation.Properties.Remove("Sentiment");
-                turnContext.Activity.Conversation.Properties.Add("Sentiment", await turnContext.Activity.Text.Sentiment(_creds.APIKey, _creds.EndpointUrl));
+                ObjectPath.SetPathValue(turnContext.TurnState, "turn.Sentiment", await turnContext.Activity.Text.Sentiment(_creds.APIKey, _creds.EndpointUrl));
             }
 
             await next(cancellationToken);
