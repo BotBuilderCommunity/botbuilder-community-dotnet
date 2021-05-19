@@ -6,7 +6,7 @@ namespace Bot.Builder.Community.Components.Middleware.TextRecognizer.Settings
 {
     public class PhoneNumberMiddlewareSettings : BaseMiddlewareSettings, IPhoneNumberMiddlewareSettings
     {
-        public PhoneNumberMiddlewareSettings(IConfiguration configuration) : base(configuration, "PhoneNumberEntities")
+        public PhoneNumberMiddlewareSettings(IConfiguration configuration) : base(configuration, "turn.PhoneNumberEntities")
         {
             IsPhoneNumberEnable = Convert.ToBoolean(configuration[nameof(IsPhoneNumberEnable)]);
         }

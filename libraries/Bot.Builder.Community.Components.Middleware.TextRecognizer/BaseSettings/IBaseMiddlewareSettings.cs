@@ -4,7 +4,7 @@ namespace Bot.Builder.Community.Components.Middleware.TextRecognizer.BaseSetting
     public interface IBaseMiddlewareSettings
     {
         string Locale { get; }
-        string PropertyName { get; }
+        string Property { get; }
         
     }
 }

@@ -32,6 +32,8 @@ The Text Recognizer Middleware library is a compliment to the Text Recognizer cu
     "settingsPrefix": "Bot.Builder.Community.Components.Middleware.TextRecognizer"
 }
 
+`Middleware Settings
+
 "Bot.Builder.Community.Components.Middleware.TextRecognizer": {
     "IsEmailEnable": true,
     "IsPhoneNumberEnable": true,
@@ -45,9 +47,10 @@ The Text Recognizer Middleware library is a compliment to the Text Recognizer cu
 ```
 
 ### NOTE
-If you do not want to use the middleware or particular middleware, you can simply set the value of ..Enabled to false.
+If you do not want to use the middleware or any particular middleware, you can simply set the value of "Enabled" to false.
 
 Example : Disable SocialMediaMiddleware
+
 ```json
 IsSocialMediaEnable : false
 ```
@@ -59,25 +62,26 @@ Once you've configured the middleware component and enabled it from the Connecti
 You can now get the results using below settings;
 
 ```json
-Email Middleware
-${turn.Activity.Conversation.EmailEntities}
 
-PhoneNumber Middleware
-${turn.Activity.Conversation.PhoneNumberEntities}
+#### Email Middleware
+`${turn.EmailEntities}
 
-SocialMediaRecognizer Middleware
-${turn.Activity.Conversation.MediaTypeEntities}
+#### PhoneNumber Middleware
+`${turn.PhoneNumberEntities}
 
-SocialMediaType
-Mention
-Hashtag
+#### SocialMediaRecognizer Middleware
+`${turn.MediaTypeEntities}
 
-InternetProtocol Middleware
-${turn.Activity.Conversation.InternetTypeEntities}
+`SocialMediaType
+`Mention
+`Hashtag
+
+#### InternetProtocol Middleware
+`${turn.InternetTypeEntities}
 
 InternetProtocolType
-IpAddress,
-Url
+`IpAddress,
+`Url
 ```
 
 #### Example

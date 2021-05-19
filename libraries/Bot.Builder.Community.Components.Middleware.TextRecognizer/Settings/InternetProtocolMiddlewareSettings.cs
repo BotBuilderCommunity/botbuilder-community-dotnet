@@ -6,7 +6,7 @@ namespace Bot.Builder.Community.Components.Middleware.TextRecognizer.Settings
 {
     public class InternetProtocolMiddlewareSettings : BaseMiddlewareSettings, IInternetProtocolMiddlewareSettings
     {
-        public InternetProtocolMiddlewareSettings(IConfiguration configuration) : base(configuration, "InternetTypeEntities")
+        public InternetProtocolMiddlewareSettings(IConfiguration configuration) : base(configuration, "turn.InternetTypeEntities")
         {
             IsInternetProtocolEnable = Convert.ToBoolean(configuration[nameof(IsInternetProtocolEnable)]);
 

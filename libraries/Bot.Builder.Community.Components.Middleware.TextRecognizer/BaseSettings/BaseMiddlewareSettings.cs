@@ -4,14 +4,14 @@ namespace Bot.Builder.Community.Components.Middleware.TextRecognizer.BaseSetting
 {
     public abstract class BaseMiddlewareSettings
     {
-        protected BaseMiddlewareSettings(IConfiguration configuration,string propertyName)
+        protected BaseMiddlewareSettings(IConfiguration configuration,string property)
         {
             Locale = configuration[nameof(Locale)];
-            PropertyName = propertyName;
+            Property = property;
         }
 
         public string Locale { get; }
         
-        public string PropertyName { get; }
+        public string Property { get; }
     }
 }

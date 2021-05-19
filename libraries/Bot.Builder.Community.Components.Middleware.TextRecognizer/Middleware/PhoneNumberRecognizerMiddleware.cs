@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Bot.Builder.Community.Components.Middleware.TextRecognizer.Settings;
 using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Recognizers.Text.Sequence;
 
@@ -21,8 +22,6 @@ namespace Bot.Builder.Community.Components.Middleware.TextRecognizer.Middleware
         {
             if (_phoneNumberMiddlewareSettings.IsPhoneNumberEnable && turnContext.Activity.Type == ActivityTypes.Message && !string.IsNullOrEmpty(turnContext.Activity.Text))
             {
-                turnContext.Activity.Conversation.Properties.Remove(_phoneNumberMiddlewareSettings.PropertyName);
-
                 var culture = turnContext.Activity.Locale ?? _phoneNumberMiddlewareSettings.Locale;
 
                 var recognizePhoneNumber = SequenceRecognizer.RecognizePhoneNumber(turnContext.Activity.Text, culture);
@@ -33,7 +32,7 @@ namespace Bot.Builder.Community.Components.Middleware.TextRecognizer.Middleware
                     
                     if (!string.IsNullOrEmpty(value))
                     {
-                        turnContext.Activity.Conversation.Properties.Add(_phoneNumberMiddlewareSettings.PropertyName, value);
+                        ObjectPath.SetPathValue(turnContext.TurnState, _phoneNumberMiddlewareSettings.Property, value);
                     }
                 }
             }

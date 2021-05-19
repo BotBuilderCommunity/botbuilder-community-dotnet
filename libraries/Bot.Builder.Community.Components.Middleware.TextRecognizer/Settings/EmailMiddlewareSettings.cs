@@ -6,7 +6,7 @@ namespace Bot.Builder.Community.Components.Middleware.TextRecognizer.Settings
 {
     public class EmailMiddlewareSettings : BaseMiddlewareSettings , IEmailMiddlewareSettings
     {
-        public EmailMiddlewareSettings(IConfiguration configuration) : base(configuration, "EmailEntities")
+        public EmailMiddlewareSettings(IConfiguration configuration) : base(configuration, "turn.EmailEntities")
         {
             IsEmailEnable = Convert.ToBoolean(configuration[nameof(IsEmailEnable)]);
         }

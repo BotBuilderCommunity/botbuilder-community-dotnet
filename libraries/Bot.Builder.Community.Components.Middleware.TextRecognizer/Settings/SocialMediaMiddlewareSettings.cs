@@ -6,7 +6,7 @@ namespace Bot.Builder.Community.Components.Middleware.TextRecognizer.Settings
 {
     public class SocialMediaMiddlewareSettings : BaseMiddlewareSettings, ISocialMediaMiddlewareSettings
     {
-        public SocialMediaMiddlewareSettings(IConfiguration configuration) : base(configuration, "MediaTypeEntities")
+        public SocialMediaMiddlewareSettings(IConfiguration configuration) : base(configuration, "turn.MediaTypeEntities")
         {
             IsSocialMediaEnable = Convert.ToBoolean(configuration[nameof(IsSocialMediaEnable)]);
 

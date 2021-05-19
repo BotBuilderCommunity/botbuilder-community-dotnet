@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Bot.Builder.Community.Components.Middleware.TextRecognizer.Settings;
 using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Recognizers.Text;
 using Microsoft.Recognizers.Text.Sequence;
@@ -23,8 +24,6 @@ namespace Bot.Builder.Community.Components.Middleware.TextRecognizer.Middleware
             if (_mediaMiddlewareSettings.IsSocialMediaEnable && turnContext.Activity.Type == ActivityTypes.Message &&
                 !string.IsNullOrEmpty(turnContext.Activity.Text))
             {
-                turnContext.Activity.Conversation.Properties.Remove(_mediaMiddlewareSettings.PropertyName);
-
                 var culture = turnContext.Activity.Locale ?? _mediaMiddlewareSettings.Locale;
 
                 List<ModelResult> modelResults = null;
@@ -42,7 +41,8 @@ namespace Bot.Builder.Community.Components.Middleware.TextRecognizer.Middleware
                 if (modelResults?.Count > 0)
                 {
                     var value = modelResults[0].Resolution["value"].ToString();
-                    turnContext.Activity.Conversation.Properties.Add(_mediaMiddlewareSettings.PropertyName,value);
+
+                    ObjectPath.SetPathValue(turnContext.TurnState, _mediaMiddlewareSettings.Property, value);
                 }
             }
 
