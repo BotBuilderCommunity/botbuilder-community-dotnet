@@ -11,6 +11,23 @@ This is part of the [Bot Builder Community](https://github.com/botbuildercommuni
 
 The Text Recognizer Middleware library is a compliment to the Text Recognizer custom input.These middleware components can be used to identify certain text sequences that you might want to alter prior to appearing on the chat window. For example, turning a URL into an actual link, or turning a hashtag into a link that points to a Twitter search.
 
+Supported middleware classes include:
+
+| Class | Description | Property  |
+| ---- | ----------- | ----------- |
+| `EmailRecognizer` | Extract an email address from a message from the user | `${turn.EmailEntities}` |
+| `PhoneNumberRecognizer` | Extract a phone number from a message from the user | `${turn.PhoneNumberEntities}` |
+| `InternetProtocol` | Extract one of the (IpAddress or Url) types based on which InternetProtocolType enum value is passed in | `${turn.InternetTypeEntities}` |
+| `SocialMediaRecognizer` | Extract one of the (Mention or Hashtag) types based on which SocialMediaType enum value is passed in | `${turn.MediaTypeEntities}` |
+
+
+| Enum Type  | Value |
+| ---- | ----------- |
+| InternetProtocolType |  IpAddress ,  Url |
+| SocialMediaType |  Mention ,  Hashtag |
+
+
+
 ### Composer component installation
 
 1. Navigate to the Bot Framework Composer **Package Manager**.
@@ -31,9 +48,9 @@ The Text Recognizer Middleware library is a compliment to the Text Recognizer cu
     "name": "Bot.Builder.Community.Components.Middleware.TextRecognizer",
     "settingsPrefix": "Bot.Builder.Community.Components.Middleware.TextRecognizer"
 }
+```
 
-`Middleware Settings
-
+```json
 "Bot.Builder.Community.Components.Middleware.TextRecognizer": {
     "IsEmailEnable": true,
     "IsPhoneNumberEnable": true,
@@ -43,13 +60,12 @@ The Text Recognizer Middleware library is a compliment to the Text Recognizer cu
     "InternetProtocolType": "url",
     "Locale": "de-De"
   },
-
 ```
 
 ### NOTE
-If you do not want to use the middleware or any particular middleware, you can simply set the value of "Enabled" to false.
+If you do not want to use particular middleware, you can simply set the value of "Enabled property" to false.
 
-Example : Disable SocialMediaMiddleware
+Example to disable SocialMediaMiddleware set the flag to false
 
 ```json
 IsSocialMediaEnable : false
@@ -61,30 +77,27 @@ Once you've configured the middleware component and enabled it from the Connecti
 
 You can now get the results using below settings;
 
-```json
+EmailRecognizer Middleware<BR>
+`${turn.EmailEntities}`
 
-#### Email Middleware
-`${turn.EmailEntities}
 
-#### PhoneNumber Middleware
-`${turn.PhoneNumberEntities}
+PhoneNumberRecognizer Middleware<BR>
+`${turn.PhoneNumberEntities}`
 
-#### SocialMediaRecognizer Middleware
-`${turn.MediaTypeEntities}
 
-`SocialMediaType
-`Mention
-`Hashtag
+SocialMediaRecognizer Middleware<BR>
+`${turn.MediaTypeEntities}`
 
-#### InternetProtocol Middleware
-`${turn.InternetTypeEntities}
+InternetProtocol Middleware<BR>
+`${turn.InternetTypeEntities}`
+    
+Composer Settings to display the results
+    
+![image](https://user-images.githubusercontent.com/16264167/118853093-ac1b1b80-b8d3-11eb-8b48-28185e3cc8a0.png)
+    
 
-InternetProtocolType
-`IpAddress,
-`Url
-```
+This will give result example email address
+    
+![image](https://user-images.githubusercontent.com/16264167/118853293-e2589b00-b8d3-11eb-8389-01ddec129829.png)
 
-#### Example
-
-![image](https://user-images.githubusercontent.com/16264167/118684842-d8b33280-b802-11eb-8bd0-6d7a35802dd2.png)
 
