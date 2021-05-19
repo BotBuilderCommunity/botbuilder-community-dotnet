@@ -1,13 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Web;
-using System.Xml;
-using System.Xml.XPath;
+using AdaptiveCards;
 using Bot.Builder.Community.Components.Handoff.ServiceNow.Models;
 using Bot.Builder.Community.Components.Handoff.Shared;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +6,15 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Web;
+using Attachment = Microsoft.Bot.Schema.Attachment;
 
 namespace Bot.Builder.Community.Components.Handoff.ServiceNow
 {
@@ -64,15 +64,15 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                                 "ServiceNowVirtualAgent",
                                 label: "ServiceNowHandoff->Handoff completed");
 
-                             await (_adapter).ContinueConversationAsync(
-                                  _credentials.MsAppId,
-                                  handoffRecord.ConversationReference,
-                                  (turnContext, cancellationToken) => turnContext.SendActivityAsync(traceActivity, cancellationToken), default);
+                            await (_adapter).ContinueConversationAsync(
+                                 _credentials.MsAppId,
+                                 handoffRecord.ConversationReference,
+                                 (turnContext, cancellationToken) => turnContext.SendActivityAsync(traceActivity, cancellationToken), default);
                         }
 
                         Response.StatusCode = (int)HttpStatusCode.OK;
                     }
-                    else 
+                    else
                     {
                         // No matching handoff record for the conversation referenced by ServiceNow
                         Response.StatusCode = (int)HttpStatusCode.NotFound;
@@ -95,11 +95,11 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                 IMessageActivity responseActivity;
 
                 // Map ServiceNow UX controls to Bot Framework concepts. This will need refinement as broader experiences are used but this covers a broad range of out-of-box ServiceNow response types.
-              switch (item.uiType)
+                switch (item.uiType)
                 {
                     case "TopicPickerControl":
                     case "ItemPicker":
-                    case "Picker":                        
+                    case "Picker":
 
                         // Map the picker concept to a basic HeroCard with buttons
                         List<CardAction> cardActions = new List<CardAction>();
@@ -107,7 +107,7 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                         {
                             cardActions.Add(new CardAction("imBack", option.description ?? option.label, value: option.label));
                         }
-                        
+
                         var pickerHeroCard = new HeroCard(buttons: cardActions);
                         responseActivity = MessageFactory.Attachment(pickerHeroCard.ToAttachment());
 
@@ -141,14 +141,14 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                     case "OutputHtml":
 
                         // We can't render HTML inside of conversations.
-                        responseActivity = MessageFactory.Text(StripTags(item.value)); 
+                        responseActivity = MessageFactory.Text(StripTags(item.value));
 
                         break;
                     case "Boolean":
                         List<CardAction> booleanCardActions = new List<CardAction>();
 
-                        booleanCardActions.Add(new CardAction("imBack", title: "Yes", displayText: "Yes", value:"true" ));
-                        booleanCardActions.Add(new CardAction("imBack", title: "No", displayText: "Yes", value:"false"));
+                        booleanCardActions.Add(new CardAction("imBack", title: "Yes", displayText: "Yes", value: "true"));
+                        booleanCardActions.Add(new CardAction("imBack", title: "No", displayText: "Yes", value: "false"));
                         var booleanHeroCard = new HeroCard(buttons: booleanCardActions);
 
                         responseActivity = MessageFactory.Attachment(booleanHeroCard.ToAttachment());
@@ -160,7 +160,7 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                         break;
 
                     case "OutputImage":
-                        
+
                         var cardImages = new List<CardImage>();
                         cardImages.Add(new CardImage(url: item.value));
 
@@ -174,6 +174,52 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                         var linkHeroCard = new HeroCard(buttons: new List<CardAction> { new CardAction("openUrl", item.value) });
                         responseActivity = MessageFactory.Attachment(linkHeroCard.ToAttachment());
                         responseActivity.AsMessageActivity().Text = item.promptMsg ?? item.label;
+
+                        break;
+
+                    case "DateTime":
+                        var dateTimeCard = new AdaptiveCard(new AdaptiveSchemaVersion(1, 2))
+                        {
+                            Body = new List<AdaptiveElement>()
+                            {
+                                new AdaptiveContainer()
+                                {
+                                    Items = new List<AdaptiveElement>()
+                                    {
+                                        new AdaptiveTextBlock()
+                                        {
+                                            Text = item.label,
+                                            Wrap = true
+                                        },
+                                        new AdaptiveDateInput()
+                                        {
+                                            Id = "dateVal",
+                                            Value = DateTime.UtcNow.ToString("MM-dd-yyyy")
+                                        },
+                                        new AdaptiveTimeInput()
+                                        {
+                                            Id = "timeVal"
+                                        }
+                                    }
+                                }
+                            },
+                            Actions = new List<AdaptiveAction>()
+                            {
+                                // Using a SubmitAction with an msteams messageBack object to show display text
+                                // from the user while sending the date and time inputs as data
+                                new AdaptiveSubmitAction()
+                                {
+                                    Title = "Submit",
+                                    DataJson = "{\r\n\"msteams\": {\r\n\"type\": \"messageBack\",\r\n\"displayText\": \"Datetime submitted\"\r\n}\r\n}"
+                                }
+                            }
+                        };
+
+                        responseActivity = MessageFactory.Attachment(new Attachment
+                        {
+                            ContentType = AdaptiveCard.ContentType,
+                            Content = JObject.FromObject(dateTimeCard),
+                        });
 
                         break;
 
@@ -217,7 +263,7 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
         {
             // create whitespace between html elements, so that words do not run together
             htmlResponse = htmlResponse.Replace(">", "> ");
-           
+
             var doc = new HtmlAgilityPack.HtmlDocument();
             doc.LoadHtml(htmlResponse);
 
