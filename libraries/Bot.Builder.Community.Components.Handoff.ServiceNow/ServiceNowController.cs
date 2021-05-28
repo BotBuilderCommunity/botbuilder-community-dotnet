@@ -133,15 +133,15 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                         responseActivity.Attachments = new List<Microsoft.Bot.Schema.Attachment>();
                         foreach (var action in item.values)
                         {
-                            var cardAction = new CardAction("openUrl", action.label, value: action.action);
-                            var card = new HeroCard(action.label, null, action.description, null, null, cardAction);
+                            var card = new HeroCard(subtitle: action.description, buttons: new List<CardAction>
+                                {new CardAction("openUrl", action.label ?? action.action, value: action.action)});
                             responseActivity.Attachments.Add(card.ToAttachment());
                         }
                         break;
                     case "OutputHtml":
 
                         // We can't render HTML inside of conversations.
-                        responseActivity = MessageFactory.Text(StripTags(item.value));
+                        responseActivity = MessageFactory.Text(StripTags(item.value.ToString()));
 
                         break;
                     case "Boolean":
@@ -156,13 +156,13 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                         break;
 
                     case "OutputText":
-                        responseActivity = MessageFactory.Text(item.value ?? item.label);
+                        responseActivity = MessageFactory.Text(item.value.ToString() ?? item.label);
                         break;
 
                     case "OutputImage":
 
                         var cardImages = new List<CardImage>();
-                        cardImages.Add(new CardImage(url: item.value));
+                        cardImages.Add(new CardImage(url: item.value.ToString()));
 
                         var imageHeroCard = new HeroCard(images: cardImages);
                         responseActivity = MessageFactory.Attachment(imageHeroCard.ToAttachment());
@@ -171,9 +171,93 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
 
                     case "OutputLink":
 
-                        var linkHeroCard = new HeroCard(buttons: new List<CardAction> { new CardAction("openUrl", item.value) });
+                        var bodyValue = item.value as BodyValue;
+
+                        var linkHeroCard = new HeroCard(buttons: new List<CardAction>
+                                {new CardAction("openUrl", item.label, value: bodyValue.action)});
                         responseActivity = MessageFactory.Attachment(linkHeroCard.ToAttachment());
-                        responseActivity.AsMessageActivity().Text = item.promptMsg ?? item.label;
+
+                        if (!string.IsNullOrEmpty(item.promptMsg))
+                        {
+                            responseActivity.AsMessageActivity().Text = item.promptMsg;
+                        }
+
+                        break;
+
+                    case "OutputCard":
+
+                        var cardData = JObject.Parse(item.data.ToString());
+
+                        var items = new List<AdaptiveColumnSet>();
+
+                        var titleColumnSet = new AdaptiveColumnSet
+                        {
+                            Columns = new List<AdaptiveColumn>()
+                            {
+                                new AdaptiveColumn
+                                {
+                                    Items = new List<AdaptiveElement>()
+                                    {
+                                        new AdaptiveTextBlock(cardData["title"]?.ToString())
+                                        {
+                                            Size = AdaptiveTextSize.Medium
+                                        }
+                                    }
+                                },
+                                new AdaptiveColumn
+                                {
+                                    Items = new List<AdaptiveElement>()
+                                    {
+                                        new AdaptiveTextBlock(cardData["subtitle"]?.ToString())
+                                        {
+                                            Size = AdaptiveTextSize.Medium
+                                        }
+                                    }
+                                }
+                            }
+                        };
+
+                        items.Add(titleColumnSet);
+
+                        foreach (var field in cardData["fields"])
+                        {
+                            var columnSet = new AdaptiveColumnSet
+                            {
+                                Columns = new List<AdaptiveColumn>()
+                                {
+                                    new AdaptiveColumn
+                                    {
+                                        Items = new List<AdaptiveElement>()
+                                        {
+                                            new AdaptiveTextBlock(field["fieldLabel"]?.ToString())
+                                        }
+                                    },
+                                    new AdaptiveColumn
+                                    {
+                                        Items = new List<AdaptiveElement>()
+                                        {
+                                            new AdaptiveTextBlock(field["fieldValue"]?.ToString())
+                                        }
+                                    }
+                                }
+                            };
+
+                            items.Add(columnSet);
+                        }
+
+                        var adaptiveCard = new AdaptiveCard(new AdaptiveSchemaVersion(1, 2))
+                        {
+
+                            Body = new List<AdaptiveElement>()
+                        };
+
+                        adaptiveCard.Body.AddRange(items);
+
+                        responseActivity = MessageFactory.Attachment(new Attachment
+                        {
+                            ContentType = AdaptiveCard.ContentType,
+                            Content = JObject.FromObject(adaptiveCard),
+                        });
 
                         break;
 
@@ -224,7 +308,7 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                         break;
 
                     default:
-                        responseActivity = MessageFactory.Text(item.value ?? item.label);
+                        responseActivity = MessageFactory.Text(item.value.ToString() ?? item.label);
                         break;
                 }
 
