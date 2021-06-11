@@ -1,47 +1,47 @@
 {
-    "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
-    "$role": "implements(Microsoft.IAdapter)",
-    "title": "Amazon Alexa connection",
-    "description": "Connects a bot to an Amazon Alexa skill.",
-    "type": "object",
-    "properties": {
-        "AlexaSkillId": {
-            "type": "string",
-            "title": "Alexa skill id",
-            "description": "Id of your Amazon Alexa skill."
-        },
-        "TryConvertFirstActivityAttachmentToAlexaCard": {
-            "type": "boolean",
-            "title": "Convert attachment to card",
-            "description": "Whether the first activity attachment will be converted to Alexa cards.",
-            "default": false
-        },
-        "ValidateIncomingAlexaRequests": {
-            "type": "boolean",
-            "title": "Validate requests",
-            "description": "Whether to validate incoming Alexa requests.",
-            "default": true
-        },
-        "ShouldEndSessionByDefault": {
-            "type": "boolean",
-            "title": "End session by default",
-            "description": "Whether to end the session by default.",
-            "default": true
-        },
-        "route": {
-            "type": "string",
-            "title": "Route",
-            "description": "Optional route where the adapter is exposed.",
-            "default": "alexa"
-        },
-        "type": {
-            "type": "string",
-            "title": "Type",
-            "description": "Adapter type.",
-            "default": "Bot.Builder.Community.Adapters.Alexa.AlexaAdapter"
-        }
+  "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+  "$role": "implements(Microsoft.IAdapter)",
+  "title": "Amazon Alexa connection",
+  "description": "Connects a bot to an Amazon Alexa skill.",
+  "type": "object",
+  "properties": {
+    "AlexaSkillId": {
+      "type": "string",
+      "title": "Alexa skill id",
+      "description": "Id of your Amazon Alexa skill."
     },
-    "required": [
-        "AlexaSkillId"
-    ]
+    "TryConvertFirstActivityAttachmentToAlexaCard": {
+      "type": "boolean",
+      "title": "Convert attachment to card",
+      "description": "Whether the first activity attachment will be converted to Alexa cards.",
+      "default": false
+    },
+    "ValidateIncomingAlexaRequests": {
+      "type": "boolean",
+      "title": "Validate requests",
+      "description": "Whether to validate incoming Alexa requests.",
+      "default": true
+    },
+    "ShouldEndSessionByDefault": {
+      "type": "boolean",
+      "title": "End session by default",
+      "description": "Whether to end the session by default.",
+      "default": true
+    },
+    "route": {
+      "type": "string",
+      "title": "Route",
+      "description": "Optional route where the adapter is exposed.",
+      "default": "alexa"
+    },
+    "type": {
+      "type": "string",
+      "title": "Type",
+      "description": "Adapter type.",
+      "default": "Bot.Builder.Community.Adapters.Alexa.AlexaAdapter"
+    }
+  },
+  "required": [
+    "AlexaSkillId"
+  ]
 }

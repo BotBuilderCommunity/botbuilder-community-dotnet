@@ -1,0 +1,146 @@
+{
+  "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+  "$role": "implements(Microsoft.IDialog)",
+  "title": "Send a Google Business Messages activity",
+  "description": "Respond with an activity with Google Business Messages specific attachments.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Id",
+      "description": "Optional id for the dialog"
+    },
+    "disabled": {
+      "$ref": "schema:#/definitions/booleanExpression",
+      "title": "Disabled",
+      "description": "Optional condition which if true will disable this action."
+    },
+    "activity": {
+      "$kind": "Microsoft.IActivityTemplate",
+      "title": "Activity",
+      "description": "Activity to send."
+    },
+    "openUrlActions": {
+      "type": "array",
+      "title": "OpenUrl Suggested Actions",
+      "description": "OpenUrl Suggested Actions to send with the response.",
+      "items": {
+        "type": "object",
+        "title": "OpenUrl Action",
+        "description": "OpenUrl Suggested Action.",
+        "properties": {
+          "text": {
+            "$ref": "schema:#/definitions/stringExpression",
+            "title": "Text",
+            "description": "Action text.",
+            "examples": [
+              "Visit our support site"
+            ]
+          },
+          "postbackData": {
+            "$ref": "schema:#/definitions/stringExpression",
+            "title": "PostBack Data",
+            "description": "Data to be posted back when action is clicked.",
+            "examples": []
+          },
+          "url": {
+            "$ref": "schema:#/definitions/stringExpression",
+            "title": "URL",
+            "description": "Target URL.",
+            "examples": []
+          }
+        }
+      }
+    },
+    "dialActions": {
+      "type": "array",
+      "title": "Dial Action Suggestions",
+      "description": "Dial Action Suggestions to send with the response.",
+      "items": {
+        "type": "object",
+        "title": "Dial Action",
+        "description": "Dial Action Suggestion.",
+        "properties": {
+          "text": {
+            "$ref": "schema:#/definitions/stringExpression",
+            "title": "Text",
+            "description": "Action text.",
+            "examples": [
+              "Visit our support site"
+            ]
+          },
+          "postbackData": {
+            "$ref": "schema:#/definitions/stringExpression",
+            "title": "PostBack Data",
+            "description": "Data to be posted back when action is clicked.",
+            "examples": []
+          },
+          "phoneNumber": {
+            "$ref": "schema:#/definitions/stringExpression",
+            "title": "Phone Number",
+            "description": "Target telephone number.",
+            "examples": []
+          }
+        }
+      }
+    },
+    "authRequestAction": {
+      "type": "object",
+      "title": "Auth Request Action Action",
+      "description": "Authentication Request Suggested Action.",
+      "properties": {
+        "clientId": {
+          "$ref": "schema:#/definitions/stringExpression",
+          "title": "Client Id"
+        },
+        "codeChallenge": {
+          "$ref": "schema:#/definitions/stringExpression",
+          "title": "Code Challenge"
+        },
+        "codeChallengeMethod": {
+          "$ref": "schema:#/definitions/stringExpression",
+          "title": "Code Challenge Method"
+        },
+        "scopes": {
+          "type": "array",
+          "title": "Scopes",
+          "items": {
+            "$ref": "schema:#/definitions/stringExpression",
+            "title": "Scope"
+          }
+        }
+      }
+    },
+    "includeLiveAgentRequestAction": {
+      "type": "boolean",
+      "title": "Include Live Agent Request Suggestion"
+    },
+    "richCardDetails": {
+      "type": "object",
+      "title": "Rich Card",
+      "description": "Details used if this message should be sent as a rich card.",
+      "properties": {
+        "title": {
+          "$ref": "schema:#/definitions/stringExpression",
+          "title": "Title"
+        },
+        "description": {
+          "$ref": "schema:#/definitions/stringExpression",
+          "title": "Description"
+        },
+        "mediaFileUrl": {
+          "$ref": "schema:#/definitions/stringExpression",
+          "title": "Media File Url"
+        },
+        "mediaAltText": {
+          "$ref": "schema:#/definitions/stringExpression",
+          "title": "Media Alt Text"
+        },
+        "mediaHeight": {
+          "$ref": "schema:#/definitions/stringExpression",
+          "title": "Media Height"
+        }
+      }
+    }
+  }
+}
