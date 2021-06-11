@@ -3,6 +3,9 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Bot Builder Community</Authors>
+    <Company>Bot Builder Community</Company>
+    <PackageLicenseUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/develop/libraries/Bot.Builder.Community.Components.TokenExchangeSkillHandler</RepositoryUrl>
     <PackageIcon>package-icon.png</PackageIcon>
     <PackageLicenseUrl />
@@ -13,7 +16,7 @@
     <PackageProjectUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/develop/libraries/Bot.Builder.Community.Components.TokenExchangeSkillHandler</PackageProjectUrl>
     <Version>1.0.0-preview</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageTags>msbot-component</PackageTags>
+    <PackageTags>bots;botframework;botbuilder;msbot-component;msbot-middleware;</PackageTags>
     <ContentTargetFolders>content</ContentTargetFolders>
   </PropertyGroup>
 
