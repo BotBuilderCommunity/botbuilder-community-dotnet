@@ -21,6 +21,15 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Content Include="Schemas\BotBuilderCommunity.GoogleBusinessAdapter.schema" />
+	  <Content Include="Schemas\BotBuilderCommunity.GoogleBusinessAdapter.uischema" />
+	  <Content Include="Schemas\BotBuilderCommunity.SendGBMActivity.schema" />
+	  <Content Include="Schemas\BotBuilderCommunity.SendGBMActivity.uischema" />
+	  <Content Include="Schemas\BotBuilderCommunity.SendGBMSurvey.schema" />
+	  <Content Include="Schemas\BotBuilderCommunity.SendGBMSurvey.uischema" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Include="..\..\package-icon.png" Link="package-icon.png">
 	    <PackagePath></PackagePath>
 	    <Pack>True</Pack>

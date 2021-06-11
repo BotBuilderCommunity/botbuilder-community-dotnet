@@ -27,7 +27,7 @@
       "type": "string",
       "title": "Type",
       "description": "Adapter type.",
-      "default": "Bot.Builder.Community.Components.Adapters.GoogleBusinessMessagingAdapter"
+      "default": "Bot.Builder.Community.Components.Adapters.GoogleBusiness.GoogleBusinessMessagingAdapter"
     }
   },
   "required": [
