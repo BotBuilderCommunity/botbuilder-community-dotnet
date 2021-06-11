@@ -21,6 +21,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Include="..\..\package-icon.png" Link="package-icon.png">
+	    <PackagePath></PackagePath>
+	    <Pack>True</Pack>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
     <PackageReference Include="Google.Apis.Auth" Version="1.51.0" />
     <PackageReference Include="JWT" Version="8.2.0" />
     <PackageReference Include="Microsoft.Bot.Builder" Version="$(Bot_Builder_Version)" />
