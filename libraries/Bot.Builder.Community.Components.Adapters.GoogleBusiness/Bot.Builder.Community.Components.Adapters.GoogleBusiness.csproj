@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="mainguytest-fae53ed24f47.json" />
+  </ItemGroup>
+
+	<ItemGroup>
+    <PackageReference Include="Google.Apis.Auth" Version="1.51.0" />
+    <PackageReference Include="JWT" Version="8.2.0" />
+    <PackageReference Include="Microsoft.Bot.Builder" Version="4.13.1" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.13.1" />
+    <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.13.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="6.11.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Bot.Builder.Community.Components.Adapters.GoogleBusiness.Core\Bot.Builder.Community.Components.Adapters.GoogleBusiness.Core.csproj" />
+  </ItemGroup>
+
+</Project>

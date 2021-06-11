@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schemas.botframework.com/schemas/ui/v1.0/ui.schema",
+  "form": {
+    "label": "Send a Google Business Messages survey",
+    "subtitle": "Send a Google Business Messages survey",
+    "helpLink": "https://aka.ms/bfc-send-activity"
+  },
+  "menu": {
+    "submenu": [ "Channels", "Google Business Messages" ],
+    "label": "Send Survey"
+  }
+}
