@@ -155,6 +155,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Compo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Components.LanguageGeneration", "libraries\Bot.Builder.Community.Components.LanguageGeneration\Bot.Builder.Community.Components.LanguageGeneration.csproj", "{40D170FA-AC4D-43B6-AB2A-ACCF1B5EE0F4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bot.Builder.Community.Components.Middleware.SentimentAnalysis", "libraries\Bot.Builder.Community.Components.Middleware.SentimentAnalysis\Bot.Builder.Community.Components.Middleware.SentimentAnalysis.csproj", "{06982592-CE99-41A4-B2E5-1195E8ED8249}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Components.Middleware.TextRecognizer", "libraries\Bot.Builder.Community.Components.Middleware.TextRecognizer\Bot.Builder.Community.Components.Middleware.TextRecognizer.csproj", "{6F6D55A7-324B-445C-B639-0A384907118E}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Components.Adapters.GoogleBusiness.Core", "libraries\Bot.Builder.Community.Components.Adapters.GoogleBusiness.Core\Bot.Builder.Community.Components.Adapters.GoogleBusiness.Core.csproj", "{55546728-AADE-4ED0-88AD-B517B915CD5D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Components.Adapters.GoogleBusiness", "libraries\Bot.Builder.Community.Components.Adapters.GoogleBusiness\Bot.Builder.Community.Components.Adapters.GoogleBusiness.csproj", "{56A89D8F-2CD5-439B-8E04-A7A6D9C7566C}"
@@ -669,6 +673,22 @@ Global
 		{40D170FA-AC4D-43B6-AB2A-ACCF1B5EE0F4}.Documentation|Any CPU.Build.0 = Debug|Any CPU
 		{40D170FA-AC4D-43B6-AB2A-ACCF1B5EE0F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40D170FA-AC4D-43B6-AB2A-ACCF1B5EE0F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06982592-CE99-41A4-B2E5-1195E8ED8249}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{06982592-CE99-41A4-B2E5-1195E8ED8249}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{06982592-CE99-41A4-B2E5-1195E8ED8249}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06982592-CE99-41A4-B2E5-1195E8ED8249}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06982592-CE99-41A4-B2E5-1195E8ED8249}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{06982592-CE99-41A4-B2E5-1195E8ED8249}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{06982592-CE99-41A4-B2E5-1195E8ED8249}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06982592-CE99-41A4-B2E5-1195E8ED8249}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F6D55A7-324B-445C-B639-0A384907118E}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F6D55A7-324B-445C-B639-0A384907118E}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{6F6D55A7-324B-445C-B639-0A384907118E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F6D55A7-324B-445C-B639-0A384907118E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F6D55A7-324B-445C-B639-0A384907118E}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F6D55A7-324B-445C-B639-0A384907118E}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{6F6D55A7-324B-445C-B639-0A384907118E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F6D55A7-324B-445C-B639-0A384907118E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{55546728-AADE-4ED0-88AD-B517B915CD5D}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
 		{55546728-AADE-4ED0-88AD-B517B915CD5D}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
 		{55546728-AADE-4ED0-88AD-B517B915CD5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -759,6 +779,8 @@ Global
 		{63A62728-74B0-4BA3-9ACA-87E583BBB9B4} = {1F7F4CAF-CF22-491F-840D-A63835726C12}
 		{0EDBC769-26A4-4556-9D58-DF5416745187} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
 		{40D170FA-AC4D-43B6-AB2A-ACCF1B5EE0F4} = {1F7F4CAF-CF22-491F-840D-A63835726C12}
+		{06982592-CE99-41A4-B2E5-1195E8ED8249} = {1F7F4CAF-CF22-491F-840D-A63835726C12}
+		{6F6D55A7-324B-445C-B639-0A384907118E} = {1F7F4CAF-CF22-491F-840D-A63835726C12}
 		{55546728-AADE-4ED0-88AD-B517B915CD5D} = {1F7F4CAF-CF22-491F-840D-A63835726C12}
 		{56A89D8F-2CD5-439B-8E04-A7A6D9C7566C} = {1F7F4CAF-CF22-491F-840D-A63835726C12}
 	EndGlobalSection

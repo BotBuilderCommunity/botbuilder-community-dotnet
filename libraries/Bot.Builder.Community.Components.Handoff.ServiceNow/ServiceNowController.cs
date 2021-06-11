@@ -10,6 +10,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -100,18 +101,41 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                     case "TopicPickerControl":
                     case "ItemPicker":
                     case "Picker":
-
-                        // Map the picker concept to a basic HeroCard with buttons
-                        List<CardAction> cardActions = new List<CardAction>();
-                        foreach (var option in item.options)
+                        if (item.options.All(o => !string.IsNullOrEmpty(o.attachment)))
                         {
-                            cardActions.Add(new CardAction("imBack", option.description ?? option.label, value: option.label));
+                            // Map the picker concept to a HeroCard carousel
+                            responseActivity = MessageFactory.Text(item.label);
+                            responseActivity.AttachmentLayout = "carousel";
+                            responseActivity.Attachments = new List<Microsoft.Bot.Schema.Attachment>();
+                            foreach (var option in item.options)
+                            {
+                                var card = new HeroCard(
+                                    subtitle: option.description,
+                                    images: new List<CardImage>()
+                                    {
+                                        new CardImage($"https://{_credentials.ServiceNowTenant}{option.attachment}")
+                                    },
+                                    buttons: new List<CardAction>
+                                    {
+                                        new CardAction("imBack", option.label, value: option.label)
+                                    });
+                                responseActivity.Attachments.Add(card.ToAttachment());
+                            }
+                        }
+                        else
+                        {
+                            List<CardAction> cardActions = new List<CardAction>();
+                            foreach (var option in item.options)
+                            {
+                                cardActions.Add(new CardAction("imBack", option.description ?? option.label, value: option.label));
+                            }
+
+                            var pickerHeroCard = new HeroCard(buttons: cardActions);
+                            responseActivity = MessageFactory.Attachment(pickerHeroCard.ToAttachment());
+
+                            responseActivity.AsMessageActivity().Text = item.promptMsg ?? item.label;
                         }
 
-                        var pickerHeroCard = new HeroCard(buttons: cardActions);
-                        responseActivity = MessageFactory.Attachment(pickerHeroCard.ToAttachment());
-
-                        responseActivity.AsMessageActivity().Text = item.promptMsg ?? item.label;
                         break;
 
                     case "DefaultPicker":
@@ -162,8 +186,7 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                     case "OutputImage":
 
                         var cardImages = new List<CardImage>();
-                        cardImages.Add(new CardImage(url: item.value.ToString()));
-
+                        cardImages.Add(new CardImage(url: $"{_credentials.ServiceNowTenant}{item.value}"));
                         var imageHeroCard = new HeroCard(images: cardImages);
                         responseActivity = MessageFactory.Attachment(imageHeroCard.ToAttachment());
 
