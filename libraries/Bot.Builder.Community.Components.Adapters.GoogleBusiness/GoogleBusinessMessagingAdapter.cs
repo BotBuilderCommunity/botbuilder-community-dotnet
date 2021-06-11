@@ -24,6 +24,7 @@ namespace Bot.Builder.Community.Components.Adapters.GoogleBusiness
     {
         private const string ValidateIncomingRequestsKey = "ValidateIncomingRequests";
         private const string JsonKeyFileKey = "JsonKeyFile";
+        private const string PartnerKeyKey = "PartnerKey";
 
         private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
         {
@@ -64,6 +65,13 @@ namespace Bot.Builder.Community.Components.Adapters.GoogleBusiness
             using (var sr = new StreamReader(httpRequest.Body))
             {
                 body = await sr.ReadToEndAsync();
+            }
+
+            var signature = httpRequest.Headers.ContainsKey("X-Goog-Signature") ? httpRequest.Headers["X-Goog-Signature"].ToString() : null;
+
+            if (_options.ValidateIncomingRequests && !await ValidationHelper.ValidateRequest(body, signature, _options.PartnerKey))
+            {
+                throw new AuthenticationException("Validation of incoming message failed.");
             }
 
             try
@@ -253,8 +261,9 @@ namespace Bot.Builder.Community.Components.Adapters.GoogleBusiness
         internal static bool HasConfiguration(IConfiguration configuration)
         {
             // Do we have the config needed to create an adapter?
-            return !string.IsNullOrEmpty(configuration.GetValue<string>(ValidateIncomingRequestsKey));
-            return !string.IsNullOrEmpty(configuration.GetValue<string>(JsonKeyFileKey));
+            return !string.IsNullOrEmpty(configuration.GetValue<string>(ValidateIncomingRequestsKey))
+                && !string.IsNullOrEmpty(configuration.GetValue<string>(JsonKeyFileKey))
+                && !string.IsNullOrEmpty(configuration.GetValue<string>(PartnerKeyKey));
         }
     }
 }

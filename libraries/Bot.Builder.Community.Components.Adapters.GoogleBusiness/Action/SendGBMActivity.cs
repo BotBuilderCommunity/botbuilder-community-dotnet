@@ -174,7 +174,7 @@ namespace Bot.Builder.Community.Components.Adapters.GoogleBusiness.Action
                         {
                             FileUrl = RichCardDetails.MediaFileUrl?.GetValue(dc.State),
                             AltText = RichCardDetails.MediaAltText?.GetValue(dc.State),
-                            ForceRefresh = RichCardDetails.ForceRefresh.GetValue(dc.State)
+                            ForceRefresh = RichCardDetails.ForceRefresh?.GetValue(dc.State) ?? false
                         },
                         Height = RichCardDetails.MediaHeight?.GetValue(dc.State)
                     };
@@ -226,7 +226,7 @@ namespace Bot.Builder.Community.Components.Adapters.GoogleBusiness.Action
                 suggestions.Add(dialSuggestedAction);
             }
 
-            var includeLiveAgentSuggestion = IncludeLiveAgentRequestAction.GetValue(dc.State);
+            var includeLiveAgentSuggestion = IncludeLiveAgentRequestAction?.GetValue(dc.State) ?? false;
             if (includeLiveAgentSuggestion)
             {
                 suggestions.Add(new LiveAgentRequestSuggestion());

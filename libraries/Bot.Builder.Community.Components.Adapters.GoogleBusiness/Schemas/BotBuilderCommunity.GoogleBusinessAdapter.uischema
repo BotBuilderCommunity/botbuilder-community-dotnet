@@ -4,9 +4,12 @@
         "label": "Google Business Messaging connection.",
         "description": "Connects a bot to Google Business Messaging.",
         "helpLink": "https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/feature/packages-preview/libraries/Bot.Builder.Community.Adapters.Alexa/Component/README.md",
-        "order": [
-          "*"
-        ],
+      "order": [
+        "ValidateIncomingRequests",
+        "PartnerKey",
+        "JsonKeyFile",
+        "*"
+      ],
         "hidden": [
             "type"
         ]

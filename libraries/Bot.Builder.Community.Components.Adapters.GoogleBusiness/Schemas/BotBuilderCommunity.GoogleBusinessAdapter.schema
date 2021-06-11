@@ -11,6 +11,12 @@
       "description": "Whether to validate incoming requests.",
       "default": true
     },
+    "PartnerKey": {
+      "type": "string",
+      "title": "Partner Key",
+      "description": "Google Business Partner Key to validate incoming requests.",
+      "default": ""
+    },
     "JsonKeyFile": {
       "type": "string",
       "title": "JSON Key File",
@@ -31,5 +37,7 @@
     }
   },
   "required": [
+    "JsonKeyFile",
+    "PartnerKey"
   ]
 }

@@ -4,5 +4,6 @@
     {
         public bool ValidateIncomingRequests { get; set; } = true;
         public string JsonKeyFile { get; set; } = "";
+        public string PartnerKey { get; set; } = "";
     }
 }
