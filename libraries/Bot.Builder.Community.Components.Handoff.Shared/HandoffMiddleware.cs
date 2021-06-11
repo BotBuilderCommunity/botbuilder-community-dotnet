@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json.Linq;
@@ -33,6 +35,8 @@ namespace Bot.Builder.Community.Components.Handoff.Shared
             // messages are routed correctly.
             turnContext.OnSendActivities(async (sendTurnContext, activities, nextSend) =>
             {
+                var responses = new ResourceResponse[0];
+
                 // Handle any escalation events, and let them propagate through the pipeline
                 // This is useful for debugging with the Emulator
                 var handoffEvents = activities.Where(activity =>
@@ -64,11 +68,18 @@ namespace Bot.Builder.Community.Components.Handoff.Shared
                             handoffRecord = await Escalate(sendTurnContext, eventActivity).ConfigureAwait(false);
                             await _conversationHandoffRecordMap.Add(eventActivity.Conversation.Id, handoffRecord);
                             break;
+                        default:
+                            // run full pipeline
+                            responses = await nextSend().ConfigureAwait(false);
+                            break;
                     }
                 }
+                else
+                {
+                    // run full pipeline
+                    responses = await nextSend().ConfigureAwait(false);
+                }
 
-                // run full pipeline
-                var responses = await nextSend().ConfigureAwait(false);
                 return responses;
             });
 

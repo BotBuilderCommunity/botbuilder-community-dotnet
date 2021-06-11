@@ -36,12 +36,11 @@ This component provides integration with the ServiceNow platform, enabling hando
 
 1. Ensure the ServiceNow Virtual Agent is configured and working. More information is available [here](https://docs.servicenow.com/bundle/paris-now-intelligence/page/administer/virtual-agent/task/install-virtual-agent-api.html). 
 2. Configure OAuth as per the documentation [here](https://docs.servicenow.com/bundle/paris-platform-administration/page/administer/security/task/t_SettingUpOAuth.html) and ensure you `Create an endpoint for external clients`. When prompted set the Redirect URL to `https://token.botframework.com/.auth/web/redirect`. You'll need the ClientID and Secret created as part of this for the next step. 
-3. In the ServiceNow Admin portal, navigate to Outbound REST Message as part of System Web Services and select VA Bot to Bot. All responses from ServiceNow will be asynchronously sent back to your Bot.  Configure `postMessage` endpoint to point at your Bot deployment, for development purposes likely your ngrok instance. Ensure it's suffixed with /api/ServiceNow' to ensure it's handled by your Bot correctly, e.g. `https://{NGROK_INSTANCE}.ngrok.io/api/ServiceNow`
-4. An example ngrok command for local debugging is shown below
+3. In the ServiceNow Admin portal, navigate to Outbound REST Message as part of System Web Services and select VA Bot to Bot. All responses from ServiceNow will be asynchronously sent back to your Bot.  Configure `postMessage` endpoint to point to the dedicated ServiceNow endpoint, now available on your bot after installing the package. The endpoint is the URL for your bot, which will be the URL of your deployed application, plus '/api/servicenow' (for example, `https://yourbotapp.azurewebsites.net/api/servicenow`). If testing locally, you can use a tool such as [ngrok](https://www.ngrok.com) (which you will likely already have installed if you have used the Bot Framework emulator previously) to tunnel through to your bot running locally and provide you with a publicly accessible URL for this. If you wish create an ngrok tunnel and obtain a URL to your bot, use the following command in a terminal window (this assumes your local bot is running on port 3980, alter the port numbers in the command if your bot is not).
  
-    ```
-    ngrok.exe http 3978 -host-header="localhost:3978"
-    ```
+```
+ngrok.exe http 3980 -host-header="localhost:3980"
+```
 
 ### Bot Channel Registration oAuth Connection Configuration
 
@@ -64,7 +63,7 @@ This ServiceNow handoff package expects OAuth security is being used and therefo
 2. Add the following settings at the root of your settings JSON, replacing the placeholders as described below. Note that the Connection Name should match the one created in the previous step.
 
 ```json
-{
+"Bot.Builder.Community.Components.Handoff.ServiceNow": {
   "ServiceNowTenant": "{YOUR_TENANT_NAME}.service-now.com",
   "ServiceNowAuthConnectionName": "ServiceNow"
 }
@@ -72,7 +71,9 @@ This ServiceNow handoff package expects OAuth security is being used and therefo
 
 ### Triggering handoff from your bot
 
-You can trigger handoff to LivePerson at any point by adding the **Send Handoff Activity** action in the designer. For example, you would typically add an natural language intent trigger to detect if the user asks questions relating to domains that your ServiceNow virtual agent can trigger.
+You can trigger handoff to LivePerson at any point by adding the **Send Handoff Activity** action in the designer. For example, you might add an natural language intent trigger to detect if the user asks to speak to a human.
+
+![image](https://user-images.githubusercontent.com/3900649/115235187-d1204100-a111-11eb-8dee-bcfb63b76347.png)
 
 When adding a **Send Handoff Activity** you have the option to provide Context information that can be passed to ServiceNow, provided as a JSON object. The Context currently supports `timezone`, `userId` and `emailId` which are optional to provide.
 

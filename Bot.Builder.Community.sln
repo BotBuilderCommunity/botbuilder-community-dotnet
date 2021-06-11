@@ -157,6 +157,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Compo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bot.Builder.Community.Components.Middleware.SentimentAnalysis", "libraries\Bot.Builder.Community.Components.Middleware.SentimentAnalysis\Bot.Builder.Community.Components.Middleware.SentimentAnalysis.csproj", "{06982592-CE99-41A4-B2E5-1195E8ED8249}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Components.Middleware.TextRecognizer", "libraries\Bot.Builder.Community.Components.Middleware.TextRecognizer\Bot.Builder.Community.Components.Middleware.TextRecognizer.csproj", "{6F6D55A7-324B-445C-B639-0A384907118E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug - NuGet Packages|Any CPU = Debug - NuGet Packages|Any CPU
@@ -675,6 +677,14 @@ Global
 		{06982592-CE99-41A4-B2E5-1195E8ED8249}.Documentation|Any CPU.Build.0 = Debug|Any CPU
 		{06982592-CE99-41A4-B2E5-1195E8ED8249}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06982592-CE99-41A4-B2E5-1195E8ED8249}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F6D55A7-324B-445C-B639-0A384907118E}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F6D55A7-324B-445C-B639-0A384907118E}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{6F6D55A7-324B-445C-B639-0A384907118E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F6D55A7-324B-445C-B639-0A384907118E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F6D55A7-324B-445C-B639-0A384907118E}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F6D55A7-324B-445C-B639-0A384907118E}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{6F6D55A7-324B-445C-B639-0A384907118E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F6D55A7-324B-445C-B639-0A384907118E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -750,6 +760,7 @@ Global
 		{0EDBC769-26A4-4556-9D58-DF5416745187} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
 		{40D170FA-AC4D-43B6-AB2A-ACCF1B5EE0F4} = {1F7F4CAF-CF22-491F-840D-A63835726C12}
 		{06982592-CE99-41A4-B2E5-1195E8ED8249} = {1F7F4CAF-CF22-491F-840D-A63835726C12}
+		{6F6D55A7-324B-445C-B639-0A384907118E} = {1F7F4CAF-CF22-491F-840D-A63835726C12}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FE3B75E-BA2B-45BC-BBF0-DDA8BA10C4F0}
