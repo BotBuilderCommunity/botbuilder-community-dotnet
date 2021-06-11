@@ -23,6 +23,7 @@ namespace Bot.Builder.Community.Components.Adapters.GoogleBusiness
     public class GoogleBusinessMessagingAdapter : BotAdapter, IBotFrameworkHttpAdapter
     {
         private const string ValidateIncomingRequestsKey = "ValidateIncomingRequests";
+        private const string JsonKeyFileKey = "JsonKeyFile";
 
         private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
         {
@@ -145,7 +146,7 @@ namespace Bot.Builder.Community.Components.Adapters.GoogleBusiness
                         try
                         {
                             token = await GetAccessTokenFromJsonKeyAsync(
-                                _options.PathToJsonKeyFile,
+                                _options.JsonKeyFile,
                                 "https://www.googleapis.com/auth/businessmessages");
                         }
                         catch (Exception ex)
@@ -196,7 +197,7 @@ namespace Bot.Builder.Community.Components.Adapters.GoogleBusiness
                             try
                             {
                                 token = await GetAccessTokenFromJsonKeyAsync(
-                                    _options.PathToJsonKeyFile,
+                                    _options.JsonKeyFile,
                                     "https://www.googleapis.com/auth/businessmessages");
                             }
                             catch (Exception ex)
@@ -253,6 +254,7 @@ namespace Bot.Builder.Community.Components.Adapters.GoogleBusiness
         {
             // Do we have the config needed to create an adapter?
             return !string.IsNullOrEmpty(configuration.GetValue<string>(ValidateIncomingRequestsKey));
+            return !string.IsNullOrEmpty(configuration.GetValue<string>(JsonKeyFileKey));
         }
     }
 }

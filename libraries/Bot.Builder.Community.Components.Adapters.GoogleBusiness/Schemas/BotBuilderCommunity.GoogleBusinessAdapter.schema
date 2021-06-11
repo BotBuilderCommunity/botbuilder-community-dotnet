@@ -27,10 +27,9 @@
       "type": "string",
       "title": "Type",
       "description": "Adapter type.",
-      "default": "Microsoft.Bot.Builder.Adapters.GoogleBusiness.GoogleBusinessMessagingAdapter"
+      "default": "Bot.Builder.Community.Components.Adapters.GoogleBusinessMessagingAdapter"
     }
   },
   "required": [
-    "JsonKeyFile"
   ]
 }
