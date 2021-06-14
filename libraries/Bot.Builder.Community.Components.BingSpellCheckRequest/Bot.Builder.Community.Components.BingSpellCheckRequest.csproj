@@ -10,7 +10,7 @@
 </RepositoryUrl>
     <PackageLicenseUrl />
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <Description>Middlware component for Text Recognizer library to find the email , phone number ,social media type , ip address , url</Description>
+    <Description>Bot Composer component for Bing spell check  to correct spelling based on the language</Description>
     <PackageProjectUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/develop/libraries/Bot.Builder.Community.Components.Middleware.TextRecognizer</PackageProjectUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
