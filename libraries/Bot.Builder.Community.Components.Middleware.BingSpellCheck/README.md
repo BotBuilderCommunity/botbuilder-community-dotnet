@@ -11,15 +11,23 @@
 
 This is part of the [Bot Builder Community](https://github.com/garypretty/botbuilder-community) project which contains Bot Framework Components and other projects / packages for use with Bot Framework Composer and the Bot Builder .NET SDK v4.
 
-This middleware will Bing spell check inbound text using Bing Services Spell Check and therefore requires a key.
+This middleware will spell check inbound text using ***Bing spell check*** services and therefore requires a key. 
 
-The implementation is naive at the moment in that it assumes that the suggestions are correct If you replaces inbound text automatically set property IsOverwrite = true. 
+### Bing Spell check Settings
+
+| Property | Value | Description  |
+| ---- | ----------- | ----------- |
+|IsEnabled | true | Enable Bing Spell check Middleware|
+|IsOverwrite | true | Replaces inbound text automatically |
+|MarketCode | ex : en-US |Bing returns content for only these markets | 
+| Key | ex : 123A12312 | a subscription key for the Bing Spell Check |
+
 
 ### Composer component installation
 
 1. Navigate to the Bot Framework Composer **Package Manager**.
 2. Change the filter to **Community packages**.
-3. Search for 'TextRecognizer' and install **Bot.Builder.Community.Components.Middleware.TextRecognizer**
+3. Search for 'BingSpellCheck' and install **Bot.Builder.Community.Components.Middleware.BingSpellCheck**
 
 ![image](https://user-images.githubusercontent.com/16264167/121935397-aedd2500-cd48-11eb-8f78-b6f72433a119.png)
 
@@ -41,4 +49,18 @@ The implementation is naive at the moment in that it assumes that the suggestion
     "IsOverwrite": false
   }
 ```
+
+### Getting the Bing Spell check result from Middleware
+
+Once you've configured the middleware component and enabled then this component will run on every message received (ActivityType is Message).
+
+You can now get the results using below settings;
+
+Get the Result <BR>
+`${turn.SpellCheck}`
+
+Get the Error information <BR>
+`${turn.SpellErrorInfo}`
+
+
 
