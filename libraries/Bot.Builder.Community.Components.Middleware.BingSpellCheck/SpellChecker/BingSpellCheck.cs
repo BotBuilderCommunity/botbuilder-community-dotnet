@@ -37,8 +37,8 @@ namespace Bot.Builder.Community.Components.Middleware.BingSpellCheck.SpellChecke
 
         private void InitiateBingSpellCheck(IBingHttpMessage httpMessage,bool enableSpellCheck,bool canOverwrite)
         {
-            SuccessProperty = "SpellCheck";
-            ErrorProperty = "SpellErrorInfo";
+            SuccessProperty = "turn.SpellCheck";
+            ErrorProperty = "turn.SpellErrorInfo";
 
             IsEnable = enableSpellCheck;
             IsOverwrite = canOverwrite;
