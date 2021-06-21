@@ -8,16 +8,18 @@
 ### Description
 This is part of the [Bot Builder Community](https://github.com/garypretty/botbuilder-community) project which contains Bot Framework Components and other projects / packages for use with Bot Framework Composer and the Bot Builder .NET SDK v4.
 
-This package contains additional Inputs , beyond those offered out of the box by the Bot Framework composer
+This package contains additional Inputs , beyond those offered out of the box by the Bot Framework composer. Internally the Inputs uses the [Microsoft Text Recognizers](https://github.com/Microsoft/Recognizers-Text/tree/master/.NET) and [Multi-Select-choice](#Multi-Select-choice) use the Adaptive card.
 
-Currently the following Prompts are available;
+[Installation](#Composer-component-installation)
 
-| Prompt | Description |
+Currently the following Inputs are available
+
+| Input | Description |
 | ------ | ------ |
 | [Phone Number](#Phone-Number-Input) | Input a user for PhoneNumber. |
 | [SocialMedia](#Social-Medial-Input) | Input a user for find mention,Hashtag. |
 | [Email](#Email-Input) | Input a user for Email. |
-| [Multi-Select-choice](#Multi-Select-choice) | Options to user select one or more values |
+| [Multi-Select-choice](#Multi-Select-choice) | Options to user to select one or more values |
 | Number with Unit | coming soon |
 | Number with Type | coming soon |
 | Guid | coming soon | 
@@ -27,14 +29,14 @@ Currently the following Prompts are available;
 
 1. Navigate to the Bot Framework Composer **Package Manager**.
 2. Change the filter to **Community packages**.
-3. Search for 'Dialogs.Input' and install **Bot.Builder.Community.Components.Dialogs.Input**
+3. Search for '***Input***' and install **Bot.Builder.Community.Components.Dialogs.Input**
 
 ![image](https://user-images.githubusercontent.com/16264167/122669120-233a1d00-d1bc-11eb-8c48-91fe4bbb0e27.png)
 
 
-### Add custom input in composer 
-
-Custom Input has added in sub-menu of "Ask a question" menu.
+After install the package custom Input's is avaliable in sub-menu of "Ask a question" menu.<BR>
+  
+###### Note : Composer is not supported tab view for the 3rd party input types so custom inputs display in the flat view. ######
 
 ![image](https://user-images.githubusercontent.com/16264167/122669223-93e13980-d1bc-11eb-96bc-003c34802854.png)
 
@@ -69,10 +71,13 @@ The PhoneNumberInput will extract a phone number from a message from the user;
 
 #### Social Medial Input
 
-The SocialMediaInput will extract one of the following types based on which SocialMediaPromptType enum value is passed in:
+The SocialMediaInput will extract one of the following types based on which MediaType enum value is passed in:
 
-* Mention
-* Hashtag
+| Properties | Description | Example |
+| ------ | ------ | ------ |
+| Mention | extract mention tag from string | If a user enters my twitter handle is @VinothRajendran <BR> the resulting answers is @vinothrajendran |
+| Hashtag | extract hash tag from string | if a user enters "Trends? Does #WM35 count?" <BR> the resulting answers is "#WM35" |
+
 
 ##### Design in Composer
 
@@ -80,19 +85,20 @@ The SocialMediaInput will extract one of the following types based on which Soci
 
 ###### Sample Output
 
-![image](https://user-images.githubusercontent.com/16264167/122669692-d146c680-d1be-11eb-986e-979b630f28a8.png)
+![image](https://user-images.githubusercontent.com/16264167/122716009-02c89c00-d26a-11eb-81ef-d9244f170651.png)
+
 
 
 
 #### Multi-Select-choice
-The MultiSelectChoice will give option to the user to select one or more value
-
-List of choices : Add the choices options 
-
-Display Type : This option is use to how choices should be display Horizontal or Vertical
-
-Action Name :  User submit the selected choices ( ex : Submit)
-
+  
+The MultiSelectChoice will give options to the user to select one or more values
+  
+| Properties | Description |
+| ------ | ------ |
+| List of choices | Add the choices |
+| Display Type | choices display option Horizontal or Vertical |
+| Action Name | User 'submit' , name like "OK" , "Submit" , "Process" |
 
 ##### Design in Composer
 
@@ -102,4 +108,11 @@ Action Name :  User submit the selected choices ( ex : Submit)
 
 ![image](https://user-images.githubusercontent.com/16264167/122669987-f7209b00-d1bf-11eb-9c6f-4e72fe8850e5.png)
 
+  
+###### Coming soon Inputs ###### 
+  
+Number with Unit<BR>
+Number with Type<BR>
+Guid<BR>
+Internet Protocol<BR>
 
