@@ -44,8 +44,8 @@ Once installed you should find a Bot.Builder.Community.Components.TokenExchangeS
     },
     "components": [
       {
-        "name": "Microsoft.Bot.Components.TokenExchangeSkillHandler",
-        "settingsPrefix": "Microsoft.Bot.Components.TokenExchangeSkillHandler"
+        "name": "Bot.Builder.Community.Components.TokenExchangeSkillHandler",
+        "settingsPrefix": "Bot.Builder.Community.Components.TokenExchangeSkillHandler"
       }
     ],
     "skills": {
@@ -62,7 +62,7 @@ Once installed you should find a Bot.Builder.Community.Components.TokenExchangeS
       }
     }
   },
-  "Microsoft.Bot.Components.TokenExchangeSkillHandler": {
+  "Bot.Builder.Community.Components.TokenExchangeSkillHandler": {
     "useTokenExchangeSkillHandler": true,
     "tokenExchangeConnectionName": "YourTokenExchangeConnectionName"
   },
