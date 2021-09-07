@@ -31,36 +31,13 @@ Once installed you should find a Bot.Builder.Community.Components.TokenExchangeS
 
 ```json
   "runtimeSettings": {
-    "adapters": [],
-    "features": {
-      "removeRecipientMentions": false,
-      "showTyping": false,
-      "traceTranscript": false,
-      "useInspection": false,
-      "setSpeak": {
-        "voiceFontName": "en-US-AriaNeural",
-        "fallbackToTextForSpeechIfEmpty": true
-      }
-    },
     "components": [
       {
         "name": "Bot.Builder.Community.Components.TokenExchangeSkillHandler",
         "settingsPrefix": "Bot.Builder.Community.Components.TokenExchangeSkillHandler"
       }
     ],
-    "skills": {
-      "allowedCallers": [
-        "*"
-      ]
-    },
-    "storage": "",
-    "telemetry": {
-      "logActivities": true,
-      "logPersonalInformation": false,
-      "options": {
-        "connectionString": ""
-      }
-    }
+    ...
   },
   "Bot.Builder.Community.Components.TokenExchangeSkillHandler": {
     "useTokenExchangeSkillHandler": true,
