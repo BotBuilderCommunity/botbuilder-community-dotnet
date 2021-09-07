@@ -30,15 +30,41 @@ This package can be installed from composers Package Manager screen. Just select
 Once installed you should find a Bot.Builder.Community.Components.TokenExchangeSkillHandler in the Components section of the config. Ensure there is also a root level section titled "Bot.Builder.Community.Components.TokenExchangeSkillHandler", with useTokenExchangeSkillHandler set to true and the proper Root Bot Oauth TokenExchangeConnectionName:
 
 ```json
+  "runtimeSettings": {
+    "adapters": [],
+    "features": {
+      "removeRecipientMentions": false,
+      "showTyping": false,
+      "traceTranscript": false,
+      "useInspection": false,
+      "setSpeak": {
+        "voiceFontName": "en-US-AriaNeural",
+        "fallbackToTextForSpeechIfEmpty": true
+      }
+    },
     "components": [
       {
-        "name": "Bot.Builder.Community.Components.TokenExchangeSkillHandler",
-        "settingsPrefix": "Bot.Builder.Community.Components.TokenExchangeSkillHandler"
+        "name": "Microsoft.Bot.Components.TokenExchangeSkillHandler",
+        "settingsPrefix": "Microsoft.Bot.Components.TokenExchangeSkillHandler"
       }
     ],
-    "Bot.Builder.Community.Components.TokenExchangeSkillHandler": {
-      "useTokenExchangeSkillHandler": true,
-      "tokenExchangeConnectionName": "YourTokenExchangeConnectionName"
+    "skills": {
+      "allowedCallers": [
+        "*"
+      ]
     },
+    "storage": "",
+    "telemetry": {
+      "logActivities": true,
+      "logPersonalInformation": false,
+      "options": {
+        "connectionString": ""
+      }
+    }
+  },
+  "Microsoft.Bot.Components.TokenExchangeSkillHandler": {
+    "useTokenExchangeSkillHandler": true,
+    "tokenExchangeConnectionName": "YourTokenExchangeConnectionName"
+  },
   
 ```
