@@ -91,6 +91,7 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
         // Bot owners specific requirements and styling.
         private async Task HandleContentEvent(ServiceNowResponseMessage responseMessage)
         {
+            int VAOptionsCount = 0;
             foreach (var item in responseMessage.body)
             {
                 IMessageActivity responseActivity;
@@ -127,7 +128,13 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                             List<CardAction> cardActions = new List<CardAction>();
                             foreach (var option in item.options)
                             {
-                                cardActions.Add(new CardAction("imBack", option.description ?? option.label, value: option.label));
+                                 VAOptionsCount = VAOptionsCount + 1;
+                                 cardActions.Add(new CardAction("imBack", option.description ?? option.label, value: option.label));
+                                   if (VAOptionsCount <= item.options.Count())
+                                    {
+                                    if (VAOptionsCount == 50)
+                                    break;
+                                    }
                             }
 
                             var pickerHeroCard = new HeroCard(text: item.promptMsg ?? item.label,buttons: cardActions);
@@ -142,8 +149,14 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                         // Map the picker concept to a basic HeroCard with buttons
                         List<CardAction> defaultPickerActions = new List<CardAction>();
                         foreach (var option in item.options)
-                        {
+                        {                            
+                            VAOptionsCount = VAOptionsCount + 1;
                             defaultPickerActions.Add(new CardAction("imBack", option.description ?? option.label, value: option.label));
+                            if (VAOptionsCount <= item.options.Count())
+                            {
+                            if (VAOptionsCount == 50)
+                            break;
+                            }
                         }
 
                         var defaultPickerCard = new HeroCard(buttons: defaultPickerActions);
@@ -158,7 +171,12 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                         {
                             var card = new HeroCard(subtitle: action.description, buttons: new List<CardAction>
                                 {new CardAction("openUrl", action.label ?? action.action, value: action.action)});
-                            responseActivity.Attachments.Add(card.ToAttachment());
+                               if (VAOptionsCount <= item.values.Count())
+                               {
+                                    if (VAOptionsCount == 11)
+                                    break;
+                                    responseActivity.Attachments.Add(card.ToAttachment());
+                               }
                         }
                         break;
                     case "OutputHtml":
