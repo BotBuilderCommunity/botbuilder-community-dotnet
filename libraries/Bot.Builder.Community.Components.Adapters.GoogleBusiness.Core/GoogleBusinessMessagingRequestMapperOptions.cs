@@ -3,6 +3,6 @@
     public class GoogleBusinessMessagingRequestMapperOptions
     {
         public string ChannelId { get; set; } = "google-business";
-        public string ServiceUrl { get; set; } = "";
+        public string ServiceUrl { get; set; } = null;
     }
 }

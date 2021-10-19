@@ -53,15 +53,32 @@ namespace Bot.Builder.Community.Components.Adapters.GoogleBusiness.Core
                 suggestions.AddRange(additionalSuggestedActions);
             }
 
-            if (activity.Attachments?.FirstOrDefault(a => a.ContentType == GoogleAttachmentContentTypes.RichCard) !=
-                null)
+            if (activity.Attachments?.FirstOrDefault(a => a.ContentType == GoogleAttachmentContentTypes.RichCard) != null)
             {
+                // Rich card
                 var richCardAttachment = activity.Attachments.First(a => a.ContentType == GoogleAttachmentContentTypes.RichCard);
                 message.RichCard = (RichCardContent)richCardAttachment.Content;
-                message.RichCard.StandaloneCard.CardContent.Suggestions = suggestions.Take(4).ToList();
+                
+                if (message.RichCard.StandaloneCard?.CardContent != null)
+                {
+                    message.RichCard.StandaloneCard.CardContent.Suggestions = suggestions.Take(4).ToList();
+                }
+            }
+            else if (activity.Attachments?.FirstOrDefault(a => a.ContentType == GoogleAttachmentContentTypes.Image) != null)
+            {
+                // Image
+                var attachment = activity.Attachments.First();
+                message.Image = new Image() {
+                    ContentInfo = new ContentInfo()
+                    {
+                        AltText = attachment.Name,
+                        FileUrl = attachment.ContentUrl
+                    }
+                };
             }
             else
             {
+                // Text
                 message.Text = activity.Text;
                 message.Suggestions = suggestions;
             }
