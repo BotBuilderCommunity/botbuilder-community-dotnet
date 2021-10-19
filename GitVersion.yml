@@ -13,7 +13,7 @@ branches:
   master:
     mode: ContinuousDelivery
     tag:
-    increment: Patch
+    increment: none
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
   release:
@@ -38,6 +38,6 @@ branches:
   develop:
     mode: ContinuousDeployment
     tag: rc
-    increment: Patch
+    increment: none
     prevent-increment-of-merged-branch-version: false
     track-merge-target: true

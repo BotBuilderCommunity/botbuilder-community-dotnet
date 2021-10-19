@@ -1,0 +1,62 @@
+﻿{
+  "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+  "form": {
+    "label": "Prompt for Multi-Select-choice",
+    "subtitle": "Multi-Select-Choice Input(Bot Builder Community)",
+    "description": "Pick one or more values from a list of choices",
+    "helpLink": "https://aka.ms/bf-composer-docs-dialog",
+    "order": [
+      "prompt",
+      "choices",
+      "Orientation",
+      "ActionName",
+      "Result",
+      "*"
+    ],
+    "hidden": [
+      "validations",
+      "property",
+      "defaultValueResponse"
+    ]
+  },
+  "menu": {
+    "label": "Multi-Select-choice",
+    "submenu": ["Ask a question"]
+  },
+  "flow": {
+    "widget": "PromptWidget",
+    "body": "=action.prompt",
+    "nowrap": true,
+    "botAsks": {
+      "widget": "ActionCard",
+      "header": {
+        "widget": "ActionHeader",
+        "icon": "MessageBot",
+        "colors": {
+          "theme": "#BBEAF4",
+          "icon": "#5C2E91"
+        }
+      },
+      "body": {
+        "widget": "LgWidget",
+        "field": "prompt",
+        "defaultContent": "<prompt>"
+      }
+    },
+    "userInput": {
+      "widget": "ActionCard",
+      "defaultContent": "<prompt>",
+      "header": {
+        "widget": "ActionHeader",
+        "disableSDKTitle": false,
+        "icon": "User",
+        "menu": "none",
+        "colors": {
+          "theme": "#E5F0FF",
+          "icon": "#0078D4"
+        }
+      },
+      "body": "=action.Result"
+    }
+  }
+}

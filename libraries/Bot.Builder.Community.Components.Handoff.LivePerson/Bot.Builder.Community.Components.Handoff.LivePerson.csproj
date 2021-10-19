@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove('$(MSBuildThisFileDirectory)../', 'Bot.Builder.Community.sln'))\CommonTargets\library.shared.targets" />
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<Description>LivePerson handoff component for Bot Framework Composer and v4 Bot Builder SDK. Enables human handoff capability for LivePerson platform.</Description>
+		<Authors>Bot Builder Community</Authors>
+		<Company>Bot Builder Community</Company>
+		<PackageLicenseUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/master/LICENSE</PackageLicenseUrl>
+		<PackageProjectUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/libraries/Bot.Builder.Community.Components.Handoff.LivePerson</PackageProjectUrl>
+		<Version>1.0.0-preview</Version>
+		<FileVersion>1.0.0</FileVersion>
+		<AssemblyVersion>1.0.0</AssemblyVersion>
+		<RepositoryUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/</RepositoryUrl>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<ContentTargetFolders>content</ContentTargetFolders>
+		<PackageTags>bots;botframework;botbuilder;msbot-component;liveperson;handoff;msbot-middleware;</PackageTags>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="PostInstallReadme/README.md" Pack="true" PackagePath="" />
+	</ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+    <PackageReference Include="Microsoft.Bot.Builder" Version="$(Bot_Builder_Version)" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive.Runtime" Version="$(Bot_Builder_Version)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Bot.Builder.Community.Components.Handoff.Shared\Bot.Builder.Community.Components.Handoff.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

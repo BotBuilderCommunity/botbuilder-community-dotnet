@@ -10,7 +10,7 @@ namespace Bot.Builder.Community.Adapters.MessageBird
     {
         public bool Verify(string _messageBirdSignature, string _signingKey, string _timeStampt, string _requestBody)
         {
-            byte[] _requestBodyByte = Encoding.ASCII.GetBytes(_requestBody);
+            byte[] _requestBodyByte = Encoding.UTF8.GetBytes(_requestBody);
             var requestSigner = new RequestSigner(Encoding.ASCII.GetBytes(_signingKey));
             var request = new Request(_timeStampt, "", _requestBodyByte);
             return requestSigner.IsMatch(_messageBirdSignature, request);

@@ -1,0 +1,29 @@
+{
+  "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+  "$role": [ "implements(Microsoft.IDialog)", "extends(Microsoft.InputDialog)" ],
+  "title": "Phone",
+  "description": "Collect information - Ask for a Phone number",
+  "type": "object",
+
+  "properties": {
+    "defaultLocale": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "description": "Value from callers memory to use as localization",
+      "title": "DefaultLocale",
+      "examples": [
+        "en-us"
+      ]
+    },
+    "resultProperty": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "description": "Value from callers memory to store the result",
+      "title": "Result",
+      "examples": [
+        "+43 12345 12345"
+      ]
+    }
+  },
+  "$policies": {
+    "interactive": true
+  }
+}

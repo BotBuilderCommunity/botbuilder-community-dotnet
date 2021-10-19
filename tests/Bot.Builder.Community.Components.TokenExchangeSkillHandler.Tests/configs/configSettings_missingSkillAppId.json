@@ -1,0 +1,13 @@
+{
+  "Microsoft.Bot.Components.TokenExchangeSkillHandler": {
+    "useTokenExchangeSkillHandler": true,
+    "tokenExchangeConnectionName": "Outlook"
+  },
+  "oauthConnectionName": "Outlook",
+  "skillHostEndpoint": "http://localhost:3981/api/skills",
+  "skill": {
+    "skillBot": {
+      "endpointUrl": "http://localhost:3980/api/messages",
+    }
+  }
+}

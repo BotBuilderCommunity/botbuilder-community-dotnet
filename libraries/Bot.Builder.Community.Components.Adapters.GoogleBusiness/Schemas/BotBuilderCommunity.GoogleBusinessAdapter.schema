@@ -1,0 +1,43 @@
+{
+  "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+  "$role": "implements(Microsoft.IAdapter)",
+  "title": "Google Business Messaging connection",
+  "description": "Connects a bot to Google Business Messaging.",
+  "type": "object",
+  "properties": {
+    "ValidateIncomingRequests": {
+      "type": "boolean",
+      "title": "Validate requests",
+      "description": "Whether to validate incoming requests.",
+      "default": true
+    },
+    "PartnerKey": {
+      "type": "string",
+      "title": "Partner Key",
+      "description": "Google Business Partner Key to validate incoming requests.",
+      "default": ""
+    },
+    "JsonKeyFile": {
+      "type": "string",
+      "title": "JSON Key File",
+      "description": "Path to your JSON key file to authentication with Google Business Messaging API, relative to your Composer project root. If you have placed your file in the root of your Composer project, just enter the filename.",
+      "default": ""
+    },
+    "route": {
+      "type": "string",
+      "title": "Route",
+      "description": "Optional route where the adapter is exposed.",
+      "default": "google-business-messaging"
+    },
+    "type": {
+      "type": "string",
+      "title": "Type",
+      "description": "Adapter type.",
+      "default": "Bot.Builder.Community.Components.Adapters.GoogleBusiness.GoogleBusinessMessagingAdapter"
+    }
+  },
+  "required": [
+    "JsonKeyFile",
+    "PartnerKey"
+  ]
+}

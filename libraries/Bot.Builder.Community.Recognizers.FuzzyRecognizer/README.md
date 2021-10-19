@@ -7,7 +7,7 @@
 
 ### Description
 
-This is part of the [Bot Builder Community Extensions](https://github.com/garypretty/botbuilder-community) project which contains various pieces of middleware, recognizers and other components for use with the Bot Builder .NET SDK v4.
+This is part of the [Bot Builder Community](https://github.com/garypretty/botbuilder-community) project which contains Bot Framework Components and other projects / packages for use with Bot Framework Composer and the Bot Builder .NET SDK v4.
 
 The Fuzzy Recognizer allows you to compare a specified string against a list of 1 or more other strings.  The result is a list of string that are close enough to match with the comparison string (above a given threshold which you can set).  This can be useful when taking input from the user where spelling mistakes may be common, e.g. names or people, companies or other entities etc.
 

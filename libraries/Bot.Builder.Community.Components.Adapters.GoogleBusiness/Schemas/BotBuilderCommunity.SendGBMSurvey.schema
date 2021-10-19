@@ -1,0 +1,19 @@
+{
+  "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+  "$role": "implements(Microsoft.IDialog)",
+  "title": "Send a Google Business Messages survey",
+  "description": "Send a Google Business Messages survey.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Id",
+      "description": "Optional id for the dialog"
+    },
+    "disabled": {
+      "$ref": "schema:#/definitions/booleanExpression",
+      "title": "Disabled",
+      "description": "Optional condition which if true will disable this action."
+    }
+  }
+}

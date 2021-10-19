@@ -1,0 +1,38 @@
+﻿{
+  "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+  "$role": "implements(Microsoft.IDialog)",
+  "title": "Call dialogs in parallel",
+  "description": "Calls a list of dialogs in parallel and returns the their results as an array.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Id",
+      "description": "Optional id for the dialog"
+    },
+    "disabled": {
+      "$ref": "schema:#/definitions/booleanExpression",
+      "title": "Disabled",
+      "description": "Optional condition which if true will disable this action.",
+      "examples": [
+        "user.age > 3"
+      ]
+    },
+    "dialogsProperty": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "title": "Dialogs property",
+      "description": "Name of the property with the array of dialogs to call.",
+      "examples": [
+        "dialog.dialogList"
+      ]
+    },
+    "resultProperty": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "title": "Property",
+      "description": "Property to store the array of results in.",
+      "examples": [
+        "dialog.results"
+      ]
+    }
+  }
+}

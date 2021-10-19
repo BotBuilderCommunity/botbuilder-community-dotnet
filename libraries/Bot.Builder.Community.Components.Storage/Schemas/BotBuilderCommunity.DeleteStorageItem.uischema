@@ -1,0 +1,26 @@
+﻿{
+  "$schema": "https://schemas.botframework.com/schemas/ui/v1.0/ui.schema",
+  "form": {
+    "label": "Delete a stored item",
+    "subtitle": "Delete Storage Item",
+    "order": [
+      "itemKey",
+      "*"
+    ],
+    "properties": {
+      "itemKey": {
+        "intellisenseScopes": [
+          "variable-scopes"
+        ]
+      }
+    }
+  },
+  "menu": {
+    "label": "Delete a stored item",
+    "submenu": [ "Store items" ]
+  },
+  "flow": {
+    "widget": "ActionCard",
+    "body": "=action.itemKey"
+  }
+}

@@ -7,7 +7,7 @@
 
 ## Description
 
-This is part of the [Bot Builder Community Extensions](https://github.com/botbuildercommunity) project which contains various pieces of middleware, recognizers and other components for use with the Bot Builder .NET SDK v4.
+This is part of the [Bot Builder Community](https://github.com/botbuildercommunity) project which contains Bot Framework Components and other projects / packages for use with Bot Framework Composer and the Bot Builder .NET SDK v4.
 
 The Alexa Core Adapter contains the core of the schema transformation and authorization logic that powers both the [Alexa Adapter](/libraries/Bot.Builder.Community.Adapters.Alexa) and the [Bot Framework Alexa channel](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-connect-alexa?view=azure-bot-service-4.0).
 
