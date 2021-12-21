@@ -8,9 +8,9 @@
 		<Company>Bot Builder Community</Company>
 		<PackageLicenseUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/master/LICENSE</PackageLicenseUrl>
 		<PackageProjectUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/libraries/Bot.Builder.Community.Components.Adapters.ACS.SMS</PackageProjectUrl>
-		<Version>1.4.1</Version>
+		<Version>1.0.0</Version>
 		<FileVersion>1.0.0</FileVersion>
-		<AssemblyVersion>1.4.1</AssemblyVersion>
+		<AssemblyVersion>1.0.0</AssemblyVersion>
 		<PackageIcon>package-icon.png</PackageIcon>
 		<RepositoryUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/</RepositoryUrl>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
