@@ -1,0 +1,47 @@
+{
+  "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+  "$role": "implements(Microsoft.IAdapter)",
+  "title": "Twilio WhatsApp Adapter Connection",
+  "description": "Connects a bot to an Twilio WhatsApp.",
+  "type": "object",
+  "properties": {
+    "TwilioNumber": {
+      "type": "string",
+      "title": "Twilio Number",
+      "description": "your twilio whatsapp number"
+    },
+    "TwilioAccountSid": {
+      "type": "string",
+      "title": "Twilio Sid",
+      "description": "id for your Twilio account"
+    },
+    "TwilioAuthToken": {
+      "type": "string",
+      "title": "Twilio Auth Token",
+      "description": "Auth token for your Twilio account"
+    },
+    "TwilioValidationUrl": {
+      "type": "string",
+      "title": "Twilio Url",
+      "description": "The validation URL for incoming requests."
+    },
+    "route": {
+      "type": "string",
+      "title": "Route",
+      "description": "Optional route where the adapter is exposed.",
+      "default": "whatsapp"
+    },
+    "type": {
+      "type": "string",
+      "title": "Type",
+      "description": "Adapter type",
+      "default": "Bot.Builder.Community.Components.Adapters.Twilio.WhatsApp.TwilioWhatsAppAdapter"
+    }
+  },
+  "required": [
+    "TwilioNumber",
+    "TwilioAccountSid",
+    "TwilioAuthToken",
+    "TwilioValidationUrl"
+  ]
+}
