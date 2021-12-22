@@ -13,6 +13,7 @@ namespace Bot.Builder.Community.Components.Adapters.Twilio.WhatsApp
 {
     public class TwilioHelper
     {
+        private static string ChannelsTwilio = "Twilio-WhatsApp";
         public static Activity PayloadToActivity(Dictionary<string, string> payload)
         {
             if (payload == null)
@@ -27,7 +28,7 @@ namespace Bot.Builder.Community.Components.Adapters.Twilio.WhatsApp
             {
                 Id = twilioMessage.MessageSid,
                 Timestamp = DateTime.UtcNow,
-                ChannelId = Channels.Twilio,
+                ChannelId = ChannelsTwilio,
                 Conversation = new ConversationAccount()
                 {
                     Id = twilioMessage.From ?? twilioMessage.Author,
@@ -48,28 +49,18 @@ namespace Bot.Builder.Community.Components.Adapters.Twilio.WhatsApp
                     : null
             };
 
-            if (!string.IsNullOrEmpty(twilioMessage.Latitude) && string.IsNullOrEmpty(twilioMessage.Longitude))
+            if (!string.IsNullOrEmpty(twilioMessage.Latitude) && !string.IsNullOrEmpty(twilioMessage.Longitude))
             {
-                var geoLocation = new
+
+                if (activity.Entities == null)
+                    activity.Entities = new List<Entity>();
+
+                activity.Entities.Add(new GeoCoordinates()
                 {
-                    Latitude = twilioMessage.Latitude,
-                    Longitude = twilioMessage.Longitude,
-                    Address = twilioMessage.Address,
-                };
-
-                string jsonData = JsonConvert.SerializeObject(geoLocation);
-
-                var attachment = new Attachment()
-                {
-                    Name = "location",
-                    ContentType = "application/json",
-                    Content = jsonData
-                };
-
-                if (activity.Attachments == null)
-                    activity.Attachments = new List<Attachment>();
-                
-                activity.Attachments.Add(attachment);
+                    Latitude = Convert.ToDouble(twilioMessage.Latitude),
+                    Longitude = Convert.ToDouble(twilioMessage.Longitude),
+                    Name = twilioMessage.Address
+                });
             }
 
             activity.Type = TwilioActivityType(twilioMessage.SmsStatus);
