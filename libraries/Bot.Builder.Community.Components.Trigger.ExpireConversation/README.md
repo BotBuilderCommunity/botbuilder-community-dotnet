@@ -51,7 +51,7 @@ Once you've configured the 'Expire conversation' and set the 'Expire in seconds'
 You can get the results use this syntax
 `${turn.expire}` 
 
-> [NOTE] : After trigger changed the acticity type as ExpireConversation , Bot received activity type name copy to expire class ReceivedType property ("ReceivedType": "message") for the reference purpose.
+> [NOTE] : Bot received activity type name copy to expire class ReceivedType property (ex : Message Activity copy to "ReceivedType": "message") for the reference purpose. After trigger changed the acticity type as ExpireConversation.
 
 
 ![expireconversation](https://user-images.githubusercontent.com/16264167/147636049-6b378d96-3895-432a-ba87-230c72277e2a.png)
