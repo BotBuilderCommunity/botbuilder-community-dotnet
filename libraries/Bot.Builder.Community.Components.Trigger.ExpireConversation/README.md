@@ -23,7 +23,7 @@ Expire Conversation : If a user does not respond after a certain period of time 
 ### Composer component installation
 
 1. Navigate to the Bot Framework Composer **Package Manager**.
-2. Search for 'Conversation Expired' and install **Bot.Builder.Community.Components.Trigger.ExpireConversation**
+2. Search for 'Expire Conversation' and install **Bot.Builder.Community.Components.Trigger.ExpireConversation**
 
 ![packageconversation](https://user-images.githubusercontent.com/16264167/147586529-ec1b2dcc-6e08-44ed-ad62-f4f6e12a5f28.png)
 
