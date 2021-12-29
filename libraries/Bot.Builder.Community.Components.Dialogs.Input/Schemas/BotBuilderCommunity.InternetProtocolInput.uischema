@@ -1,11 +1,11 @@
 {
   "$schema": "https://schemas.botframework.com/schemas/ui/v1.0/ui.schema",
   "form": {
-    "label": "Prompt for Phone number",
-    "subtitle": "Phone number Input(Bot Builder Community)",
-    "description": "Collect information - Ask for a phone number.",
+    "label": "Prompt for Internet Protocol Type",
+    "subtitle": "Internet Protocol Type(Bot Builder Community)",
     "helpLink": "https://aka.ms/bfc-understanding-dialogs",
     "order": [
+      "ProtocolType",
       "resultProperty",
       "defaultLocale",
       "*"
@@ -22,8 +22,8 @@
     }
   },
   "menu": {
-    "label": "PhoneNumber",
-    "submenu": [ "Ask a question","Community" ]
+    "label": "Internet protocol type",
+     "submenu": [ "Ask a question","Community" ]
   },
   "flow": {
     "widget": "PromptWidget",

@@ -11,6 +11,9 @@
       "defaultLocale",
       "*"
     ],
+    "hidden": [
+      "property"
+    ],
     "properties": {
       "resultProperty": {
         "intellisenseScopes": [
@@ -20,8 +23,8 @@
     }
   },
   "menu": {
-    "label": "Social Media Type",
-    "submenu": [ "Ask a question" ]
+    "label": "Social media type",
+    "submenu": [ "Ask a question","Community" ]
   },
   "flow": {
     "widget": "PromptWidget",

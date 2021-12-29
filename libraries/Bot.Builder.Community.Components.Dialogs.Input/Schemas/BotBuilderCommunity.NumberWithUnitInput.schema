@@ -1,0 +1,47 @@
+{
+  "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+  "$role": [ "implements(Microsoft.IDialog)", "extends(Microsoft.InputDialog)" ],
+  "title": "NumberWithUnit",
+  "description": "Collect information - Ask for a Number With Unit , based on the NumberUnit",
+  "type": "object",
+
+  "properties": {
+    "defaultLocale": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "description": "Value from callers memory to use as localization",
+      "title": "DefaultLocale",
+      "examples": [
+        "en-us"
+      ]
+    },
+    "resultProperty": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "description": "Value from callers memory to store the result",
+      "title": "Result",
+      "examples": [
+        "Value : 25 , Unit : Year (Select Number),User : 25 years old "
+      ]
+    },
+    "NumberUnit": {
+      "title": "Number Unit",
+      "description": "Input type to find the number unit",
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "NumberUnit",
+          "description": "Choose the NumberUnit Type",
+          "enum": [
+            "Currency",
+            "Temperature",
+            "Age",
+            "Dimension"
+          ],
+          "default": "Temperature"
+        }
+      ]
+    }
+  },
+  "$policies": {
+    "interactive": true
+  }
+}

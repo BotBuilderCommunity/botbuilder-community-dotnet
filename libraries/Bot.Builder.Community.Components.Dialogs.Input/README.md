@@ -1,4 +1,4 @@
-## Custom Input for Bot Framework Composer 
+﻿## Custom Input for Bot Framework Composer 
 
 ### Build status
 | Branch | Status | Recommended NuGet package version |
@@ -20,10 +20,11 @@ Currently the following Inputs are available
 | [SocialMedia](#Social-Medial-Input) | Input a user for find mention,Hashtag. |
 | [Email](#Email-Input) | Input a user for Email. |
 | [Multi-Select-choice](#Multi-Select-choice) | Options to user to select one or more values |
-| Number with Unit | coming soon |
-| Number with Type | coming soon |
-| Guid | coming soon | 
-| Internet Protocol | coming soon | 
+| [Number-with-Unit](#Number-with-Unit) | Input to find unit type |
+| [Number-with-Type](#Number-with-Type)| Input to find number type |
+| [Guid](#Guid) | Extract a GUID from a message from the user. | 
+| [Internet-Protocol](#internet-protocol) | Input to find IpAddress,Url.| 
+| [True-False](#true-false) | Input to find true or false | 
 
 ### Composer component installation
 
@@ -34,7 +35,7 @@ Currently the following Inputs are available
 ![image](https://user-images.githubusercontent.com/16264167/122669120-233a1d00-d1bc-11eb-8c48-91fe4bbb0e27.png)
 
 
-After install the package custom Input's is avaliable in sub-menu of "Ask a question" menu.<BR>
+After install the package custom Input's is avaliable in sub-menu of "Ask a question -> Community " menu.<BR>
   
 ###### Note : Composer is not supported tab view for the 3rd party input types so custom inputs display in the flat view. ######
 
@@ -109,10 +110,37 @@ The MultiSelectChoice will give options to the user to select one or more values
 ![image](https://user-images.githubusercontent.com/16264167/122669987-f7209b00-d1bf-11eb-9c6f-4e72fe8850e5.png)
 
   
-###### Coming soon Inputs ###### 
-  
-Number with Unit<BR>
-Number with Type<BR>
-Guid<BR>
-Internet Protocol<BR>
+#### Number-with-Unit
 
+The Number with Unit Prompt allows you to prompt for the following types of number
+
+| Properties | Description | Example : Input | output |
+| ------ | ------ | ------ | ------ |
+| Currency | find any currency presented | 42 dollars | Value: 42, Unit: Dollar |
+| Temperature| find any temperature presented | 25 degrees celsius | Value: 25, Unit: C |
+| Age | find any age number presented |  25 years old | Value: 25, Unit: Year | 
+| Dimension | find any currency presented | 6 miles |Value: 6, Unit: Mile |
+  
+#### Number-with-Type
+The Number with Type Prompt allows you to prompt for the following types of number
+| Properties | Description | Example : Input | output |
+| ------ | ------ | ------ | ------ |
+| Ordinal | find any ordinal number |Ok, eleventh | Value: 11 |
+| Percentage | find any ordinal number | Ok, I sent one hundred percents find that | Value:100% |
+| NumberRange | find any cardinal or ordinal number range |  the range between 1982 and 1987 | Value: [1982,1987) | 
+| Number | find any number from the input | Total four projects in bot builder community |Value: 4 |
+  
+ 
+#### Internet-Protocol
+The InternetTypePrompt will extract one of the following types based on which InternetTypePromptType enum value is passed in:
+| Properties | Description | Example : Input | output |
+| ------ | ------ | ------ | ------ |
+| IpAddress | find ip address |my ip address is 127.0.0.0 | 127.0.0.0 |
+| Url | find url | community address is https://github.com/BotBuilderCommunity | https://github.com/BotBuilderCommunity |  
+  
+#### Guid
+The GuidPrompt will extract a GUID from a message from the user.<br>
+For example, if a user enters "my azure id is 7d7b0205-9411-4a29-89ac-b9cd905886fa" when you are using the Guid prompt type, the resulting Guid is "7d7b0205-9411-4a29-89ac-b9cd905886fa"
+
+#### True-False
+ This recognizer will find any boolean value, even if its write with emoji. E.g. "👌 It's ok" , The result of this input will return True.

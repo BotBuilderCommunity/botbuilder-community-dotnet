@@ -14,6 +14,14 @@ namespace Bot.Builder.Community.Components.Dialogs.Input
             services.AddSingleton<DeclarativeType>(new DeclarativeType<EmailInput>(EmailInput.Kind));
             services.AddSingleton<DeclarativeType>(new DeclarativeType<PhoneNumberInput>(PhoneNumberInput.Kind));
             services.AddSingleton<DeclarativeType>(new DeclarativeType<SocialMediaInput>(SocialMediaInput.Kind));
+
+            services.AddSingleton<DeclarativeType>(new DeclarativeType<NumberWithTypeInput>(NumberWithTypeInput.Kind));
+            services.AddSingleton<DeclarativeType>(new DeclarativeType<NumberWithUnitInput>(NumberWithUnitInput.Kind));
+            services.AddSingleton<DeclarativeType>(new DeclarativeType<InternetProtocolInput>(InternetProtocolInput.Kind));
+			services.AddSingleton<DeclarativeType>(new DeclarativeType<GuidInput>(GuidInput.Kind));
+            services.AddSingleton<DeclarativeType>(new DeclarativeType<TrueFalseInput>(TrueFalseInput.Kind));
+
+
             services.AddSingleton<DeclarativeType>(
                 new DeclarativeType<MultiSelectChoiceInput>(MultiSelectChoiceInput.Kind));
 
