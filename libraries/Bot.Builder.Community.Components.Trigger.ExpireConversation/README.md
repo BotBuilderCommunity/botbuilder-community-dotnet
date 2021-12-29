@@ -43,7 +43,6 @@ Expire Conversation : If a user does not respond after a certain period of time 
 
 
 
-After timeout this trigger change the Activity type as 'ExpireConversation'.
 
 ### Result from Expire Conversation
 Once you've configured the 'Expire conversation' and set the 'Expire in seconds' then this component will run on every activity received and track the timing.
@@ -51,7 +50,7 @@ Once you've configured the 'Expire conversation' and set the 'Expire in seconds'
 You can get the results use this syntax
 `${turn.expire}` 
 
-> [NOTE] : Bot received activity type name copy to expire class ReceivedType property (ex : Message Activity copy to "ReceivedType": "message") for the reference purpose. After trigger changed the acticity type as ExpireConversation.
+> [NOTE] : Bot received activity type name copy to expire class ReceivedType property (ex : Message Activity copy to "ReceivedType": "message") for the reference purpose. After trigger changed the activity type as ExpireConversation.
 
 
 ![expireconversation](https://user-images.githubusercontent.com/16264167/147636049-6b378d96-3895-432a-ba87-230c72277e2a.png)
