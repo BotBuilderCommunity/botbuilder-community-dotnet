@@ -39,7 +39,8 @@ After install the package custom Input's is avaliable in sub-menu of "Ask a ques
   
 ###### Note : Composer is not supported tab view for the 3rd party input types so custom inputs display in the flat view. ######
 
-![custominput](https://user-images.githubusercontent.com/16264167/147657507-9a1c611d-4dc3-46d1-ac8c-64f1f130cc39.png)
+
+![custominput](https://user-images.githubusercontent.com/16264167/147657818-0ee8dd6d-5ca9-435e-b708-88705060c2c8.png)
 
 
 
