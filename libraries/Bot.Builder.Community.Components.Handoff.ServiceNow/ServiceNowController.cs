@@ -271,6 +271,9 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                                         Items = new List<AdaptiveElement>()
                                         {
                                             new AdaptiveTextBlock(field["fieldValue"]?.ToString())
+                                            {
+                                             Wrap = true
+                                            }
                                         }
                                     }
                                 }
