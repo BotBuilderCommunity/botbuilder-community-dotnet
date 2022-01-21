@@ -1,0 +1,45 @@
+{
+  "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+  "$role": [ "implements(Microsoft.IDialog)", "extends(Microsoft.InputDialog)" ],
+  "title": "Internet Protocol",
+  "description": "Collect information - Internet Protocol Type , based on the ProtocolType",
+  "type": "object",
+
+  "properties": {
+    "defaultLocale": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "description": "Value from callers memory to use as localization",
+      "title": "DefaultLocale",
+      "examples": [
+        "en-us"
+      ]
+    },
+    "resultProperty": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "description": "Value from callers memory to store the result",
+      "title": "Result",
+      "examples": [
+        "127.0.0.1 (Select IpAddress) "
+      ]
+    },
+    "ProtocolType": {
+      "title": "Protocol Type",
+      "description": "Input type to find the media type",
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "ProtocolType",
+          "description": "Choose the Media Type",
+          "enum": [
+            "IpAddress",
+            "Url"
+          ],
+          "default": "IpAddress"
+        }
+      ]
+    }
+  },
+  "$policies": {
+    "interactive": true
+  }
+}

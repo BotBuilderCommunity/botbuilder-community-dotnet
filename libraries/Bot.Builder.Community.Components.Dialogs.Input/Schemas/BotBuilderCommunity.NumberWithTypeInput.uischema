@@ -1,11 +1,11 @@
 {
   "$schema": "https://schemas.botframework.com/schemas/ui/v1.0/ui.schema",
   "form": {
-    "label": "Prompt for Phone number",
-    "subtitle": "Phone number Input(Bot Builder Community)",
-    "description": "Collect information - Ask for a phone number.",
+    "label": "Prompt for NumberWithType",
+    "subtitle": "NumberWithType Input(Bot Builder Community)",
     "helpLink": "https://aka.ms/bfc-understanding-dialogs",
     "order": [
+      "NumberType",
       "resultProperty",
       "defaultLocale",
       "*"
@@ -22,7 +22,7 @@
     }
   },
   "menu": {
-    "label": "PhoneNumber",
+    "label": "Number with type",
     "submenu": [ "Ask a question","Community" ]
   },
   "flow": {
