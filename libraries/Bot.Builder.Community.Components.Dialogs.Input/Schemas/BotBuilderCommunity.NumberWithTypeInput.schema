@@ -1,0 +1,47 @@
+{
+  "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+  "$role": [ "implements(Microsoft.IDialog)", "extends(Microsoft.InputDialog)" ],
+  "title": "NumberWithType",
+  "description": "Collect information - Ask for a Number With Type , based on the NumberType",
+  "type": "object",
+
+  "properties": {
+    "defaultLocale": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "description": "Value from callers memory to use as localization",
+      "title": "DefaultLocale",
+      "examples": [
+        "en-us"
+      ]
+    },
+    "resultProperty": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "description": "Value from callers memory to store the result",
+      "title": "Result",
+      "examples": [
+        "4 (Select Number),User:Ok,Total four projects in bot builder community"
+      ]
+    },
+    "NumberType": {
+      "title": "Number Type",
+      "description": "Input type to find the number type",
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "NumberType",
+          "description": "Choose the Number Type",
+          "enum": [
+            "Ordinal",
+            "Percentage",
+            "NumberRange",
+            "Number"
+          ],
+          "default": "Number"
+        }
+      ]
+    }
+  },
+  "$policies": {
+    "interactive": true
+  }
+}

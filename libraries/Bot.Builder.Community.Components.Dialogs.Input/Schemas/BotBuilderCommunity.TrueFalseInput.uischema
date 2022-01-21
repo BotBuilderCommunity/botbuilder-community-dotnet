@@ -1,0 +1,62 @@
+{
+  "$schema": "https://schemas.botframework.com/schemas/ui/v1.0/ui.schema",
+  "form": {
+    "label": "Prompt for a True/False",
+    "subtitle": "True/False Input(Bot Builder Community)",
+    "helpLink": "https://aka.ms/bfc-understanding-dialogs",
+    "order": [
+      "resultProperty",
+      "defaultLocale",
+      "*"
+    ],
+    "hidden": [
+      "property"
+    ],
+    "properties": {
+      "property": {
+        "intellisenseScopes": [
+          "variable-scopes"
+        ]
+      }
+    }
+  },
+  "menu": {
+    "label": "True/False",
+    "submenu": [ "Ask a question","Community" ]
+  },
+  "flow": {
+    "widget": "PromptWidget",
+    "body": "=action.prompt",
+    "nowrap": true,
+    "botAsks": {
+      "widget": "ActionCard",
+      "header": {
+        "widget": "ActionHeader",
+        "icon": "MessageBot",
+        "colors": {
+          "theme": "#BBEAF4",
+          "icon": "#5C2E91"
+        }
+      },
+      "body": {
+        "widget": "LgWidget",
+        "field": "prompt",
+        "defaultContent": "<prompt>"
+      }
+    },
+
+    "userInput": {
+      "widget": "ActionCard",
+      "header": {
+        "widget": "ActionHeader",
+        "disableSDKTitle": false,
+        "icon": "User",
+        "menu": "none",
+        "colors": {
+          "theme": "#E5F0FF",
+          "icon": "#0078D4"
+        }
+      }
+    }
+  }
+}

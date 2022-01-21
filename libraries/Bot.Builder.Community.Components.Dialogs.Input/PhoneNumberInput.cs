@@ -59,7 +59,11 @@ namespace Bot.Builder.Community.Components.Dialogs.Input
             }
 
             var result = modelResults[0].Resolution["value"].ToString();
-            dc.State.SetValue(this.ResultProperty.GetValue(dc.State), result);
+
+            if (ResultProperty != null)
+            {
+                dc.State.SetValue(this.ResultProperty.GetValue(dc.State), result);
+            }
 
             return Task.FromResult(InputState.Valid);
         }
