@@ -69,7 +69,7 @@ namespace Bot.Builder.Community.Adapters.MessageBird
             }
 
             string body;
-            using (var sr = new StreamReader(httpRequest.Body))
+            using (var sr = new StreamReader(httpRequest.Body, Encoding.UTF8))
             {
                 body = await sr.ReadToEndAsync();
             }
