@@ -10,6 +10,9 @@
       "defaultLocale",
       "*"
     ],
+    "hidden": [
+      "property"
+    ],
     "properties": {
       "property": {
         "intellisenseScopes": [
@@ -20,7 +23,7 @@
   },
   "menu": {
     "label": "Email",
-    "submenu": [ "Ask a question" ]
+    "submenu": [ "Ask a question","Community" ]
   },
   "flow": {
     "widget": "PromptWidget",
