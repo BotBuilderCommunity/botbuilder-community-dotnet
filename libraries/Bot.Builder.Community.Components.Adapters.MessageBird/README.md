@@ -23,7 +23,7 @@ The adapter currently supports the following scenarios:
 - [Prerequisites](#Prerequisites)
 - [Component Installation](#Component-installation-via-Composer-Package-Manager)
 - [Configure the MessageBird connection in Composer](#Configuring-the-MessageBird-connection-in-Bot-Framework-Composer)
-
+- [More Information](#More-Information)
 ### Prerequisites
 
 - [Bot Framework Composer](https://dev.botframework.com/)
@@ -38,13 +38,18 @@ The adapter currently supports the following scenarios:
 
 1. In Composer, go to your project settings. Within the 'Connections' tab, there should be a new entry called `MessageBird Connection`. Select `Configure` to configure the new connection.
 
+![image](https://user-images.githubusercontent.com/16264167/150645167-fd69af6a-277a-47bf-b3ea-87cc90fb5d5c.png)
+
 
 2. A modal will pop up. Fill the fields with the values
 
+![image](https://user-images.githubusercontent.com/16264167/150645351-c45e011b-c353-4734-9bb7-aa9643ca6d76.png)
 
 
 3. Once you close the modal, your connection should appear as configured in the bot settings.
 
 
-- Signing & Access key information ref & MessageBird [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/develop/libraries/Bot.Builder.Community.Adapters.MessageBird)
+
+## More Information
+- ref MessageBird [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/develop/libraries/Bot.Builder.Community.Adapters.MessageBird)
 
