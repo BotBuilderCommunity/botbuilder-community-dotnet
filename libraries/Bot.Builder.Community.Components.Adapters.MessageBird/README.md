@@ -51,5 +51,5 @@ The adapter currently supports the following scenarios:
 
 
 ## More Information
-- ref MessageBird [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/develop/libraries/Bot.Builder.Community.Adapters.MessageBird)
+- [MessageBird](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/develop/libraries/Bot.Builder.Community.Adapters.MessageBird)
 
