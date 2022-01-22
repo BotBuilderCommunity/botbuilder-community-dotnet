@@ -1,12 +1,14 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Bot.Builder.Community.Adapters.MessageBird
 {
     public class MessageBirdAdapterOptions
     {
+        public MessageBirdAdapterOptions()
+        {
+
+        }
         public MessageBirdAdapterOptions(IConfiguration configuration)
             : this(configuration["MessageBirdAccessKey"], configuration["MessageBirdSigningKey"], Convert.ToBoolean(configuration["MessageBirdUseWhatsAppSandbox"]))
         { }
@@ -17,8 +19,11 @@ namespace Bot.Builder.Community.Adapters.MessageBird
             SigningKey = signingKey;
             UseWhatsAppSandbox = useWhatsAppSandbox;
         }
+
         public string AccessKey { get; set; }
+
         public string SigningKey { get; set; }
+
         public bool UseWhatsAppSandbox { get; set; }
     }
 }

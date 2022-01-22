@@ -1,0 +1,41 @@
+{
+  "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+  "$role": "implements(Microsoft.IAdapter)",
+  "title": "MessageBird Connection",
+  "description": "Connects a bot to Zoom.",
+  "type": "object",
+  "properties": {
+    "AccessKey": {
+      "type": "string",
+      "title": "Access Key",
+      "description": "Endpoint on which messages will be sent."
+    },
+    "SigningKey": {
+      "type": "string",
+      "title": "Signing Key",
+      "description": "Signing Key for requests authentication and authorization."
+    },
+    "UseWhatsAppSandbox": {
+      "type": "boolean",
+      "title": "UseWhatsAppSandbox",
+      "description": "Use WhatsApp Sandbox."
+    },
+    "route": {
+      "type": "string",
+      "title": "Route",
+      "description": "Optional route where the adapter is exposed.",
+      "default": "messagebird"
+    },
+    "type": {
+      "type": "string",
+      "title": "Type",
+      "description": "Adapter type.",
+      "default": "Bot.Builder.Community.Adapters.MessageBird.MessageBirdAdapter"
+    }
+  },
+  "required": [
+    "AccessKey",
+    "SigningKey",
+    "UseWhatsAppSandbox"
+  ]
+}
