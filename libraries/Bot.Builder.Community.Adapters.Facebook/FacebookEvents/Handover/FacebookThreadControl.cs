@@ -1,8 +1,6 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
-namespace Microsoft.Bot.Builder.Adapters.Facebook.FacebookEvents.Handover
+namespace Bot.Builder.Community.Adapters.Facebook.FacebookEvents.Handover
 {
     /// <summary>
     /// Base event object for thread control request payloads.

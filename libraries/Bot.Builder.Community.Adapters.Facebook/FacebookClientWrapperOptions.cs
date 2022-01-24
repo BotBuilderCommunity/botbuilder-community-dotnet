@@ -1,10 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
-using System;
-using System.Threading.Tasks;
-
-namespace Microsoft.Bot.Builder.Adapters.Facebook
+﻿namespace Bot.Builder.Community.Adapters.Facebook
 {
     /// <summary>
     /// Options class for Facebook Adapter.

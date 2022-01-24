@@ -1,9 +1,6 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
+﻿using Newtonsoft.Json;
 
-using Newtonsoft.Json;
-
-namespace Microsoft.Bot.Builder.Adapters.Facebook.FacebookEvents
+namespace Bot.Builder.Community.Adapters.Facebook.FacebookEvents
 {
     /// <summary>
     /// Facebook Attachment object that can be sent as part of a Facebook message.

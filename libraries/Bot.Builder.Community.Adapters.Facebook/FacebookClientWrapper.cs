@@ -1,7 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
-using System;
+﻿using System;
 using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography;
@@ -9,11 +6,11 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Bot.Builder.Adapters.Facebook.FacebookEvents;
-using Microsoft.Bot.Builder.Adapters.Facebook.FacebookEvents.Handover;
+using Bot.Builder.Community.Adapters.Facebook.FacebookEvents;
+using Bot.Builder.Community.Adapters.Facebook.FacebookEvents.Handover;
 using Newtonsoft.Json;
 
-namespace Microsoft.Bot.Builder.Adapters.Facebook
+namespace Bot.Builder.Community.Adapters.Facebook
 {
     /// <summary>
     /// Client for interacting with the Facebook API.

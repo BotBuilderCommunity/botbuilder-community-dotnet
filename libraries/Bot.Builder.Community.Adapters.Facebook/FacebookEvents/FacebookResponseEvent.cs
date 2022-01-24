@@ -1,10 +1,7 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Microsoft.Bot.Builder.Adapters.Facebook.FacebookEvents
+namespace Bot.Builder.Community.Adapters.Facebook.FacebookEvents
 {
     /// <summary>
     /// Represents the incoming object received from Facebook and processed by the adapter.

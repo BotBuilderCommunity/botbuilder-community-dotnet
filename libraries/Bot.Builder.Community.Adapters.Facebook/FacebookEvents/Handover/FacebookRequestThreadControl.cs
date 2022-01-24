@@ -1,9 +1,6 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
+﻿using Newtonsoft.Json;
 
-using Newtonsoft.Json;
-
-namespace Microsoft.Bot.Builder.Adapters.Facebook.FacebookEvents.Handover
+namespace Bot.Builder.Community.Adapters.Facebook.FacebookEvents.Handover
 {
     /// <summary>A Facebook thread control message, including app ID of requested thread owner and an optional message
     /// to send with the request.</summary>

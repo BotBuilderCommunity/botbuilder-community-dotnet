@@ -1,10 +1,7 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
-using System;
+﻿using System;
 using Newtonsoft.Json;
 
-namespace Microsoft.Bot.Builder.Adapters.Facebook.FacebookEvents.Templates
+namespace Bot.Builder.Community.Adapters.Facebook.FacebookEvents.Templates
 {
     /// <summary>
     /// Default action template.
