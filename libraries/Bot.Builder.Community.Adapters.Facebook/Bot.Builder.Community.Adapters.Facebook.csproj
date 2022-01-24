@@ -10,12 +10,25 @@
     <PackageProjectUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/libraries/Bot.Builder.Community.Adapters.Facebook</PackageProjectUrl>
     <RepositoryUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/</RepositoryUrl>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+	  <PackageIcon>package-icon.png</PackageIcon>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>Full</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
+
+  <ItemGroup>
+	  <Content Include="**/*.schema" />
+	  <Content Include="**/*.uischema" />
+  </ItemGroup>
+
+  <ItemGroup>
+	  <None Include="..\..\package-icon.png" Link="package-icon.png">
+		  <PackagePath></PackagePath>
+		  <Pack>True</Pack>
+	  </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="$(Bot_Builder_Version)"/>
