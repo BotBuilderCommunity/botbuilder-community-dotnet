@@ -1,7 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -18,7 +15,7 @@ using Thrzn41.WebexTeams.Version1;
 [assembly: InternalsVisibleTo("Microsoft.Bot.Builder.Adapters.Webex.Tests")]
 #endif
 
-namespace Microsoft.Bot.Builder.Adapters.Webex
+namespace Bot.Builder.Community.Adapters.Webex
 {
     internal static class WebexHelper
     {

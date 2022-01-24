@@ -1,9 +1,6 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
+﻿using System;
 
-using System;
-
-namespace Microsoft.Bot.Builder.Adapters.Webex
+namespace Bot.Builder.Community.Adapters.Webex
 {
     /// <summary>
     /// Defines implementation of the WebexAdapter Options.

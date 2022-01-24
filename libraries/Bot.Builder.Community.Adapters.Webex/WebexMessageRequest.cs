@@ -1,11 +1,8 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Microsoft.Bot.Builder.Adapters.Webex
+namespace Bot.Builder.Community.Adapters.Webex
 {
     /// <summary>
     /// Represents the payload received when a Webex Message is sent to the bot.

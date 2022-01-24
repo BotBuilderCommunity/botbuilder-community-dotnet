@@ -1,9 +1,5 @@
-﻿// Copyright (c) Microsoft Corporation.All rights reserved.
-// Licensed under the MIT License.
-
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.IO;
 using System.Net;
 using System.Security.Cryptography;
@@ -16,7 +12,7 @@ using Newtonsoft.Json;
 using Thrzn41.WebexTeams;
 using Thrzn41.WebexTeams.Version1;
 
-namespace Microsoft.Bot.Builder.Adapters.Webex
+namespace Bot.Builder.Community.Adapters.Webex
 {
     /// <summary>
     /// A client for interacting with the Webex Teams API.

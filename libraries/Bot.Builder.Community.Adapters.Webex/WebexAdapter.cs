@@ -1,7 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Authentication;
@@ -10,6 +7,7 @@ using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
@@ -18,7 +16,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
 using Thrzn41.WebexTeams.Version1;
 
-namespace Microsoft.Bot.Builder.Adapters.Webex
+namespace Bot.Builder.Community.Adapters.Webex
 {
     /// <summary>
     /// BotAdapter to allow for handling Webex Teams app payloads and responses via the Webex Teams API.
