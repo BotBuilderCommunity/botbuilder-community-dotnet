@@ -256,7 +256,7 @@ namespace Bot.Builder.Community.Adapters.Slack
                     activity.Text = message.Text;
                     if (message.AdditionalProperties.ContainsKey("files"))
                     {
-                        var attachments = new List<Schema.Attachment>();
+                        var attachments = new List<Microsoft.Bot.Schema.Attachment>();
                         foreach (var attachment in message.AdditionalProperties["files"])
                         {
                             var attachmentProperties = attachment.Value<JObject>().Properties();
@@ -283,7 +283,7 @@ namespace Bot.Builder.Community.Adapters.Slack
                                 }
                             }
 
-                            attachments.Add(new Schema.Attachment
+                            attachments.Add(new Microsoft.Bot.Schema.Attachment
                             {
                                 ContentType = contentType,
                                 ContentUrl = contentUrl,
