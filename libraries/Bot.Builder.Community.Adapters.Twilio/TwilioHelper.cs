@@ -1,7 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -19,7 +16,7 @@ using Newtonsoft.Json;
 [assembly: InternalsVisibleTo("Microsoft.Bot.Builder.Adapters.Twilio.Tests")]
 #endif
 
-namespace Microsoft.Bot.Builder.Adapters.Twilio
+namespace Bot.Builder.Community.Adapters.Twilio
 {
     /// <summary>
     /// A helper class to create Activities and Twilio messages.

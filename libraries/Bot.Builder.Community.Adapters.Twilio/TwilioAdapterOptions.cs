@@ -1,7 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
-namespace Microsoft.Bot.Builder.Adapters.Twilio
+﻿namespace Bot.Builder.Community.Adapters.Twilio
 {
     /// <summary>
     /// Options for the <see cref="TwilioAdapter"/>.
