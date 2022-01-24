@@ -1,14 +1,9 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Microsoft.Bot.Builder.Adapters.Slack
+namespace Bot.Builder.Community.Adapters.Slack
 {
     /// <summary>
     /// <see cref="BotComponent"/> definition for <see cref="SlackAdapter"/>.

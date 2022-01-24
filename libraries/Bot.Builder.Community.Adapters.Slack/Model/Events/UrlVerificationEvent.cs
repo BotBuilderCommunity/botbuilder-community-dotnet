@@ -1,7 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
-namespace Microsoft.Bot.Builder.Adapters.Slack.Model.Events
+﻿namespace Bot.Builder.Community.Adapters.Slack.Model.Events
 {
     /// <summary>
     /// Represents a Slack Url Verification event https://api.slack.com/events/url_verification.

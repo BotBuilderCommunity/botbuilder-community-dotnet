@@ -1,14 +1,11 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
-using System;
+﻿using System;
 using System.Collections.Generic;
-using Microsoft.Bot.Builder.Adapters.Slack.Model.Events;
+using Bot.Builder.Community.Adapters.Slack.Model.Events;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SlackAPI;
 
-namespace Microsoft.Bot.Builder.Adapters.Slack.Model
+namespace Bot.Builder.Community.Adapters.Slack.Model
 {
     /// <summary>
     /// Union class to represent various user interaction payloads https://api.slack.com/interactivity/handling#payloads.

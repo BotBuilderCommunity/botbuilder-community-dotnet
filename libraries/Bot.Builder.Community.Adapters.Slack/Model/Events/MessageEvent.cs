@@ -1,11 +1,6 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
+﻿using Newtonsoft.Json;
 
-using System.Collections.Generic;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
-namespace Microsoft.Bot.Builder.Adapters.Slack.Model.Events
+namespace Bot.Builder.Community.Adapters.Slack.Model.Events
 {
     /// <summary>
     /// Represents a Slack Message event https://api.slack.com/events/message.

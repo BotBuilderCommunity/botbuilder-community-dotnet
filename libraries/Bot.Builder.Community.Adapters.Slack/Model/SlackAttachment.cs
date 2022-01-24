@@ -1,12 +1,9 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using SlackAPI;
 
-namespace Microsoft.Bot.Builder.Adapters.Slack.Model
+namespace Bot.Builder.Community.Adapters.Slack.Model
 {
     public class SlackAttachment
     {

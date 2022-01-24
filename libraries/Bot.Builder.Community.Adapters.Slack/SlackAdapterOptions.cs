@@ -1,7 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
-namespace Microsoft.Bot.Builder.Adapters.Slack
+﻿namespace Bot.Builder.Community.Adapters.Slack
 {
     /// <summary>
     /// Class for defining implementation of the SlackAdapter Options.

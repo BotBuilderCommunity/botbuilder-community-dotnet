@@ -1,9 +1,6 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
+﻿using Microsoft.Bot.Schema;
 
-using Microsoft.Bot.Schema;
-
-namespace Microsoft.Bot.Builder.Adapters.Slack
+namespace Bot.Builder.Community.Adapters.Slack
 {
     /// <summary>
     /// Extends ResourceResponse with ActivityId and Conversation properties.

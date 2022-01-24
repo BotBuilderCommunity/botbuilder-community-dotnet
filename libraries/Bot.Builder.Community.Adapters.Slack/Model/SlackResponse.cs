@@ -1,9 +1,6 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
+﻿using Bot.Builder.Community.Adapters.Slack.Model.Events;
 
-using Microsoft.Bot.Builder.Adapters.Slack.Model.Events;
-
-namespace Microsoft.Bot.Builder.Adapters.Slack.Model
+namespace Bot.Builder.Community.Adapters.Slack.Model
 {
     /// <summary>
     /// SlackResponse class.

@@ -1,7 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -10,9 +7,9 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Bot.Builder.Community.Adapters.Slack.Model;
+using Bot.Builder.Community.Adapters.Slack.Model.Events;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Bot.Builder.Adapters.Slack.Model;
-using Microsoft.Bot.Builder.Adapters.Slack.Model.Events;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -24,7 +21,7 @@ using SlackAPI;
 [assembly: InternalsVisibleTo("Microsoft.Bot.Builder.Adapters.Slack.Tests")]
 #endif
 
-namespace Microsoft.Bot.Builder.Adapters.Slack
+namespace Bot.Builder.Community.Adapters.Slack
 {
     internal static class SlackHelper
     {
