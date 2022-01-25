@@ -1,7 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
@@ -10,11 +7,12 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 using Moq;
 using Xunit;
 
-namespace Microsoft.Bot.Builder.Adapters.Facebook.Tests
+namespace Bot.Builder.Community.Adapters.Facebook.Tests
 {
     public class FacebookAdapterTests
     {

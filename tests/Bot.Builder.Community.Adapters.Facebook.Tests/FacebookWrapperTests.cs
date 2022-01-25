@@ -1,7 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -13,7 +10,7 @@ using Moq;
 using Newtonsoft.Json;
 using Xunit;
 
-namespace Microsoft.Bot.Builder.Adapters.Facebook.Tests
+namespace Bot.Builder.Community.Adapters.Facebook.Tests
 {
     public class FacebookWrapperTests
     {

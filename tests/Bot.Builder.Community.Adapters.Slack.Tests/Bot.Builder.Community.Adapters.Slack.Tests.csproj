@@ -1,24 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework Condition="'$(BuildTarget)' == 'netcoreapp21'">netcoreapp2.1</TargetFramework>
-    <TargetFramework Condition="'$(BuildTarget)' == 'netcoreapp31'">netcoreapp3.1</TargetFramework>
-    <TargetFrameworks Condition="'$(BuildTarget)' == ''">netcoreapp2.1;netcoreapp3.1</TargetFrameworks>
-    <IsPackable>false</IsPackable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU' ">
-    <SignAssembly>true</SignAssembly>
-    <DelaySign>true</DelaySign>
-    <AssemblyOriginatorKeyFile>..\..\..\build\35MSSharedLib1024.snk</AssemblyOriginatorKeyFile>
-    <DefineConstants>SIGNASSEMBLY</DefineConstants>
-    <!-- The SlackAPI package isn't signed, so supress the warning. There seems to not be a way to supress this for ONLY SlackAPI. -->
-    <NoWarn>$(NoWarn),CS8002</NoWarn>
-  </PropertyGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.1.1" />
@@ -31,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\libraries\Adapters\Microsoft.Bot.Builder.Adapters.Slack\Microsoft.Bot.Builder.Adapters.Slack.csproj" />
+    <ProjectReference Include="..\..\libraries\Bot.Builder.Community.Adapters.Slack\Bot.Builder.Community.Adapters.Slack.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,7 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Authentication;
@@ -9,13 +6,14 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 using Moq;
 using Newtonsoft.Json;
 using Thrzn41.WebexTeams.Version1;
 using Xunit;
 
-namespace Microsoft.Bot.Builder.Adapters.Webex.Tests
+namespace Bot.Builder.Community.Adapters.Webex.Tests
 {
     public class WebexAdapterTests
     {

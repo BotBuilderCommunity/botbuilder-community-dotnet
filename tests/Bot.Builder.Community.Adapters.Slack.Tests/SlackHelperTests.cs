@@ -1,7 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -9,14 +6,14 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Bot.Builder.Adapters.Slack.Model;
+using Bot.Builder.Community.Adapters.Slack.Model;
 using Microsoft.Bot.Schema;
 using Moq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
-namespace Microsoft.Bot.Builder.Adapters.Slack.Tests
+namespace Bot.Builder.Community.Adapters.Slack.Tests
 {
     public class SlackHelperTests
     {

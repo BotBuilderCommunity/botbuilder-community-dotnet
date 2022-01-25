@@ -1,12 +1,9 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
-using System.IO;
+﻿using System.IO;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using Xunit;
 
-namespace Microsoft.Bot.Builder.Adapters.Slack.Tests
+namespace Bot.Builder.Community.Adapters.Slack.Tests
 {
     public class SlackClientWrapperTests
     {
