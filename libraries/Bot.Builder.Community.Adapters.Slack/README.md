@@ -5,7 +5,7 @@ This package contains an adapter that communicates directly with the Slack API, 
 ## How to Install
 
 ````
-PM> Install-Package Microsoft.Bot.Builder.Adapters.Slack
+PM> Install-Package Bot.Builder.Community.Adapters.Slack
 ````
 ## How to Use
 

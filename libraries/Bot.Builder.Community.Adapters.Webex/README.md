@@ -5,7 +5,7 @@ This package contains an adapter that communicates directly with the Webex Teams
 ## How to Install
 
 ````
-PM> Install-Package Microsoft.Bot.Builder.Adapters.Webex
+PM> Install-Package Bot.Builder.Community.Adapters.Webex
 ````
 ## How to Use
 

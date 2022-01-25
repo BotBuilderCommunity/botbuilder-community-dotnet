@@ -5,7 +5,7 @@ This package contains an adapter that communicates directly with the Twilio API,
 ## How to Install
 
 ````
-PM> Install-Package Microsoft.Bot.Builder.Adapters.Twilio
+PM> Install-Package Bot.Builder.Community.Adapters.Twilio
 ````
 ## How to Use
 
