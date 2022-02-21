@@ -47,33 +47,40 @@ namespace Bot.Builder.Community.Adapters.MessageBird
                 var message = CreateMessage(activity);
 
                 var contentType = attachment.ContentType.ToLower();
-                if (contentType.Contains("image"))
-                {
-                    message.conversationMessageRequest.Content = new Content() { Image = new MediaContent() { Url = attachment.ContentUrl } };
-                    message.conversationMessageRequest.Type = ContentType.Image;
-                }
-                else if (contentType.Contains("video"))
-                {
-                    message.conversationMessageRequest.Content = new Content() { Video = new MediaContent() { Url = attachment.ContentUrl } };
-                    message.conversationMessageRequest.Type = ContentType.Video;
-                }
-                else if (contentType.Contains("audio"))
-                {
-                    message.conversationMessageRequest.Content = new Content() { Audio = new MediaContent() { Url = attachment.ContentUrl } };
-                    message.conversationMessageRequest.Type = ContentType.Audio;
-                }
-                else
-                {
-                    message.conversationMessageRequest.Content = new Content() { File = new MediaContent() { Url = attachment.ContentUrl } };
-                    message.conversationMessageRequest.Type = ContentType.File;
-                }
-                //this will be addes as soon as MessageBird nuget package add support for this message type, my PR is waiting to be merged
-                //else if (contentType.Contains("whatsappSticker"))
-                //{
-                //    message.conversationMessageRequest.Content = new Content() { File = new WhatsAppStickerContent() { Link = attachment.ContentUrl } };
-                //    message.conversationMessageRequest.Type = ContentType.WhatsAppSticker;
-                //}
 
+                switch (contentType)
+                {
+                    case "image":
+                        {
+                            message.conversationMessageRequest.Content = new Content() { Image = new MediaContent() { Url = attachment.ContentUrl } };
+                            message.conversationMessageRequest.Type = ContentType.Image;
+                            break;
+                        }
+                    case "video":
+                        {
+                            message.conversationMessageRequest.Content = new Content() { Video = new MediaContent() { Url = attachment.ContentUrl } };
+                            message.conversationMessageRequest.Type = ContentType.Video;
+                            break;
+                        }
+                    case "audio":
+                        {
+                            message.conversationMessageRequest.Content = new Content() { Audio = new MediaContent() { Url = attachment.ContentUrl } };
+                            message.conversationMessageRequest.Type = ContentType.Audio;
+                            break;
+                        }
+                    //case "whatsappSticker":
+                    //    {
+                    //        message.conversationMessageRequest.Content = new Content() { File = new WhatsAppStickerContent() { Link = attachment.ContentUrl } };
+                    //        message.conversationMessageRequest.Type = ContentType.WhatsAppSticker;
+                    //        break;
+                    //    }
+                    default:
+                        {
+                            message.conversationMessageRequest.Content = new Content() { File = new MediaContent() { Url = attachment.ContentUrl } };
+                            message.conversationMessageRequest.Type = ContentType.File;
+                            break;
+                        }
+                }
                 messages.Add(message);
             }
         }
