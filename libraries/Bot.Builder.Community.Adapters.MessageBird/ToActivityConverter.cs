@@ -80,7 +80,7 @@ namespace Bot.Builder.Community.Adapters.MessageBird
             activity.Conversation = new ConversationAccount { IsGroup = false, Id = response.conversation.Id };
             activity.Timestamp = response.message.createdDatetime;
 
-            switch (response.message.type)
+            switch (response.message.type.ToLower())
             {
                 case "audio":
                     {
@@ -150,7 +150,7 @@ namespace Bot.Builder.Community.Adapters.MessageBird
                         break;
                     }
                 //this will be addes as soon as MessageBird nuget package add support for this message type, my PR is waiting to be merged
-                //case "whatsappSticker":
+                //case "whatsappsticker":
                 //    {
                 //        activity.Attachments = new List<Attachment>
                 //        {

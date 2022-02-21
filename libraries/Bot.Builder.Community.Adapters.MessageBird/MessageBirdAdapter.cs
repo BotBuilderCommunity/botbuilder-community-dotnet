@@ -38,8 +38,8 @@ namespace Bot.Builder.Community.Adapters.MessageBird
         public MessageBirdAdapter(MessageBirdAdapterOptions options = null, ILogger logger = null)
         {
             _options = options ?? new MessageBirdAdapterOptions();
-            _logger = logger ?? NullLogger.Instance;
 
+            _logger = logger ?? NullLogger.Instance;
 
             _messageBirdClient = Client.CreateDefault(_options.AccessKey);
             
@@ -137,13 +137,10 @@ namespace Bot.Builder.Community.Adapters.MessageBird
                     }
                 }
                 return Task.FromResult(new ResourceResponse[0]);
-
-
             }
             catch (Exception)
             {
                 return Task.FromResult(new ResourceResponse[0]);
-
             }
         }
     }

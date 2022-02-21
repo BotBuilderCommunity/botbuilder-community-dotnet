@@ -88,7 +88,7 @@ namespace Bot.Builder.Community.Adapters.MessageBird
                             message.conversationMessageRequest.Type = ContentType.Audio;
                             break;
                         }
-                    //case "whatsappSticker":
+                    //case "whatsappsticker":
                     //    {
                     //        message.conversationMessageRequest.Content = new Content() 
                     //        { 
@@ -154,6 +154,5 @@ namespace Bot.Builder.Community.Adapters.MessageBird
                 }
             };
         }
-
     }
 }
