@@ -36,7 +36,7 @@ namespace MessageBird_Adapter_Sample.Bots
                     {
                         var reply = MessageFactory.Text("File");
                         Attachment attachment = new Attachment();
-                        attachment.ContentType = "application/pdf";
+                        attachment.ContentType = "file";
                         attachment.ContentUrl = "https://qconlondon.com/london-2017/system/files/presentation-slides/microsoft_bot_framework_best_practices.pdf";
                         attachment.Name = "Microsoft Bot Framework Best Practices";
                         reply.Attachments = new List<Attachment>() { attachment };
@@ -48,7 +48,7 @@ namespace MessageBird_Adapter_Sample.Bots
                         var reply = MessageFactory.Text("Image");
                         Attachment attachment = new Attachment();
                         attachment.Name = "Bot Framework Arcitecture";
-                        attachment.ContentType = "image/png";
+                        attachment.ContentType = "image";
                         attachment.ContentUrl = "https://docs.microsoft.com/en-us/bot-framework/media/how-it-works/architecture-resize.png";
                         reply.Attachments = new List<Attachment>() { attachment };
                         await turnContext.SendActivityAsync(reply);
