@@ -1,4 +1,4 @@
-﻿# Unofficial MessageBird WhatsApp Adapter for Bot Builder v4 .NET SDK
+﻿﻿# Unofficial MessageBird WhatsApp Adapter for Bot Builder v4 .NET SDK
 
 This project is created by Ahmet Kocadoğan to help Bot Framework community for WhatsApp channel and not related with MessageBird officially.
 
@@ -15,8 +15,9 @@ The adapter currently supports the following scenarios:
 * Send/receive messages with WhatsApp Sandbox
 * Send/receive text messages
 * Send/receive media messages (document, image, video, audio) - Supported formats for media message types available [here](https://developers.facebook.com/docs/whatsapp/api/media/#supported-files)
+* Send/receive stickers - This feature will be supported as soon as MessageBird nuget package add this support. You can check the status of my PR about WhatsApp Sticker messages [here](https://github.com/messagebird/csharp-rest-api/pull/111)
 * Send/receive location messages
-* Verification of incoming MessageBird requests (There is one issue for delivery report webhook verification, MessageBird team is investigating.)
+* Verification of incoming MessageBird requests (New request verification way of MessageBird API via Messagebird-Signature-Jwt header is supported)
 * Receive delivery reports
 * Full incoming request from MessageBird is added to the incoming activity as ChannelData
 
@@ -52,9 +53,9 @@ You could create in the project an `appsettings.json` file to set the MessageBir
 
 ```json
 {
-  "MessageBirdAccessKey": "",
-  "MessageBirdSigningKey": "",
-  "MessageBirdUseWhatsAppSandbox": true
+  "MessageBirdAccessKey": "access_key_that_you_obtained_from_messagebird",
+  "MessageBirdSigningKey": "signing_key_that_you_obtained_from_messagebird",
+  "MessageBirdWebhookEndpointUrl": "your_bot_endpoint_url_for_incoming_messagebird_requests"
 }
 ```
 
@@ -148,3 +149,4 @@ Add the following line into the ***ConfigureServices*** method within your Start
 * [WhatsApp Quickstarts](https://developers.messagebird.com/quickstarts/whatsapp-overview/)
 * [Conversations Documentation](https://developers.messagebird.com/quickstarts/conversations-overview/)
 * [MessageBird Website](https://messagebird.com)
+* [New Request Verification Method](https://developers.messagebird.com/api/#verifying-http-requests)

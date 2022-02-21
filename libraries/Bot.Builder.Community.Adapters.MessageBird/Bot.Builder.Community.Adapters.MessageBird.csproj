@@ -11,7 +11,7 @@
 	</PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MessageBird" Version="2.1.0" />
+    <PackageReference Include="MessageBird" Version="3.2.0" />
     <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="$(Bot_Builder_Version)" />
   </ItemGroup>
 

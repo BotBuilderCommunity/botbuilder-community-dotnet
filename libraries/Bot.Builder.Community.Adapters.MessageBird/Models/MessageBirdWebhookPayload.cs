@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using MessageBird.Objects.Conversations;
 using System.Text;
+using System.Runtime.Serialization;
+using Newtonsoft.Json;
+
 
 namespace Bot.Builder.Community.Adapters.MessageBird.Models
 {

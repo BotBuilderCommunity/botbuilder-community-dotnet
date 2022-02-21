@@ -67,6 +67,12 @@ namespace Bot.Builder.Community.Adapters.MessageBird
                     message.conversationMessageRequest.Content = new Content() { File = new MediaContent() { Url = attachment.ContentUrl } };
                     message.conversationMessageRequest.Type = ContentType.File;
                 }
+                //this will be addes as soon as MessageBird nuget package add support for this message type, my PR is waiting to be merged
+                //else if (contentType.Contains("whatsappSticker"))
+                //{
+                //    message.conversationMessageRequest.Content = new Content() { File = new WhatsAppStickerContent() { Link = attachment.ContentUrl } };
+                //    message.conversationMessageRequest.Type = ContentType.WhatsAppSticker;
+                //}
 
                 messages.Add(message);
             }
@@ -87,9 +93,7 @@ IList<MessageBirdSendMessagePayload> messages)
 
                     messages.Add(message);
                 }
-
             }
-
         }
 
         private static MessageBirdSendMessagePayload CreateMessage(IMessageActivity activity)

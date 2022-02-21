@@ -40,14 +40,9 @@ namespace Bot.Builder.Community.Adapters.MessageBird
             _options = options ?? new MessageBirdAdapterOptions();
             _logger = logger ?? NullLogger.Instance;
 
-            if (_options.UseWhatsAppSandbox)
-            {
-                _messageBirdClient = Client.CreateDefault(_options.AccessKey, features: new Client.Features[] { Client.Features.EnableWhatsAppSandboxConversations });
-            }
-            else
-            {
-                _messageBirdClient = Client.CreateDefault(_options.AccessKey);
-            }
+
+            _messageBirdClient = Client.CreateDefault(_options.AccessKey);
+            
             _requestAuthorization = new MessageBirdRequestAuthorization();
         }
 
@@ -76,7 +71,7 @@ namespace Bot.Builder.Community.Adapters.MessageBird
                 body = await sr.ReadToEndAsync();
             }
 
-            if (!_requestAuthorization.Verify(httpRequest.Headers["Messagebird-Signature"], _options.SigningKey, httpRequest.Headers["Messagebird-Request-Timestamp"], body))
+            if (!_requestAuthorization.VerifyJWT(httpRequest.Headers["MessageBird-Signature-JWT"], _options.SigningKey, body, _options.MessageBirdWebhookEndpointUrl))
             {
                 httpResponse.StatusCode = (int)HttpStatusCode.Unauthorized;
                 return;
