@@ -140,6 +140,82 @@ Add the following line into the ***ConfigureServices*** method within your Start
 
 ```
 
+### Sample code for sending text, image, audio, video, location, file and WhatsApp Sticker (WhatsApp Sticker will be added soon)
+
+## Sending Text Sample Code
+```csharp
+    var reply = MessageFactory.Text("your text here");
+    await turnContext.SendActivityAsync(reply);
+
+```
+
+## Sending Image Sample Code
+```csharp
+    var reply = MessageFactory.Text("Image");
+    Attachment attachment = new Attachment();
+    attachment.Name = "Bot Framework Arcitecture";
+    attachment.ContentType = "image";
+    attachment.ContentUrl = "https://docs.microsoft.com/en-us/bot-framework/media/how-it-works/architecture-resize.png";
+    reply.Attachments = new List<Attachment>() { attachment };
+    await turnContext.SendActivityAsync(reply);
+
+```
+
+## Sending Audio Sample Code
+```csharp
+    var reply = MessageFactory.Text("Audio");
+    Attachment attachment = new Attachment();
+    attachment.Name = "";
+    attachment.ContentType = "audio";
+    attachment.ContentUrl = "url_of_your_audio";
+    reply.Attachments = new List<Attachment>() { attachment };
+    await turnContext.SendActivityAsync(reply);
+
+```
+
+## Sending Video Sample Code
+```csharp
+    var reply = MessageFactory.Text("Video");
+    Attachment attachment = new Attachment();
+    attachment.Name = "";
+    attachment.ContentType = "video";
+    attachment.ContentUrl = "url_of_your_video";
+    reply.Attachments = new List<Attachment>() { attachment };
+    await turnContext.SendActivityAsync(reply);
+
+```
+
+## Sending Location Sample Code
+```csharp
+    var reply = MessageFactory.Text("Location");
+    reply.Entities = new List<Entity>() { new GeoCoordinates() { Latitude = 41.0572, Longitude = 29.0433 } };
+    await turnContext.SendActivityAsync(reply);
+
+```
+
+## Sending File Sample Code
+```csharp
+    var reply = MessageFactory.Text("File");
+    Attachment attachment = new Attachment();
+    attachment.ContentType = "file";
+    attachment.ContentUrl = "https://qconlondon.com/london-2017/system/files/presentation-slides/microsoft_bot_framework_best_practices.pdf";
+    attachment.Name = "Microsoft Bot Framework Best Practices";
+    reply.Attachments = new List<Attachment>() { attachment };
+    await turnContext.SendActivityAsync(reply);
+
+```
+
+## Sending WhatsApp Sticker Sample Code (This will be added soon)
+```csharp
+    var reply = MessageFactory.Text("WhatsApp Sticker");
+    Attachment attachment = new Attachment();
+    attachment.Name = "";
+    attachment.ContentType = "whatsappsticker";
+    attachment.ContentUrl = "url_of_your_sticker";
+    reply.Attachments = new List<Attachment>() { attachment };
+    await turnContext.SendActivityAsync(reply);
+
+```
 
 
 ### Useful links
