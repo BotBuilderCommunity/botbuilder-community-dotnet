@@ -23,7 +23,7 @@ The adapter currently supports the following scenarios:
 
 ### Sample
 
-Basic sample bot available [here](../../samples/MessageBird%20Adapter%20Sample).
+Basic sample bot available [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/develop/samples/MessageBird%20Adapter%20Sample).
 
 ## Usage
 
@@ -36,18 +36,19 @@ Basic sample bot available [here](../../samples/MessageBird%20Adapter%20Sample).
 
 ### Prerequisites
 
-Create a [MessageBird](https://messagebird.com/en/whatsapp/) account and activate WhatsApp Sandbox.
+Create a [MessageBird](https://messagebird.com/en/whatsapp/) account and activate WhatsApp Sandbox or Production.
 Get your [SigningKey](https://dashboard.messagebird.com/en/developers/settings)
 Get your [AccessKey](https://dashboard.messagebird.com/en/developers/access)
 
 ### Set the MessageBird options
 
 At the end of process you will get the following parameters:
-* Signing Key - will be used for requests authentication and authorization 
-* Access Key - endpoint on which messages will be sent
+* SigningKey - will be used for requests authentication and authorization 
+* AccessKey - will be used for MessageBird Conversations API
+* MessageBirdWebhookEndpointUrl - will be used for request verification
 
 
-To authenticate the requests, you will need to configure the Adapter with the Signing Key, Access Key and WhatsApp Sandbox parameter.
+To authenticate the requests, you will need to configure the Adapter with the Signing Key, Access Key and your endpoint for MessageBird webhooks.
 
 You could create in the project an `appsettings.json` file to set the MessageBird options as follows:
 
