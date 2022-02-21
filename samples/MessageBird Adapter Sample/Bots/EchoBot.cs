@@ -47,7 +47,7 @@ namespace MessageBird_Adapter_Sample.Bots
                     {
                         var reply = MessageFactory.Text("Image");
                         Attachment attachment = new Attachment();
-                        attachment.Name = "architecture-resize.png";
+                        attachment.Name = "Bot Framework Arcitecture";
                         attachment.ContentType = "image/png";
                         attachment.ContentUrl = "https://docs.microsoft.com/en-us/bot-framework/media/how-it-works/architecture-resize.png";
                         reply.Attachments = new List<Attachment>() { attachment };
