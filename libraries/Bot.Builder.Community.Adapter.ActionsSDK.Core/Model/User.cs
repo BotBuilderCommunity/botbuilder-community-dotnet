@@ -18,5 +18,7 @@ namespace Bot.Builder.Community.Adapters.ActionsSDK.Core.Model
         public JObject Engagement { get; set; }
 
         public List<JObject> PackageEntitlements { get; set; }
+
+        public string AccessToken { get; set; }
     }
 }

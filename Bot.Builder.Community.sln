@@ -165,6 +165,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Compo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Components.Trigger.ExpireConversation", "libraries\Bot.Builder.Community.Components.Trigger.ExpireConversation\Bot.Builder.Community.Components.Trigger.ExpireConversation.csproj", "{53DD5870-58AC-4B4E-9C12-16AA218EBFCE}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Components.Adapters.MessageBird", "libraries\Bot.Builder.Community.Components.Adapters.MessageBird\Bot.Builder.Community.Components.Adapters.MessageBird.csproj", "{E438DC4C-670F-496A-AAB3-C800C78E0532}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Facebook", "libraries\Bot.Builder.Community.Adapters.Facebook\Bot.Builder.Community.Adapters.Facebook.csproj", "{4DE48D05-D466-4AFA-861C-D1F72A0ADB90}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Slack", "libraries\Bot.Builder.Community.Adapters.Slack\Bot.Builder.Community.Adapters.Slack.csproj", "{E449DA9D-62D9-474A-8C0A-6D0B7324D247}"
@@ -731,6 +733,14 @@ Global
 		{53DD5870-58AC-4B4E-9C12-16AA218EBFCE}.Documentation|Any CPU.Build.0 = Debug|Any CPU
 		{53DD5870-58AC-4B4E-9C12-16AA218EBFCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{53DD5870-58AC-4B4E-9C12-16AA218EBFCE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E438DC4C-670F-496A-AAB3-C800C78E0532}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{E438DC4C-670F-496A-AAB3-C800C78E0532}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{E438DC4C-670F-496A-AAB3-C800C78E0532}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E438DC4C-670F-496A-AAB3-C800C78E0532}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E438DC4C-670F-496A-AAB3-C800C78E0532}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{E438DC4C-670F-496A-AAB3-C800C78E0532}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{E438DC4C-670F-496A-AAB3-C800C78E0532}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E438DC4C-670F-496A-AAB3-C800C78E0532}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4DE48D05-D466-4AFA-861C-D1F72A0ADB90}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
 		{4DE48D05-D466-4AFA-861C-D1F72A0ADB90}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
 		{4DE48D05-D466-4AFA-861C-D1F72A0ADB90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -874,6 +884,7 @@ Global
 		{55546728-AADE-4ED0-88AD-B517B915CD5D} = {1F7F4CAF-CF22-491F-840D-A63835726C12}
 		{56A89D8F-2CD5-439B-8E04-A7A6D9C7566C} = {1F7F4CAF-CF22-491F-840D-A63835726C12}
 		{53DD5870-58AC-4B4E-9C12-16AA218EBFCE} = {1F7F4CAF-CF22-491F-840D-A63835726C12}
+		{E438DC4C-670F-496A-AAB3-C800C78E0532} = {1F7F4CAF-CF22-491F-840D-A63835726C12}
 		{4DE48D05-D466-4AFA-861C-D1F72A0ADB90} = {BF310E8A-8DA1-441F-90E9-DE0E66553048}
 		{E449DA9D-62D9-474A-8C0A-6D0B7324D247} = {BF310E8A-8DA1-441F-90E9-DE0E66553048}
 		{8CBD9940-772C-495F-A54E-1B364C4774E2} = {BF310E8A-8DA1-441F-90E9-DE0E66553048}
