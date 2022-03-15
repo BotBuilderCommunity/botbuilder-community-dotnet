@@ -1,4 +1,4 @@
-﻿using Microsoft.Bot.Builder.Adapters.Twilio;
+﻿using Bot.Builder.Community.Adapters.Twilio;
 using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;

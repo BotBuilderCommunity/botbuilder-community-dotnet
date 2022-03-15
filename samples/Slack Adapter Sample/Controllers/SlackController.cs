@@ -1,8 +1,8 @@
 ﻿
 using System.Threading.Tasks;
+using Bot.Builder.Community.Adapters.Slack;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Builder;
-using Microsoft.Bot.Builder.Adapters.Slack;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 
 namespace Bot.Builder.Community.Samples.Slack.Controllers

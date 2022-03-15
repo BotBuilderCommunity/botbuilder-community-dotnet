@@ -2,9 +2,8 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Bot.Builder.Community.Adapters.Slack.Model;
 using Microsoft.Bot.Builder;
-using Microsoft.Bot.Builder.Adapters.Slack;
-using Microsoft.Bot.Builder.Adapters.Slack.Model;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json;
 using SlackAPI;

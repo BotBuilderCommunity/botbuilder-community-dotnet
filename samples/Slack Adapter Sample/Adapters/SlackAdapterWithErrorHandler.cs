@@ -1,4 +1,4 @@
-﻿using Microsoft.Bot.Builder.Adapters.Slack;
+﻿using Bot.Builder.Community.Adapters.Slack;
 using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;

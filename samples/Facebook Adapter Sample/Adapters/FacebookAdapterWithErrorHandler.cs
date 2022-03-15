@@ -1,4 +1,4 @@
-﻿using Microsoft.Bot.Builder.Adapters.Facebook;
+﻿using Bot.Builder.Community.Adapters.Facebook;
 using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;

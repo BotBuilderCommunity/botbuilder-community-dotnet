@@ -1,4 +1,4 @@
-﻿using Microsoft.Bot.Builder.Adapters.Webex;
+﻿using Bot.Builder.Community.Adapters.Webex;
 using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;

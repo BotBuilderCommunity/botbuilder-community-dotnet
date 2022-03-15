@@ -1,9 +1,9 @@
-﻿using Bot.Builder.Community.Samples.Facebook.Adapters;
+﻿using Bot.Builder.Community.Adapters.Facebook;
+using Bot.Builder.Community.Samples.Facebook.Adapters;
 using Bot.Builder.Community.Samples.Facebook.Bots;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Bot.Builder;
-using Microsoft.Bot.Builder.Adapters.Facebook;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;

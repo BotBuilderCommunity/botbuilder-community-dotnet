@@ -1,8 +1,8 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Bot.Builder.Community.Adapters.Twilio;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Builder;
-using Microsoft.Bot.Builder.Adapters.Twilio;
 
 namespace Bot.Builder.Community.Samples.Twilio.Controllers
 {

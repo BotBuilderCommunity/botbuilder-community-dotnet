@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
+using Bot.Builder.Community.Adapters.Facebook;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Builder;
-using Microsoft.Bot.Builder.Adapters.Facebook;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 
 namespace Bot.Builder.Community.Samples.Facebook.Controllers
