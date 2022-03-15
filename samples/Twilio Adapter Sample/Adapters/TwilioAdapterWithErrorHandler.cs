@@ -1,12 +1,9 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
-using Microsoft.Bot.Builder.Adapters.Twilio;
+﻿using Microsoft.Bot.Builder.Adapters.Twilio;
 using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Microsoft.BotBuilderSamples.Adapters
+namespace Bot.Builder.Community.Samples.Twilio.Adapters
 {
     public class TwilioAdapterWithErrorHandler : TwilioAdapter
     {

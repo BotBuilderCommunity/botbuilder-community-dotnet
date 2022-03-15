@@ -5,12 +5,12 @@
     <LangVersion>latest</LangVersion>
     <!-- The WebExTeams package isn't signed, so supress the warning. -->
     <NoWarn>$(NoWarn),CS8002</NoWarn>
-    <RootNamespace>Microsoft.BotBuilderSamples</RootNamespace>
+    <RootNamespace>Bot.Builder.Community.Samples.Webex</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.1" />
-    <PackageReference Include="Microsoft.Bot.Builder.Adapters.Webex" Version="4.15.0" />
+    <PackageReference Include="Bot.Builder.Community.Adapters.Webex" Version="4.13.2" />
   </ItemGroup>
 
   <ItemGroup>

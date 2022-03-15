@@ -1,18 +1,15 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Adapters.Twilio;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.BotBuilderSamples.Adapters;
-using Microsoft.BotBuilderSamples.Bots;
+using Bot.Builder.Community.Samples.Twilio.Adapters;
+using Bot.Builder.Community.Samples.Twilio.Bots;
 using Microsoft.Bot.Connector.Authentication;
 
-namespace Microsoft.BotBuilderSamples
+namespace Bot.Builder.Community.Samples.Twilio
 {
     public class Startup
     {

@@ -1,13 +1,10 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Adapters.Facebook;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 
-namespace Microsoft.BotBuilderSamples.Controllers
+namespace Bot.Builder.Community.Samples.Facebook.Controllers
 {
     [Route("api/facebook")]
     [ApiController]

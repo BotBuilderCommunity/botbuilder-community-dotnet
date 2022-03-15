@@ -1,8 +1,5 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
-using Microsoft.BotBuilderSamples.Adapters;
-using Microsoft.BotBuilderSamples.Bots;
+﻿using Bot.Builder.Community.Samples.Facebook.Adapters;
+using Bot.Builder.Community.Samples.Facebook.Bots;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Bot.Builder;
@@ -12,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Bot.Connector.Authentication;
 
-namespace Microsoft.BotBuilderSamples
+namespace Bot.Builder.Community.Samples.Facebook
 {
     public class Startup
     {
