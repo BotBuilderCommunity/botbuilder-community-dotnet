@@ -15,7 +15,7 @@ This bot has been created using [Bot Framework](https://dev.botframework.com), i
 * Clone the repository
 
     ```bash
-    git clone https://github.com/Microsoft/BotBuilder-Samples.git
+    git clone https://github.com/BotBuilderCommunity/botbuilder-community-dotnet.git
     ```
 
 ### Create a Slack Application for your bot
@@ -54,7 +54,7 @@ Now that you have created a Slack app and wired up the adapter in your bot proje
 
 Run the bot from a terminal or from Visual Studio:
 
-  A) From a terminal, navigate to `samples/csharp_dotnetcore/60.slack-adapter`
+  A) From a terminal, navigate to `botbuilder-community-dotnet/samples/Slack Adapter Sample`
 
   ```bash
   # run the bot
@@ -65,8 +65,8 @@ Run the bot from a terminal or from Visual Studio:
 
   - Launch Visual Studio
   - File -> Open -> Project/Solution
-  - Navigate to `samples/csharp_dotnetcore/60.slack-adapter` folder
-  - Select `SlackAdapterBot.csproj` file
+  - Navigate to `botbuilder-community-dotnet/samples/Slack Adapter Sample` folder
+  - Select `Slack Adapter Sample.csproj` file
   - Press <kbd>F5</kbd> to run the project
 
 Next, you can use a tool such as [Ngrok](https://www.ngrok.com) (which you will likely already have installed if you have used the Bot Framework emulator previously) to tunnel through to your bot running locally and provide you with a publicly accessible URL for this.

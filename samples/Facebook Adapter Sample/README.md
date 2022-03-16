@@ -18,14 +18,14 @@ This bot has been created using [Bot Framework](https://dev.botframework.com), i
 - Clone the repository
 
    ```bash
-    git clone https://github.com/Microsoft/BotBuilder-Samples.git
+    git clone https://github.com/BotBuilderCommunity/botbuilder-community-dotnet.git
    ```
 
 - Connect the bot with Facebook by following the instructions below.
 
 - Run the bot from a terminal or from Visual Studio:
 
-  A) From a terminal, navigate to `BotBuilder-Samples/samples/csharp_dotnetcore/61.facebook-adapter`
+  A) From a terminal, navigate to `botbuilder-community-dotnet/samples/Facebook Adapter Sample`
 
   ```bash
   # run the bot
@@ -36,8 +36,8 @@ This bot has been created using [Bot Framework](https://dev.botframework.com), i
 
   - Launch Visual Studio
   - File -> Open -> Project/Solution
-  - Navigate to `BotBuilder-Samples/samples/csharp_dotnetcore/61.facebook-adapter` folder
-  - Select `FacebookAdapterBot.csproj` file
+  - Navigate to `botbuilder-community-dotnet/samples/Facebook Adapter Sample` folder
+  - Select `Facebook Adapter Sample.csproj` file
   - Press <kbd>F5</kbd> to run the project
 
 ### Connect the bot with Facebook
