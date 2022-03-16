@@ -3,12 +3,16 @@
   "form": {
     "label": "Prompt for Social Media Type",
     "subtitle": "Social Media Type(Bot Builder Community)",
+    "description": "Collect information - Social media type(Mention or Hashtag)",
     "helpLink": "https://aka.ms/bfc-understanding-dialogs",
     "order": [
       "mediaType",
       "resultProperty",
       "defaultLocale",
       "*"
+    ],
+    "hidden": [
+      "property"
     ],
     "properties": {
       "resultProperty": {
@@ -19,8 +23,8 @@
     }
   },
   "menu": {
-    "label": "Social Media Type",
-    "submenu": [ "Ask a question" ]
+    "label": "Social media type",
+    "submenu": [ "Ask a question","Community" ]
   },
   "flow": {
     "widget": "PromptWidget",
@@ -47,7 +51,7 @@
       "widget": "ActionCard",
       "header": {
         "widget": "ActionHeader",
-        "disableSDKTitle": true,
+        "disableSDKTitle": false,
         "icon": "User",
         "menu": "none",
         "colors": {

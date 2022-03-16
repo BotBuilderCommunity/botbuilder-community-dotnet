@@ -21,25 +21,12 @@
   
    
   <ItemGroup>
-    <None Remove="Schemas\BotBuilderCommunity.EmailInput.schema" />
-    <None Remove="Schemas\BotBuilderCommunity.EmailInput.uischema" />
-    <None Remove="Schemas\BotBuilderCommunity.PhoneNumberInput.schema" />
-    <None Remove="Schemas\BotBuilderCommunity.PhoneNumberInput.uischema" />
-    <None Remove="Schemas\BotBuilderCommunity.SocialMediaInput.schema" />
-    <None Remove="Schemas\BotBuilderCommunity.SocialMediaInput.uischema" />
-  </ItemGroup>
-  
-   
-  <ItemGroup>
-    <Content Include="Schemas\BotBuilderCommunity.EmailInput.schema" />
-    <Content Include="Schemas\BotBuilderCommunity.EmailInput.uischema" />
-    <Content Include="Schemas\BotBuilderCommunity.PhoneNumberInput.schema" />
-    <Content Include="Schemas\BotBuilderCommunity.PhoneNumberInput.uischema" />
-    <Content Include="Schemas\BotBuilderCommunity.SocialMediaInput.schema" />
-    <Content Include="Schemas\BotBuilderCommunity.SocialMediaInput.uischema" />
+    <Content Include="**/*.schema" />
+    <Content Include="**/*.uischema" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AdaptiveCards" Version="2.7.1" />
     <PackageReference Include="Microsoft.Bot.Builder" Version="$(Bot_Builder_Version)" />
     <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="$(Bot_Builder_Version)" />
     <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Declarative" Version="$(Bot_Builder_Version)" />

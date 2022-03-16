@@ -1,0 +1,63 @@
+{
+  "$schema": "https://schemas.botframework.com/schemas/ui/v1.0/ui.schema",
+  "form": {
+    "label": "Prompt for Internet Protocol Type",
+    "subtitle": "Internet Protocol Type(Bot Builder Community)",
+    "helpLink": "https://aka.ms/bfc-understanding-dialogs",
+    "order": [
+      "ProtocolType",
+      "resultProperty",
+      "defaultLocale",
+      "*"
+    ],
+    "hidden": [
+      "property"
+    ],
+    "properties": {
+      "resultProperty": {
+        "intellisenseScopes": [
+          "variable-scopes"
+        ]
+      }
+    }
+  },
+  "menu": {
+    "label": "Internet protocol type",
+     "submenu": [ "Ask a question","Community" ]
+  },
+  "flow": {
+    "widget": "PromptWidget",
+    "body": "=action.prompt",
+    "nowrap": true,
+    "botAsks": {
+      "widget": "ActionCard",
+      "header": {
+        "widget": "ActionHeader",
+        "icon": "MessageBot",
+        "colors": {
+          "theme": "#BBEAF4",
+          "icon": "#5C2E91"
+        }
+      },
+      "body": {
+        "widget": "LgWidget",
+        "field": "prompt",
+        "defaultContent": "<prompt>"
+      }
+    },
+
+    "userInput": {
+      "widget": "ActionCard",
+      "header": {
+        "widget": "ActionHeader",
+        "disableSDKTitle": false,
+        "icon": "User",
+        "menu": "none",
+        "colors": {
+          "theme": "#E5F0FF",
+          "icon": "#0078D4"
+        }
+      }
+    }
+  }
+}

@@ -37,7 +37,7 @@ namespace Bot.Builder.Community.Adapters.MessageBird
 
         public MessageBirdAdapter(MessageBirdAdapterOptions options = null, ILogger logger = null)
         {
-            _options = options ?? throw new ArgumentNullException(nameof(options));
+            _options = options ?? new MessageBirdAdapterOptions();
             _logger = logger ?? NullLogger.Instance;
 
             if (_options.UseWhatsAppSandbox)
@@ -50,7 +50,9 @@ namespace Bot.Builder.Community.Adapters.MessageBird
             }
             _requestAuthorization = new MessageBirdRequestAuthorization();
         }
+
         Client _messageBirdClient;
+
         public async Task ProcessAsync(HttpRequest httpRequest, HttpResponse httpResponse, IBot bot, CancellationToken cancellationToken = default)
         {
             if (httpRequest == null)
@@ -69,7 +71,7 @@ namespace Bot.Builder.Community.Adapters.MessageBird
             }
 
             string body;
-            using (var sr = new StreamReader(httpRequest.Body))
+            using (var sr = new StreamReader(httpRequest.Body, Encoding.UTF8))
             {
                 body = await sr.ReadToEndAsync();
             }

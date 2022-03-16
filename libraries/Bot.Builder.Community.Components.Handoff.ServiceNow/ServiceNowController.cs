@@ -53,7 +53,7 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                         await HandleContentEvent(responseMessage);
 
                         // If ServiceNow indicates it's completed handoff from it's perspective we end handoff and return control.
-                        if (responseMessage.completed)
+                        if (responseMessage.completed || responseMessage.takeControl)
                         {
                             var eventActivity = EventFactory.CreateHandoffStatus(handoffRecord.ConversationReference.Conversation, "completed") as Activity;
                             await (_adapter).ContinueConversationAsync(
@@ -91,6 +91,7 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
         // Bot owners specific requirements and styling.
         private async Task HandleContentEvent(ServiceNowResponseMessage responseMessage)
         {
+            int VAOptionsCount = 0;
             foreach (var item in responseMessage.body)
             {
                 IMessageActivity responseActivity;
@@ -113,7 +114,7 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                                     subtitle: option.description,
                                     images: new List<CardImage>()
                                     {
-                                        new CardImage($"https://{_credentials.ServiceNowTenant}{option.attachment}")
+                                        new CardImage($"https://{_credentials.ServiceNowTenant}/{option.attachment}")
                                     },
                                     buttons: new List<CardAction>
                                     {
@@ -127,13 +128,18 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                             List<CardAction> cardActions = new List<CardAction>();
                             foreach (var option in item.options)
                             {
-                                cardActions.Add(new CardAction("imBack", option.description ?? option.label, value: option.label));
+                                 VAOptionsCount = VAOptionsCount + 1;
+                                 cardActions.Add(new CardAction("imBack", option.description ?? option.label, value: option.label));
+                                   if (VAOptionsCount <= item.options.Count())
+                                    {
+                                    if (VAOptionsCount == 50)
+                                    break;
+                                    }
                             }
 
-                            var pickerHeroCard = new HeroCard(buttons: cardActions);
+                            var pickerHeroCard = new HeroCard(text: item.promptMsg ?? item.label,buttons: cardActions);
                             responseActivity = MessageFactory.Attachment(pickerHeroCard.ToAttachment());
-
-                            responseActivity.AsMessageActivity().Text = item.promptMsg ?? item.label;
+                            
                         }
 
                         break;
@@ -143,8 +149,14 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                         // Map the picker concept to a basic HeroCard with buttons
                         List<CardAction> defaultPickerActions = new List<CardAction>();
                         foreach (var option in item.options)
-                        {
+                        {                            
+                            VAOptionsCount = VAOptionsCount + 1;
                             defaultPickerActions.Add(new CardAction("imBack", option.description ?? option.label, value: option.label));
+                            if (VAOptionsCount <= item.options.Count())
+                            {
+                            if (VAOptionsCount == 50)
+                            break;
+                            }
                         }
 
                         var defaultPickerCard = new HeroCard(buttons: defaultPickerActions);
@@ -159,28 +171,28 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                         {
                             var card = new HeroCard(subtitle: action.description, buttons: new List<CardAction>
                                 {new CardAction("openUrl", action.label ?? action.action, value: action.action)});
-                            responseActivity.Attachments.Add(card.ToAttachment());
+                               if (VAOptionsCount <= item.values.Count())
+                               {
+                                    if (VAOptionsCount == 11)
+                                    break;
+                                    responseActivity.Attachments.Add(card.ToAttachment());
+                               }
                         }
                         break;
-                    case "OutputHtml":
-
-                        // We can't render HTML inside of conversations.
-                        responseActivity = MessageFactory.Text(StripTags(item.value.ToString()));
-
-                        break;
+                  
                     case "Boolean":
                         List<CardAction> booleanCardActions = new List<CardAction>();
 
                         booleanCardActions.Add(new CardAction("imBack", title: "Yes", displayText: "Yes", value: "true"));
                         booleanCardActions.Add(new CardAction("imBack", title: "No", displayText: "Yes", value: "false"));
-                        var booleanHeroCard = new HeroCard(buttons: booleanCardActions);
+                        var booleanHeroCard = new HeroCard(text: item.promptMsg ?? item.label,buttons: booleanCardActions);
 
                         responseActivity = MessageFactory.Attachment(booleanHeroCard.ToAttachment());
-                        responseActivity.AsMessageActivity().Text = item.promptMsg ?? item.label;
+                      
                         break;
 
                     case "OutputText":
-                        responseActivity = MessageFactory.Text(item.value.ToString() ?? item.label);
+                        responseActivity = MessageFactory.Text(item.value?.ToString() ?? item.label);
                         break;
 
                     case "OutputImage":
@@ -196,14 +208,9 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
 
                         var bodyValue = item.value as BodyValue;
 
-                        var linkHeroCard = new HeroCard(buttons: new List<CardAction>
+                        var linkHeroCard = new HeroCard(text: item.header,buttons: new List<CardAction>
                                 {new CardAction("openUrl", item.label, value: bodyValue.action)});
                         responseActivity = MessageFactory.Attachment(linkHeroCard.ToAttachment());
-
-                        if (!string.IsNullOrEmpty(item.promptMsg))
-                        {
-                            responseActivity.AsMessageActivity().Text = item.promptMsg;
-                        }
 
                         break;
 
@@ -223,7 +230,8 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                                     {
                                         new AdaptiveTextBlock(cardData["title"]?.ToString())
                                         {
-                                            Size = AdaptiveTextSize.Medium
+                                            Size = AdaptiveTextSize.Medium,
+                                            Weight=AdaptiveTextWeight.Bolder
                                         }
                                     }
                                 },
@@ -253,6 +261,9 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                                         Items = new List<AdaptiveElement>()
                                         {
                                             new AdaptiveTextBlock(field["fieldLabel"]?.ToString())
+                                            {
+                                             Weight=AdaptiveTextWeight.Bolder
+                                            }
                                         }
                                     },
                                     new AdaptiveColumn
@@ -260,6 +271,9 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                                         Items = new List<AdaptiveElement>()
                                         {
                                             new AdaptiveTextBlock(field["fieldValue"]?.ToString())
+                                            {
+                                             Wrap = true
+                                            }
                                         }
                                     }
                                 }
@@ -331,7 +345,7 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
                         break;
 
                     default:
-                        responseActivity = MessageFactory.Text(item.value.ToString() ?? item.label);
+                        responseActivity = MessageFactory.Text(item.value?.ToString() ?? item.label);
                         break;
                 }
 
@@ -366,19 +380,6 @@ namespace Bot.Builder.Community.Components.Handoff.ServiceNow
         }
 
         // Crude flattening of HTML content into just it's string content. ServiceNow uses HTML in some scenarios which can't be rendered in most conversational canvases.
-        public static string StripTags(string htmlResponse)
-        {
-            // create whitespace between html elements, so that words do not run together
-            htmlResponse = htmlResponse.Replace(">", "> ");
-
-            var doc = new HtmlAgilityPack.HtmlDocument();
-            doc.LoadHtml(htmlResponse);
-
-            // strip html decoded text from html
-            string text = HttpUtility.HtmlDecode(doc.DocumentNode.InnerText);
-
-            // replace all whitespace with a single space and remove leading and trailing whitespace
-            return Regex.Replace(text, @"\s+", " ").Trim();
-        }
+    
     }
 }

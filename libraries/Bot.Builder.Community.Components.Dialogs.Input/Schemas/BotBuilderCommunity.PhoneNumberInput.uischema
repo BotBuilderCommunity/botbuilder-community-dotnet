@@ -3,11 +3,15 @@
   "form": {
     "label": "Prompt for Phone number",
     "subtitle": "Phone number Input(Bot Builder Community)",
+    "description": "Collect information - Ask for a phone number.",
     "helpLink": "https://aka.ms/bfc-understanding-dialogs",
     "order": [
       "resultProperty",
       "defaultLocale",
       "*"
+    ],
+    "hidden": [
+      "property"
     ],
     "properties": {
       "resultProperty": {
@@ -18,8 +22,8 @@
     }
   },
   "menu": {
-    "label": "Phone Number",
-    "submenu": [ "Ask a question" ]
+    "label": "PhoneNumber",
+    "submenu": [ "Ask a question","Community" ]
   },
   "flow": {
     "widget": "PromptWidget",
@@ -46,7 +50,7 @@
       "widget": "ActionCard",
       "header": {
         "widget": "ActionHeader",
-        "disableSDKTitle": true,
+        "disableSDKTitle": false,
         "icon": "User",
         "menu": "none",
         "colors": {

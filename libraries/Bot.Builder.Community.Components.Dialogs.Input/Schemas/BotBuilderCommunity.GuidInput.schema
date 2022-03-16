@@ -1,0 +1,26 @@
+{
+  "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+  "$role": [ "implements(Microsoft.IDialog)", "extends(Microsoft.InputDialog)" ],
+  "title": "Email",
+  "description": "Collect information - Ask for a Guid information",
+  "type": "object",
+
+  "properties": {
+    "defaultLocale": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "description": "Value from callers memory to use as localization",
+      "title": "DefaultLocale",
+      "examples": [
+        "en-us"
+      ]
+    },
+    "resultProperty": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "description": "Value from callers memory to store the result",
+      "title": "Result",
+      "examples": [
+        "7d7b0205-9411-4a29-89ac-b9cd905886fa"
+      ]
+    }
+  }
+}
