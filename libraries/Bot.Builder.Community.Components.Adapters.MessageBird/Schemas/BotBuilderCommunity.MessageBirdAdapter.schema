@@ -1,24 +1,24 @@
 {
   "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
   "$role": "implements(Microsoft.IAdapter)",
-  "title": "MessageBird Connection",
-  "description": "Connects a bot to MessageBird WhatsApp.",
+  "title": "MessageBird WhatsApp Connection",
+  "description": "Connects a bot to MessageBird WhatsApp channel.",
   "type": "object",
   "properties": {
     "AccessKey": {
       "type": "string",
       "title": "Access Key",
-      "description": "Endpoint on which messages will be sent."
+      "description": "Your access key to interact with MessageBird API."
     },
     "SigningKey": {
       "type": "string",
       "title": "Signing Key",
-      "description": "Signing Key for requests authentication and authorization."
+      "description": "Signing Key for incoming request verification."
     },
-    "UseWhatsAppSandbox": {
-      "type": "boolean",
-      "title": "UseWhatsAppSandbox",
-      "description": "Use WhatsApp Sandbox."
+    "MessageBirdWebhookEndpointUrl": {
+      "type": "string",
+      "title": "MessageBird Endpoint URL",
+      "description": "Your bot endpoint to receive MessageBird webhooks. Required for incoming request verification. Add full URL like https://www.yourdomain.com/api/messagebird"
     },
     "route": {
       "type": "string",
@@ -36,6 +36,6 @@
   "required": [
     "AccessKey",
     "SigningKey",
-    "UseWhatsAppSandbox"
+    "MessageBirdWebhookEndpointUrl"
   ]
 }
