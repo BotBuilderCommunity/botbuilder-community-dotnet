@@ -1,4 +1,4 @@
-﻿# Unofficial MessageBird WhatsApp Adapter for Bot Builder v4 .NET SDK
+﻿﻿# Unofficial MessageBird WhatsApp Adapter for Bot Builder v4 .NET SDK
 
 This project is created by Ahmet Kocadoğan to help Bot Framework community for WhatsApp channel and not related with MessageBird officially.
 
@@ -15,14 +15,15 @@ The adapter currently supports the following scenarios:
 * Send/receive messages with WhatsApp Sandbox
 * Send/receive text messages
 * Send/receive media messages (document, image, video, audio) - Supported formats for media message types available [here](https://developers.facebook.com/docs/whatsapp/api/media/#supported-files)
+* Send/receive stickers - This feature will be supported as soon as MessageBird nuget package add this support. You can check the status of my PR about WhatsApp Sticker messages [here](https://github.com/messagebird/csharp-rest-api/pull/111)
 * Send/receive location messages
-* Verification of incoming MessageBird requests (There is one issue for delivery report webhook verification, MessageBird team is investigating.)
+* Verification of incoming MessageBird requests (New request verification way of MessageBird API via Messagebird-Signature-Jwt header is supported)
 * Receive delivery reports
 * Full incoming request from MessageBird is added to the incoming activity as ChannelData
 
 ### Sample
 
-Basic sample bot available [here](../../samples/MessageBird%20Adapter%20Sample).
+Basic sample bot available [here](https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/develop/samples/MessageBird%20Adapter%20Sample).
 
 ## Usage
 
@@ -35,26 +36,27 @@ Basic sample bot available [here](../../samples/MessageBird%20Adapter%20Sample).
 
 ### Prerequisites
 
-Create a [MessageBird](https://messagebird.com/en/whatsapp/) account and activate WhatsApp Sandbox.
+Create a [MessageBird](https://messagebird.com/en/whatsapp/) account and activate WhatsApp Sandbox or Production.
 Get your [SigningKey](https://dashboard.messagebird.com/en/developers/settings)
 Get your [AccessKey](https://dashboard.messagebird.com/en/developers/access)
 
 ### Set the MessageBird options
 
 At the end of process you will get the following parameters:
-* Signing Key - will be used for requests authentication and authorization 
-* Access Key - endpoint on which messages will be sent
+* SigningKey - will be used for requests authentication and authorization 
+* AccessKey - will be used for MessageBird Conversations API
+* MessageBirdWebhookEndpointUrl - will be used for request verification
 
 
-To authenticate the requests, you will need to configure the Adapter with the Signing Key, Access Key and WhatsApp Sandbox parameter.
+To authenticate the requests, you will need to configure the Adapter with the Signing Key, Access Key and your endpoint for MessageBird webhooks.
 
 You could create in the project an `appsettings.json` file to set the MessageBird options as follows:
 
 ```json
 {
-  "MessageBirdAccessKey": "",
-  "MessageBirdSigningKey": "",
-  "MessageBirdUseWhatsAppSandbox": true
+  "MessageBirdAccessKey": "access_key_that_you_obtained_from_messagebird",
+  "MessageBirdSigningKey": "signing_key_that_you_obtained_from_messagebird",
+  "MessageBirdWebhookEndpointUrl": "your_bot_endpoint_url_for_incoming_messagebird_requests"
 }
 ```
 
@@ -139,6 +141,82 @@ Add the following line into the ***ConfigureServices*** method within your Start
 
 ```
 
+### Sample code for sending text, image, audio, video, location, file and WhatsApp Sticker (WhatsApp Sticker will be added soon)
+
+## Sending Text Sample Code
+```csharp
+    var reply = MessageFactory.Text("your text here");
+    await turnContext.SendActivityAsync(reply);
+
+```
+
+## Sending Image Sample Code
+```csharp
+    var reply = MessageFactory.Text("Image");
+    Attachment attachment = new Attachment();
+    attachment.Name = "Bot Framework Arcitecture";
+    attachment.ContentType = "image";
+    attachment.ContentUrl = "https://docs.microsoft.com/en-us/bot-framework/media/how-it-works/architecture-resize.png";
+    reply.Attachments = new List<Attachment>() { attachment };
+    await turnContext.SendActivityAsync(reply);
+
+```
+
+## Sending Audio Sample Code
+```csharp
+    var reply = MessageFactory.Text("Audio");
+    Attachment attachment = new Attachment();
+    attachment.Name = "";
+    attachment.ContentType = "audio";
+    attachment.ContentUrl = "url_of_your_audio";
+    reply.Attachments = new List<Attachment>() { attachment };
+    await turnContext.SendActivityAsync(reply);
+
+```
+
+## Sending Video Sample Code
+```csharp
+    var reply = MessageFactory.Text("Video");
+    Attachment attachment = new Attachment();
+    attachment.Name = "";
+    attachment.ContentType = "video";
+    attachment.ContentUrl = "url_of_your_video";
+    reply.Attachments = new List<Attachment>() { attachment };
+    await turnContext.SendActivityAsync(reply);
+
+```
+
+## Sending Location Sample Code
+```csharp
+    var reply = MessageFactory.Text("Location");
+    reply.Entities = new List<Entity>() { new GeoCoordinates() { Latitude = 41.0572, Longitude = 29.0433 } };
+    await turnContext.SendActivityAsync(reply);
+
+```
+
+## Sending File Sample Code
+```csharp
+    var reply = MessageFactory.Text("File");
+    Attachment attachment = new Attachment();
+    attachment.ContentType = "file";
+    attachment.ContentUrl = "https://qconlondon.com/london-2017/system/files/presentation-slides/microsoft_bot_framework_best_practices.pdf";
+    attachment.Name = "Microsoft Bot Framework Best Practices";
+    reply.Attachments = new List<Attachment>() { attachment };
+    await turnContext.SendActivityAsync(reply);
+
+```
+
+## Sending WhatsApp Sticker Sample Code (This will be added soon)
+```csharp
+    var reply = MessageFactory.Text("WhatsApp Sticker");
+    Attachment attachment = new Attachment();
+    attachment.Name = "";
+    attachment.ContentType = "whatsappsticker";
+    attachment.ContentUrl = "url_of_your_sticker";
+    reply.Attachments = new List<Attachment>() { attachment };
+    await turnContext.SendActivityAsync(reply);
+
+```
 
 
 ### Useful links
@@ -148,3 +226,4 @@ Add the following line into the ***ConfigureServices*** method within your Start
 * [WhatsApp Quickstarts](https://developers.messagebird.com/quickstarts/whatsapp-overview/)
 * [Conversations Documentation](https://developers.messagebird.com/quickstarts/conversations-overview/)
 * [MessageBird Website](https://messagebird.com)
+* [New Request Verification Method](https://developers.messagebird.com/api/#verifying-http-requests)
