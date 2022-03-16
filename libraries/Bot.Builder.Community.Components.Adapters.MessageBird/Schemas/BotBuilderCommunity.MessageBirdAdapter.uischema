@@ -1,0 +1,17 @@
+{
+    "$schema": "https://schemas.botframework.com/schemas/ui/v1.0/ui.schema",
+  "form": {
+    "label": "MessageBirdAdapter connection",
+    "description": "Connects a bot to MessageBird WhatsApp channel.",
+    "helpLink": "https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/develop/libraries/Bot.Builder.Community.Adapters.MessageBird/README.md",
+    "order": [
+      "AccessKey",
+      "SigningKey",
+      "MessageBirdWebhookEndpointUrl",
+      "*"
+    ],
+    "hidden": [
+      "type"
+    ]
+  }
+}

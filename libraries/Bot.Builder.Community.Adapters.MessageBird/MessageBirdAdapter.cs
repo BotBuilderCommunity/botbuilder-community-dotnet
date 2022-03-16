@@ -37,20 +37,17 @@ namespace Bot.Builder.Community.Adapters.MessageBird
 
         public MessageBirdAdapter(MessageBirdAdapterOptions options = null, ILogger logger = null)
         {
-            _options = options ?? throw new ArgumentNullException(nameof(options));
+            _options = options ?? new MessageBirdAdapterOptions();
+
             _logger = logger ?? NullLogger.Instance;
 
-            if (_options.UseWhatsAppSandbox)
-            {
-                _messageBirdClient = Client.CreateDefault(_options.AccessKey, features: new Client.Features[] { Client.Features.EnableWhatsAppSandboxConversations });
-            }
-            else
-            {
-                _messageBirdClient = Client.CreateDefault(_options.AccessKey);
-            }
+            _messageBirdClient = Client.CreateDefault(_options.AccessKey);
+            
             _requestAuthorization = new MessageBirdRequestAuthorization();
         }
+
         Client _messageBirdClient;
+
         public async Task ProcessAsync(HttpRequest httpRequest, HttpResponse httpResponse, IBot bot, CancellationToken cancellationToken = default)
         {
             if (httpRequest == null)
@@ -74,7 +71,7 @@ namespace Bot.Builder.Community.Adapters.MessageBird
                 body = await sr.ReadToEndAsync();
             }
 
-            if (!_requestAuthorization.Verify(httpRequest.Headers["Messagebird-Signature"], _options.SigningKey, httpRequest.Headers["Messagebird-Request-Timestamp"], body))
+            if (!_requestAuthorization.VerifyJWT(httpRequest.Headers["MessageBird-Signature-JWT"], _options.SigningKey, body, _options.MessageBirdWebhookEndpointUrl))
             {
                 httpResponse.StatusCode = (int)HttpStatusCode.Unauthorized;
                 return;
@@ -140,13 +137,10 @@ namespace Bot.Builder.Community.Adapters.MessageBird
                     }
                 }
                 return Task.FromResult(new ResourceResponse[0]);
-
-
             }
             catch (Exception)
             {
                 return Task.FromResult(new ResourceResponse[0]);
-
             }
         }
     }

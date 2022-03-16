@@ -48,7 +48,7 @@ namespace Bot.Builder.Community.Adapters.MessageBird
                     ChannelId = $"{response.message.platform}-{response.message.channelId}",
                     ChannelData = response,
                     Recipient = new ChannelAccount { Id = response.message.to },
-                    From = new ChannelAccount { Id = response.message.from },
+                    From = new ChannelAccount { Id = response.message.from ?? "you" },
                     Conversation = new ConversationAccount { IsGroup = false, Id = response.conversation.Id },
                     Timestamp = response.message.createdDatetime,
                     Text = null,
@@ -79,35 +79,94 @@ namespace Bot.Builder.Community.Adapters.MessageBird
             activity.From = new ChannelAccount { Id = response.message.from };
             activity.Conversation = new ConversationAccount { IsGroup = false, Id = response.conversation.Id };
             activity.Timestamp = response.message.createdDatetime;
-            if (response.message.type == "text")
+
+            switch (response.message.type.ToLower())
             {
-                activity.Text = response.message.content.Text;
-                activity.TextFormat = TextFormatTypes.Plain;
-            }
-            else if (response.message.type == "location")
-            {
-                activity.Entities.Add(new GeoCoordinates
-                {
-                    Latitude = response.message.content.Location.Latitude,
-                    Longitude = response.message.content.Location.Longitude
-                });
-            }
-            else if (response.message.type == "image")
-            {
-                var contentType = "";
-                activity.Attachments = new List<Attachment>
-                {
-                    new Attachment
+                case "audio":
                     {
-                        ContentType = contentType,
-                        ContentUrl = response.message.content.Image.Url,
-                        Name = ""// response.message.content.image.caption
+                        activity.Attachments = new List<Attachment>
+                        {
+                            new Attachment
+                            {
+                                ContentType = "audio",
+                                ContentUrl = response.message.content.Audio.Url,
+                                Name = response.message.content.Audio.Caption ?? ""
+                            }
+                        };
+                        break;
                     }
-                };
-            }
-            else
-            {
-                return null;
+                case "file":
+                    {
+                        activity.Attachments = new List<Attachment>
+                        {
+                            new Attachment
+                            {
+                                ContentType = "file",
+                                ContentUrl = response.message.content.File.Url,
+                                Name = response.message.content.File.Caption ?? ""
+                            }
+                        };
+                        break;
+                    }
+                case "image":
+                    {
+                        activity.Attachments = new List<Attachment>
+                        {
+                            new Attachment
+                            {
+                                ContentType = "image",
+                                ContentUrl = response.message.content.Image.Url,
+                                Name = response.message.content.Image.Caption ?? ""
+                            }
+                        };
+                        break;
+                    }
+                case "location":
+                    {
+                        activity.Entities.Add(new GeoCoordinates
+                        {
+                            Latitude = response.message.content.Location.Latitude,
+                            Longitude = response.message.content.Location.Longitude
+                        });
+                        break;
+                    }
+                case "text":
+                    {
+                        activity.Text = response.message.content.Text;
+                        activity.TextFormat = TextFormatTypes.Plain;
+                        break;
+                    }
+                case "video":
+                    {
+                        activity.Attachments = new List<Attachment>
+                        {
+                            new Attachment
+                            {
+                                ContentType = "video",
+                                ContentUrl = response.message.content.Video.Url,
+                                Name = response.message.content.Video.Caption ?? ""
+                            }
+                        };
+                        break;
+                    }
+                //this will be addes as soon as MessageBird nuget package add support for this message type, my PR is waiting to be merged
+                //case "whatsappsticker":
+                //    {
+                //        activity.Attachments = new List<Attachment>
+                //        {
+                //            new Attachment
+                //            {
+                //                ContentType = "whatsappSticker",
+                //                ContentUrl = response.message.content.WhatsAppSticker.Link,
+                //                Name = ""
+                //            }
+                //        };
+                //        break;
+                //    }
+                default:
+                    {
+                        return null;
+                    }
             }
 
             return activity;

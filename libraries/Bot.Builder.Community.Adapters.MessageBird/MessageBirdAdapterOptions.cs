@@ -1,24 +1,29 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Bot.Builder.Community.Adapters.MessageBird
 {
     public class MessageBirdAdapterOptions
     {
+        public MessageBirdAdapterOptions()
+        {
+
+        }
         public MessageBirdAdapterOptions(IConfiguration configuration)
-            : this(configuration["MessageBirdAccessKey"], configuration["MessageBirdSigningKey"], Convert.ToBoolean(configuration["MessageBirdUseWhatsAppSandbox"]))
+            : this(configuration["MessageBirdAccessKey"], configuration["MessageBirdSigningKey"], configuration["MessageBirdWebhookEndpointUrl"])
         { }
 
-        public MessageBirdAdapterOptions(string accessKey, string signingKey, bool useWhatsAppSandbox)
+        public MessageBirdAdapterOptions(string accessKey, string signingKey, string messageBirdWebhookEndpointUrl)
         {
             AccessKey = accessKey;
             SigningKey = signingKey;
-            UseWhatsAppSandbox = useWhatsAppSandbox;
+            MessageBirdWebhookEndpointUrl = messageBirdWebhookEndpointUrl;
         }
+
         public string AccessKey { get; set; }
+
         public string SigningKey { get; set; }
-        public bool UseWhatsAppSandbox { get; set; }
+
+        public string MessageBirdWebhookEndpointUrl { get; set; }
     }
 }
