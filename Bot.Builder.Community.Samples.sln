@@ -34,6 +34,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityFramework Storage Sam
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ACS SMS Sample", "samples\ACS SMS Adapter Sample\ACS SMS Sample.csproj", "{6A0A707E-FB59-41C5-8ABA-9AF7A4B68ABF}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Facebook Adapter Sample", "samples\Facebook Adapter Sample\Facebook Adapter Sample.csproj", "{BD2D6ED0-0607-4460-B273-C249CD012514}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slack Adapter Sample", "samples\Slack Adapter Sample\Slack Adapter Sample.csproj", "{5248D719-4773-4598-82B0-3E61FE5D239B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Twilio Adapter Sample", "samples\Twilio Adapter Sample\Twilio Adapter Sample.csproj", "{755C476B-A901-413C-90C9-D71BC568DBD4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Webex Adapter Sample", "samples\Webex Adapter Sample\Webex Adapter Sample.csproj", "{2857DBC8-A81A-480D-A7DA-44561B6F512E}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageBird Adapter Sample", "samples\MessageBird Adapter Sample\MessageBird Adapter Sample.csproj", "{46BA332B-3F41-4DDA-88C0-308AFDA84D88}"
 EndProject
 Global
@@ -110,6 +118,22 @@ Global
 		{46BA332B-3F41-4DDA-88C0-308AFDA84D88}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46BA332B-3F41-4DDA-88C0-308AFDA84D88}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46BA332B-3F41-4DDA-88C0-308AFDA84D88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD2D6ED0-0607-4460-B273-C249CD012514}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD2D6ED0-0607-4460-B273-C249CD012514}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD2D6ED0-0607-4460-B273-C249CD012514}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD2D6ED0-0607-4460-B273-C249CD012514}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5248D719-4773-4598-82B0-3E61FE5D239B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5248D719-4773-4598-82B0-3E61FE5D239B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5248D719-4773-4598-82B0-3E61FE5D239B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5248D719-4773-4598-82B0-3E61FE5D239B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{755C476B-A901-413C-90C9-D71BC568DBD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{755C476B-A901-413C-90C9-D71BC568DBD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{755C476B-A901-413C-90C9-D71BC568DBD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{755C476B-A901-413C-90C9-D71BC568DBD4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2857DBC8-A81A-480D-A7DA-44561B6F512E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2857DBC8-A81A-480D-A7DA-44561B6F512E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2857DBC8-A81A-480D-A7DA-44561B6F512E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2857DBC8-A81A-480D-A7DA-44561B6F512E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
