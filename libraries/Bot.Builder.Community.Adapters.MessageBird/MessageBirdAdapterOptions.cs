@@ -25,5 +25,7 @@ namespace Bot.Builder.Community.Adapters.MessageBird
         public string SigningKey { get; set; }
 
         public string MessageBirdWebhookEndpointUrl { get; set; }
+
+        public bool UseWhatsAppSandbox { get; set; }
     }
 }
