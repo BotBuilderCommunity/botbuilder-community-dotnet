@@ -11,7 +11,12 @@
     "team": "teamId",
     "channel": "channelId",
     "event_ts": "1568915625.001000",
-    "channel_type": "im"
+    "channel_type": "im",
+    "item": {
+      "type": "message",
+      "channel": "test",
+      "ts": "1641484950.002700"
+    }
   },
   "type": "event_callback",
   "event_id": "eventId",
