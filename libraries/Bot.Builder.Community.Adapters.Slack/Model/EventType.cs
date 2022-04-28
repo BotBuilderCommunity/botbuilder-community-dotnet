@@ -20,7 +20,6 @@ namespace Bot.Builder.Community.Adapters.Slack.Model
 
         [JsonProperty(PropertyName = "event_ts")]
         public string EventTs { get; set; }
-        
         public string Channel { get; set; }
 
         [JsonProperty(PropertyName = "channel_id")]
