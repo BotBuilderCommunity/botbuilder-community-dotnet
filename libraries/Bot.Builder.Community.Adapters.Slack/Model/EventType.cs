@@ -20,7 +20,7 @@ namespace Bot.Builder.Community.Adapters.Slack.Model
 
         [JsonProperty(PropertyName = "event_ts")]
         public string EventTs { get; set; }
-        [JsonProperty(PropertyName = "channel")]
+        
         public string Channel { get; set; }
 
         [JsonProperty(PropertyName = "channel_id")]
@@ -35,6 +35,5 @@ namespace Bot.Builder.Community.Adapters.Slack.Model
         [JsonExtensionData(ReadData = true, WriteData = true)]
         public IDictionary<string, JToken> AdditionalProperties { get; } = new Dictionary<string, JToken>();
 
-        public JObject Original {get; set;}
     }
 }
