@@ -107,13 +107,13 @@ namespace Bot.Builder.Community.Adapters.Webex
         /// Creates a message with attachments.
         /// </summary>
         /// <param name="recipient">PersonId, email or roomId of the message.</param>
-        /// <param name="text">Text of the message.</param>
+        /// <param name="textOrMarkdown">Text or markdown of the message.</param>
         /// <param name="attachments">List of attachments attached to the message.</param>
         /// <param name="messageType">Type of the message. It can be Text or Markdown.</param>
         /// <param name="target">Target for the message.</param>
         /// <param name="cancellationToken">A cancellation token for the task.</param>
         /// <returns>The created message id.</returns>
-        public virtual async Task<string> CreateMessageWithAttachmentsAsync(string recipient, string text, IList<Attachment> attachments, MessageTextType messageType = MessageTextType.Text, MessageTarget target = MessageTarget.PersonId, CancellationToken cancellationToken = default)
+        public virtual async Task<string> CreateMessageWithAttachmentsAsync(string recipient, string textOrMarkdown, IList<Attachment> attachments, MessageTextType messageType = MessageTextType.Text, MessageTarget target = MessageTarget.PersonId, CancellationToken cancellationToken = default)
         {
             Message result;
 
@@ -124,11 +124,21 @@ namespace Bot.Builder.Community.Adapters.Webex
                 attachmentsContent.Add(attach.Content);
             }
 
+            var text = textOrMarkdown ?? string.Empty;
+            string markdown = null;
+            
+            if (!string.IsNullOrEmpty(textOrMarkdown) && messageType == MessageTextType.Markdown)
+            {
+                markdown = textOrMarkdown;
+                text = Shared.MarkdownToPlaintextRenderer.Render(textOrMarkdown);
+            }
+
             var request = new WebexMessageRequest
             {
                 RoomId = target == MessageTarget.SpaceId ? recipient : null,
-                ToPersonId = target == MessageTarget.SpaceId ? null : recipient,
-                Text = text ?? string.Empty,
+                ToPersonId = target == MessageTarget.SpaceId ? null : recipient,                
+                Text = text,
+                Markdown = markdown,                                
                 Attachments = attachmentsContent.Count > 0 ? attachmentsContent : null,
             };
 
