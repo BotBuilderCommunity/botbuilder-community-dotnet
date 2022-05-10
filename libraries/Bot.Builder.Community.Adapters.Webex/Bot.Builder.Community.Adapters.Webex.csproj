@@ -36,4 +36,8 @@
     <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="$(Bot_Builder_Version)" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Bot.Builder.Community.Adapters.Shared\Bot.Builder.Community.Adapters.Shared.csproj" />
+  </ItemGroup>
+
 </Project>
