@@ -126,7 +126,7 @@ namespace Bot.Builder.Community.Adapters.Webex
 
             var text = textOrMarkdown ?? string.Empty;
             string markdown = null;
-            
+
             if (!string.IsNullOrEmpty(textOrMarkdown) && messageType == MessageTextType.Markdown)
             {
                 markdown = textOrMarkdown;
@@ -136,9 +136,9 @@ namespace Bot.Builder.Community.Adapters.Webex
             var request = new WebexMessageRequest
             {
                 RoomId = target == MessageTarget.SpaceId ? recipient : null,
-                ToPersonId = target == MessageTarget.SpaceId ? null : recipient,                
+                ToPersonId = target == MessageTarget.SpaceId ? null : recipient,
                 Text = text,
-                Markdown = markdown,                                
+                Markdown = markdown,
                 Attachments = attachmentsContent.Count > 0 ? attachmentsContent : null,
             };
 
