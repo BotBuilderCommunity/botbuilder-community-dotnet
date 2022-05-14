@@ -1,0 +1,31 @@
+﻿{
+  "$schema": "https://schemas.botframework.com/schemas/ui/v1.0/ui.schema",
+  "form": {
+    "label": "Store activity in Queue Storage",
+    "subtitle": "Azure Queue Storage is a service for storing large numbers of messages",
+    "order": [
+      "ConnectionString",
+      "QueueName",
+      "VisibilityTimeout",
+      "TimeToLive",
+      "resultProperty",
+      "*"
+    ],
+    "properties": {
+      "ConnectionString": {
+        "intellisenseScopes": [
+          "variable-scopes"
+        ]
+      },
+      "resultProperty": {
+        "intellisenseScopes": [
+          "variable-scopes"
+        ]
+      }
+    }
+  },
+  "menu": {
+    "label": "Queue an Activity",
+    "submenu": [ "Azure" ]
+  }
+}

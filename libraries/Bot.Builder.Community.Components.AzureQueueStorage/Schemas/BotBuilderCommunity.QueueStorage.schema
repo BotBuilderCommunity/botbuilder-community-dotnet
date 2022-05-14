@@ -1,0 +1,50 @@
+﻿{
+  "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+  "$role": "implements(Microsoft.IDialog)",
+  "title": "Azure QueueStorage",
+  "description": "Store activity in Queue Storage.",
+  "type": "object",
+  "properties": {
+    "ConnectionString": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "title": "ConnectionString",
+      "description": "Azure Database connection string.",
+      "examples": [
+        "AccountName=AzureStorage;AccountKey=A23AEWD"
+      ]
+    },
+    "QueueName": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "title": "Queue Name",
+      "description": "Name of the storage queue where activity will be queued.",
+      "examples": [
+        "queuename(name must be all lowercase)"
+      ]
+    },
+    "VisibilityTimeout": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "title": "Visibility Timeout",
+      "description": "Default value of 0. Cannot be larger than 7 days",
+      "examples": [
+        "3:12:14"
+      ]
+    },
+    "TimeToLive": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "title": "TimeToLive",
+      "description": "Specifies the time-to-live interval for the message",
+      "examples": [
+        "3:12:14"
+      ]
+    },
+    "resultProperty": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "title": "Result Property",
+      "description": "as a Json string, from the QueueClient SendMessageAsync operation",
+      "examples": [
+        "send receipt json string"
+      ]
+    }
+  },
+  "required": [ "connectionString", "queueName" ]
+}

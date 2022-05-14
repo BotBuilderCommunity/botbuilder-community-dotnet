@@ -1,0 +1,52 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove('$(MSBuildThisFileDirectory)../', 'Bot.Builder.Community.sln'))\CommonTargets\library.shared.targets" />
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+	  <Authors>Bot Builder Community</Authors>
+	  <Company>Bot Builder Community</Company>
+	  <PackageLicenseUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/master/LICENSE</PackageLicenseUrl>
+	  <FileVersion>1.0.0</FileVersion>
+	  <AssemblyVersion>1.0.0</AssemblyVersion>
+    <PackageIcon>package-icon.png</PackageIcon>
+    <PackageIconUrl />
+    <PackageTags>bots;botframework;botbuilder;msbot-component;msbot-middleware;msbot-trigger;</PackageTags>
+    <RepositoryUrl>http://www.github.com/botbuildercommunity/botbuildercommunity-dotnet
+    </RepositoryUrl>
+    <PackageLicenseUrl />
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Description>Bot components used to add messages to an Azure.Storage.Queues</Description>
+    <PackageProjectUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/develop/libraries/Bot.Builder.Community.Components.AzureQueueStorage</PackageProjectUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.0.0</Version>
+    <Authors>BotBuilderCommunity</Authors>
+    <PackageId>$(AssemblyName)</PackageId>
+    <Copyright>Microsoft Bot Builder Community</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Storage.Queues" Version="12.9.0" />
+    <PackageReference Include="Microsoft.Bot.Builder.Azure.Queues" Version="4.15.2-preview" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Declarative" Version="$(Bot_Builder_Version)" />
+  </ItemGroup>
+
+
+ <ItemGroup>
+   <Content Include="**/*.schema" />
+   <Content Include="**/*.uischema" />
+ </ItemGroup>
+
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\..\package-icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+ 
+</Project>
