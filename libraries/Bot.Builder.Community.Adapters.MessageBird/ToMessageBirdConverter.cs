@@ -150,7 +150,7 @@ namespace Bot.Builder.Community.Adapters.MessageBird
                 conversationMessageRequest = new ConversationMessageSendRequest()
                 {
                     ConversationId = activity.Conversation.Id,
-                    ChannelId = activity.ChannelId.Split('-')[1]
+                    ChannelId = activity.ChannelId.Split('#')[1]
                 }
             };
         }
