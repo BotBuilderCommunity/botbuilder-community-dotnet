@@ -10,7 +10,7 @@ namespace Bot.Builder.Community.Components.Adapters.GoogleBusiness.Core.Model
 
         public Representative Representative { get; set; } = new Representative()
         {
-            DisplayName = "Contoso",
+            DisplayName = "Bot",
             RepresentativeType = "BOT"
         };
     }
