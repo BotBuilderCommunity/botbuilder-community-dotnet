@@ -45,7 +45,7 @@ namespace Bot.Builder.Community.Adapters.MessageBird
                 {
                     Type = ActivityTypes.Event,
                     Id = response.message.id,
-                    ChannelId = $"{response.message.platform}-{response.message.channelId}",
+                    ChannelId = $"{response.message.platform}#{response.message.channelId}",
                     ChannelData = response,
                     Recipient = new ChannelAccount { Id = response.message.to },
                     From = new ChannelAccount { Id = response.message.from ?? "you" },
@@ -73,7 +73,7 @@ namespace Bot.Builder.Community.Adapters.MessageBird
 
             activity.Type = ActivityTypes.Message;
             activity.Id = response.message.id;
-            activity.ChannelId = $"{response.message.platform}-{response.message.channelId}";
+            activity.ChannelId = $"{response.message.platform}#{response.message.channelId}";
             activity.ChannelData = response;
             activity.Recipient = new ChannelAccount { Id = response.message.to };
             activity.From = new ChannelAccount { Id = response.message.from };
