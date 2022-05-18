@@ -136,11 +136,12 @@ namespace Bot.Builder.Community.Adapters.Webex
             http.PreAuthenticate = true;
             http.Headers.Add("Authorization", "Bearer " + Options.WebexAccessToken);
             http.Accept = "application/json";
-            http.ContentType = "application/json";
+            http.ContentType = "application/json" +
+                "; charset=utf-8";
             http.Method = "POST";
 
             var parsedContent = JsonConvert.SerializeObject(request);
-            var encoding = new ASCIIEncoding();
+            var encoding = new UTF8Encoding();
             var bytes = encoding.GetBytes(parsedContent);
 
             var newStream = await http.GetRequestStreamAsync().ConfigureAwait(false);
