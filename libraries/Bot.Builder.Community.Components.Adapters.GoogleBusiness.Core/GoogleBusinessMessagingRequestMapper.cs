@@ -33,6 +33,18 @@ namespace Bot.Builder.Community.Components.Adapters.GoogleBusiness.Core
             return RequestToEventActivity(request);
         }
 
+        public OutgoingEvent ActivityToEvent(Activity activity)
+        {
+            var googleEvent = new OutgoingEvent();
+
+            if (activity is ITypingActivity)
+                googleEvent.EventType = GoogleEventType.TYPING_STARTED;
+            else
+                googleEvent.EventType = GoogleEventType.EVENT_TYPE_UNSPECIFIED;
+
+            return googleEvent;
+        }
+
         public OutgoingMessage ActivityToMessage(Activity activity)
         {
             var messageId = Guid.NewGuid().ToString();
