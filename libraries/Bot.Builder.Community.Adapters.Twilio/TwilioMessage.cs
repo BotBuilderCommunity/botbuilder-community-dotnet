@@ -152,5 +152,11 @@ namespace Bot.Builder.Community.Adapters.Twilio
         /// </summary>
         /// <value>The type of event, e.g. "onMessageAdd", "onMessageAdded", "onConversationAdd".</value>
         public string EventType { get; set; }
-    }
+
+        /// <summary>
+        /// Gets or sets Twilio Opt-In / Opt-Out type when command matches configured keywords.
+        /// </summary>
+        /// <value>null, "START", "STOP", or "HELP".</value>
+        public string OptOutType { get; set; }
+  }
 }
