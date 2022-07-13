@@ -3,7 +3,7 @@
 ## Build status
 | Branch | Status | Recommended NuGet package version |
 | ------ | ------ | ------ |
-| master | [![Build status](https://ci.appveyor.com/api/projects/status/b9123gl3kih8x9cb?svg=true)](https://ci.appveyor.com/project/garypretty/botbuilder-community) | [Available via NuGet](https://www.nuget.org/packages/Bot.Builder.Community.Components.Trigger.ConversationExpire/) |
+| master | [![Build status](https://ci.appveyor.com/api/projects/status/b9123gl3kih8x9cb?svg=true)](https://ci.appveyor.com/project/garypretty/botbuilder-community) | [Available via NuGet](https://www.nuget.org/packages/Bot.Builder.Community.Components.Trigger.SessionAgent/) |
 
 ## Description
 
