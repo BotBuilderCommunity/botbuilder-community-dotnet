@@ -183,6 +183,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Facebook.Tests", "tests\Bot.Builder.Community.Adapters.Facebook.Tests\Bot.Builder.Community.Adapters.Facebook.Tests.csproj", "{8201DC48-763A-4534-9E51-466E15DF01D8}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Components.Trigger.SessionAgent", "libraries\Bot.Builder.Community.Components.Trigger.SessionAgent\Bot.Builder.Community.Components.Trigger.SessionAgent.csproj", "{EA37FC80-A1FC-4B7F-B091-33128C55242E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug - NuGet Packages|Any CPU = Debug - NuGet Packages|Any CPU
@@ -805,6 +807,14 @@ Global
 		{8201DC48-763A-4534-9E51-466E15DF01D8}.Documentation|Any CPU.Build.0 = Debug|Any CPU
 		{8201DC48-763A-4534-9E51-466E15DF01D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8201DC48-763A-4534-9E51-466E15DF01D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA37FC80-A1FC-4B7F-B091-33128C55242E}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA37FC80-A1FC-4B7F-B091-33128C55242E}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{EA37FC80-A1FC-4B7F-B091-33128C55242E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA37FC80-A1FC-4B7F-B091-33128C55242E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA37FC80-A1FC-4B7F-B091-33128C55242E}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA37FC80-A1FC-4B7F-B091-33128C55242E}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{EA37FC80-A1FC-4B7F-B091-33128C55242E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA37FC80-A1FC-4B7F-B091-33128C55242E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -893,6 +903,7 @@ Global
 		{428AD1B4-DF58-4D21-9C19-AB4AB6001A90} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
 		{3348B9A5-E3CE-4AF8-B059-8B4D7971C25A} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
 		{8201DC48-763A-4534-9E51-466E15DF01D8} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
+		{EA37FC80-A1FC-4B7F-B091-33128C55242E} = {1F7F4CAF-CF22-491F-840D-A63835726C12}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FE3B75E-BA2B-45BC-BBF0-DDA8BA10C4F0}
