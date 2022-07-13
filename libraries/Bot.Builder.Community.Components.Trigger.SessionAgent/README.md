@@ -142,4 +142,4 @@ goto navigate to Project Settings and toggle the Advanced Settings View (json) a
 ```
 ### Note
 1. Both the triggers work independently, in case adding two trigger's together, the Reminder trigger 'seconds' must be always less than the session expires trigger seconds
-2. After receiving the 'Session Expire Conversation trigger' the developer should handle the end of the conversation, clear memory, Database, etc.
+2. After receiving the 'Session Expire Conversation trigger' the developer should handle the end of the conversation, clear memory, etc.
