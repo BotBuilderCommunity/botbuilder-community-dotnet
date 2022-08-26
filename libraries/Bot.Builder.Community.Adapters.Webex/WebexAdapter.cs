@@ -86,6 +86,15 @@ namespace Bot.Builder.Community.Adapters.Webex
                     string recipientId;
                     var target = MessageTarget.PersonId;
 
+                    // map text format
+                    if (activity.TextFormat == TextFormatTypes.Xml)
+                    {
+                        _logger.LogTrace($"Unsupported TextFormat: '{activity.TextFormat}'. Only TextFormat of types 'Plain' or 'Markdown' are supported.");
+                        activity.TextFormat = TextFormatTypes.Plain;
+                    }
+
+                    var messageType = activity.TextFormat == TextFormatTypes.Plain ? MessageTextType.Text : MessageTextType.Markdown;
+
                     if (activity.Conversation?.Id != null)
                     {
                         recipientId = activity.Conversation.Id;
@@ -110,7 +119,7 @@ namespace Bot.Builder.Community.Adapters.Webex
                     {
                         if (activity.Attachments[0].ContentType == "application/vnd.microsoft.card.adaptive")
                         {
-                            responseId = await _webexClient.CreateMessageWithAttachmentsAsync(recipientId, activity.Text, activity.Attachments, MessageTextType.Text, target, cancellationToken).ConfigureAwait(false);
+                            responseId = await _webexClient.CreateMessageWithAttachmentsAsync(recipientId, activity.Text, activity.Attachments, messageType, target, cancellationToken).ConfigureAwait(false);
                         }
                         else
                         {
@@ -122,13 +131,13 @@ namespace Bot.Builder.Community.Adapters.Webex
                                 files.Add(file);
                             }
 
-                            responseId = await _webexClient.CreateMessageAsync(recipientId, activity.Text, files.Count > 0 ? files : null, MessageTextType.Text, target, cancellationToken).ConfigureAwait(false);
+                            responseId = await _webexClient.CreateMessageAsync(recipientId, activity.Text, files.Count > 0 ? files : null, messageType, target, cancellationToken).ConfigureAwait(false);
                         }
                     }
                     else
                     {
                         responseId = await _webexClient
-                            .CreateMessageAsync(recipientId, activity.Text, target: target, cancellationToken: cancellationToken)
+                            .CreateMessageAsync(recipientId, activity.Text, messageType: messageType, target: target, cancellationToken: cancellationToken)
                             .ConfigureAwait(false);
                     }
 
