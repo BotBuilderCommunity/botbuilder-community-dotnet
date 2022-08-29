@@ -88,18 +88,18 @@ namespace Bot.Builder.Community.Adapters.MessageBird
                             message.conversationMessageRequest.Type = ContentType.Audio;
                             break;
                         }
-                    //case "whatsappsticker":
-                    //    {
-                    //        message.conversationMessageRequest.Content = new Content() 
-                    //        { 
-                    //            File = new WhatsAppStickerContent(
-                    //            { 
-                    //                Link = attachment.ContentUrl 
-                    //            } 
-                    //        };
-                    //        message.conversationMessageRequest.Type = ContentType.WhatsAppSticker;
-                    //        break;
-                    //    }
+                    case "whatsappsticker":
+                       {
+                           message.conversationMessageRequest.Content = new Content() 
+                           { 
+                               File = new WhatsAppStickerContent(
+                               { 
+                                   Link = attachment.ContentUrl 
+                               } 
+                           };
+                           message.conversationMessageRequest.Type = ContentType.WhatsAppSticker;
+                           break;
+                       }
                     default:
                         {
                             message.conversationMessageRequest.Content = new Content() 
