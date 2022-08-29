@@ -149,7 +149,6 @@ namespace Bot.Builder.Community.Adapters.MessageBird
                         };
                         break;
                     }
-                //this will be addes as soon as MessageBird nuget package add support for this message type, my PR is waiting to be merged
                 case "whatsappsticker":
                    {
                        activity.Attachments = new List<Attachment>
