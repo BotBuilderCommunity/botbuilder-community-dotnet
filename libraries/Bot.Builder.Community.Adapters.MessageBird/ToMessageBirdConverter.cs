@@ -92,7 +92,7 @@ namespace Bot.Builder.Community.Adapters.MessageBird
                        {
                            message.conversationMessageRequest.Content = new Content() 
                            { 
-                               File = new WhatsAppStickerContent(
+                               File = new WhatsAppStickerContent
                                { 
                                    Link = attachment.ContentUrl 
                                } 
