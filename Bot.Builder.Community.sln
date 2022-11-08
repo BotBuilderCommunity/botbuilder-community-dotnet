@@ -1,4 +1,4 @@
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.31911.260
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -182,6 +182,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Webex.Tests", "tests\Bot.Builder.Community.Adapters.Webex.Tests\Bot.Builder.Community.Adapters.Webex.Tests.csproj", "{3348B9A5-E3CE-4AF8-B059-8B4D7971C25A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Facebook.Tests", "tests\Bot.Builder.Community.Adapters.Facebook.Tests\Bot.Builder.Community.Adapters.Facebook.Tests.csproj", "{8201DC48-763A-4534-9E51-466E15DF01D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bot.Builder.Community.OpenTelemetry", "libraries\Bot.Builder.Community.OpenTelemetry\Bot.Builder.Community.OpenTelemetry.csproj", "{502BFD1C-37E2-46E5-BBA4-5A4BD2C255EE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bot.Builder.Community.OpenTelemetry.Tests", "tests\Bot.Builder.Community.OpenTelemetry.Tests\Bot.Builder.Community.OpenTelemetry.Tests.csproj", "{E9F0C9BA-DD15-4791-A1C2-93DAA76A6058}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -805,6 +809,22 @@ Global
 		{8201DC48-763A-4534-9E51-466E15DF01D8}.Documentation|Any CPU.Build.0 = Debug|Any CPU
 		{8201DC48-763A-4534-9E51-466E15DF01D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8201DC48-763A-4534-9E51-466E15DF01D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{502BFD1C-37E2-46E5-BBA4-5A4BD2C255EE}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{502BFD1C-37E2-46E5-BBA4-5A4BD2C255EE}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{502BFD1C-37E2-46E5-BBA4-5A4BD2C255EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{502BFD1C-37E2-46E5-BBA4-5A4BD2C255EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{502BFD1C-37E2-46E5-BBA4-5A4BD2C255EE}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{502BFD1C-37E2-46E5-BBA4-5A4BD2C255EE}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{502BFD1C-37E2-46E5-BBA4-5A4BD2C255EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{502BFD1C-37E2-46E5-BBA4-5A4BD2C255EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9F0C9BA-DD15-4791-A1C2-93DAA76A6058}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9F0C9BA-DD15-4791-A1C2-93DAA76A6058}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{E9F0C9BA-DD15-4791-A1C2-93DAA76A6058}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9F0C9BA-DD15-4791-A1C2-93DAA76A6058}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9F0C9BA-DD15-4791-A1C2-93DAA76A6058}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9F0C9BA-DD15-4791-A1C2-93DAA76A6058}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{E9F0C9BA-DD15-4791-A1C2-93DAA76A6058}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9F0C9BA-DD15-4791-A1C2-93DAA76A6058}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -893,6 +913,8 @@ Global
 		{428AD1B4-DF58-4D21-9C19-AB4AB6001A90} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
 		{3348B9A5-E3CE-4AF8-B059-8B4D7971C25A} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
 		{8201DC48-763A-4534-9E51-466E15DF01D8} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
+		{502BFD1C-37E2-46E5-BBA4-5A4BD2C255EE} = {57D9879A-FC9F-468C-B86F-BE45A1472F88}
+		{E9F0C9BA-DD15-4791-A1C2-93DAA76A6058} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FE3B75E-BA2B-45BC-BBF0-DDA8BA10C4F0}
