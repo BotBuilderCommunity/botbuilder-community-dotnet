@@ -9,6 +9,9 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using System;
 using System.Diagnostics.Metrics;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Bot.Builder.Community.OpenTelemetry.Tests
 {
