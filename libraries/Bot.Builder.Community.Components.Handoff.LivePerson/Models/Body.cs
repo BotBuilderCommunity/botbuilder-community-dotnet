@@ -4,5 +4,6 @@
     {
         public Authenticateddata authenticatedData { get; set; }
         public string brandId { get; set; }
+        public string skillId { get; set; }
     }
 }
