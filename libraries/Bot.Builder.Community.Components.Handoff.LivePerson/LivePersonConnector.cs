@@ -45,7 +45,6 @@ namespace Bot.Builder.Community.Components.Handoff.LivePerson
                         kind = "req",
                         id = "2,",
                         type = "cm.ConsumerRequestConversation",
-                        
                         body = new Body { 
                             brandId = account,
                             skillId = skill
