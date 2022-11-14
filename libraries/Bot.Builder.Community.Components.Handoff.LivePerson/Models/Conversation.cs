@@ -5,7 +5,6 @@
         public string kind { get; set; }
         public string id { get; set; }
         public string type { get; set; }
-        public string skillId { get; set; }
         public Body body { get; set; }
     }
 }
