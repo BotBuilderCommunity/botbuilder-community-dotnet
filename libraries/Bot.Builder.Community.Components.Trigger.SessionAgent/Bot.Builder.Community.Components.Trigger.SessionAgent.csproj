@@ -1,0 +1,55 @@
+<Project Sdk="Microsoft.NET.Sdk">
+ <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove('$(MSBuildThisFileDirectory)../', 'Bot.Builder.Community.sln'))\CommonTargets\library.shared.targets" />
+ 
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+	  <Description>Action is performed when Automatically conversation has expired.</Description>
+	  <Authors>Bot Builder Community</Authors>
+	  <Company>Bot Builder Community</Company>
+	  <PackageLicenseUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/master/LICENSE</PackageLicenseUrl>
+	  <PackageProjectUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/libraries/Bot.Builder.Community.Components.Trigger.AutomaticallyExpireConversation</PackageProjectUrl>
+	  <FileVersion>1.0.0</FileVersion>
+	  <AssemblyVersion>1.0.0</AssemblyVersion>
+    <PackageIcon>package-icon.png</PackageIcon>
+    <PackageIconUrl />
+    <PackageTags>bots;botframework;botbuilder;msbot-component;msbot-middleware;msbot-trigger;</PackageTags>
+    <RepositoryUrl>http://www.github.com/botbuildercommunity/botbuildercommunity-dotnet
+    </RepositoryUrl>
+    <PackageLicenseUrl />
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Description>Action is performed when Automatically conversation has expired.</Description>
+    <PackageProjectUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/develop/libraries/Bot.Builder.Community.Components.Trigger.AutomaticallyExpireConversation</PackageProjectUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.0.10</Version>
+    <Authors>BotBuilderCommunity</Authors>
+    <PackageId>$(AssemblyName)</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+      <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="$(Bot_Builder_Version)" />
+      <PackageReference Include="Microsoft.Bot.Builder" Version="$(Bot_Builder_Version)" />
+      <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+      <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="$(Bot_Builder_Version)" />
+      <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive.Runtime" Version="$(Bot_Builder_Version)" />
+  </ItemGroup>
+
+
+ <ItemGroup>
+   <Content Include="**/*.schema" />
+   <Content Include="**/*.uischema" />
+ </ItemGroup>
+
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\..\package-icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+ 
+</Project>
