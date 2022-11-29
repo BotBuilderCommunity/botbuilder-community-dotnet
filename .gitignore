@@ -275,3 +275,4 @@ PublishProfiles/
 
 appsettings.local.json
 appsettings.Development.json
+/outputpackages

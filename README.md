@@ -138,6 +138,7 @@ The following recognizers are currently available;
 | Name | Description | NuGet |
 | ------ | ------ | ------ |
 | [Fuzzy Matching Recognizer](libraries/Bot.Builder.Community.Recognizers.FuzzyRecognizer) | A recognizer that allows you to use fuzzy matching to compare strings.  Useful in situations such as when a user make a spelling mistake etc. When the recognizer is used a list of matches, along with confidence scores, are returned. | [![NuGet version](https://img.shields.io/badge/NuGet-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Recognizers.FuzzyRecognizer/) |
+| [Custom Question Answering Recognizer](libraries/Bot.Builder.Community.Recognizers.CustomQuestionAnsweringRecognizer) | A recognizer that allows you to do inference calls to Azure Custom Question Answering projects. | [![NuGet version](https://img.shields.io/badge/NuGet-blue.svg)](https://www.nuget.org/packages/Bot.Builder.Community.Recognizers.CustomQuestionAnsweringRecognizer/) |
 
 ### Storage
 
