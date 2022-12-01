@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<Nullable>enable</Nullable>
+		<PackageTags>msbot-component;msbot-recognizer;composer;botframework;botbuilder</PackageTags>
+		<Version>1.0.0</Version>
+		<PackageLicenseUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/master/LICENSE</PackageLicenseUrl>
+		<PackageProjectUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/libraries/Bot.Builder.Community.Recognizers.QuestionAnsweringRecognizer/</PackageProjectUrl>
+		<Copyright>Bot Builder Community 2022</Copyright>
+		<RepositoryUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/develop/libraries/Bot.Builder.Community.Recognizers.QuestionAnsweringRecognizer/</RepositoryUrl>
+		<IncludeSymbols>True</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<Title>Question Answering Recognizer</Title>
+		<Authors>BotBuilderCommunity</Authors>
+		<PackageId>Bot.Builder.Community.Recognizers.CustomQuestionAnsweringRecognizer</PackageId>
+		<AssemblyName>Bot.Builder.Community.Recognizers.CustomQuestionAnsweringRecognizer</AssemblyName>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Content Include="**/*.schema" />
+		<Content Include="**/*.uischema" />
+		<None Include="exported/**/*.*" Pack="true" PackagePath="exported" />
+		<None Include="README.md" Condition="Exists('README.md')" Pack="true" PackagePath="" />
+		<PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive.Runtime" Version="4.17.1" />
+	</ItemGroup>
+</Project>
