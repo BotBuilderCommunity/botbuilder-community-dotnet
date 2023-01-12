@@ -206,7 +206,7 @@ Add the following line into the ***ConfigureServices*** method within your Start
 
 ```
 
-## Sending WhatsApp Sticker Sample Code (This will be added soon)
+## Sending WhatsApp Sticker Sample Code
 ```csharp
     var reply = MessageFactory.Text("WhatsApp Sticker");
     Attachment attachment = new Attachment();
