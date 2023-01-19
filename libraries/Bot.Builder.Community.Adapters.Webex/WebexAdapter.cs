@@ -155,10 +155,67 @@ namespace Bot.Builder.Community.Adapters.Webex
         /// <param name="activity">An activity to be sent back to the messaging API.</param>
         /// <param name="cancellationToken">A cancellation token for the task.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        public override Task<ResourceResponse> UpdateActivityAsync(ITurnContext turnContext, Activity activity, CancellationToken cancellationToken)
+        public override async Task<ResourceResponse> UpdateActivityAsync(ITurnContext turnContext, Activity activity,
+            CancellationToken cancellationToken)
         {
-            return Task.FromException<ResourceResponse>(new NotSupportedException("Webex adapter does not support updateActivity."));
+            if (activity.Id is null)
+            {
+                throw new InvalidOperationException($"Activity Id is required for UpdateActivityAsync.");
+            }
+            
+            if (activity.Type != ActivityTypes.Message)
+            {
+                throw new InvalidOperationException($"Unsupported Activity Type: '{activity.Type}'. Only Activities of type 'Message' are supported.");
+            }
+            
+            // transform activity into the webex message format
+            string recipientId;
+
+            // map text format
+            if (activity.TextFormat == TextFormatTypes.Xml)
+            {
+                _logger.LogTrace(
+                    $"Unsupported TextFormat: '{activity.TextFormat}'. Only TextFormat of types 'Plain' or 'Markdown' are supported.");
+                activity.TextFormat = TextFormatTypes.Plain;
+            }
+
+            var messageType = activity.TextFormat == TextFormatTypes.Plain
+                ? MessageTextType.Text
+                : MessageTextType.Markdown;
+
+            if (activity.Conversation?.Id != null)
+            {
+                recipientId = activity.Conversation.Id;
+            }
+            else
+            {
+                throw new InvalidOperationException("No RoomId to send the message");
+            }
+
+            string responseId;
+
+            if (activity.Attachments != null && activity.Attachments.Count > 0)
+            {
+                if (activity.Attachments[0].ContentType == "application/vnd.microsoft.card.adaptive")
+                {
+                    responseId = await _webexClient.CreateUpdateMessageAsync(activity.Id, recipientId, activity.Text,
+                        activity.Attachments, messageType, cancellationToken).ConfigureAwait(false);
+                }
+                else
+                {
+                    throw new NotSupportedException("Webex adapter Update does not support update with attachments other than adaptive cards.");
+                }
+            }
+            else
+            {
+                responseId = await _webexClient
+                    .CreateUpdateMessageAsync(activity.Id, recipientId, activity.Text, null, messageType: messageType, cancellationToken)
+                    .ConfigureAwait(false);
+            }
+
+            return new ResourceResponse(responseId);
         }
+    
 
         /// <summary>
         /// Standard BotBuilder adapter method to delete a previous message.
