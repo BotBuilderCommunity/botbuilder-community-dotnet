@@ -172,6 +172,68 @@ namespace Bot.Builder.Community.Adapters.Webex
 
             return result.Id;
         }
+        
+        public virtual async Task<string> CreateUpdateMessageAsync(string messageId, string roomId, string textOrMarkdown, IList<Attachment> attachments, MessageTextType messageType = MessageTextType.Markdown, CancellationToken cancellationToken = default)
+        {
+            Message result;
+
+            var attachmentsContent = new List<object>();
+
+            if (attachments != null)
+            {
+                foreach (var attach in attachments)
+                {
+                    attachmentsContent.Add(attach.Content);
+                }
+            }
+
+            var text = textOrMarkdown ?? string.Empty;
+            string markdown = null;
+
+            if (!string.IsNullOrEmpty(textOrMarkdown) && messageType == MessageTextType.Markdown)
+            {
+                markdown = textOrMarkdown;
+                text = Shared.MarkdownToPlaintextRenderer.Render(textOrMarkdown);
+            }
+
+            var request = new WebexMessageRequest
+            {
+                RoomId = roomId,
+                Text = text,
+                Markdown = markdown,
+                Attachments = attachmentsContent.Count > 0 ? attachmentsContent : null,
+            };
+
+            var http = (HttpWebRequest)WebRequest.Create(new Uri(MessageUrl + "/" + messageId));
+            http.PreAuthenticate = true;
+            http.Headers.Add("Authorization", "Bearer " + Options.WebexAccessToken);
+            http.Accept = "application/json";
+            http.ContentType = "application/json" +
+                "; charset=utf-8";
+            http.Method = "PUT";
+
+            var parsedContent = JsonConvert.SerializeObject(request);
+            var encoding = new UTF8Encoding();
+            var bytes = encoding.GetBytes(parsedContent);
+
+            var newStream = await http.GetRequestStreamAsync().ConfigureAwait(false);
+
+            await newStream.WriteAsync(bytes, 0, bytes.Length, cancellationToken).ConfigureAwait(false);
+
+            newStream.Close();
+
+            var response = await http.GetResponseAsync().ConfigureAwait(false);
+
+            var stream = response.GetResponseStream();
+
+            using (var sr = new StreamReader(stream))
+            {
+                var content = await sr.ReadToEndAsync().ConfigureAwait(false);
+                result = JsonConvert.DeserializeObject<Message>(content);
+            }
+
+            return result.Id;
+        }
 
         /// <summary>
         /// Shows details for an attachment action, by ID.

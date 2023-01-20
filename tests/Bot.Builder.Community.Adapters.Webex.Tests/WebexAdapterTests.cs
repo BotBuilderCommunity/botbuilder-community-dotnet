@@ -230,21 +230,6 @@ namespace Bot.Builder.Community.Adapters.Webex.Tests
         }
 
         [Fact]
-        public async void UpdateActivityAsyncShouldThrowNotSupportedException()
-        {
-            var webexAdapter = new WebexAdapter(new Mock<WebexClientWrapper>(_testOptions).Object, _adapterOptions);
-
-            var activity = new Activity();
-
-            var turnContext = new TurnContext(webexAdapter, activity);
-
-            await Assert.ThrowsAsync<NotSupportedException>(async () =>
-            {
-                await webexAdapter.UpdateActivityAsync(turnContext, activity, default);
-            });
-        }
-
-        [Fact]
         public async void SendActivitiesAsyncNotNullToPersonEmailShouldSucceed()
         {
             // Setup mocked Webex API client
