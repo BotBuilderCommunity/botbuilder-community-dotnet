@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove('$(MSBuildThisFileDirectory)../', 'Bot.Builder.Community.sln'))\CommonTargets\library.shared.targets" />
+  
+   
+  <PropertyGroup>
+	  <TargetFramework>netstandard2.0</TargetFramework>
+	  <Description>Upload file to Azure Blob Storage component for Bot Framework Composer</Description>
+	  <Company>Bot Builder Community</Company>
+	  <PackageLicenseUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/blob/master/LICENSE</PackageLicenseUrl>
+	  <PackageProjectUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/master/libraries/Bot.Builder.Community.Components.Dialogs.Input</PackageProjectUrl>
+	  <Version>0.0.5</Version>
+	  <FileVersion>1.0.0</FileVersion>
+	  <AssemblyVersion>1.0.0</AssemblyVersion>
+	  <PackageIcon>package-icon.png</PackageIcon>
+	  <RepositoryUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/</RepositoryUrl>
+	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	  <ContentTargetFolders>content</ContentTargetFolders>
+	  <PackageTags>composer;botframework;botbuilder;msbot-component;msbot-action</PackageTags>
+	  <NoWarn>$(NoWarn);NU5104</NoWarn>
+  </PropertyGroup>
+  
+   
+  <ItemGroup>
+    <Content Include="**/*.schema" />
+    <Content Include="**/*.uischema" />
+  </ItemGroup>
+  
+   
+  <ItemGroup>
+    <None Remove="schema\AzureBlobUpload.uischema" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.14.1" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="$(Bot_Builder_Version)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\package-icon.png" Link="package-icon.png">
+      <PackagePath></PackagePath>
+      <Pack>True</Pack>
+    </None>
+  </ItemGroup>
+
+</Project>

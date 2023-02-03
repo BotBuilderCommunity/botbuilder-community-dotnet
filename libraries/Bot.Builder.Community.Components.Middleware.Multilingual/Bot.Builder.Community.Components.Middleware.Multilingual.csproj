@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+ <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove('$(MSBuildThisFileDirectory)../', 'Bot.Builder.Community.sln'))\CommonTargets\library.shared.targets" />
+ 
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageIcon>package-icon.png</PackageIcon>
+    <PackageIconUrl />
+    <PackageTags>bots;botframework;botbuilder;msbot-component;msbot-middleware;</PackageTags>
+    <RepositoryUrl>http://www.github.com/botbuildercommunity/botbuildercommunity-dotnet
+</RepositoryUrl>
+    <PackageLicenseUrl />
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Description>Middlware component for Multilingual bot using Azure Translator Service</Description>
+    <PackageProjectUrl>https://github.com/BotBuilderCommunity/botbuilder-community-dotnet/tree/develop/libraries/Bot.Builder.Community.Components.Middleware.Multilingual</PackageProjectUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Bot.Builder.Community.Recognizers.FuzzyRecognizer" Version="4.13.5" />
+    <PackageReference Include="Microsoft.Bot.Builder" Version="$(Bot_Builder_Version)" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="$(Bot_Builder_Version)" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="$(Bot_Builder_Version)" />
+  </ItemGroup>
+
+  <ItemGroup>
+      <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\..\package-icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>
