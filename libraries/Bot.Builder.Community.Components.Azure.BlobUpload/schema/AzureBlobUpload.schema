@@ -1,0 +1,87 @@
+{
+  "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+  "$role": "implements(Microsoft.IDialog)",
+  "title": "Upload file to Azure Blob Storage",
+  "description": "This component uploads a file to Azure Blob Storage",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "FileUrl": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "title": "File or attachment Url",
+      "description": "Pass file or attachment url to upload to Azure Blob Storage",
+      "examples": [
+        "https://www.example.com"
+      ]
+    },
+    "FileName": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "title": "File Name",
+      "description": "Pass file name to upload to Azure Blob Storage",
+      "examples": [
+        "test.png"
+      ]
+    },
+
+    "ConnectionString": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "title": "Connection String",
+      "description": "Pass Azure Blob Storage connection string",
+      "examples": [
+        "DefaultEndpoints..."
+      ]
+    },
+
+    "Containers": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "title": "Containers Name",
+      "description": "Pass container name to upload to Azure Blob Storage",
+      "examples": [
+        "testcontainer"
+      ]
+    },
+    "PublicAccessType": {
+      "title": "Public Access Type",
+      "description": "Specifies the level of public access that is allowed on the share",
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "Public Access Type",
+          "description": " public access",
+          "enum": [
+            "None",
+            "BlobContainer",
+            "Blob"
+          ],
+          "default": "None"
+        }
+      ]
+    },
+    "DeleteSnapshotsOption": {
+      "title": "Delete Snapshots Option",
+      "description": "The set of options describing delete operation",
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "Delete Snapshots Option",
+          "description": "Choose the SnapshotsOption",
+          "enum": [
+            "None",
+            "IncludeSnapshots",
+            "OnlySnapshots"
+          ],
+          "default": "None"
+        }
+      ]
+    },
+    "resultProperty": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "title": "Result(Blob Url)",
+      "description": "Result property to store the azure blob url",
+      "examples": [
+        "user.blobUrl"
+      ]
+    }
+
+  }
+}
