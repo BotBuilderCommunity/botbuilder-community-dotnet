@@ -183,6 +183,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Facebook.Tests", "tests\Bot.Builder.Community.Adapters.Facebook.Tests\Bot.Builder.Community.Adapters.Facebook.Tests.csproj", "{8201DC48-763A-4534-9E51-466E15DF01D8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bot.Builder.Community.Storage.MongoDB", "libraries\Bot.Builder.Community.Storage.MongoDB\Bot.Builder.Community.Storage.MongoDB.csproj", "{74BE0FA2-3C6D-4807-8C73-CF87E898276C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug - NuGet Packages|Any CPU = Debug - NuGet Packages|Any CPU
@@ -805,6 +807,14 @@ Global
 		{8201DC48-763A-4534-9E51-466E15DF01D8}.Documentation|Any CPU.Build.0 = Debug|Any CPU
 		{8201DC48-763A-4534-9E51-466E15DF01D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8201DC48-763A-4534-9E51-466E15DF01D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74BE0FA2-3C6D-4807-8C73-CF87E898276C}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{74BE0FA2-3C6D-4807-8C73-CF87E898276C}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{74BE0FA2-3C6D-4807-8C73-CF87E898276C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74BE0FA2-3C6D-4807-8C73-CF87E898276C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74BE0FA2-3C6D-4807-8C73-CF87E898276C}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{74BE0FA2-3C6D-4807-8C73-CF87E898276C}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{74BE0FA2-3C6D-4807-8C73-CF87E898276C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74BE0FA2-3C6D-4807-8C73-CF87E898276C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -893,6 +903,7 @@ Global
 		{428AD1B4-DF58-4D21-9C19-AB4AB6001A90} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
 		{3348B9A5-E3CE-4AF8-B059-8B4D7971C25A} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
 		{8201DC48-763A-4534-9E51-466E15DF01D8} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
+		{74BE0FA2-3C6D-4807-8C73-CF87E898276C} = {DC62D60A-2EA2-4DB1-B1BA-C8F38D3940B3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FE3B75E-BA2B-45BC-BBF0-DDA8BA10C4F0}
