@@ -50,7 +50,7 @@ public class InMemoryAuthTokenStorage : IAuthTokenStorage
 
     public void SaveConfiguration(ConversationAuthToken token)
     {
-        InMemoryDictionary[state.Id] = token;
+        InMemoryDictionary[token.Id] = token;
     }
 }
 ```
