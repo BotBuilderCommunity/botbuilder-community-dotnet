@@ -62,6 +62,10 @@ namespace Bot.Builder.Community.Adapters.Slack
                     {
                         message.Blocks = HeroCardToBlockKit((HeroCard)att.Content);
                     }
+                    else if (att.ContentType == SigninCard.ContentType)
+                    {
+                        message.Blocks = SigninCardToBlockKit((SigninCard) att.Content);
+                    }
                     else
                     {
                         var newAttachment = new SlackAttachment()
@@ -448,6 +452,49 @@ namespace Bot.Builder.Community.Adapters.Slack
                         // We don't want to set value if it's an OpenUrl, because then the URL gets displayed in chat and sent to the bot.
                         value = button.Type == ActionTypes.OpenUrl ? null : button.Value.ToString() ?? button.DisplayText ?? button.Text,
                         url = button.Type == ActionTypes.OpenUrl ? button.Value.ToString() : null
+                    }).ToArray()
+                };
+
+                blockKitContent.Add(new DividerBlock());
+                blockKitContent.Add(actionsBlock);
+            }
+
+            return JArray.FromObject(blockKitContent, new JsonSerializer { NullValueHandling = NullValueHandling.Ignore });
+        }
+        
+        private static JArray SigninCardToBlockKit(SigninCard signinCard)
+        {
+            var blockKitContent = new List<IBlock>();
+
+            if (!string.IsNullOrWhiteSpace(signinCard.Text))
+            {
+                blockKitContent.Add(new SectionBlock
+                {
+                    text = new Text
+                    {
+                        type = TextTypes.Markdown,
+                        text = signinCard.Text
+                    }
+                });
+            }
+
+            if (signinCard.Buttons?.Any() == true)
+            {
+                var actionsBlock = new ActionsBlock
+                {
+                    elements = signinCard.Buttons.Select(button => new ButtonElement
+                    {
+                        text = new Text
+                        {
+                            type = TextTypes.PlainText,
+                            text = button.Title ?? button.Text ?? button.DisplayText,
+                            emoji = true,
+                        },
+
+                        // value/url get a little tricky if the button is an OpenUrl since CardAction.Value is meant for the URL.
+                        // We don't want to set value if it's an OpenUrl, because then the URL gets displayed in chat and sent to the bot.
+                        value = (button.Type == ActionTypes.OpenUrl || button.Type == ActionTypes.Signin) ? null : button.Value.ToString() ?? button.DisplayText ?? button.Text,
+                        url = (button.Type == ActionTypes.OpenUrl || button.Type == ActionTypes.Signin) ? button.Value.ToString() : null
                     }).ToArray()
                 };
 
