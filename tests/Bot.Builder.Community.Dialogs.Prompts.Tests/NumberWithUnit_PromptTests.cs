@@ -80,7 +80,7 @@ namespace Bot.Builder.Community.Dialogs.Prompts.Tests
             .AssertReply("Bot received Value: 25, Unit: Dollar")
             .Send("hello")
             .AssertReply("Enter a currency.")
-            .Send("£50.5")
+            .Send("?0.5")
             .AssertReply("Bot received Value: 50.5, Unit: Pound")
             .StartTestAsync();
         }
