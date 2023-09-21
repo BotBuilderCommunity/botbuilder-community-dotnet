@@ -27,7 +27,7 @@ namespace Bot.Builder.Community.Adapters.Slack.Tests
             var httpRequest = new Mock<HttpRequest>();
             httpRequest.Setup(req => req.Headers.ContainsKey(It.IsAny<string>())).Returns(true);
             httpRequest.SetupGet(req => req.Headers["X-Slack-Request-Timestamp"]).Returns("0001-01-01T00:00:00+00:00");
-            httpRequest.SetupGet(req => req.Headers["X-Slack-Signature"]).Returns("V0=D213A711894A04CF10B2DAB9C6904436DCF1A7469E21C843BB4242E1F8E62EB0");
+            httpRequest.SetupGet(req => req.Headers["X-Slack-Signature"]).Returns("V0=CD482F6E327EB7B5882890614EB87CB20831C5A527CC4D419A3B3BCD4BC8761C");
 
             Assert.True(slackApi.VerifySignature(httpRequest.Object, body));
         }
