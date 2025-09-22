@@ -15,7 +15,7 @@ using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Bot.Builder.Community.Adapters.Alexa.Middleware;
+//using Bot.Builder.Community.Adapters.Alexa.Middleware;
 
 namespace Cortana_Assistant_Alexa_Sample
 {
@@ -56,7 +56,7 @@ namespace Cortana_Assistant_Alexa_Sample
         /// <seealso cref="https://docs.microsoft.com/en-us/azure/bot-service/bot-service-manage-channels?view=azure-bot-service-4.0"/>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAlexaBot<Cortana_Assistant_Alexa_SampleBot>(options =>
+            /*services.AddAlexaBot<Cortana_Assistant_Alexa_SampleBot>(options =>
             {
                 options.AlexaOptions.ValidateIncomingAlexaRequests = true;
                 options.AlexaOptions.ShouldEndSessionByDefault = false;
@@ -84,7 +84,7 @@ namespace Cortana_Assistant_Alexa_Sample
                     logger.LogError($"Exception caught : {exception}");
                     await context.SendActivityAsync("Sorry, it looks like something went wrong.");
                 };
-            });
+            });*/
 
 
             var secretKey = Configuration.GetSection("botFileSecret")?.Value;
@@ -174,8 +174,8 @@ namespace Cortana_Assistant_Alexa_Sample
 
             app.UseDefaultFiles()
                 .UseStaticFiles()
-                .UseAlexa()
-                .UseGoogle()
+                //.UseAlexa()
+                //.UseGoogle()
                 .UseBotFramework();
         }
     }

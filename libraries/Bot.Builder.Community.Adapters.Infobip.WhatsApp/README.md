@@ -1,18 +1,19 @@
-﻿# Infobip WhatsApp for Bot Builder v4 .NET SDK - **_PREVIEW_**
+﻿# Infobip WhatsApp Adapter for Bot Builder v4 .NET SDK - **_PREVIEW_**
+
+## Requirements
+- .NET Standard 2.0 or later
 
 ## Build status
 
-| Branch | Status                                                                                                                                                    | Recommended NuGet package version                                                                                                                                                       |
-| ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Branch | Status | Recommended NuGet package version |
+| ------ | ------ | ---------------------------------- |
 | master | [![Build status](https://ci.appveyor.com/api/projects/status/b9123gl3kih8x9cb?svg=true)](https://ci.appveyor.com/project/garypretty/botbuilder-community) | Preview [available via MyGet (version 1.0.0-alpha3)](https://www.myget.org/feed/botbuilder-community-dotnet/package/nuget/Bot.Builder.Community.Adapters.Infobip.WhatsApp/1.0.0-alpha3) |
 
 # Description
 
 This is part of the [Bot Builder Community](https://github.com/botbuildercommunity) project which contains Bot Framework Components and other projects / packages for use with Bot Framework Composer and the Bot Builder .NET SDK v4.
 
-The Infobip Whatsapp adapter enables receiving and sending Whatsapp messages. The Infobip WhatsApp Adapter allows you to add an additional endpoint to your bot for receiving WhatsApp messages. The Infobip endpoint can be used
-in conjunction with other channels meaning, for example, you can have a bot exposed on out of the box channels such as Facebook and
-Teams, but also via an Infobip (as well as side by side with the Google / Twitter Adapters also available from the Bot Builder Community Project).
+The Infobip WhatsApp adapter enables receiving and sending WhatsApp messages. The Infobip WhatsApp adapter allows you to add an additional endpoint to your bot for receiving WhatsApp messages. The Infobip endpoint can be used in conjunction with other channels meaning, for example, you can have a bot exposed on out of the box channels such as Facebook and Teams, but also via an Infobip (as well as side by side with the Google / Twitter Adapters also available from the Bot Builder Community Project).
 
 Incoming WhatsApp message requests are transformed, by the adapter, into Bot Framework Activites and then when your bot sends outgoing activities, the adapter transforms the outgoing Activity into an Infobip OMNI failover messages.
 
@@ -41,7 +42,7 @@ PM> Install-Package Bot.Builder.Community.Adapters.Infobip.WhatsApp
 ## Usage
 
 - [Prerequisites](#prerequisites)
-- [Set Infobip WhatsApp credentials](#set-the-infobip-whatsapp-credentials)
+- [Set the Infobip WhatsApp options](#set-the-infobip-whatsapp-options)
 - [Wiring up the Infobip WhatsApp adapter in your bot](#wiring-up-the-infobip-whatsapp-adapter-in-your-bot)
 - [Incoming Whatsapp message requests to Bot Framework Activity mapping](#incoming-whatsapp-message-requests-to-bot-framework-activity-mapping) - Learn how incoming request types are handled by the adapter and the activities received by your bot.
 - [Outgoing Bot Framework Activity to Infobip Whatsapp message mapping](#outgoing-bot-framework-activity-to-infobip-whatsapp-message-mapping) - Learn how outgoing Bot Framework activities are handled by the adapter.
@@ -49,6 +50,8 @@ PM> Install-Package Bot.Builder.Community.Adapters.Infobip.WhatsApp
 - [Useful links](#useful-links)
 
 ### Prerequisites
+- .NET Standard 2.0 or later
+- Infobip account and credentials
 
 You need to contact [Infobip support](https://www.infobip.com/contact) regarding WhatsApp business verification and obtaining Infobip credentials. More details about that are available [here](https://www.infobip.com/docs/whatsapp/client-onboarding).
 

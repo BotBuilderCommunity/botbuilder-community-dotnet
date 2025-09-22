@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infobip Messages Adapter Sample</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            background: #f4f4f4;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .endpoint {
+            background: #e8f5e8;
+            padding: 15px;
+            border-left: 4px solid #4caf50;
+            margin: 10px 0;
+        }
+        .channel-endpoint {
+            background: #e3f2fd;
+            padding: 15px;
+            border-left: 4px solid #2196f3;
+            margin: 10px 0;
+        }
+        .test-endpoint {
+            background: #fff8e1;
+            padding: 15px;
+            border-left: 4px solid #ff9800;
+            margin: 10px 0;
+        }
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+        }
+        .success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+        }
+        code {
+            background: #f1f1f1;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        .step {
+            margin: 20px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .feature-card {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .curl-example {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 Infobip Messages Adapter Sample</h1>
+    
+    <div class="success">
+        <h2>✅ Bot is Running!</h2>
+        <p>Your Infobip Messages bot is ready to send and receive messages with full channel parameter support.</p>
+    </div>
+    
+    <div class="container">
+        <h2>📤 Testing Outgoing WhatsApp Messages</h2>
+        <p><strong>Quick Test:</strong> Use these endpoints to send WhatsApp messages immediately:</p>
+        
+        <div class="test-endpoint">
+            <h3>📱 Send Text Message</h3>
+            <p><strong>URL:</strong> <code>POST http://localhost:3978/api/test/whatsapp/text</code></p>
+            <p><strong>Parameters:</strong> <code>?to=447123456789&message=Hello from bot!</code></p>
+            <div class="curl-example">
+curl -X POST "http://localhost:3978/api/test/whatsapp/text?to=447123456789&message=Hello%20World%20from%20Infobip%20Bot"
+            </div>
+        </div>
+        
+        <div class="test-endpoint">
+            <h3>🔘 Send Button Message</h3>
+            <p><strong>URL:</strong> <code>POST http://localhost:3978/api/test/whatsapp/buttons</code></p>
+            <p><strong>Parameters:</strong> <code>?to=447123456789</code></p>
+            <div class="curl-example">
+curl -X POST "http://localhost:3978/api/test/whatsapp/buttons?to=447123456789"
+            </div>
+        </div>
+        
+        <div class="test-endpoint">
+            <h3>⚙️ Check Configuration</h3>
+            <p><strong>URL:</strong> <code>GET http://localhost:3978/api/test/config</code></p>
+            <p>Verify your bot configuration and sender settings</p>
+            <div class="curl-example">
+curl "http://localhost:3978/api/test/config"
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>🔗 Available Webhook Endpoints</h2>
+        
+        <div class="endpoint">
+            <h3>📋 Main Infobip Webhook Endpoint</h3>
+            <p><strong>URL:</strong> <code>http://localhost:3978/api/infobip</code></p>
+            <p><strong>Method:</strong> POST</p>
+            <p><strong>Purpose:</strong> Unified endpoint for all Infobip channels with automatic channel detection</p>
+        </div>
+        
+        <h3>📱 Channel-Specific Webhook Endpoints</h3>
+        
+        <div class="channel-endpoint">
+            <h4>WhatsApp Webhook</h4>
+            <p><strong>URL:</strong> <code>http://localhost:3978/api/infobip/whatsapp</code></p>
+            <p><strong>Purpose:</strong> Dedicated WhatsApp webhook endpoint</p>
+        </div>
+        
+        <div class="channel-endpoint">
+            <h4>SMS Webhook</h4>
+            <p><strong>URL:</strong> <code>http://localhost:3978/api/infobip/sms</code></p>
+            <p><strong>Purpose:</strong> Dedicated SMS webhook endpoint</p>
+        </div>
+        
+        <div class="channel-endpoint">
+            <h4>Viber Webhook</h4>
+            <p><strong>URL:</strong> <code>http://localhost:3978/api/infobip/viber</code></p>
+            <p><strong>Purpose:</strong> Dedicated Viber webhook endpoint</p>
+        </div>
+        
+        <div class="channel-endpoint">
+            <h4>RCS Webhook</h4>
+            <p><strong>URL:</strong> <code>http://localhost:3978/api/infobip/rcs</code></p>
+            <p><strong>Purpose:</strong> Dedicated RCS webhook endpoint</p>
+        </div>
+        
+        <div class="channel-endpoint">
+            <h4>Dynamic Channel Webhook</h4>
+            <p><strong>URL:</strong> <code>http://localhost:3978/api/infobip/channel/{channelType}</code></p>
+            <p><strong>Purpose:</strong> Dynamic endpoint where <code>{channelType}</code> can be whatsapp, sms, viber, etc.</p>
+            <p><strong>Examples:</strong></p>
+            <ul>
+                <li><code>/api/infobip/channel/whatsapp</code></li>
+                <li><code>/api/infobip/channel/sms</code></li>
+                <li><code>/api/infobip/channel/viber</code></li>
+            </ul>
+        </div>
+        
+        <div class="endpoint">
+            <h3>🤖 Bot Framework Emulator Endpoint</h3>
+            <p><strong>URL:</strong> <code>http://localhost:3978/api/messages</code></p>
+            <p><strong>Method:</strong> POST</p>
+            <p><strong>Purpose:</strong> Connect with Bot Framework Emulator for local testing</p>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>🧪 Step-by-Step Testing Guide</h2>
+        
+        <div class="step">
+            <h3>Option 1: Quick Outgoing Message Test (Recommended)</h3>
+            <ol>
+                <li><strong>Start the bot:</strong> Open terminal in project directory and run <code>dotnet run</code></li>
+                <li><strong>Replace phone number:</strong> Change <code>447123456789</code> to your actual WhatsApp number in the curl commands</li>
+                <li><strong>Test text message:</strong> Copy and paste the text message curl command</li>
+                <li><strong>Test button message:</strong> Copy and paste the button message curl command</li>
+                <li><strong>Check logs:</strong> View the console output to see the message being processed</li>
+                <li><strong>Note:</strong> Currently using stub implementation - messages are logged but not sent to real API</li>
+            </ol>
+            <div class="warning">
+                <p><strong>⚠️ Important:</strong> Make sure to use international format for phone numbers (e.g., 447123456789 for UK, 1234567890 for US with country code).</p>
+            </div>
+        </div>
+        
+        <div class="step">
+            <h3>Option 2: Bot Framework Emulator (Interactive Testing)</h3>
+            <ol>
+                <li>Download <a href="https://github.com/Microsoft/BotFramework-Emulator/releases" target="_blank">Bot Framework Emulator</a></li>
+                <li>Start the bot with <code>dotnet run</code></li>
+                <li>Open Bot Framework Emulator</li>
+                <li>Connect to: <code>http://localhost:3978/api/messages</code></li>
+                <li>Leave App ID and Password empty for local testing</li>
+                <li>Try bot commands: <code>help</code>, <code>card</code>, <code>buttons</code>, <code>image</code>, <code>interactive</code></li>
+            </ol>
+        </div>
+        
+        <div class="step">
+            <h3>Option 3: Real Infobip API Testing (Production)</h3>
+            <ol>
+                <li><strong>Get Infobip credentials:</strong> Sign up at <a href="https://portal.infobip.com/" target="_blank">Infobip Portal</a></li>
+                <li><strong>Update configuration:</strong> Replace API key and sender number in <code>appsettings.json</code></li>
+                <li><strong>Expose bot:</strong> Use <a href="https://ngrok.com/" target="_blank">ngrok</a> to expose your local bot: <code>ngrok http 3978</code></li>
+                <li><strong>Configure webhook:</strong> In Infobip Portal, set webhook URL to your ngrok URL + <code>/api/infobip/whatsapp</code></li>
+                <li><strong>Replace stub:</strong> When official Infobip library is available, replace stub implementation</li>
+                <li><strong>Test both ways:</strong> Send messages via API and receive messages via webhook</li>
+            </ol>
+        </div>
+    </div>
+    
+    <div class="warning">
+        <h3>⚙️ Current Configuration</h3>
+        <p>Current settings from <code>appsettings.json</code>:</p>
+        <ul>
+            <li><strong>Default Sender:</strong> 447860099299 (configure your own sender number)</li>
+            <li><strong>Default Channel:</strong> WHATSAPP</li>
+            <li><strong>API Base URL:</strong> https://api.infobip.com</li>
+            <li><strong>Implementation:</strong> Stub (for testing without actual API calls)</li>
+        </ul>
+        <p><strong>⚠️ Important Notes:</strong></p>
+        <ul>
+            <li>Currently using stub implementation - messages are logged but not sent to real Infobip API</li>
+            <li>Replace sender number with your registered Infobip number for production</li>
+            <li>Use valid international phone number format for testing (country code + number)</li>
+        </ul>
+    </div>
+    
+    <div class="container">
+        <h2>🎮 Bot Commands (When Using Emulator)</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>📋 Basic Commands</h4>
+                <ul>
+                    <li><code>help</code> - Show available commands</li>
+                    <li><code>channel</code> - Show channel information</li>
+                    <li>Any text - Echo the message back</li>
+                </ul>
+            </div>
+            <div class="feature-card">
+                <h4>💳 Rich Messages</h4>
+                <ul>
+                    <li><code>card</code> - Send a hero card</li>
+                    <li><code>buttons</code> - Send quick reply buttons</li>
+                    <li><code>carousel</code> - Send product carousel</li>
+                </ul>
+            </div>
+            <div class="feature-card">
+                <h4>📱 Interactive Features</h4>
+                <ul>
+                    <li><code>image</code> - Send a sample image</li>
+                    <li><code>location</code> - Share location</li>
+                    <li><code>interactive</code> - Interactive buttons (WhatsApp)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>🔧 Troubleshooting</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>Common Issues</h4>
+                <ul>
+                    <li><strong>Port 3978 in use:</strong> Change port in <code>launchSettings.json</code></li>
+                    <li><strong>Build errors:</strong> Run <code>dotnet restore</code> then <code>dotnet build</code></li>
+                    <li><strong>Curl not found:</strong> Use PowerShell, Git Bash, or Postman instead</li>
+                </ul>
+            </div>
+            <div class="feature-card">
+                <h4>Development Tips</h4>
+                <ul>
+                    <li>Check console logs for detailed debugging information</li>
+                    <li>Use <code>/api/test/config</code> to verify configuration</li>
+                    <li>Test with Bot Framework Emulator first before real API</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <footer style="text-align: center; margin-top: 40px; padding: 20px; border-top: 1px solid #ddd;">
+        <p>🌟 <a href="https://github.com/BotBuilderCommunity/botbuilder-community-dotnet" target="_blank">Bot Builder Community</a> | 
+           <a href="https://www.infobip.com/docs/api/platform/messages-api" target="_blank">Infobip Messages API</a> | 
+           <a href="https://docs.microsoft.com/azure/bot-service/" target="_blank">Bot Framework Docs</a></p>
+        <p><small>✨ Ready for outgoing WhatsApp message testing! Replace phone numbers and API keys as needed.</small></p>
+    </footer>
+</body>
+</html>

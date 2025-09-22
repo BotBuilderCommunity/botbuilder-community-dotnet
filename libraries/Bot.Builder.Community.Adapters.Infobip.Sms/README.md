@@ -1,5 +1,8 @@
 ﻿# Infobip SMS Adapter for Bot Builder v4 .NET SDK - **_PREVIEW_**
 
+## Requirements
+- .NET Standard 2.0 or later
+
 ## Build status
 
 | Branch | Status                                                                                                                                                    | Recommended NuGet package version                                                                                                                                                  |
@@ -45,6 +48,9 @@ PM> Install-Package Bot.Builder.Community.Adapters.Infobip.Sms
 - [Useful links](#useful-links)
 
 ### Prerequisites
+
+- .NET Standard 2.0 or later
+- Infobip account and credentials
 
 To receive SMS number you can open your free trial account [here](https://www.infobip.com/signup) or contact [Infobip support](https://www.infobip.com/contact) to help you with the process.
 

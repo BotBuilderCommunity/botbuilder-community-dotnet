@@ -99,7 +99,7 @@ namespace Cortana_Assistant_Alexa_Sample
             if (turnContext.Activity.ChannelId == "google")
             {
 
-                var card = new GoogleBasicCard()
+                /*var card = new GoogleBasicCard()
                 {
                     Content = new GoogleBasicCardContent()
                     {
@@ -114,18 +114,18 @@ namespace Cortana_Assistant_Alexa_Sample
                     },
                 };
 
-                turnContext.GoogleSetCard(card);
+                turnContext.GoogleSetCard(card);*/
             }
 
             // Platform specific cards (Alexa)
             if (turnContext.Activity.ChannelId == "alexa")
             {
-                turnContext.AlexaSetCard(new AlexaCard()
+                /*turnContext.AlexaSetCard(new AlexaCard()
                 {
                     Type = AlexaCardType.Simple,
                     Title = "Today's gold rate",
                     Content = activity.Text
-                });
+                });*/
             }
 
             // Adaptive Cards can also be written here to support other OOTB channels

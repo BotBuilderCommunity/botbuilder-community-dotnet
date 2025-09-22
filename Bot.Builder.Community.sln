@@ -183,6 +183,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Builder.Community.Adapters.Facebook.Tests", "tests\Bot.Builder.Community.Adapters.Facebook.Tests\Bot.Builder.Community.Adapters.Facebook.Tests.csproj", "{8201DC48-763A-4534-9E51-466E15DF01D8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bot.Builder.Community.Adapters.Infobip.Messages", "libraries\Bot.Builder.Community.Adapters.Infobip.Messages\Bot.Builder.Community.Adapters.Infobip.Messages.csproj", "{A1771B69-2077-488E-4CAB-9E990F47B4A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bot.Builder.Community.Adapters.Infobip.Messages.Tests", "tests\Bot.Builder.Community.Adapters.Infobip.Messages.Tests\Bot.Builder.Community.Adapters.Infobip.Messages.Tests.csproj", "{5E8B43AB-752A-BDA6-EFD8-D541B42308CA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug - NuGet Packages|Any CPU = Debug - NuGet Packages|Any CPU
@@ -805,6 +809,30 @@ Global
 		{8201DC48-763A-4534-9E51-466E15DF01D8}.Documentation|Any CPU.Build.0 = Debug|Any CPU
 		{8201DC48-763A-4534-9E51-466E15DF01D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8201DC48-763A-4534-9E51-466E15DF01D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1771B69-2077-488E-4CAB-9E990F47B4A0}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1771B69-2077-488E-4CAB-9E990F47B4A0}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{A1771B69-2077-488E-4CAB-9E990F47B4A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1771B69-2077-488E-4CAB-9E990F47B4A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1771B69-2077-488E-4CAB-9E990F47B4A0}.Documentation|Any CPU.ActiveCfg = Release|Any CPU
+		{A1771B69-2077-488E-4CAB-9E990F47B4A0}.Documentation|Any CPU.Build.0 = Release|Any CPU
+		{A1771B69-2077-488E-4CAB-9E990F47B4A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1771B69-2077-488E-4CAB-9E990F47B4A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E8B43AB-752A-BDA6-EFD8-D541B42308CA}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E8B43AB-752A-BDA6-EFD8-D541B42308CA}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{5E8B43AB-752A-BDA6-EFD8-D541B42308CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E8B43AB-752A-BDA6-EFD8-D541B42308CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E8B43AB-752A-BDA6-EFD8-D541B42308CA}.Documentation|Any CPU.ActiveCfg = Release|Any CPU
+		{5E8B43AB-752A-BDA6-EFD8-D541B42308CA}.Documentation|Any CPU.Build.0 = Release|Any CPU
+		{5E8B43AB-752A-BDA6-EFD8-D541B42308CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E8B43AB-752A-BDA6-EFD8-D541B42308CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89A32395-B74E-A4AC-E408-229E32F55BC8}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{89A32395-B74E-A4AC-E408-229E32F55BC8}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{89A32395-B74E-A4AC-E408-229E32F55BC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89A32395-B74E-A4AC-E408-229E32F55BC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89A32395-B74E-A4AC-E408-229E32F55BC8}.Documentation|Any CPU.ActiveCfg = Release|Any CPU
+		{89A32395-B74E-A4AC-E408-229E32F55BC8}.Documentation|Any CPU.Build.0 = Release|Any CPU
+		{89A32395-B74E-A4AC-E408-229E32F55BC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89A32395-B74E-A4AC-E408-229E32F55BC8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -893,6 +921,8 @@ Global
 		{428AD1B4-DF58-4D21-9C19-AB4AB6001A90} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
 		{3348B9A5-E3CE-4AF8-B059-8B4D7971C25A} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
 		{8201DC48-763A-4534-9E51-466E15DF01D8} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
+		{A1771B69-2077-488E-4CAB-9E990F47B4A0} = {BF310E8A-8DA1-441F-90E9-DE0E66553048}
+		{5E8B43AB-752A-BDA6-EFD8-D541B42308CA} = {840D4038-9AB8-4750-9FFE-365386CE47E2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FE3B75E-BA2B-45BC-BBF0-DDA8BA10C4F0}
